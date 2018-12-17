@@ -1,0 +1,16 @@
+PODS:
+  - stellar-ios-mac-sdk (1.5.6)
+
+DEPENDENCIES:
+  - stellar-ios-mac-sdk (~> 1.5.6)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - stellar-ios-mac-sdk
+
+SPEC CHECKSUMS:
+  stellar-ios-mac-sdk: b0c589f5d5a7776edffcf4ebbe4e12d988030e7e
+
+PODFILE CHECKSUM: e53ee424dbca24938e4cb3ed8ddafdca134a6d13
+
+COCOAPODS: 1.5.3

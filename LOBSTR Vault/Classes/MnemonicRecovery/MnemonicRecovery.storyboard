@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Mnemonic Recovery View Controller-->
+        <scene sceneID="aQI-qO-Uka">
+            <objects>
+                <viewController storyboardIdentifier="MnemonicRecoveryViewController" id="jMx-Df-eZn" customClass="MnemonicRecoveryViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="c4q-42-f14">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign in with a recovery phrase" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bII-4e-i7c">
+                                <rect key="frame" x="30" y="50" width="229.5" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="v3l-eT-S8h">
+                                <rect key="frame" x="30" y="91" width="315" height="150"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="BhP-IT-H8Y"/>
+                                </constraints>
+                                <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <fontDescription key="fontDescription" name=".AppleSystemUIFont" family=".AppleSystemUIFont" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="next" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Evf-tn-SzP">
+                                <rect key="frame" x="30" y="256" width="315" height="50"/>
+                                <color key="backgroundColor" red="0.4069370779" green="0.51036773520000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="krY-BT-C44"/>
+                                </constraints>
+                                <state key="normal" title="Recovery">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="recoveryButtonWasPressed:" destination="jMx-Df-eZn" eventType="touchUpInside" id="r4f-t7-veO"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ePm-pK-B0j">
+                                <rect key="frame" x="30" y="311" width="315" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" red="1" green="0.1843137255" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="bII-4e-i7c" firstAttribute="top" secondItem="s2L-cY-ZcR" secondAttribute="top" constant="30" id="0tD-1O-2qC"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="Evf-tn-SzP" secondAttribute="trailing" constant="30" id="9T3-oj-tyg"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="ePm-pK-B0j" secondAttribute="trailing" constant="30" id="Jew-55-vd3"/>
+                            <constraint firstItem="bII-4e-i7c" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="30" id="Orh-5x-NFm"/>
+                            <constraint firstItem="ePm-pK-B0j" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="30" id="Pen-2O-25Y"/>
+                            <constraint firstItem="Evf-tn-SzP" firstAttribute="top" secondItem="v3l-eT-S8h" secondAttribute="bottom" constant="15" id="UMS-xf-WMs"/>
+                            <constraint firstItem="v3l-eT-S8h" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="30" id="X04-rS-gQX"/>
+                            <constraint firstItem="v3l-eT-S8h" firstAttribute="top" secondItem="bII-4e-i7c" secondAttribute="bottom" constant="20" id="YuE-gl-aam"/>
+                            <constraint firstItem="ePm-pK-B0j" firstAttribute="top" secondItem="Evf-tn-SzP" secondAttribute="bottom" constant="5" id="ahg-Bq-Mdg"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="v3l-eT-S8h" secondAttribute="trailing" constant="30" id="dU9-xR-s2c"/>
+                            <constraint firstItem="Evf-tn-SzP" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="30" id="r0Z-A0-Dcg"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="s2L-cY-ZcR"/>
+                    </view>
+                    <connections>
+                        <outlet property="recoveryButton" destination="Evf-tn-SzP" id="J4u-sR-hHi"/>
+                        <outlet property="textView" destination="v3l-eT-S8h" id="uhX-Um-kvV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JSP-eA-f7H" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2809" y="-556"/>
+        </scene>
+    </scenes>
+</document>

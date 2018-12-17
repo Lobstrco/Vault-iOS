@@ -1,0 +1,818 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2E44052CB4FA324F7B665BA1 /* Pods_LOBSTR_Vault.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */; };
+		9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AB21BE86B50070A526 /* Storyboards.swift */; };
+		9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */; };
+		9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */; };
+		9221B7BA21BE888F0070A526 /* MnemonicRecoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7B921BE888F0070A526 /* MnemonicRecoveryViewController.swift */; };
+		9221B7BC21BE88E00070A526 /* MnemonicRecoveryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BB21BE88E00070A526 /* MnemonicRecoveryPresenter.swift */; };
+		9221B7BE21BE893A0070A526 /* MnemonicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */; };
+		9221B7C021BE89F80070A526 /* MnemonicSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BF21BE89F80070A526 /* MnemonicSuggestionsView.swift */; };
+		9221B7C221BE8A120070A526 /* MnemonicSuggestionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7C121BE8A120070A526 /* MnemonicSuggestionsViewCell.swift */; };
+		9221B7C421BE8A310070A526 /* MnemonicSuggestionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7C321BE8A310070A526 /* MnemonicSuggestionsView.xib */; };
+		9221B7C621BE8A520070A526 /* MnemonicSuggestionsViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7C521BE8A520070A526 /* MnemonicSuggestionsViewCell.xib */; };
+		9221B7CA21BE91570070A526 /* MnemonicHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */; };
+		9221B7CD21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7CC21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift */; };
+		9221B7CF21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7CE21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift */; };
+		9232EC6E21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC6D21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift */; };
+		9232EC7521C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7421C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift */; };
+		9232EC7821C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7721C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift */; };
+		9232EC7A21C11D1D00F8EBD4 /* MnemonicGeneration.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9232EC7921C11D1D00F8EBD4 /* MnemonicGeneration.storyboard */; };
+		9232EC7C21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7B21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift */; };
+		9232EC7E21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7D21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift */; };
+		9232EC8021C1422800F8EBD4 /* MnemonicVerificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7F21C1422800F8EBD4 /* MnemonicVerificationViewController.swift */; };
+		9232EC8221C1425800F8EBD4 /* MnemonicVerificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC8121C1425800F8EBD4 /* MnemonicVerificationPresenter.swift */; };
+		9232EC8421C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC8321C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift */; };
+		9232EC8621C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC8521C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift */; };
+		92BD385621C7AFF500E974E0 /* MnemonicMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BD385521C7AFF500E974E0 /* MnemonicMenuViewController.swift */; };
+		92BD385821C7B02000E974E0 /* MnemonicMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92BD385721C7B02000E974E0 /* MnemonicMenu.storyboard */; };
+		92D3769221BAA95B00504713 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D3769121BAA95B00504713 /* AppDelegate.swift */; };
+		92D3769921BAA95B00504713 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 92D3769821BAA95B00504713 /* Assets.xcassets */; };
+		92D3769C21BAA95B00504713 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92D3769A21BAA95B00504713 /* LaunchScreen.storyboard */; };
+		A3F5F6A151BBA6DC6871C53E /* Pods_LOBSTR_VaultTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		92D376A321BAA95B00504713 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 92D3768621BAA95B00504713 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 92D3768D21BAA95B00504713;
+			remoteInfo = "LOBSTR Vault";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		0CF6E73C09E0BAC79AF0CAC0 /* Pods-LOBSTR Vault.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR Vault.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault.debug.xcconfig"; sourceTree = "<group>"; };
+		3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LOBSTR_VaultTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		9221B7AB21BE86B50070A526 /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
+		9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardCreation.swift; sourceTree = "<group>"; };
+		9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicRecovery.storyboard; sourceTree = "<group>"; };
+		9221B7B921BE888F0070A526 /* MnemonicRecoveryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicRecoveryViewController.swift; sourceTree = "<group>"; };
+		9221B7BB21BE88E00070A526 /* MnemonicRecoveryPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicRecoveryPresenter.swift; sourceTree = "<group>"; };
+		9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicHelper.swift; sourceTree = "<group>"; };
+		9221B7BF21BE89F80070A526 /* MnemonicSuggestionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicSuggestionsView.swift; sourceTree = "<group>"; };
+		9221B7C121BE8A120070A526 /* MnemonicSuggestionsViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicSuggestionsViewCell.swift; sourceTree = "<group>"; };
+		9221B7C321BE8A310070A526 /* MnemonicSuggestionsView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MnemonicSuggestionsView.xib; sourceTree = "<group>"; };
+		9221B7C521BE8A520070A526 /* MnemonicSuggestionsViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MnemonicSuggestionsViewCell.xib; sourceTree = "<group>"; };
+		9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicHelperTest.swift; sourceTree = "<group>"; };
+		9221B7CC21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicRecoveryViewSpy.swift; sourceTree = "<group>"; };
+		9221B7CE21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicRecoveryPresenterTest.swift; sourceTree = "<group>"; };
+		9232EC6D21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGenerationViewController.swift; sourceTree = "<group>"; };
+		9232EC7421C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGenerationPresenter.swift; sourceTree = "<group>"; };
+		9232EC7721C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicCollectionViewCell.swift; sourceTree = "<group>"; };
+		9232EC7921C11D1D00F8EBD4 /* MnemonicGeneration.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicGeneration.storyboard; sourceTree = "<group>"; };
+		9232EC7B21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGenerationPresenterTest.swift; sourceTree = "<group>"; };
+		9232EC7D21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGenerationViewSpy.swift; sourceTree = "<group>"; };
+		9232EC7F21C1422800F8EBD4 /* MnemonicVerificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationViewController.swift; sourceTree = "<group>"; };
+		9232EC8121C1425800F8EBD4 /* MnemonicVerificationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationPresenter.swift; sourceTree = "<group>"; };
+		9232EC8321C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationPresenterTest.swift; sourceTree = "<group>"; };
+		9232EC8521C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationViewSpy.swift; sourceTree = "<group>"; };
+		92BD385521C7AFF500E974E0 /* MnemonicMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicMenuViewController.swift; sourceTree = "<group>"; };
+		92BD385721C7B02000E974E0 /* MnemonicMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicMenu.storyboard; sourceTree = "<group>"; };
+		92D3768E21BAA95B00504713 /* LOBSTR Vault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LOBSTR Vault.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92D3769121BAA95B00504713 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		92D3769821BAA95B00504713 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		92D3769B21BAA95B00504713 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		92D3769D21BAA95B00504713 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		92D376A221BAA95B00504713 /* LOBSTR VaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LOBSTR VaultTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		92D376A821BAA95C00504713 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LOBSTR_Vault.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5F14E4ADD030093E6C95C68 /* Pods-LOBSTR VaultTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E2FEF80546C9EBC9190AF12C /* Pods-LOBSTR VaultTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.release.xcconfig"; sourceTree = "<group>"; };
+		FF9592844080E3A3C536D579 /* Pods-LOBSTR Vault.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR Vault.release.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		92D3768B21BAA95B00504713 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2E44052CB4FA324F7B665BA1 /* Pods_LOBSTR_Vault.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		92D3769F21BAA95B00504713 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3F5F6A151BBA6DC6871C53E /* Pods_LOBSTR_VaultTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9221B7A921BE869A0070A526 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7AD21BE86C90070A526 /* Protocols */,
+				9221B7AA21BE86A30070A526 /* Models */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		9221B7AA21BE86A30070A526 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7AB21BE86B50070A526 /* Storyboards.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9221B7AD21BE86C90070A526 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		9221B7B021BE87370070A526 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				92BD385221C79BAF00E974E0 /* MnemonicMenu */,
+				9232EC8721C2F7EC00F8EBD4 /* AppDelegate */,
+				9221B7A921BE869A0070A526 /* Core */,
+				9221B7B221BE87880070A526 /* MnemonicGeneration */,
+				9221B7B121BE87710070A526 /* MnemonicRecovery */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		9221B7B121BE87710070A526 /* MnemonicRecovery */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7B621BE87D80070A526 /* Helpers */,
+				9221B7B521BE87CE0070A526 /* Presenters */,
+				9221B7B421BE87C40070A526 /* Views */,
+				9221B7B321BE87B60070A526 /* Controllers */,
+				9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */,
+			);
+			path = MnemonicRecovery;
+			sourceTree = "<group>";
+		};
+		9221B7B221BE87880070A526 /* MnemonicGeneration */ = {
+			isa = PBXGroup;
+			children = (
+				9232EC7621C0FB4C00F8EBD4 /* Views */,
+				9232EC7321C0FA1300F8EBD4 /* Presenters */,
+				9232EC6C21C0F51700F8EBD4 /* Controllers */,
+				9232EC7921C11D1D00F8EBD4 /* MnemonicGeneration.storyboard */,
+			);
+			path = MnemonicGeneration;
+			sourceTree = "<group>";
+		};
+		9221B7B321BE87B60070A526 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7B921BE888F0070A526 /* MnemonicRecoveryViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		9221B7B421BE87C40070A526 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7BF21BE89F80070A526 /* MnemonicSuggestionsView.swift */,
+				9221B7C121BE8A120070A526 /* MnemonicSuggestionsViewCell.swift */,
+				9221B7C321BE8A310070A526 /* MnemonicSuggestionsView.xib */,
+				9221B7C521BE8A520070A526 /* MnemonicSuggestionsViewCell.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9221B7B521BE87CE0070A526 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7BB21BE88E00070A526 /* MnemonicRecoveryPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		9221B7B621BE87D80070A526 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		9221B7C721BE91110070A526 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		9221B7C821BE912A0070A526 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7CE21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift */,
+				9232EC7B21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift */,
+				9232EC8321C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		9221B7CB21BF9A170070A526 /* Spies */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7CC21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift */,
+				9232EC7D21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift */,
+				9232EC8521C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift */,
+			);
+			path = Spies;
+			sourceTree = "<group>";
+		};
+		9232EC6C21C0F51700F8EBD4 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9232EC6D21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift */,
+				9232EC7F21C1422800F8EBD4 /* MnemonicVerificationViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		9232EC7321C0FA1300F8EBD4 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				9232EC7421C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift */,
+				9232EC8121C1425800F8EBD4 /* MnemonicVerificationPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		9232EC7621C0FB4C00F8EBD4 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9232EC7721C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		9232EC8721C2F7EC00F8EBD4 /* AppDelegate */ = {
+			isa = PBXGroup;
+			children = (
+				92D3769121BAA95B00504713 /* AppDelegate.swift */,
+			);
+			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		92BD385221C79BAF00E974E0 /* MnemonicMenu */ = {
+			isa = PBXGroup;
+			children = (
+				92BD385421C79C0400E974E0 /* Controllers */,
+				92BD385721C7B02000E974E0 /* MnemonicMenu.storyboard */,
+			);
+			path = MnemonicMenu;
+			sourceTree = "<group>";
+		};
+		92BD385421C79C0400E974E0 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				92BD385521C7AFF500E974E0 /* MnemonicMenuViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		92D3768521BAA95B00504713 = {
+			isa = PBXGroup;
+			children = (
+				92D3769021BAA95B00504713 /* LOBSTR Vault */,
+				92D376A521BAA95C00504713 /* LOBSTR VaultTests */,
+				92D3768F21BAA95B00504713 /* Products */,
+				AE4E3AF3CE4148F32D4FE5F8 /* Pods */,
+				BAD7330339BD369057C29BCC /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		92D3768F21BAA95B00504713 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				92D3768E21BAA95B00504713 /* LOBSTR Vault.app */,
+				92D376A221BAA95B00504713 /* LOBSTR VaultTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		92D3769021BAA95B00504713 /* LOBSTR Vault */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7B021BE87370070A526 /* Classes */,
+				92D3769821BAA95B00504713 /* Assets.xcassets */,
+				92D3769A21BAA95B00504713 /* LaunchScreen.storyboard */,
+				92D3769D21BAA95B00504713 /* Info.plist */,
+			);
+			path = "LOBSTR Vault";
+			sourceTree = "<group>";
+		};
+		92D376A521BAA95C00504713 /* LOBSTR VaultTests */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7CB21BF9A170070A526 /* Spies */,
+				9221B7C821BE912A0070A526 /* Presenters */,
+				9221B7C721BE91110070A526 /* Helpers */,
+				92D376A821BAA95C00504713 /* Info.plist */,
+			);
+			path = "LOBSTR VaultTests";
+			sourceTree = "<group>";
+		};
+		AE4E3AF3CE4148F32D4FE5F8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				0CF6E73C09E0BAC79AF0CAC0 /* Pods-LOBSTR Vault.debug.xcconfig */,
+				FF9592844080E3A3C536D579 /* Pods-LOBSTR Vault.release.xcconfig */,
+				D5F14E4ADD030093E6C95C68 /* Pods-LOBSTR VaultTests.debug.xcconfig */,
+				E2FEF80546C9EBC9190AF12C /* Pods-LOBSTR VaultTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		BAD7330339BD369057C29BCC /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */,
+				3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		92D3768D21BAA95B00504713 /* LOBSTR Vault */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92D376AB21BAA95C00504713 /* Build configuration list for PBXNativeTarget "LOBSTR Vault" */;
+			buildPhases = (
+				751060B6DD58B61992A04E66 /* [CP] Check Pods Manifest.lock */,
+				92D3768A21BAA95B00504713 /* Sources */,
+				92D3768B21BAA95B00504713 /* Frameworks */,
+				92D3768C21BAA95B00504713 /* Resources */,
+				0D8E9B17D1F59035C04A3F9E /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "LOBSTR Vault";
+			productName = "LOBSTR Vault";
+			productReference = 92D3768E21BAA95B00504713 /* LOBSTR Vault.app */;
+			productType = "com.apple.product-type.application";
+		};
+		92D376A121BAA95B00504713 /* LOBSTR VaultTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 92D376AE21BAA95C00504713 /* Build configuration list for PBXNativeTarget "LOBSTR VaultTests" */;
+			buildPhases = (
+				30401DE3EF39E6D2A81F7CE8 /* [CP] Check Pods Manifest.lock */,
+				92D3769E21BAA95B00504713 /* Sources */,
+				92D3769F21BAA95B00504713 /* Frameworks */,
+				92D376A021BAA95B00504713 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				92D376A421BAA95B00504713 /* PBXTargetDependency */,
+			);
+			name = "LOBSTR VaultTests";
+			productName = "LOBSTR VaultTests";
+			productReference = 92D376A221BAA95B00504713 /* LOBSTR VaultTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		92D3768621BAA95B00504713 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1010;
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Ultra Stellar";
+				TargetAttributes = {
+					92D3768D21BAA95B00504713 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+					92D376A121BAA95B00504713 = {
+						CreatedOnToolsVersion = 10.1;
+						TestTargetID = 92D3768D21BAA95B00504713;
+					};
+				};
+			};
+			buildConfigurationList = 92D3768921BAA95B00504713 /* Build configuration list for PBXProject "LOBSTR Vault" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 92D3768521BAA95B00504713;
+			productRefGroup = 92D3768F21BAA95B00504713 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				92D3768D21BAA95B00504713 /* LOBSTR Vault */,
+				92D376A121BAA95B00504713 /* LOBSTR VaultTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		92D3768C21BAA95B00504713 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9232EC7A21C11D1D00F8EBD4 /* MnemonicGeneration.storyboard in Resources */,
+				9221B7C421BE8A310070A526 /* MnemonicSuggestionsView.xib in Resources */,
+				92D3769C21BAA95B00504713 /* LaunchScreen.storyboard in Resources */,
+				92BD385821C7B02000E974E0 /* MnemonicMenu.storyboard in Resources */,
+				9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */,
+				92D3769921BAA95B00504713 /* Assets.xcassets in Resources */,
+				9221B7C621BE8A520070A526 /* MnemonicSuggestionsViewCell.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		92D376A021BAA95B00504713 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0D8E9B17D1F59035C04A3F9E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/stellar-ios-mac-sdk/stellarsdk.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/stellarsdk.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		30401DE3EF39E6D2A81F7CE8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LOBSTR VaultTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		751060B6DD58B61992A04E66 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-LOBSTR Vault-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		92D3768A21BAA95B00504713 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9221B7C221BE8A120070A526 /* MnemonicSuggestionsViewCell.swift in Sources */,
+				9232EC8221C1425800F8EBD4 /* MnemonicVerificationPresenter.swift in Sources */,
+				9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */,
+				9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */,
+				92D3769221BAA95B00504713 /* AppDelegate.swift in Sources */,
+				9221B7BE21BE893A0070A526 /* MnemonicHelper.swift in Sources */,
+				9232EC7821C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift in Sources */,
+				9221B7BC21BE88E00070A526 /* MnemonicRecoveryPresenter.swift in Sources */,
+				92BD385621C7AFF500E974E0 /* MnemonicMenuViewController.swift in Sources */,
+				9221B7C021BE89F80070A526 /* MnemonicSuggestionsView.swift in Sources */,
+				9221B7BA21BE888F0070A526 /* MnemonicRecoveryViewController.swift in Sources */,
+				9232EC7521C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift in Sources */,
+				9232EC6E21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift in Sources */,
+				9232EC8021C1422800F8EBD4 /* MnemonicVerificationViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		92D3769E21BAA95B00504713 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9221B7CD21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift in Sources */,
+				9232EC8421C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift in Sources */,
+				9232EC7E21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift in Sources */,
+				9232EC8621C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift in Sources */,
+				9221B7CF21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift in Sources */,
+				9232EC7C21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift in Sources */,
+				9221B7CA21BE91570070A526 /* MnemonicHelperTest.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		92D376A421BAA95B00504713 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 92D3768D21BAA95B00504713 /* LOBSTR Vault */;
+			targetProxy = 92D376A321BAA95B00504713 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		92D3769A21BAA95B00504713 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				92D3769B21BAA95B00504713 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		92D376A921BAA95C00504713 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		92D376AA21BAA95C00504713 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		92D376AC21BAA95C00504713 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CF6E73C09E0BAC79AF0CAC0 /* Pods-LOBSTR Vault.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				INFOPLIST_FILE = "LOBSTR Vault/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "VAULT DEV 6DEC";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		92D376AD21BAA95C00504713 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FF9592844080E3A3C536D579 /* Pods-LOBSTR Vault.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				INFOPLIST_FILE = "LOBSTR Vault/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "VAULT DEV 6DEC";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		92D376AF21BAA95C00504713 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D5F14E4ADD030093E6C95C68 /* Pods-LOBSTR VaultTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ultrastellar.lobstr.LOBSTR-VaultTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LOBSTR Vault.app/LOBSTR Vault";
+			};
+			name = Debug;
+		};
+		92D376B021BAA95C00504713 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E2FEF80546C9EBC9190AF12C /* Pods-LOBSTR VaultTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
+				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ultrastellar.lobstr.LOBSTR-VaultTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/LOBSTR Vault.app/LOBSTR Vault";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		92D3768921BAA95B00504713 /* Build configuration list for PBXProject "LOBSTR Vault" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92D376A921BAA95C00504713 /* Debug */,
+				92D376AA21BAA95C00504713 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92D376AB21BAA95C00504713 /* Build configuration list for PBXNativeTarget "LOBSTR Vault" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92D376AC21BAA95C00504713 /* Debug */,
+				92D376AD21BAA95C00504713 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		92D376AE21BAA95C00504713 /* Build configuration list for PBXNativeTarget "LOBSTR VaultTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				92D376AF21BAA95C00504713 /* Debug */,
+				92D376B021BAA95C00504713 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 92D3768621BAA95B00504713 /* Project object */;
+}
