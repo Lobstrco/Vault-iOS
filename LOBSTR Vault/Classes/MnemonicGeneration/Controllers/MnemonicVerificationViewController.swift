@@ -7,6 +7,8 @@ class MnemonicVerificationViewController: UIViewController, MnemonicVerification
   
   var presenter = MnemonicVerificationPresenterImpl()
   
+  // MARK: - Lifecycle
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -15,6 +17,11 @@ class MnemonicVerificationViewController: UIViewController, MnemonicVerification
     
     сollectionViewForVerification.dataSource = self
     сollectionViewForVerification.delegate = self
+  }
+  
+  // MARK: - IBAction
+  @IBAction func nextButtonAction(_ sender: Any) {
+    presenter.nextButtonAction()
   }
   
   // MARK: - MnemonicVerificationView
@@ -28,7 +35,8 @@ class MnemonicVerificationViewController: UIViewController, MnemonicVerification
     сollectionViewForVerification.reloadData()
   }
   
-  func updateShuffledCollectionView(by indexPath: IndexPath, color: UIColor) {
+  func updateShuffledCollectionView(by indexPath: IndexPath,
+                                    color: UIColor) {
     shuffledCollectionView.cellForItem(at: indexPath)?.backgroundColor = color
   }
 }

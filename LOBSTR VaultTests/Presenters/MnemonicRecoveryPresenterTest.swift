@@ -16,7 +16,8 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
     
     mnemonicRecoveryPresenter.clearSuggestionList()
     
-    XCTAssertEqual(expectedSuggestionNumberInList, mnemonicRecoveryPresenter.suggestionList.count,
+    XCTAssertEqual(expectedSuggestionNumberInList,
+                   mnemonicRecoveryPresenter.suggestionList.count,
                    "The suggestion list is expected to be empty")
     XCTAssert(mnemonicRecoveryViewSpy.displaySuggestionListWasCalled,
               "The suggestion list is expected to be displayed")
@@ -28,7 +29,8 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
     
     mnemonicRecoveryPresenter.suggestionListRequest(by: userText)
     
-    XCTAssertEqual(expectedAutocompleteSuggestions, mnemonicRecoveryPresenter.suggestionList,
+    XCTAssertEqual(expectedAutocompleteSuggestions,
+                   mnemonicRecoveryPresenter.suggestionList,
                    "The suggestion lists are expected to be recieved")
     XCTAssert(mnemonicRecoveryViewSpy.displaySuggestionListWasCalled,
               "The suggestion list is expected to be displayed")
@@ -42,9 +44,11 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
     
     mnemonicRecoveryPresenter.add(suggestionWord, to: text)
     
-    XCTAssertEqual(expectedUpdateText, mnemonicRecoveryViewSpy.updatedTextAfterPickingSuggestionWord,
+    XCTAssertEqual(expectedUpdateText,
+                   mnemonicRecoveryViewSpy.updatedTextAfterPickingSuggestionWord,
                    "The text is expected to be updated")
-    XCTAssertEqual(expectedSuggestionNumberInList, mnemonicRecoveryPresenter.suggestionList.count,
+    XCTAssertEqual(expectedSuggestionNumberInList,
+                   mnemonicRecoveryPresenter.suggestionList.count,
                    "The suggestion list is expected to be empty")
   }
 }

@@ -35,3 +35,11 @@ protocol MnemonicVerificationStoryboardCreation: StoryboardCreation {}
 extension MnemonicVerificationStoryboardCreation {
   static var storyboardType: Storyboards { return Storyboards.mnemonicGeneration }
 }
+
+// MARK: - MnemonicMenuViewControllerStoryboardCreation
+
+protocol MnemonicMenuViewControllerStoryboardCreation: StoryboardCreation {}
+
+extension MnemonicMenuViewControllerStoryboardCreation {
+  static var storyboardType: Storyboards { return Storyboards.mnemonicMenu }
+}

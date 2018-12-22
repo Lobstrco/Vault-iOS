@@ -1,7 +1,7 @@
 import UIKit
 
 class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView,
-MnemonicGenerationStoryboardCreation {
+  MnemonicGenerationStoryboardCreation {
   @IBOutlet var collectionView: UICollectionView!
   var presenter: MnemonicGenerationPresenter!
   
@@ -15,7 +15,7 @@ MnemonicGenerationStoryboardCreation {
   
   @IBAction func nextButtondWasPressed() {
     presenter.nextButtondWasPressed()
-  }  
+  }
   
   @IBAction func copyToClipboard() {
     presenter.copyToClipboardWasPressed()

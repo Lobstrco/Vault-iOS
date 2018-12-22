@@ -10,7 +10,8 @@ class MnemonicHelperTest: XCTestCase {
     
     let separatedWords = MnemonicHelper.getSeparatedWords(from: str)
     
-    XCTAssertEqual(expectedSeparatedWords, separatedWords, "Word list is expected to be received")
+    XCTAssertEqual(expectedSeparatedWords,
+                   separatedWords, "Word list is expected to be received")
   }
   
   func testAutocopleteSuggestionsShouldBeReceivedFromMnemonicDictionary() {

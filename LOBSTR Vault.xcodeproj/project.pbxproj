@@ -8,6 +8,29 @@
 
 /* Begin PBXBuildFile section */
 		2E44052CB4FA324F7B665BA1 /* Pods_LOBSTR_Vault.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */; };
+		844C580D21CA4FB7008B44B2 /* PinPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C580C21CA4FB7008B44B2 /* PinPresenter.swift */; };
+		844C580F21CA5D13008B44B2 /* PinPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C580E21CA5D13008B44B2 /* PinPresenterTests.swift */; };
+		844C581121CA5F69008B44B2 /* PinViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581021CA5F69008B44B2 /* PinViewSpy.swift */; };
+		844C581421CA6BEE008B44B2 /* PinManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581321CA6BEE008B44B2 /* PinManagerTests.swift */; };
+		844C581B21CA8101008B44B2 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */; };
+		845CDC9A21C912EA00791C94 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845CDC9921C912EA00791C94 /* Home.storyboard */; };
+		845CDC9D21C9134100791C94 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDC9C21C9134100791C94 /* HomeViewController.swift */; };
+		845CDCA521C92E6300791C94 /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCA421C92E6300791C94 /* PinViewController.swift */; };
+		845CDCAD21C9309B00791C94 /* NumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCA821C9309B00791C94 /* NumberPadView.swift */; };
+		845CDCAE21C9309B00791C94 /* NumberPadView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 845CDCA921C9309B00791C94 /* NumberPadView.xib */; };
+		845CDCAF21C9309B00791C94 /* PinInputView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCAB21C9309B00791C94 /* PinInputView.swift */; };
+		845CDCB021C9309B00791C94 /* PinInputView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 845CDCAC21C9309B00791C94 /* PinInputView.xib */; };
+		845CDCB221C930B900791C94 /* Shakeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCB121C930B900791C94 /* Shakeable.swift */; };
+		845CDCB421C931F400791C94 /* Pin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845CDCB321C931F400791C94 /* Pin.storyboard */; };
+		8486F68821CB8A000099F1F2 /* PinManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8486F68721CB8A000099F1F2 /* PinManager.swift */; };
+		8486F68A21CBA8660099F1F2 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8486F68921CBA8660099F1F2 /* Device.swift */; };
+		8486F68C21CBAF2A0099F1F2 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8486F68B21CBAF2A0099F1F2 /* KeychainManager.swift */; };
+		84A0C3D121C7B0F8007A076F /* VaultStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3D021C7B0F8007A076F /* VaultStorage.swift */; };
+		84A0C3D421C7B143007A076F /* VaultStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3D321C7B143007A076F /* VaultStorageTests.swift */; };
+		84A0C3D621C7DCC3007A076F /* VaultStorage+Cryptography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3D521C7DCC3007A076F /* VaultStorage+Cryptography.swift */; };
+		84A0C3D821C7DCF0007A076F /* VaultStorage+Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3D721C7DCF0007A076F /* VaultStorage+Keychain.swift */; };
+		84A0C3DB21C7E60B007A076F /* MnemonicManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3DA21C7E60B007A076F /* MnemonicManagerTests.swift */; };
+		84A0C3DE21C7E6A6007A076F /* MnemonicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3DD21C7E6A6007A076F /* MnemonicManager.swift */; };
 		9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AB21BE86B50070A526 /* Storyboards.swift */; };
 		9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */; };
 		9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */; };
@@ -52,6 +75,29 @@
 /* Begin PBXFileReference section */
 		0CF6E73C09E0BAC79AF0CAC0 /* Pods-LOBSTR Vault.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR Vault.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault.debug.xcconfig"; sourceTree = "<group>"; };
 		3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LOBSTR_VaultTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		844C580C21CA4FB7008B44B2 /* PinPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPresenter.swift; sourceTree = "<group>"; };
+		844C580E21CA5D13008B44B2 /* PinPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPresenterTests.swift; sourceTree = "<group>"; };
+		844C581021CA5F69008B44B2 /* PinViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewSpy.swift; sourceTree = "<group>"; };
+		844C581321CA6BEE008B44B2 /* PinManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinManagerTests.swift; sourceTree = "<group>"; };
+		844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
+		845CDC9921C912EA00791C94 /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
+		845CDC9C21C9134100791C94 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		845CDCA421C92E6300791C94 /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
+		845CDCA821C9309B00791C94 /* NumberPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberPadView.swift; sourceTree = "<group>"; };
+		845CDCA921C9309B00791C94 /* NumberPadView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NumberPadView.xib; sourceTree = "<group>"; };
+		845CDCAB21C9309B00791C94 /* PinInputView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinInputView.swift; sourceTree = "<group>"; };
+		845CDCAC21C9309B00791C94 /* PinInputView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PinInputView.xib; sourceTree = "<group>"; };
+		845CDCB121C930B900791C94 /* Shakeable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shakeable.swift; sourceTree = "<group>"; };
+		845CDCB321C931F400791C94 /* Pin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Pin.storyboard; sourceTree = "<group>"; };
+		8486F68721CB8A000099F1F2 /* PinManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinManager.swift; sourceTree = "<group>"; };
+		8486F68921CBA8660099F1F2 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
+		8486F68B21CBAF2A0099F1F2 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
+		84A0C3D021C7B0F8007A076F /* VaultStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VaultStorage.swift; sourceTree = "<group>"; };
+		84A0C3D321C7B143007A076F /* VaultStorageTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VaultStorageTests.swift; sourceTree = "<group>"; };
+		84A0C3D521C7DCC3007A076F /* VaultStorage+Cryptography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VaultStorage+Cryptography.swift"; sourceTree = "<group>"; };
+		84A0C3D721C7DCF0007A076F /* VaultStorage+Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VaultStorage+Keychain.swift"; sourceTree = "<group>"; };
+		84A0C3DA21C7E60B007A076F /* MnemonicManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicManagerTests.swift; sourceTree = "<group>"; };
+		84A0C3DD21C7E6A6007A076F /* MnemonicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicManager.swift; sourceTree = "<group>"; };
 		9221B7AB21BE86B50070A526 /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardCreation.swift; sourceTree = "<group>"; };
 		9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicRecovery.storyboard; sourceTree = "<group>"; };
@@ -110,11 +156,145 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		844C580B21CA4F96008B44B2 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				844C580C21CA4FB7008B44B2 /* PinPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		844C581221CA6BD2008B44B2 /* PinManager */ = {
+			isa = PBXGroup;
+			children = (
+				844C581321CA6BEE008B44B2 /* PinManagerTests.swift */,
+			);
+			path = PinManager;
+			sourceTree = "<group>";
+		};
+		844C581521CA6C95008B44B2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8486F68721CB8A000099F1F2 /* PinManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		844C581921CA80E0008B44B2 /* Coordinator */ = {
+			isa = PBXGroup;
+			children = (
+				844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */,
+			);
+			path = Coordinator;
+			sourceTree = "<group>";
+		};
+		845CDC9821C9122100791C94 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				845CDC9921C912EA00791C94 /* Home.storyboard */,
+				845CDC9B21C9132500791C94 /* Controllers */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		845CDC9B21C9132500791C94 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				845CDC9C21C9134100791C94 /* HomeViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		845CDCA021C92DF300791C94 /* Pin */ = {
+			isa = PBXGroup;
+			children = (
+				845CDCB321C931F400791C94 /* Pin.storyboard */,
+				844C581521CA6C95008B44B2 /* Models */,
+				845CDCA621C9309B00791C94 /* Views */,
+				844C580B21CA4F96008B44B2 /* Presenters */,
+				845CDCA321C92E3500791C94 /* Controllers */,
+			);
+			path = Pin;
+			sourceTree = "<group>";
+		};
+		845CDCA321C92E3500791C94 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				845CDCA421C92E6300791C94 /* PinViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		845CDCA621C9309B00791C94 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				845CDCA721C9309B00791C94 /* NumberPadView */,
+				845CDCAA21C9309B00791C94 /* PinView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		845CDCA721C9309B00791C94 /* NumberPadView */ = {
+			isa = PBXGroup;
+			children = (
+				845CDCA821C9309B00791C94 /* NumberPadView.swift */,
+				845CDCA921C9309B00791C94 /* NumberPadView.xib */,
+			);
+			path = NumberPadView;
+			sourceTree = "<group>";
+		};
+		845CDCAA21C9309B00791C94 /* PinView */ = {
+			isa = PBXGroup;
+			children = (
+				845CDCAB21C9309B00791C94 /* PinInputView.swift */,
+				845CDCAC21C9309B00791C94 /* PinInputView.xib */,
+			);
+			path = PinView;
+			sourceTree = "<group>";
+		};
+		84A0C3CF21C7B0F8007A076F /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				84A0C3D021C7B0F8007A076F /* VaultStorage.swift */,
+				84A0C3D521C7DCC3007A076F /* VaultStorage+Cryptography.swift */,
+				84A0C3D721C7DCF0007A076F /* VaultStorage+Keychain.swift */,
+				8486F68B21CBAF2A0099F1F2 /* KeychainManager.swift */,
+				8486F68921CBA8660099F1F2 /* Device.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		84A0C3D221C7B12A007A076F /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				84A0C3D321C7B143007A076F /* VaultStorageTests.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		84A0C3D921C7E471007A076F /* MnemonicManager */ = {
+			isa = PBXGroup;
+			children = (
+				84A0C3DA21C7E60B007A076F /* MnemonicManagerTests.swift */,
+			);
+			path = MnemonicManager;
+			sourceTree = "<group>";
+		};
+		84A0C3DC21C7E68B007A076F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				84A0C3DD21C7E6A6007A076F /* MnemonicManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		9221B7A921BE869A0070A526 /* Core */ = {
 			isa = PBXGroup;
 			children = (
 				9221B7AD21BE86C90070A526 /* Protocols */,
 				9221B7AA21BE86A30070A526 /* Models */,
+				844C581921CA80E0008B44B2 /* Coordinator */,
+				84A0C3CF21C7B0F8007A076F /* Storage */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -130,6 +310,7 @@
 		9221B7AD21BE86C90070A526 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				845CDCB121C930B900791C94 /* Shakeable.swift */,
 				9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */,
 			);
 			path = Protocols;
@@ -138,11 +319,13 @@
 		9221B7B021BE87370070A526 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				92BD385221C79BAF00E974E0 /* MnemonicMenu */,
 				9232EC8721C2F7EC00F8EBD4 /* AppDelegate */,
 				9221B7A921BE869A0070A526 /* Core */,
+				92BD385221C79BAF00E974E0 /* MnemonicMenu */,
 				9221B7B221BE87880070A526 /* MnemonicGeneration */,
 				9221B7B121BE87710070A526 /* MnemonicRecovery */,
+				845CDCA021C92DF300791C94 /* Pin */,
+				845CDC9821C9122100791C94 /* Home */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -150,11 +333,11 @@
 		9221B7B121BE87710070A526 /* MnemonicRecovery */ = {
 			isa = PBXGroup;
 			children = (
+				9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */,
 				9221B7B621BE87D80070A526 /* Helpers */,
 				9221B7B521BE87CE0070A526 /* Presenters */,
 				9221B7B421BE87C40070A526 /* Views */,
 				9221B7B321BE87B60070A526 /* Controllers */,
-				9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */,
 			);
 			path = MnemonicRecovery;
 			sourceTree = "<group>";
@@ -162,10 +345,11 @@
 		9221B7B221BE87880070A526 /* MnemonicGeneration */ = {
 			isa = PBXGroup;
 			children = (
+				9232EC7921C11D1D00F8EBD4 /* MnemonicGeneration.storyboard */,
+				84A0C3DC21C7E68B007A076F /* Models */,
 				9232EC7621C0FB4C00F8EBD4 /* Views */,
 				9232EC7321C0FA1300F8EBD4 /* Presenters */,
 				9232EC6C21C0F51700F8EBD4 /* Controllers */,
-				9232EC7921C11D1D00F8EBD4 /* MnemonicGeneration.storyboard */,
 			);
 			path = MnemonicGeneration;
 			sourceTree = "<group>";
@@ -219,6 +403,7 @@
 				9221B7CE21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift */,
 				9232EC7B21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift */,
 				9232EC8321C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift */,
+				844C580E21CA5D13008B44B2 /* PinPresenterTests.swift */,
 			);
 			path = Presenters;
 			sourceTree = "<group>";
@@ -229,6 +414,7 @@
 				9221B7CC21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift */,
 				9232EC7D21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift */,
 				9232EC8521C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift */,
+				844C581021CA5F69008B44B2 /* PinViewSpy.swift */,
 			);
 			path = Spies;
 			sourceTree = "<group>";
@@ -270,8 +456,8 @@
 		92BD385221C79BAF00E974E0 /* MnemonicMenu */ = {
 			isa = PBXGroup;
 			children = (
-				92BD385421C79C0400E974E0 /* Controllers */,
 				92BD385721C7B02000E974E0 /* MnemonicMenu.storyboard */,
+				92BD385421C79C0400E974E0 /* Controllers */,
 			);
 			path = MnemonicMenu;
 			sourceTree = "<group>";
@@ -318,6 +504,9 @@
 		92D376A521BAA95C00504713 /* LOBSTR VaultTests */ = {
 			isa = PBXGroup;
 			children = (
+				844C581221CA6BD2008B44B2 /* PinManager */,
+				84A0C3D921C7E471007A076F /* MnemonicManager */,
+				84A0C3D221C7B12A007A076F /* Storage */,
 				9221B7CB21BF9A170070A526 /* Spies */,
 				9221B7C821BE912A0070A526 /* Presenters */,
 				9221B7C721BE91110070A526 /* Helpers */,
@@ -431,12 +620,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				9232EC7A21C11D1D00F8EBD4 /* MnemonicGeneration.storyboard in Resources */,
+				845CDCAE21C9309B00791C94 /* NumberPadView.xib in Resources */,
 				9221B7C421BE8A310070A526 /* MnemonicSuggestionsView.xib in Resources */,
 				92D3769C21BAA95B00504713 /* LaunchScreen.storyboard in Resources */,
 				92BD385821C7B02000E974E0 /* MnemonicMenu.storyboard in Resources */,
+				845CDCB421C931F400791C94 /* Pin.storyboard in Resources */,
 				9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */,
+				845CDCB021C9309B00791C94 /* PinInputView.xib in Resources */,
 				92D3769921BAA95B00504713 /* Assets.xcassets in Resources */,
 				9221B7C621BE8A520070A526 /* MnemonicSuggestionsViewCell.xib in Resources */,
+				845CDC9A21C912EA00791C94 /* Home.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -523,19 +716,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84A0C3D121C7B0F8007A076F /* VaultStorage.swift in Sources */,
 				9221B7C221BE8A120070A526 /* MnemonicSuggestionsViewCell.swift in Sources */,
+				845CDCA521C92E6300791C94 /* PinViewController.swift in Sources */,
+				8486F68A21CBA8660099F1F2 /* Device.swift in Sources */,
+				8486F68821CB8A000099F1F2 /* PinManager.swift in Sources */,
+				845CDC9D21C9134100791C94 /* HomeViewController.swift in Sources */,
+				84A0C3D621C7DCC3007A076F /* VaultStorage+Cryptography.swift in Sources */,
 				9232EC8221C1425800F8EBD4 /* MnemonicVerificationPresenter.swift in Sources */,
 				9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */,
 				9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */,
 				92D3769221BAA95B00504713 /* AppDelegate.swift in Sources */,
 				9221B7BE21BE893A0070A526 /* MnemonicHelper.swift in Sources */,
+				845CDCB221C930B900791C94 /* Shakeable.swift in Sources */,
 				9232EC7821C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift in Sources */,
+				84A0C3DE21C7E6A6007A076F /* MnemonicManager.swift in Sources */,
+				844C581B21CA8101008B44B2 /* ApplicationCoordinator.swift in Sources */,
 				9221B7BC21BE88E00070A526 /* MnemonicRecoveryPresenter.swift in Sources */,
 				92BD385621C7AFF500E974E0 /* MnemonicMenuViewController.swift in Sources */,
+				844C580D21CA4FB7008B44B2 /* PinPresenter.swift in Sources */,
+				845CDCAD21C9309B00791C94 /* NumberPadView.swift in Sources */,
+				84A0C3D821C7DCF0007A076F /* VaultStorage+Keychain.swift in Sources */,
 				9221B7C021BE89F80070A526 /* MnemonicSuggestionsView.swift in Sources */,
 				9221B7BA21BE888F0070A526 /* MnemonicRecoveryViewController.swift in Sources */,
+				8486F68C21CBAF2A0099F1F2 /* KeychainManager.swift in Sources */,
 				9232EC7521C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift in Sources */,
 				9232EC6E21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift in Sources */,
+				845CDCAF21C9309B00791C94 /* PinInputView.swift in Sources */,
 				9232EC8021C1422800F8EBD4 /* MnemonicVerificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -545,11 +752,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				9221B7CD21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift in Sources */,
+				84A0C3DB21C7E60B007A076F /* MnemonicManagerTests.swift in Sources */,
 				9232EC8421C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift in Sources */,
 				9232EC7E21C11FDA00F8EBD4 /* MnemonicGenerationViewSpy.swift in Sources */,
 				9232EC8621C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift in Sources */,
 				9221B7CF21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift in Sources */,
+				844C581421CA6BEE008B44B2 /* PinManagerTests.swift in Sources */,
 				9232EC7C21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift in Sources */,
+				84A0C3D421C7B143007A076F /* VaultStorageTests.swift in Sources */,
+				844C580F21CA5D13008B44B2 /* PinPresenterTests.swift in Sources */,
+				844C581121CA5F69008B44B2 /* PinViewSpy.swift in Sources */,
 				9221B7CA21BE91570070A526 /* MnemonicHelperTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -742,7 +954,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -766,7 +978,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

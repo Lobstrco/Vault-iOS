@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Pin View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController storyboardIdentifier="PinViewController" id="BYZ-38-t0r" customClass="PinViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="9u9-BV-Bej"/>
+                        <viewControllerLayoutGuide type="bottom" id="oVw-cb-I1b"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FU6-OQ-JqQ" customClass="NumberPadView" customModule="LOBSTR_Vault" customModuleProvider="target">
+                                <rect key="frame" x="20" y="247" width="335" height="400"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="400" id="fjN-8R-Skb"/>
+                                </constraints>
+                            </view>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UgS-bJ-Rts" customClass="PinInputView" customModule="LOBSTR_Vault" customModuleProvider="target">
+                                <rect key="frame" x="62.5" y="100" width="250" height="20"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="250" id="RwB-16-gP2"/>
+                                    <constraint firstAttribute="height" constant="20" id="jbT-Fh-39c"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="UgS-bJ-Rts" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="4yI-e8-Bii"/>
+                            <constraint firstAttribute="bottom" secondItem="FU6-OQ-JqQ" secondAttribute="bottom" constant="20" id="AfV-l9-uWl"/>
+                            <constraint firstAttribute="trailing" secondItem="FU6-OQ-JqQ" secondAttribute="trailing" constant="20" id="NZa-ku-2P5"/>
+                            <constraint firstItem="FU6-OQ-JqQ" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="20" id="bvL-XV-Tek"/>
+                            <constraint firstAttribute="bottom" secondItem="FU6-OQ-JqQ" secondAttribute="bottom" constant="20" id="mU1-hf-1P0"/>
+                            <constraint firstItem="UgS-bJ-Rts" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="100" id="nWZ-y3-20J"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="numberPadView" destination="FU6-OQ-JqQ" id="Bc0-9o-oSw"/>
+                        <outlet property="pinView" destination="UgS-bJ-Rts" id="H7y-QT-9iG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="53.600000000000001" y="26.53673163418291"/>
+        </scene>
+    </scenes>
+</document>

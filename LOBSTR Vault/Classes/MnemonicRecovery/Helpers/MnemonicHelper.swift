@@ -2,7 +2,6 @@ import Foundation
 import stellarsdk
 
 struct MnemonicHelper {
-  
   static func getSeparatedWords(from string: String) -> [String] {
     let components = string.components(separatedBy: .whitespacesAndNewlines)
     
@@ -61,19 +60,23 @@ struct MnemonicHelper {
     do {
       let regex = try NSRegularExpression(pattern: word, options: .caseInsensitive)
       let range = NSRange(location: 0, length: targetString.utf16.count)
-      for match in regex.matches(in: targetString, options: .withTransparentBounds, range: range) {
+      for match in regex.matches(in: targetString,
+                                 options: .withTransparentBounds,
+                                 range: range) {
         attributedString.addAttribute(NSAttributedString.Key.foregroundColor,
                                       value: highlightColor,
                                       range: match.range)
-      }      
+      }
       return attributedString
     } catch _ {
       return attributedString
     }
   }
   
-  static func getSeparated24WordMnemonic() -> [String] {
+  static func get24WordMnemonic() -> (mnemonic: String,
+                                      separatedWords: [String]) {
     let mnemonic = Wallet.generate24WordMnemonic()
-    return MnemonicHelper.getSeparatedWords(from: mnemonic)
+    let separetedWords = MnemonicHelper.getSeparatedWords(from: mnemonic)
+    return (mnemonic: mnemonic, separatedWords: separetedWords)
   }
 }

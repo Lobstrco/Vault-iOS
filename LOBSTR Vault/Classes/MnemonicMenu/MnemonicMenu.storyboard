@@ -29,7 +29,7 @@
         <!--Mnemonic Menu View Controller-->
         <scene sceneID="XoZ-vs-Vzz">
             <objects>
-                <viewController id="ArO-iN-HmW" customClass="MnemonicMenuViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MnemonicMenuViewController" id="ArO-iN-HmW" customClass="MnemonicMenuViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="uV8-ed-mIA">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

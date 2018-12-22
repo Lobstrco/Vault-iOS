@@ -1,17 +1,15 @@
 import UIKit
 
-class MnemonicMenuViewController: UIViewController {
-
+class MnemonicMenuViewController: UIViewController, MnemonicMenuViewControllerStoryboardCreation {
   override func viewDidLoad() {
     super.viewDidLoad()
   }
-
+  
   // MARK: - IBAction
   
   @IBAction func createNewWalletWasPressed(_ sender: Any) {
     transitionToMnemonicGenerationScreen()
   }
-  
   
   @IBAction func RestoreWalletWasPressed(_ sender: Any) {
     transitionToMnemonicRecoveryScreen()
@@ -28,5 +26,4 @@ class MnemonicMenuViewController: UIViewController {
     guard let vc = MnemonicRecoveryViewController.createFromStoryboard() else { fatalError() }
     navigationController?.pushViewController(vc, animated: true)
   }
-  
 }

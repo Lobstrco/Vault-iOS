@@ -26,9 +26,12 @@ class MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
     return mnemonicList.count
   }
   
-  init(view: MnemonicGenerationView) {
+  var mnemonicManager: MnemonicManager
+  
+  init(view: MnemonicGenerationView,
+       mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
-    
+    self.mnemonicManager = mnemonicManager
     generateMnemonicList()
   }
   
@@ -49,15 +52,25 @@ class MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   // MARK: - Public Methods
   
   func transitionToMnemonicVerificationScreen() {
-    guard let vc = MnemonicVerificationViewController.createFromStoryboard() else { fatalError() }
+    guard let vc = MnemonicVerificationViewController.createFromStoryboard()
+    else { fatalError() }
     vc.presenter.setGeneratedMnemonicList(generatedList: mnemonicList)
     
     let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
-    mnemonicGenerationViewController.navigationController?.pushViewController(vc, animated: true)
+    mnemonicGenerationViewController.navigationController?.pushViewController(vc,
+                                                                              animated: true)
   }
   
   func generateMnemonicList() {
-    mnemonicList = MnemonicHelper.getSeparated24WordMnemonic()
+    let mnemonicData = MnemonicHelper.get24WordMnemonic()
+    mnemonicList = mnemonicData.separatedWords
+    store(mnemonic: mnemonicData.mnemonic)
     view?.displayMnemonicList(mnemonicList: mnemonicList)
+  }
+}
+
+private extension MnemonicGenerationPresenterImpl {
+  private func store(mnemonic: String) {
+    _ = mnemonicManager.encryptAndStoreInKeychain(mnemonic: mnemonic)
   }
 }

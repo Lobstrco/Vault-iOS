@@ -18,6 +18,8 @@ protocol MnemonicVerificationPresenter {
   func wordForVerificationWasPressed(with indexPath: IndexPath)
   func configureShuffled(_ cell: MnemonicCollectionViewCell, forRow row: Int)
   func configure(cellForVerification: MnemonicCollectionViewCell, forRow row: Int)
+  
+  func nextButtonAction()
 }
 
 class MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
@@ -59,12 +61,31 @@ class MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
     moveWordForVerificationToShuffledMnemonicList(by: indexPath)
   }
   
-  func configureShuffled(_ cell: MnemonicCollectionViewCell, forRow row: Int) {
+  func configureShuffled(_ cell: MnemonicCollectionViewCell,
+                         forRow row: Int) {
     cell.display(title: shuffledMnemonicList[row])
   }
   
-  func configure(cellForVerification: MnemonicCollectionViewCell, forRow row: Int) {
+  func configure(cellForVerification: MnemonicCollectionViewCell,
+                 forRow row: Int) {
     cellForVerification.display(title: mnemonicListForVerification[row])
+  }
+  
+  func nextButtonAction() {
+    transitionToPinScreen()
+  }
+  
+  func transitionToPinScreen() {
+    guard let pinViewController = PinViewController.createFromStoryboard()
+    else { fatalError() }
+    
+    pinViewController.mode = .createPinFirstStep
+    
+    let mnemonicVerificationViewController =
+      view as! MnemonicVerificationViewController
+    mnemonicVerificationViewController.navigationController?
+      .pushViewController(pinViewController,
+                          animated: true)
   }
   
   // MARK: - Public Methods
@@ -78,7 +99,8 @@ class MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   }
   
   func getIndexPathFromShuffledMnemonicList(by index: Int) -> IndexPath {
-    let indexInShuffledList = shuffledMnemonicList.firstIndex(of: mnemonicListForVerification[index])
+    let indexInShuffledList =
+      shuffledMnemonicList.firstIndex(of: mnemonicListForVerification[index])
     return IndexPath(item: indexInShuffledList!, section: 0)
   }
   
