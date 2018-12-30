@@ -17,21 +17,29 @@ public struct VaultStorage {
   private let encryptionPrivateKeyTag = "com.ultrastellar.lobstr.vault.privatekey"
   private let encryptedMnemonicService = "com.ultrastellar.lobstr.vault.mnemonic"
   private let pinService = "com.ultrastellar.lobstr.vault.pin"
+  private let jwtService = "com.ultrastellar.lobstr.vault.jwt"
   
   public let encryptionAlgorithm: SecKeyAlgorithm = .eciesEncryptionCofactorX963SHA256AESGCM
   public let securityAttributeAccessible: CFString = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+  public let securityAccessControlFlags: SecAccessControlCreateFlags
   
   public let keychain: KeychainManager
   
   init(keychain: KeychainManager = KeychainManagerImpl()) {
     self.keychain = keychain
+    
+    if Device.hasSecureEnclave {
+      securityAccessControlFlags = [.privateKeyUsage]
+    } else {
+      securityAccessControlFlags = []
+    }
   }
   
   public var secKeyCreateRandomKeyParameters: [String: Any] {
     let access =
       SecAccessControlCreateWithFlags(kCFAllocatorDefault,
                                       securityAttributeAccessible,
-                                      [.privateKeyUsage],
+                                      securityAccessControlFlags,
                                       nil)!
     var parameters: [String: Any] = [
       kSecClass as String: kSecClassKey,
@@ -41,7 +49,7 @@ public struct VaultStorage {
         kSecAttrIsPermanent as String: true,
         kSecAttrApplicationTag as String: encryptionPrivateKeyTag.data(using: .utf8)!,
         kSecAttrAccessControl as String: access,
-      ],
+      ]
     ]
     
     if Device.hasSecureEnclave {
@@ -72,6 +80,14 @@ public struct VaultStorage {
     return [
       kSecClass as String: kSecClassGenericPassword,
       kSecAttrService as String: pinService,
+      kSecAttrAccessible as String: securityAttributeAccessible,
+    ]
+  }
+  
+  public var jwtQueryParameters: [String: Any] {
+    return [
+      kSecClass as String: kSecClassGenericPassword,
+      kSecAttrService as String: jwtService,
       kSecAttrAccessible as String: securityAttributeAccessible,
     ]
   }

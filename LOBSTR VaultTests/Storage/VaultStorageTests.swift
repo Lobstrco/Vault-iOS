@@ -5,13 +5,14 @@ class VaultStorageTests: XCTestCase {
   let encryptionPrivateKeyTag = "com.ultrastellar.lobstr.vault.privatekey".data(using: .utf8)!
   let encryptedMnemonicService = "com.ultrastellar.lobstr.vault.mnemonic"
   let pinService = "com.ultrastellar.lobstr.vault.pin"
+  let jwtService = "com.ultrastellar.lobstr.vault.jwt"
   
   var sut: VaultStorage!
   
   override func setUp() {
     super.setUp()
-    sut = VaultStorage()
     clearKeychain()
+    sut = VaultStorage()
   }
   
   override func tearDown() {
@@ -53,10 +54,16 @@ class VaultStorageTests: XCTestCase {
     XCTAssertEqual(secAttrApplicationTag, encryptionPrivateKeyTag,
                    "Expected application tag for encryption private key.")
     
+    var securityAccessControlFlags: SecAccessControlCreateFlags = []
+    
+    if Device.hasSecureEnclave {
+      securityAccessControlFlags = [.privateKeyUsage]
+    }
+    
     let access =
       SecAccessControlCreateWithFlags(kCFAllocatorDefault,
                                       kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
-                                      [.privateKeyUsage],
+                                      securityAccessControlFlags,
                                       nil)!
     let secAttrAccessControl = secPrivateKeyAttrs[kSecAttrAccessControl as String] as! SecAccessControl
     XCTAssertEqual(secAttrAccessControl, access,
@@ -115,6 +122,23 @@ class VaultStorageTests: XCTestCase {
                    "Exptected kSecAttrAccessibleWhenUnlockedThisDeviceOnly level.")
   }
   
+  func testJWTQueryParameters() {
+    let parameters = sut.jwtQueryParameters
+    
+    let secClass = parameters[kSecClass as String] as! CFString
+    XCTAssertEqual(secClass, kSecClassGenericPassword,
+                   "Expected security class for storing generic password.")
+    
+    let secAttrService = parameters[kSecAttrService as String] as! CFString
+    XCTAssertEqual(secAttrService, jwtService as CFString,
+                   "Expected service string for jwt.")
+    
+    let secAttrAccessible = parameters[kSecAttrAccessible as String] as! CFString
+    XCTAssertEqual(secAttrAccessible, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+                   "Exptected kSecAttrAccessibleWhenUnlockedThisDeviceOnly level.")
+  }
+  
+  
   func testEncryptionAlgorithmShouldBeEciesEncryptionCofactorX963SHA256AESGCM() {
     XCTAssertEqual(sut.encryptionAlgorithm,
                    .eciesEncryptionCofactorX963SHA256AESGCM,
@@ -125,6 +149,17 @@ class VaultStorageTests: XCTestCase {
     XCTAssertEqual(sut.securityAttributeAccessible,
                    kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
                    "Expected kSecAttrAccessibleWhenUnlockedThisDeviceOnly level.")
+  }
+  
+  func testSecurityAccessControlFlagsShouldHavePrivateKeyUsageIfSecureEnclaveAvailable() {
+    
+    var securityAccessControlFlags: SecAccessControlCreateFlags = []
+    
+    if Device.hasSecureEnclave {
+      securityAccessControlFlags = [.privateKeyUsage]
+    }
+    
+    XCTAssertEqual(sut.securityAccessControlFlags, securityAccessControlFlags)
   }
   
   func testEncryptionAndDecryptionOfMnemonicAndWorkWithKeychain() {

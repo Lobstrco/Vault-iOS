@@ -13,10 +13,10 @@ extension VaultStorage: VaultStorageCryptography {
   public func createKeyPair() -> SecKey? {
     let parameters = secKeyCreateRandomKeyParameters
     
-    guard let privateKey = SecKeyCreateRandomKey(parameters as CFDictionary, nil),
-      let publicKey = SecKeyCopyPublicKey(privateKey)
-      else {
-        return nil
+    var error: Unmanaged<CFError>?
+    guard let privateKey = SecKeyCreateRandomKey(parameters as CFDictionary, &error),
+      let publicKey = SecKeyCopyPublicKey(privateKey) else {
+      return nil
     }
     
     return publicKey
@@ -28,8 +28,8 @@ extension VaultStorage: VaultStorageCryptography {
       encryptionAlgorithm,
       data as CFData,
       nil
-      ) else {
-        return nil
+    ) else {
+      return nil
     }
     return cipherData as Data
   }
@@ -41,6 +41,10 @@ extension VaultStorage: VaultStorageCryptography {
     let status = SecItemCopyMatching(parameters as CFDictionary, &raw)
     
     guard status == errSecSuccess, let privateKey = raw else {
+      print(status)
+      if #available(iOS 11.3, *) {
+        print(SecCopyErrorMessageString(status, nil) ?? "")
+      }
       completion(.failure(VaultError.keychainDataNotFound))
       return
     }
@@ -51,9 +55,9 @@ extension VaultStorage: VaultStorageCryptography {
         self.encryptionAlgorithm,
         cipherData as CFData,
         nil
-        ) else {
-          completion(.failure(VaultError.decryptionFailed))
-          return
+      ) else {
+        completion(.failure(VaultError.decryptionFailed))
+        return
       }
       
       completion(.success(plainData as Data))

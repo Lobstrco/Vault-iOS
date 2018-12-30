@@ -1,7 +1,9 @@
 import UIKit
 
-class MnemonicRecoveryViewController: UIViewController, MnemonicRecoveryView,
-  MnemonicRecoveryStoryboardCreation {
+class MnemonicRecoveryViewController: UIViewController, MnemonicRecoveryView, StoryboardCreation {
+  
+  static var storyboardType: Storyboards = .mnemonicRecovery
+  
   @IBOutlet var recoveryButton: UIButton!
   @IBOutlet var textView: UITextView!
   
@@ -15,6 +17,12 @@ class MnemonicRecoveryViewController: UIViewController, MnemonicRecoveryView,
     
     presenter = MnemonicRecoveryPresenterImpl(view: self)
     setupMnemonicSuggestionsView()
+  }
+  
+  // MARK: - IBActions
+  
+  @IBAction func recoveryButtonAction(_ sender: Any) {
+    presenter.recoveryButtonWasPressed()
   }
   
   // MARK: - RecoveryView

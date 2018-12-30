@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="9ri-pc-iT2">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="R07-jA-whE">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -10,32 +10,74 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Home View Controller-->
-        <scene sceneID="sZx-Ke-PtO">
+        <!--Home-->
+        <scene sceneID="UNa-bH-BZ8">
             <objects>
-                <viewController storyboardIdentifier="HomeViewController" id="9ri-pc-iT2" customClass="HomeViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="bp8-Ft-m1l">
+                <navigationController id="R07-jA-whE" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Home" image="ic_home" id="PGW-Pv-NRR"/>
+                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oPv-6p-xtQ">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="uIU-Zc-0cV" kind="relationship" relationship="rootViewController" id="uM1-Zy-x5u"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TBN-nZ-fyV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-874" y="163"/>
+        </scene>
+        <!--Home View Controller-->
+        <scene sceneID="sYE-vo-udX">
+            <objects>
+                <viewController storyboardIdentifier="HomeViewController" id="uIU-Zc-0cV" customClass="HomeViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9ww-sa-3Y6">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Home" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sO4-3D-zYz">
-                                <rect key="frame" x="164.5" y="333" width="46" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ew3-Gv-G8c">
+                                <rect key="frame" x="120.5" y="208.5" width="134" height="250"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="250" id="Ut7-Fp-gSS"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="204"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transactions to sign" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YXp-hX-3GD">
+                                <rect key="frame" x="85" y="458.5" width="205.5" height="29"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Vc-Mn-hui">
+                                <rect key="frame" x="114.5" y="507.5" width="146" height="30"/>
+                                <state key="normal" title="View transactions list"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="sO4-3D-zYz" firstAttribute="centerX" secondItem="gxg-PC-yZt" secondAttribute="centerX" id="4M2-iQ-EmT"/>
-                            <constraint firstItem="sO4-3D-zYz" firstAttribute="centerY" secondItem="gxg-PC-yZt" secondAttribute="centerY" id="g4b-0S-4X4"/>
+                            <constraint firstItem="YXp-hX-3GD" firstAttribute="top" secondItem="Ew3-Gv-G8c" secondAttribute="bottom" id="4sC-oE-Uln"/>
+                            <constraint firstItem="0Vc-Mn-hui" firstAttribute="centerX" secondItem="9ww-sa-3Y6" secondAttribute="centerX" id="7Aq-kJ-d0a"/>
+                            <constraint firstItem="0Vc-Mn-hui" firstAttribute="top" secondItem="YXp-hX-3GD" secondAttribute="bottom" constant="20" id="b7a-I0-29h"/>
+                            <constraint firstItem="YXp-hX-3GD" firstAttribute="centerX" secondItem="9ww-sa-3Y6" secondAttribute="centerX" id="luv-RJ-njc"/>
+                            <constraint firstItem="Ew3-Gv-G8c" firstAttribute="centerY" secondItem="9ww-sa-3Y6" secondAttribute="centerY" id="n3k-O3-2JQ"/>
+                            <constraint firstItem="Ew3-Gv-G8c" firstAttribute="centerX" secondItem="9ww-sa-3Y6" secondAttribute="centerX" id="zJv-l8-ij0"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="gxg-PC-yZt"/>
+                        <viewLayoutGuide key="safeArea" id="Ylz-My-vkA"/>
                     </view>
+                    <navigationItem key="navigationItem" id="5nO-7Q-0ZJ"/>
+                    <connections>
+                        <outlet property="transactionNumber" destination="Ew3-Gv-G8c" id="61m-pZ-Vg2"/>
+                    </connections>
                 </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="GHG-wV-wPY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="sgB-5u-gDd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="98" y="150"/>
+            <point key="canvasLocation" x="-114" y="162"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="ic_home" width="24" height="24"/>
+    </resources>
 </document>

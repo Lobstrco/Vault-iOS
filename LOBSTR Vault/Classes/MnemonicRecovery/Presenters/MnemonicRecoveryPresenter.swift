@@ -11,17 +11,22 @@ protocol MnemonicRecoveryView: class {
 protocol MnemonicRecoveryPresenter {
   func suggestionWordWasPressed(suggestionWord: String, text: String)
   func textViewWasChanged(text: String)
+  func recoveryButtonWasPressed()
 }
 
 class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   fileprivate weak var view: MnemonicRecoveryView?
   
+  var mnemonic: String = ""
   var suggestionList: [String] = []
   let wordsNumberInMnemonic = 24
   
-  init(view: MnemonicRecoveryView) {
+  let mnemonicManager: MnemonicManager
+  
+  init(view: MnemonicRecoveryView, mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
-    self.view?.displayRecoveryButton(isEnabled: false)
+    self.view?.displayRecoveryButton(isEnabled: true)
+    self.mnemonicManager = mnemonicManager
   }
   
   // MARK: - MnemonicRecoveryPresenter
@@ -35,8 +40,14 @@ class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
     
     guard text.count > 0 else { return }
     
+    mnemonic = text
     suggestionListRequest(by: text)
     highlightWrongWords(in: text)
+  }
+  
+  func recoveryButtonWasPressed() {
+    store(mnemonic: mnemonic)
+    transitionToPinScreen()
   }
   
   // MARK: - Public Methods
@@ -75,5 +86,24 @@ class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
     }
     
     view?.displayHighlightedWords(attributedStrings: [attributedString])
+  }
+  
+  func transitionToPinScreen() {
+    guard let pinViewController = PinViewController.createFromStoryboard()
+      else { fatalError() }
+    
+    pinViewController.mode = .createPinFirstStep
+    
+    let mnemonicRecoveryViewController =
+      view as! MnemonicRecoveryViewController
+    mnemonicRecoveryViewController.navigationController?
+      .pushViewController(pinViewController,
+                          animated: true)
+  }
+}
+
+private extension MnemonicRecoveryPresenterImpl {
+  private func store(mnemonic: String) {
+    _ = mnemonicManager.encryptAndStoreInKeychain(mnemonic: mnemonic)
   }
 }

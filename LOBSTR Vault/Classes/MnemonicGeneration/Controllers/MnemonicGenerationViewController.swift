@@ -1,7 +1,9 @@
 import UIKit
 
-class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView,
-  MnemonicGenerationStoryboardCreation {
+class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView, StoryboardCreation {
+  
+  static var storyboardType: Storyboards = .mnemonicGeneration
+  
   @IBOutlet var collectionView: UICollectionView!
   var presenter: MnemonicGenerationPresenter!
   

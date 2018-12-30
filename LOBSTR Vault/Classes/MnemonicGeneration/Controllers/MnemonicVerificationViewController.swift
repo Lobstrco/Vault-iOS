@@ -1,7 +1,9 @@
 import UIKit
 
-class MnemonicVerificationViewController: UIViewController, MnemonicVerificationView,
-  MnemonicVerificationStoryboardCreation {
+class MnemonicVerificationViewController: UIViewController, MnemonicVerificationView, StoryboardCreation {
+  
+  static var storyboardType: Storyboards = .mnemonicGeneration
+  
   @IBOutlet var shuffledCollectionView: UICollectionView!
   @IBOutlet var сollectionViewForVerification: UICollectionView!
   

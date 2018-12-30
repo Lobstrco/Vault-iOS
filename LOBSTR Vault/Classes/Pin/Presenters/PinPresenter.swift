@@ -22,17 +22,20 @@ class PinPresenterImpl: PinPresenter {
   
   weak var view: PinView?
   
-  let pinManager = PinManagerImpl()
+  let pinManager: PinManager
+  
   let navigationController: UINavigationController
   
   // MARK: - Init
   
   init(view: PinView,
        navigationController: UINavigationController,
-       mode: PinMode) {
+       mode: PinMode,
+       pinManager: PinManager = PinManagerImpl()) {
     self.view = view
     self.mode = mode
     self.navigationController = navigationController
+    self.pinManager = pinManager
   }
   
   // MARK: - PinPresenter
@@ -64,16 +67,14 @@ class PinPresenterImpl: PinPresenter {
       
       if pin.count == pinLength {
         
-        if pinManager.validate(pinFromFirstStep, pin) == true {
-          if pinManager.store(pin) == true {
-            transitionToHomeScreen()
-          }
-        } else {
+        guard pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin)
+        else {
           view?.shakePinView()
+          return
         }
         
+        updateToken()
       }
-      
     case .enterPin:
       if pin.count == pinLength {
         guard let storedPin = pinManager.getPin() else { return }
@@ -82,8 +83,7 @@ class PinPresenterImpl: PinPresenter {
           transitionToHomeScreen()
         } else {
           view?.shakePinView()
-        }
-        
+        }        
       }
       
     case .undefined:
@@ -95,6 +95,19 @@ class PinPresenterImpl: PinPresenter {
     guard pin.count > 0 else { return }
     pin.removeLast()
     view?.clearPinDot(at: pin.count)
+  }
+  
+  // MARK: - Private Methods
+  
+  private func updateToken() {
+    AuthenticationService().updateToken() { result in
+      switch result {
+      case .success(_):
+        self.transitionToHomeScreen()
+      case .failure(let error):
+        print("Couldn't get token. \(error)")
+      }
+    }
   }
   
   // MARK: - Navigation

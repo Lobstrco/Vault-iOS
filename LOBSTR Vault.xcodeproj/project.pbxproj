@@ -13,8 +13,6 @@
 		844C581121CA5F69008B44B2 /* PinViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581021CA5F69008B44B2 /* PinViewSpy.swift */; };
 		844C581421CA6BEE008B44B2 /* PinManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581321CA6BEE008B44B2 /* PinManagerTests.swift */; };
 		844C581B21CA8101008B44B2 /* ApplicationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */; };
-		845CDC9A21C912EA00791C94 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845CDC9921C912EA00791C94 /* Home.storyboard */; };
-		845CDC9D21C9134100791C94 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDC9C21C9134100791C94 /* HomeViewController.swift */; };
 		845CDCA521C92E6300791C94 /* PinViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCA421C92E6300791C94 /* PinViewController.swift */; };
 		845CDCAD21C9309B00791C94 /* NumberPadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCA821C9309B00791C94 /* NumberPadView.swift */; };
 		845CDCAE21C9309B00791C94 /* NumberPadView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 845CDCA921C9309B00791C94 /* NumberPadView.xib */; };
@@ -22,6 +20,13 @@
 		845CDCB021C9309B00791C94 /* PinInputView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 845CDCAC21C9309B00791C94 /* PinInputView.xib */; };
 		845CDCB221C930B900791C94 /* Shakeable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 845CDCB121C930B900791C94 /* Shakeable.swift */; };
 		845CDCB421C931F400791C94 /* Pin.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 845CDCB321C931F400791C94 /* Pin.storyboard */; };
+		84835AB421D646EF0039F1C5 /* MnemonicSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BF21BE89F80070A526 /* MnemonicSuggestionsView.swift */; };
+		84835AB521D647200039F1C5 /* MnemonicSuggestionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7C121BE8A120070A526 /* MnemonicSuggestionsViewCell.swift */; };
+		84835AB621D647260039F1C5 /* MnemonicRecoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7B921BE888F0070A526 /* MnemonicRecoveryViewController.swift */; };
+		84835ABA21D651B50039F1C5 /* UITableView+Dequeue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84835AB921D651B50039F1C5 /* UITableView+Dequeue.swift */; };
+		84835ABC21D651E60039F1C5 /* ReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84835ABB21D651E60039F1C5 /* ReusableView.swift */; };
+		84835ABF21D652370039F1C5 /* PublicKeyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84835ABE21D652370039F1C5 /* PublicKeyTableViewCell.swift */; };
+		84835AC221D65C1C0039F1C5 /* SettingsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84835AC121D65C1C0039F1C5 /* SettingsPresenter.swift */; };
 		8486F68821CB8A000099F1F2 /* PinManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8486F68721CB8A000099F1F2 /* PinManager.swift */; };
 		8486F68A21CBA8660099F1F2 /* Device.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8486F68921CBA8660099F1F2 /* Device.swift */; };
 		8486F68C21CBAF2A0099F1F2 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8486F68B21CBAF2A0099F1F2 /* KeychainManager.swift */; };
@@ -31,19 +36,23 @@
 		84A0C3D821C7DCF0007A076F /* VaultStorage+Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3D721C7DCF0007A076F /* VaultStorage+Keychain.swift */; };
 		84A0C3DB21C7E60B007A076F /* MnemonicManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3DA21C7E60B007A076F /* MnemonicManagerTests.swift */; };
 		84A0C3DE21C7E6A6007A076F /* MnemonicManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84A0C3DD21C7E6A6007A076F /* MnemonicManager.swift */; };
+		84BBE7FF21CE32C90074CCC3 /* JWTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BBE7FE21CE32C90074CCC3 /* JWTManager.swift */; };
 		9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AB21BE86B50070A526 /* Storyboards.swift */; };
 		9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */; };
 		9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */; };
-		9221B7BA21BE888F0070A526 /* MnemonicRecoveryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7B921BE888F0070A526 /* MnemonicRecoveryViewController.swift */; };
 		9221B7BC21BE88E00070A526 /* MnemonicRecoveryPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BB21BE88E00070A526 /* MnemonicRecoveryPresenter.swift */; };
 		9221B7BE21BE893A0070A526 /* MnemonicHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */; };
-		9221B7C021BE89F80070A526 /* MnemonicSuggestionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7BF21BE89F80070A526 /* MnemonicSuggestionsView.swift */; };
-		9221B7C221BE8A120070A526 /* MnemonicSuggestionsViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7C121BE8A120070A526 /* MnemonicSuggestionsViewCell.swift */; };
 		9221B7C421BE8A310070A526 /* MnemonicSuggestionsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7C321BE8A310070A526 /* MnemonicSuggestionsView.xib */; };
 		9221B7C621BE8A520070A526 /* MnemonicSuggestionsViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7C521BE8A520070A526 /* MnemonicSuggestionsViewCell.xib */; };
 		9221B7CA21BE91570070A526 /* MnemonicHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */; };
 		9221B7CD21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7CC21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift */; };
 		9221B7CF21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7CE21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift */; };
+		922C641321CB8E7100EDD409 /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641221CB8E7100EDD409 /* HomePresenter.swift */; };
+		922C641621CBA4D200EDD409 /* TransactionListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641521CBA4D200EDD409 /* TransactionListPresenter.swift */; };
+		922C641921CBA7C300EDD409 /* TransactionListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */; };
+		922C641B21CBB56B00EDD409 /* TransactionDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641A21CBB56B00EDD409 /* TransactionDetailsViewController.swift */; };
+		922C641D21CBB5C400EDD409 /* TransactionDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641C21CBB5C400EDD409 /* TransactionDetailsPresenter.swift */; };
+		922C642621CD37B200EDD409 /* AuthenticationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C642521CD37B200EDD409 /* AuthenticationService.swift */; };
 		9232EC6E21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC6D21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift */; };
 		9232EC7521C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7421C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift */; };
 		9232EC7821C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC7721C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift */; };
@@ -54,11 +63,34 @@
 		9232EC8221C1425800F8EBD4 /* MnemonicVerificationPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC8121C1425800F8EBD4 /* MnemonicVerificationPresenter.swift */; };
 		9232EC8421C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC8321C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift */; };
 		9232EC8621C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232EC8521C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift */; };
+		9277AB8421C8E7C200379971 /* APIRequestLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277AB8321C8E7C200379971 /* APIRequestLoader.swift */; };
+		9277AB8821C8E85C00379971 /* ServerRequestError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277AB8721C8E85C00379971 /* ServerRequestError.swift */; };
+		9277AB8A21C8E8A700379971 /* NetworkingResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277AB8921C8E8A700379971 /* NetworkingResult.swift */; };
+		9277AB8C21C8EB2B00379971 /* PendingTransactionListRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277AB8B21C8EB2B00379971 /* PendingTransactionListRequest.swift */; };
+		9277AB9321C9018400379971 /* APIRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277AB9221C9018400379971 /* APIRequest.swift */; };
+		9277AB9E21C91F9A00379971 /* SubmitSignedTransactionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277AB9D21C91F9A00379971 /* SubmitSignedTransactionRequest.swift */; };
+		9277ABA121CA59A000379971 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABA021CA599F00379971 /* TabBarViewController.swift */; };
+		9277ABA321CA59BE00379971 /* TabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9277ABA221CA59BE00379971 /* TabBar.storyboard */; };
+		9277ABA621CA5A8D00379971 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABA521CA5A8D00379971 /* HomeViewController.swift */; };
+		9277ABA821CA5AC500379971 /* Home.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9277ABA721CA5AC500379971 /* Home.storyboard */; };
+		9277ABAD21CA5B5700379971 /* TransactionListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABAC21CA5B5700379971 /* TransactionListViewController.swift */; };
+		9277ABAF21CA5B7D00379971 /* Transactions.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9277ABAE21CA5B7D00379971 /* Transactions.storyboard */; };
+		9277ABB221CA748F00379971 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABB121CA748F00379971 /* Constants.swift */; };
+		9277ABB521CA75C300379971 /* PaginationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABB421CA75C300379971 /* PaginationResponse.swift */; };
+		9277ABB821CA770D00379971 /* Transaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABB721CA770D00379971 /* Transaction.swift */; };
+		9277ABBB21CA927400379971 /* PendingTransactionListRequestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277ABBA21CA927400379971 /* PendingTransactionListRequestTests.swift */; };
+		9277EDA221D50BEC0043F3E8 /* OperationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277EDA121D50BEC0043F3E8 /* OperationTableViewCell.swift */; };
+		9277EDA521D52D970043F3E8 /* TransactionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277EDA421D52D970043F3E8 /* TransactionHelper.swift */; };
+		9277EDA721D52E350043F3E8 /* TransactionHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277EDA621D52E350043F3E8 /* TransactionHelperTests.swift */; };
+		9277EDAB21D53F1F0043F3E8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277EDAA21D53F1F0043F3E8 /* SettingsViewController.swift */; };
+		9277EDAD21D53F3B0043F3E8 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9277EDAC21D53F3B0043F3E8 /* Settings.storyboard */; };
 		92BD385621C7AFF500E974E0 /* MnemonicMenuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92BD385521C7AFF500E974E0 /* MnemonicMenuViewController.swift */; };
 		92BD385821C7B02000E974E0 /* MnemonicMenu.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92BD385721C7B02000E974E0 /* MnemonicMenu.storyboard */; };
 		92D3769221BAA95B00504713 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D3769121BAA95B00504713 /* AppDelegate.swift */; };
 		92D3769921BAA95B00504713 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 92D3769821BAA95B00504713 /* Assets.xcassets */; };
 		92D3769C21BAA95B00504713 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92D3769A21BAA95B00504713 /* LaunchScreen.storyboard */; };
+		92E95FA021D3BC4D00E5645D /* ChallengeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E95F9F21D3BC4D00E5645D /* ChallengeRequest.swift */; };
+		92E95FA221D3BE9600E5645D /* SubmitChallengeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E95FA121D3BE9600E5645D /* SubmitChallengeRequest.swift */; };
 		A3F5F6A151BBA6DC6871C53E /* Pods_LOBSTR_VaultTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -80,8 +112,6 @@
 		844C581021CA5F69008B44B2 /* PinViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewSpy.swift; sourceTree = "<group>"; };
 		844C581321CA6BEE008B44B2 /* PinManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinManagerTests.swift; sourceTree = "<group>"; };
 		844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinator.swift; sourceTree = "<group>"; };
-		845CDC9921C912EA00791C94 /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
-		845CDC9C21C9134100791C94 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		845CDCA421C92E6300791C94 /* PinViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewController.swift; sourceTree = "<group>"; };
 		845CDCA821C9309B00791C94 /* NumberPadView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NumberPadView.swift; sourceTree = "<group>"; };
 		845CDCA921C9309B00791C94 /* NumberPadView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NumberPadView.xib; sourceTree = "<group>"; };
@@ -89,6 +119,10 @@
 		845CDCAC21C9309B00791C94 /* PinInputView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PinInputView.xib; sourceTree = "<group>"; };
 		845CDCB121C930B900791C94 /* Shakeable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shakeable.swift; sourceTree = "<group>"; };
 		845CDCB321C931F400791C94 /* Pin.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Pin.storyboard; sourceTree = "<group>"; };
+		84835AB921D651B50039F1C5 /* UITableView+Dequeue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Dequeue.swift"; sourceTree = "<group>"; };
+		84835ABB21D651E60039F1C5 /* ReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReusableView.swift; sourceTree = "<group>"; };
+		84835ABE21D652370039F1C5 /* PublicKeyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeyTableViewCell.swift; sourceTree = "<group>"; };
+		84835AC121D65C1C0039F1C5 /* SettingsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsPresenter.swift; sourceTree = "<group>"; };
 		8486F68721CB8A000099F1F2 /* PinManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinManager.swift; sourceTree = "<group>"; };
 		8486F68921CBA8660099F1F2 /* Device.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Device.swift; sourceTree = "<group>"; };
 		8486F68B21CBAF2A0099F1F2 /* KeychainManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainManager.swift; sourceTree = "<group>"; };
@@ -98,6 +132,7 @@
 		84A0C3D721C7DCF0007A076F /* VaultStorage+Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "VaultStorage+Keychain.swift"; sourceTree = "<group>"; };
 		84A0C3DA21C7E60B007A076F /* MnemonicManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicManagerTests.swift; sourceTree = "<group>"; };
 		84A0C3DD21C7E6A6007A076F /* MnemonicManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicManager.swift; sourceTree = "<group>"; };
+		84BBE7FE21CE32C90074CCC3 /* JWTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTManager.swift; sourceTree = "<group>"; };
 		9221B7AB21BE86B50070A526 /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardCreation.swift; sourceTree = "<group>"; };
 		9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicRecovery.storyboard; sourceTree = "<group>"; };
@@ -111,6 +146,12 @@
 		9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicHelperTest.swift; sourceTree = "<group>"; };
 		9221B7CC21BF9A3A0070A526 /* MnemonicRecoveryViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicRecoveryViewSpy.swift; sourceTree = "<group>"; };
 		9221B7CE21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicRecoveryPresenterTest.swift; sourceTree = "<group>"; };
+		922C641221CB8E7100EDD409 /* HomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
+		922C641521CBA4D200EDD409 /* TransactionListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListPresenter.swift; sourceTree = "<group>"; };
+		922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListTableViewCell.swift; sourceTree = "<group>"; };
+		922C641A21CBB56B00EDD409 /* TransactionDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsViewController.swift; sourceTree = "<group>"; };
+		922C641C21CBB5C400EDD409 /* TransactionDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsPresenter.swift; sourceTree = "<group>"; };
+		922C642521CD37B200EDD409 /* AuthenticationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationService.swift; sourceTree = "<group>"; };
 		9232EC6D21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGenerationViewController.swift; sourceTree = "<group>"; };
 		9232EC7421C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGenerationPresenter.swift; sourceTree = "<group>"; };
 		9232EC7721C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -121,6 +162,27 @@
 		9232EC8121C1425800F8EBD4 /* MnemonicVerificationPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationPresenter.swift; sourceTree = "<group>"; };
 		9232EC8321C24CC600F8EBD4 /* MnemonicVerificationPresenterTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationPresenterTest.swift; sourceTree = "<group>"; };
 		9232EC8521C24D3200F8EBD4 /* MnemonicVerificationViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicVerificationViewSpy.swift; sourceTree = "<group>"; };
+		9277AB8321C8E7C200379971 /* APIRequestLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequestLoader.swift; sourceTree = "<group>"; };
+		9277AB8721C8E85C00379971 /* ServerRequestError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerRequestError.swift; sourceTree = "<group>"; };
+		9277AB8921C8E8A700379971 /* NetworkingResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingResult.swift; sourceTree = "<group>"; };
+		9277AB8B21C8EB2B00379971 /* PendingTransactionListRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingTransactionListRequest.swift; sourceTree = "<group>"; };
+		9277AB9221C9018400379971 /* APIRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIRequest.swift; sourceTree = "<group>"; };
+		9277AB9D21C91F9A00379971 /* SubmitSignedTransactionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitSignedTransactionRequest.swift; sourceTree = "<group>"; };
+		9277ABA021CA599F00379971 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
+		9277ABA221CA59BE00379971 /* TabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = TabBar.storyboard; sourceTree = "<group>"; };
+		9277ABA521CA5A8D00379971 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		9277ABA721CA5AC500379971 /* Home.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Home.storyboard; sourceTree = "<group>"; };
+		9277ABAC21CA5B5700379971 /* TransactionListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListViewController.swift; sourceTree = "<group>"; };
+		9277ABAE21CA5B7D00379971 /* Transactions.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Transactions.storyboard; sourceTree = "<group>"; };
+		9277ABB121CA748F00379971 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		9277ABB421CA75C300379971 /* PaginationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginationResponse.swift; sourceTree = "<group>"; };
+		9277ABB721CA770D00379971 /* Transaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Transaction.swift; sourceTree = "<group>"; };
+		9277ABBA21CA927400379971 /* PendingTransactionListRequestTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PendingTransactionListRequestTests.swift; sourceTree = "<group>"; };
+		9277EDA121D50BEC0043F3E8 /* OperationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationTableViewCell.swift; sourceTree = "<group>"; };
+		9277EDA421D52D970043F3E8 /* TransactionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHelper.swift; sourceTree = "<group>"; };
+		9277EDA621D52E350043F3E8 /* TransactionHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHelperTests.swift; sourceTree = "<group>"; };
+		9277EDAA21D53F1F0043F3E8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		9277EDAC21D53F3B0043F3E8 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		92BD385521C7AFF500E974E0 /* MnemonicMenuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicMenuViewController.swift; sourceTree = "<group>"; };
 		92BD385721C7B02000E974E0 /* MnemonicMenu.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicMenu.storyboard; sourceTree = "<group>"; };
 		92D3768E21BAA95B00504713 /* LOBSTR Vault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LOBSTR Vault.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -130,6 +192,8 @@
 		92D3769D21BAA95B00504713 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		92D376A221BAA95B00504713 /* LOBSTR VaultTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "LOBSTR VaultTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		92D376A821BAA95C00504713 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		92E95F9F21D3BC4D00E5645D /* ChallengeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeRequest.swift; sourceTree = "<group>"; };
+		92E95FA121D3BE9600E5645D /* SubmitChallengeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitChallengeRequest.swift; sourceTree = "<group>"; };
 		A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LOBSTR_Vault.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5F14E4ADD030093E6C95C68 /* Pods-LOBSTR VaultTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E2FEF80546C9EBC9190AF12C /* Pods-LOBSTR VaultTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -176,6 +240,7 @@
 			isa = PBXGroup;
 			children = (
 				8486F68721CB8A000099F1F2 /* PinManager.swift */,
+				84BBE7FE21CE32C90074CCC3 /* JWTManager.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -186,23 +251,6 @@
 				844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */,
 			);
 			path = Coordinator;
-			sourceTree = "<group>";
-		};
-		845CDC9821C9122100791C94 /* Home */ = {
-			isa = PBXGroup;
-			children = (
-				845CDC9921C912EA00791C94 /* Home.storyboard */,
-				845CDC9B21C9132500791C94 /* Controllers */,
-			);
-			path = Home;
-			sourceTree = "<group>";
-		};
-		845CDC9B21C9132500791C94 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				845CDC9C21C9134100791C94 /* HomeViewController.swift */,
-			);
-			path = Controllers;
 			sourceTree = "<group>";
 		};
 		845CDCA021C92DF300791C94 /* Pin */ = {
@@ -252,6 +300,38 @@
 			path = PinView;
 			sourceTree = "<group>";
 		};
+		84835AB721D64B210039F1C5 /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABB121CA748F00379971 /* Constants.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		84835AB821D651A10039F1C5 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				84835AB921D651B50039F1C5 /* UITableView+Dequeue.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		84835ABD21D652030039F1C5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				84835ABE21D652370039F1C5 /* PublicKeyTableViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		84835AC021D65C090039F1C5 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				84835AC121D65C1C0039F1C5 /* SettingsPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
 		84A0C3CF21C7B0F8007A076F /* Storage */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,6 +371,10 @@
 		9221B7A921BE869A0070A526 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				84835AB821D651A10039F1C5 /* Extensions */,
+				84835AB721D64B210039F1C5 /* Constants */,
+				92E95F9E21D393FB00E5645D /* Helpers */,
+				9277AB8221C8E53800379971 /* Networking */,
 				9221B7AD21BE86C90070A526 /* Protocols */,
 				9221B7AA21BE86A30070A526 /* Models */,
 				844C581921CA80E0008B44B2 /* Coordinator */,
@@ -312,6 +396,8 @@
 			children = (
 				845CDCB121C930B900791C94 /* Shakeable.swift */,
 				9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */,
+				9277AB9221C9018400379971 /* APIRequest.swift */,
+				84835ABB21D651E60039F1C5 /* ReusableView.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -321,11 +407,14 @@
 			children = (
 				9232EC8721C2F7EC00F8EBD4 /* AppDelegate */,
 				9221B7A921BE869A0070A526 /* Core */,
+				9277AB9F21CA598200379971 /* TabBar */,
+				9277ABA421CA5A7800379971 /* Home */,
+				9277ABA921CA5B1400379971 /* Transactions */,
+				9277EDA821D53EFD0043F3E8 /* Settings */,
 				92BD385221C79BAF00E974E0 /* MnemonicMenu */,
 				9221B7B221BE87880070A526 /* MnemonicGeneration */,
 				9221B7B121BE87710070A526 /* MnemonicRecovery */,
 				845CDCA021C92DF300791C94 /* Pin */,
-				845CDC9821C9122100791C94 /* Home */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -334,7 +423,6 @@
 			isa = PBXGroup;
 			children = (
 				9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */,
-				9221B7B621BE87D80070A526 /* Helpers */,
 				9221B7B521BE87CE0070A526 /* Presenters */,
 				9221B7B421BE87C40070A526 /* Views */,
 				9221B7B321BE87B60070A526 /* Controllers */,
@@ -381,18 +469,11 @@
 			path = Presenters;
 			sourceTree = "<group>";
 		};
-		9221B7B621BE87D80070A526 /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		9221B7C721BE91110070A526 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */,
+				9277EDA621D52E350043F3E8 /* TransactionHelperTests.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -417,6 +498,24 @@
 				844C581021CA5F69008B44B2 /* PinViewSpy.swift */,
 			);
 			path = Spies;
+			sourceTree = "<group>";
+		};
+		922C641421CBA48E00EDD409 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				922C641521CBA4D200EDD409 /* TransactionListPresenter.swift */,
+				922C641C21CBB5C400EDD409 /* TransactionDetailsPresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		922C641721CBA7AC00EDD409 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */,
+				9277EDA121D50BEC0043F3E8 /* OperationTableViewCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		9232EC6C21C0F51700F8EBD4 /* Controllers */ = {
@@ -451,6 +550,154 @@
 				92D3769121BAA95B00504713 /* AppDelegate.swift */,
 			);
 			path = AppDelegate;
+			sourceTree = "<group>";
+		};
+		9277AB8221C8E53800379971 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				9277AB9621C902AF00379971 /* Authentication */,
+				9277ABB321CA75B400379971 /* Pagination */,
+				9277AB8621C8E84E00379971 /* Errors */,
+				9277AB8521C8E7E300379971 /* Request */,
+				9277AB8321C8E7C200379971 /* APIRequestLoader.swift */,
+				9277AB8921C8E8A700379971 /* NetworkingResult.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		9277AB8521C8E7E300379971 /* Request */ = {
+			isa = PBXGroup;
+			children = (
+				9277AB8B21C8EB2B00379971 /* PendingTransactionListRequest.swift */,
+				9277AB9D21C91F9A00379971 /* SubmitSignedTransactionRequest.swift */,
+				92E95F9F21D3BC4D00E5645D /* ChallengeRequest.swift */,
+				92E95FA121D3BE9600E5645D /* SubmitChallengeRequest.swift */,
+			);
+			path = Request;
+			sourceTree = "<group>";
+		};
+		9277AB8621C8E84E00379971 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				9277AB8721C8E85C00379971 /* ServerRequestError.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		9277AB9621C902AF00379971 /* Authentication */ = {
+			isa = PBXGroup;
+			children = (
+				922C642521CD37B200EDD409 /* AuthenticationService.swift */,
+			);
+			path = Authentication;
+			sourceTree = "<group>";
+		};
+		9277AB9F21CA598200379971 /* TabBar */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABA221CA59BE00379971 /* TabBar.storyboard */,
+				9277ABA021CA599F00379971 /* TabBarViewController.swift */,
+			);
+			path = TabBar;
+			sourceTree = "<group>";
+		};
+		9277ABA421CA5A7800379971 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABB021CA5DE200379971 /* Presenters */,
+				9277ABAA21CA5B3600379971 /* Controllers */,
+				9277ABA721CA5AC500379971 /* Home.storyboard */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		9277ABA921CA5B1400379971 /* Transactions */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABAE21CA5B7D00379971 /* Transactions.storyboard */,
+				9277EDA321D52D830043F3E8 /* Helpers */,
+				922C641721CBA7AC00EDD409 /* Views */,
+				922C641421CBA48E00EDD409 /* Presenters */,
+				9277ABB621CA76F700379971 /* Models */,
+				9277ABAB21CA5B4100379971 /* Controllers */,
+			);
+			path = Transactions;
+			sourceTree = "<group>";
+		};
+		9277ABAA21CA5B3600379971 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABA521CA5A8D00379971 /* HomeViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		9277ABAB21CA5B4100379971 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABAC21CA5B5700379971 /* TransactionListViewController.swift */,
+				922C641A21CBB56B00EDD409 /* TransactionDetailsViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		9277ABB021CA5DE200379971 /* Presenters */ = {
+			isa = PBXGroup;
+			children = (
+				922C641221CB8E7100EDD409 /* HomePresenter.swift */,
+			);
+			path = Presenters;
+			sourceTree = "<group>";
+		};
+		9277ABB321CA75B400379971 /* Pagination */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABB421CA75C300379971 /* PaginationResponse.swift */,
+			);
+			path = Pagination;
+			sourceTree = "<group>";
+		};
+		9277ABB621CA76F700379971 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABB721CA770D00379971 /* Transaction.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		9277ABB921CA923500379971 /* Requests */ = {
+			isa = PBXGroup;
+			children = (
+				9277ABBA21CA927400379971 /* PendingTransactionListRequestTests.swift */,
+			);
+			path = Requests;
+			sourceTree = "<group>";
+		};
+		9277EDA321D52D830043F3E8 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				9277EDA421D52D970043F3E8 /* TransactionHelper.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		9277EDA821D53EFD0043F3E8 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				9277EDAC21D53F3B0043F3E8 /* Settings.storyboard */,
+				84835ABD21D652030039F1C5 /* Views */,
+				84835AC021D65C090039F1C5 /* Presenters */,
+				9277EDA921D53F060043F3E8 /* Controllers */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		9277EDA921D53F060043F3E8 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				9277EDAA21D53F1F0043F3E8 /* SettingsViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		92BD385221C79BAF00E974E0 /* MnemonicMenu */ = {
@@ -504,6 +751,7 @@
 		92D376A521BAA95C00504713 /* LOBSTR VaultTests */ = {
 			isa = PBXGroup;
 			children = (
+				9277ABB921CA923500379971 /* Requests */,
 				844C581221CA6BD2008B44B2 /* PinManager */,
 				84A0C3D921C7E471007A076F /* MnemonicManager */,
 				84A0C3D221C7B12A007A076F /* Storage */,
@@ -513,6 +761,14 @@
 				92D376A821BAA95C00504713 /* Info.plist */,
 			);
 			path = "LOBSTR VaultTests";
+			sourceTree = "<group>";
+		};
+		92E95F9E21D393FB00E5645D /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		AE4E3AF3CE4148F32D4FE5F8 /* Pods */ = {
@@ -619,6 +875,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9277ABA821CA5AC500379971 /* Home.storyboard in Resources */,
+				9277ABAF21CA5B7D00379971 /* Transactions.storyboard in Resources */,
+				9277ABA321CA59BE00379971 /* TabBar.storyboard in Resources */,
 				9232EC7A21C11D1D00F8EBD4 /* MnemonicGeneration.storyboard in Resources */,
 				845CDCAE21C9309B00791C94 /* NumberPadView.xib in Resources */,
 				9221B7C421BE8A310070A526 /* MnemonicSuggestionsView.xib in Resources */,
@@ -629,7 +888,7 @@
 				845CDCB021C9309B00791C94 /* PinInputView.xib in Resources */,
 				92D3769921BAA95B00504713 /* Assets.xcassets in Resources */,
 				9221B7C621BE8A520070A526 /* MnemonicSuggestionsViewCell.xib in Resources */,
-				845CDC9A21C912EA00791C94 /* Home.storyboard in Resources */,
+				9277EDAD21D53F3B0043F3E8 /* Settings.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -716,34 +975,61 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84835AB621D647260039F1C5 /* MnemonicRecoveryViewController.swift in Sources */,
+				84835AB521D647200039F1C5 /* MnemonicSuggestionsViewCell.swift in Sources */,
+				84835AB421D646EF0039F1C5 /* MnemonicSuggestionsView.swift in Sources */,
+				922C641D21CBB5C400EDD409 /* TransactionDetailsPresenter.swift in Sources */,
+				9277ABB221CA748F00379971 /* Constants.swift in Sources */,
+				922C641621CBA4D200EDD409 /* TransactionListPresenter.swift in Sources */,
 				84A0C3D121C7B0F8007A076F /* VaultStorage.swift in Sources */,
-				9221B7C221BE8A120070A526 /* MnemonicSuggestionsViewCell.swift in Sources */,
 				845CDCA521C92E6300791C94 /* PinViewController.swift in Sources */,
+				84BBE7FF21CE32C90074CCC3 /* JWTManager.swift in Sources */,
 				8486F68A21CBA8660099F1F2 /* Device.swift in Sources */,
 				8486F68821CB8A000099F1F2 /* PinManager.swift in Sources */,
-				845CDC9D21C9134100791C94 /* HomeViewController.swift in Sources */,
 				84A0C3D621C7DCC3007A076F /* VaultStorage+Cryptography.swift in Sources */,
+				84835ABF21D652370039F1C5 /* PublicKeyTableViewCell.swift in Sources */,
 				9232EC8221C1425800F8EBD4 /* MnemonicVerificationPresenter.swift in Sources */,
+				9277ABA121CA59A000379971 /* TabBarViewController.swift in Sources */,
+				9277AB8A21C8E8A700379971 /* NetworkingResult.swift in Sources */,
+				84835ABC21D651E60039F1C5 /* ReusableView.swift in Sources */,
 				9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */,
+				9277AB8C21C8EB2B00379971 /* PendingTransactionListRequest.swift in Sources */,
+				922C641321CB8E7100EDD409 /* HomePresenter.swift in Sources */,
+				9277ABA621CA5A8D00379971 /* HomeViewController.swift in Sources */,
 				9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */,
+				9277EDA221D50BEC0043F3E8 /* OperationTableViewCell.swift in Sources */,
+				9277AB9321C9018400379971 /* APIRequest.swift in Sources */,
+				84835ABA21D651B50039F1C5 /* UITableView+Dequeue.swift in Sources */,
+				922C641921CBA7C300EDD409 /* TransactionListTableViewCell.swift in Sources */,
 				92D3769221BAA95B00504713 /* AppDelegate.swift in Sources */,
+				922C642621CD37B200EDD409 /* AuthenticationService.swift in Sources */,
 				9221B7BE21BE893A0070A526 /* MnemonicHelper.swift in Sources */,
+				84835AC221D65C1C0039F1C5 /* SettingsPresenter.swift in Sources */,
 				845CDCB221C930B900791C94 /* Shakeable.swift in Sources */,
 				9232EC7821C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift in Sources */,
 				84A0C3DE21C7E6A6007A076F /* MnemonicManager.swift in Sources */,
+				9277EDA521D52D970043F3E8 /* TransactionHelper.swift in Sources */,
 				844C581B21CA8101008B44B2 /* ApplicationCoordinator.swift in Sources */,
 				9221B7BC21BE88E00070A526 /* MnemonicRecoveryPresenter.swift in Sources */,
+				9277ABAD21CA5B5700379971 /* TransactionListViewController.swift in Sources */,
 				92BD385621C7AFF500E974E0 /* MnemonicMenuViewController.swift in Sources */,
+				9277ABB821CA770D00379971 /* Transaction.swift in Sources */,
+				9277AB8421C8E7C200379971 /* APIRequestLoader.swift in Sources */,
+				92E95FA221D3BE9600E5645D /* SubmitChallengeRequest.swift in Sources */,
+				9277ABB521CA75C300379971 /* PaginationResponse.swift in Sources */,
 				844C580D21CA4FB7008B44B2 /* PinPresenter.swift in Sources */,
 				845CDCAD21C9309B00791C94 /* NumberPadView.swift in Sources */,
 				84A0C3D821C7DCF0007A076F /* VaultStorage+Keychain.swift in Sources */,
-				9221B7C021BE89F80070A526 /* MnemonicSuggestionsView.swift in Sources */,
-				9221B7BA21BE888F0070A526 /* MnemonicRecoveryViewController.swift in Sources */,
 				8486F68C21CBAF2A0099F1F2 /* KeychainManager.swift in Sources */,
 				9232EC7521C0FA2800F8EBD4 /* MnemonicGenerationPresenter.swift in Sources */,
+				9277AB8821C8E85C00379971 /* ServerRequestError.swift in Sources */,
+				922C641B21CBB56B00EDD409 /* TransactionDetailsViewController.swift in Sources */,
+				92E95FA021D3BC4D00E5645D /* ChallengeRequest.swift in Sources */,
+				9277AB9E21C91F9A00379971 /* SubmitSignedTransactionRequest.swift in Sources */,
 				9232EC6E21C0F5B800F8EBD4 /* MnemonicGenerationViewController.swift in Sources */,
 				845CDCAF21C9309B00791C94 /* PinInputView.swift in Sources */,
 				9232EC8021C1422800F8EBD4 /* MnemonicVerificationViewController.swift in Sources */,
+				9277EDAB21D53F1F0043F3E8 /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,7 +1045,9 @@
 				9221B7CF21BF9AD80070A526 /* MnemonicRecoveryPresenterTest.swift in Sources */,
 				844C581421CA6BEE008B44B2 /* PinManagerTests.swift in Sources */,
 				9232EC7C21C11F1F00F8EBD4 /* MnemonicGenerationPresenterTest.swift in Sources */,
+				9277ABBB21CA927400379971 /* PendingTransactionListRequestTests.swift in Sources */,
 				84A0C3D421C7B143007A076F /* VaultStorageTests.swift in Sources */,
+				9277EDA721D52E350043F3E8 /* TransactionHelperTests.swift in Sources */,
 				844C580F21CA5D13008B44B2 /* PinPresenterTests.swift in Sources */,
 				844C581121CA5F69008B44B2 /* PinViewSpy.swift in Sources */,
 				9221B7CA21BE91570070A526 /* MnemonicHelperTest.swift in Sources */,
@@ -839,7 +1127,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -894,7 +1182,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -976,7 +1264,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";

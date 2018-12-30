@@ -1,6 +1,9 @@
 import UIKit
 
-class MnemonicMenuViewController: UIViewController, MnemonicMenuViewControllerStoryboardCreation {
+class MnemonicMenuViewController: UIViewController, StoryboardCreation {
+  
+  static var storyboardType: Storyboards = .mnemonicMenu
+  
   override func viewDidLoad() {
     super.viewDidLoad()
   }

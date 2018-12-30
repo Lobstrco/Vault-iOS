@@ -79,4 +79,12 @@ struct MnemonicHelper {
     let separetedWords = MnemonicHelper.getSeparatedWords(from: mnemonic)
     return (mnemonic: mnemonic, separatedWords: separetedWords)
   }
+  
+  static func getKeyPairFrom(_ mnemonic: String) -> KeyPair {
+    let keyPair = try! Wallet.createKeyPair(mnemonic: mnemonic,
+                                            passphrase: nil,
+                                            index: 0)
+    
+    return keyPair
+  }
 }
