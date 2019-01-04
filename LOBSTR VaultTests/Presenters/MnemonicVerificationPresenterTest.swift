@@ -19,9 +19,9 @@ class MnemonicVerificationPresenterTest: XCTestCase {
     mnemonicVerificationPresenter.initShuffledMnemonicList()
     
     XCTAssertNotEqual(generatedMnemonicList, mnemonicVerificationPresenter.getShuffledMnemonicList,
-                      "Shuffled mnemonic list is expected to be received")
+                      "Expected to receive shuffled mnemonic list")
     XCTAssert(mnemonicVerificationViewSpy.displayShuffledMnemonicListWasCalled,
-              "Shuffled collectionView is expected to be updated")
+              "Expected to update shuffled mnemonic list")
   }
   
   func testShuffledMnemonicListShouldNotBeInitializedBecauseOfEmptyGeneratedMnemonicList() {
@@ -30,9 +30,9 @@ class MnemonicVerificationPresenterTest: XCTestCase {
     mnemonicVerificationPresenter.initShuffledMnemonicList()
     
     XCTAssertEqual([], mnemonicVerificationPresenter.getShuffledMnemonicList,
-                   "Shuffled mnemonic list is expected to be empty")
+                   "Expected to an empty shuffled mnemonic list")
     XCTAssertFalse(mnemonicVerificationViewSpy.displayShuffledMnemonicListWasCalled,
-                   "Shuffled mnemonic list isn't expected to be displayed")
+                   "Didn't expect to display shuffled mnemonic list")
   }
   
   func testShuffledWordShouldBeMoveToListForVerification() {
@@ -45,10 +45,10 @@ class MnemonicVerificationPresenterTest: XCTestCase {
     mnemonicVerificationPresenter.moveShuffledWordToListForVerification(by: indexPath)
     
     XCTAssertEqual(mnemonicVerificationPresenter.getShuffledMnemonicList[indexOfShuffledWord], mnemonicVerificationPresenter.getMnemonicListForVerification[0],
-                   "Shuffled word is expected to be moved to list for verification")
+                   "Expected to move shuffled word to list for verification")
     XCTAssert(mnemonicVerificationViewSpy.shuffledCollectionViewWasUpdated,
-              "Shuffled collection view is expected to be updated")
+              "Expected to update shuffled collection view")
     XCTAssert(mnemonicVerificationViewSpy.collectionViewForVerificationWasUpdated,
-              "Collection view for verification is expected to be updated")
+              "Expected to update collection view for verification")
   }
 }

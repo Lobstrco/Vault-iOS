@@ -1,7 +1,7 @@
 import UIKit
 
 protocol PinView: class {
-  func showTitle(_ title: String)
+  func setTitle(_ title: String)
   func fillPinDot(at index: Int)
   func clearPinDot(at index: Int)
   func shakePinView()
@@ -35,7 +35,7 @@ class PinViewController: UIViewController, PinView, NumberPadViewDelegate,
   
   // MARK: - PinView
   
-  func showTitle(_ title: String) {
+  func setTitle(_ title: String) {
     self.title = title
   }
   

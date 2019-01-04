@@ -1,7 +1,7 @@
 import UIKit
 
 protocol SettingsView: class {
-  func showSettings()
+  func setSettings()
 }
 
 class SettingsViewController: UIViewController,
@@ -18,7 +18,8 @@ class SettingsViewController: UIViewController,
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    presenter = SettingsPresenterImpl(view: self)
+    presenter = SettingsPresenterImpl(view: self,
+                                      navigationController: navigationController!)
     
     presenter.settingsViewDidLoad()
   }
@@ -26,8 +27,9 @@ class SettingsViewController: UIViewController,
   // MARK: - UITableViewDelegate
   
   func tableView(_ tableView: UITableView,
-                 heightForHeaderInSection section: Int) -> CGFloat {
-    return tableView.sectionHeaderHeight
+                 didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    presenter.settingsRowWasSelected(at: indexPath)
   }
   
   func tableView(_ tableView: UITableView,
@@ -48,9 +50,8 @@ class SettingsViewController: UIViewController,
   
   func tableView(_ tableView: UITableView,
                  cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    
     let row = presenter.row(for: indexPath)
-
+    
     switch row {
     case .publicKey:
       let cell =
@@ -59,6 +60,41 @@ class SettingsViewController: UIViewController,
       
       presenter.configure(publicKeyCell: cell)
       
+      return cell
+    case .mnemonicCode:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
+    case .biometricId:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as BiometricIdTableViewCell
+      presenter.configure(biometricIdCell: cell)
+      
+      return cell
+    case .changePin:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
+    case .version:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as RightDetailTableViewCell
+      
+      presenter.configure(rightDetailCell: cell, row: row)
+      return cell
+    case .help:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
       return cell
     }
   }
@@ -71,7 +107,7 @@ class SettingsViewController: UIViewController,
   
   // MARK: - SettingsView
   
-  func showSettings() {
+  func setSettings() {
     tableView.reloadData()
   }
 }

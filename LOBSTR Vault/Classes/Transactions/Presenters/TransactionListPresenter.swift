@@ -12,7 +12,7 @@ protocol TransactionListPresenter {
 }
 
 protocol TransactionListCellView {
-  func display(date: String?, operationType: String?)
+  func set(date: String?, operationType: String?)
 }
 
 class TransactionListPresenterImpl: TransactionListPresenter {
@@ -45,21 +45,18 @@ class TransactionListPresenterImpl: TransactionListPresenter {
       operationDate = TransactionHelper.getValidatedDate(from: transactionDate)
     }
     
-    cell.display(date: operationDate, operationType: operationType)
+    cell.set(date: operationDate, operationType: operationType)
   }
   
   func transactionWasSelected(with index: Int) {
     transitionToTransactionDetailsScreen(by: index)
   }
   
-  // MARK: - Public Methods
+  // MARK: - Public
   
   func getOperationType(from operationNames: [String]) -> String {
     guard !operationNames.isEmpty else { return "none" }
-    
-    var operationType = ""
-    
-    operationType = operationNames.count == 1 ? operationNames.first! : "\(operationNames.count) Operations"
+    let operationType = operationNames.count == 1 ? operationNames.first! : "\(operationNames.count) operations"
     
     return operationType
   }

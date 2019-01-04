@@ -7,7 +7,7 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
 
   // MARK: - TransactionListCellView
   
-  func display(date: String?, operationType: String?) {
+  func set(date: String?, operationType: String?) {
     dateLabel.text = date
     operationTypeLabel.text = operationType
   }

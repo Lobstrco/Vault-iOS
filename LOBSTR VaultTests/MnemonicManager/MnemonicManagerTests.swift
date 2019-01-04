@@ -44,7 +44,6 @@ class MnemonicManagerTests: XCTestCase {
 
 extension MnemonicManagerTests {
   class MockVaultStorage: VaultStorageCryptography, VaultStorageKeychain {
-    
     var createKeyPairCalled = false
     var encryptCalled = false
     var storeMnemonicInKeychainCalled = false
@@ -94,6 +93,10 @@ extension MnemonicManagerTests {
     }
     
     func removeJWTFromKeychain() -> Bool {
+      return false
+    }
+    
+    func removePinFromKeychain() -> Bool {
       return false
     }
     

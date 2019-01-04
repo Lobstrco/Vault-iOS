@@ -6,6 +6,7 @@ protocol VaultStorageKeychain {
   func storeJWTInKeychain(_ jwt: String) -> Bool
   
   func removeJWTFromKeychain() -> Bool
+  func removePinFromKeychain() -> Bool
   
   func getEncryptedMnemonicFromKeychain() -> Data?
   func getPinFromKeychain() -> String?
@@ -30,6 +31,10 @@ extension VaultStorage: VaultStorageKeychain {
   
   public func removeJWTFromKeychain() -> Bool {
     return keychain.removeData(with: jwtQueryParameters)
+  }
+  
+  func removePinFromKeychain() -> Bool {
+    return keychain.removeData(with: pinQueryParameters)
   }
   
   public func getEncryptedMnemonicFromKeychain() -> Data? {

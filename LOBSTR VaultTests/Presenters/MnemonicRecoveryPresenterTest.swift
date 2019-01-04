@@ -18,9 +18,9 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
     
     XCTAssertEqual(expectedSuggestionNumberInList,
                    mnemonicRecoveryPresenter.suggestionList.count,
-                   "The suggestion list is expected to be empty")
+                   "expected to the empty suggestion list")
     XCTAssert(mnemonicRecoveryViewSpy.displaySuggestionListWasCalled,
-              "The suggestion list is expected to be displayed")
+              "Expected to display the suggestion list")
   }
   
   func testSuggestionListShouldBeRecieved() {
@@ -31,9 +31,9 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
     
     XCTAssertEqual(expectedAutocompleteSuggestions,
                    mnemonicRecoveryPresenter.suggestionList,
-                   "The suggestion lists are expected to be recieved")
+                   "Expected to receive the suggestion lists")
     XCTAssert(mnemonicRecoveryViewSpy.displaySuggestionListWasCalled,
-              "The suggestion list is expected to be displayed")
+              "Expected to display the suggestion list ")
   }
   
   func testSuggestionWordShouldBeAddedToText() {
@@ -46,9 +46,9 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
     
     XCTAssertEqual(expectedUpdateText,
                    mnemonicRecoveryViewSpy.updatedTextAfterPickingSuggestionWord,
-                   "The text is expected to be updated")
+                   "Expected to update the text")
     XCTAssertEqual(expectedSuggestionNumberInList,
                    mnemonicRecoveryPresenter.suggestionList.count,
-                   "The suggestion list is expected to be empty")
+                   "Expected to the empty suggestion list")
   }
 }

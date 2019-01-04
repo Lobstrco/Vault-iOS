@@ -24,10 +24,8 @@ class ApplicationCoordinator {
   }
   
   func showHomeScreen() {
-    guard let tabBarViewController = TabBarViewController.createFromStoryboard()
-    else { return }
-    let navigation = UINavigationController(rootViewController: tabBarViewController)
-    window?.rootViewController = navigation
+    guard let tabBarViewController = TabBarViewController.createFromStoryboard() else { return }
+    window?.rootViewController = tabBarViewController
   }
   
   func showMenuScreen() {

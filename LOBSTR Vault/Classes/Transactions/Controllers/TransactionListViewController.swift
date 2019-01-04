@@ -6,7 +6,7 @@ class TransactionListViewController: UIViewController, TransactionListView {
   
   @IBOutlet var tableView: UITableView!
   
-  // MARK: - Life cycle
+  // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -26,7 +26,7 @@ class TransactionListViewController: UIViewController, TransactionListView {
     tableView.reloadData()
   }
   
-  // MARK: - Public Methods
+  // MARK: - Public
   
   func configureTableView() {
     tableView.tableFooterView = UIView()

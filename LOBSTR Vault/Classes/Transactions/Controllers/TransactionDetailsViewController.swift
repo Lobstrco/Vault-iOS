@@ -8,7 +8,7 @@ class TransactionDetailsViewController: UIViewController, TransactionDetailsView
   
   @IBOutlet weak var tableView: UITableView!
   
-  // MARK: - Life cycle
+  // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -27,21 +27,44 @@ class TransactionDetailsViewController: UIViewController, TransactionDetailsView
     tabBarController?.tabBar.isHidden = false
   }
   
+  // MARK: - IBActions
+  
+  @IBAction func confirmButtonAction(_ sender: Any) {
+    presenter.confirmButtonWasPressed()
+  }
+  
+  @IBAction func DenyButtonAction(_ sender: Any) {
+    presenter.denyButtonWasPressed()
+  }
+  
   // MARK: - TransactionDetailsView
   
-  func displayOperationList() {
+  func setOperationList() {
     tableView.delegate = self
     tableView.dataSource = self
     
     tableView.reloadData()
   }
   
-  // MARK: - Public Methods
+  func setConfirmationAlert() {
+    let alert = UIAlertController(title: "Are you sure?", message: "Are you sure you want to deny the operation?", preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "Deny", style: .destructive, handler: { _ in
+      self.presenter.denyOperationWasConfirmed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    
+    self.present(alert, animated: true, completion: nil)
+  }
+  
+  // MARK: - Public
   
   func configureTableView() {
     tableView.tableFooterView = UIView()
   }
 }
+
+// MARK: - UITableView
 
 extension TransactionDetailsViewController: UITableViewDelegate, UITableViewDataSource {
   
@@ -54,6 +77,9 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
     cell.setOperationTitle(presenter.operationNames[indexPath.item])
     
     return cell
-  }  
+  }
   
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    presenter.operationWasSelected(by: indexPath.item)
+  }  
 }

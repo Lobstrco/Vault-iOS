@@ -90,7 +90,7 @@ class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   
   func transitionToPinScreen() {
     guard let pinViewController = PinViewController.createFromStoryboard()
-      else { fatalError() }
+    else { fatalError() }
     
     pinViewController.mode = .createPinFirstStep
     

@@ -19,7 +19,16 @@ struct PinManagerImpl: PinManager {
   }
   
   func store(_ pin: String) -> Bool {
-    return vaultStorage.storePinInKeychain(pin)
+    if isPinStoredInKeychain() {
+      
+      if vaultStorage.removePinFromKeychain() {
+        return vaultStorage.storePinInKeychain(pin)
+      } else {
+        return false
+      }
+    } else {
+      return vaultStorage.storePinInKeychain(pin)
+    }
   }
   
   func getPin() -> String? {

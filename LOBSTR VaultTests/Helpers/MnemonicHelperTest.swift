@@ -11,7 +11,7 @@ class MnemonicHelperTest: XCTestCase {
     let separatedWords = MnemonicHelper.getSeparatedWords(from: str)
     
     XCTAssertEqual(expectedSeparatedWords,
-                   separatedWords, "Word list is expected to be received")
+                   separatedWords, "Expected to receive word list")
   }
   
   func testAutocopleteSuggestionsShouldBeReceivedFromMnemonicDictionary() {
@@ -21,7 +21,7 @@ class MnemonicHelperTest: XCTestCase {
     let autocompleteSuggestions = MnemonicHelper.getAutocompleteSuggestions(userText: userText)
     
     XCTAssertEqual(expectedAutocompleteSuggestions, autocompleteSuggestions,
-                   "Autocomplete suggestions are expected to be received")
+                   "xpected to receive autocomplete suggestions")
   }
   
   func testWordShouldBeFoundInMnemonicDictionary() {
@@ -29,7 +29,7 @@ class MnemonicHelperTest: XCTestCase {
     
     let searchingResult = MnemonicHelper.mnemonicWordIsExist(existingWord)
     
-    XCTAssert(searchingResult, "The word is expected to be found")
+    XCTAssert(searchingResult, "Expected to find the word")
   }
   
   func testSuggestionWordShouldBeAddedToText() {
@@ -40,7 +40,7 @@ class MnemonicHelperTest: XCTestCase {
     let updatedText = MnemonicHelper.addSuggestionWord(to: text, suggestionWord)
     
     XCTAssertEqual(expectedText, updatedText,
-                   "The word is expected to be added to text with one space at the end")
+                   "expected to add the word to text with one space at the end")
   }
   
   func testHighlightedAttributedStringShouldBeReceived() {
@@ -67,7 +67,7 @@ class MnemonicHelperTest: XCTestCase {
     }
     
     XCTAssertEqual(expectedHighlightedCharacterPositions, highlightedCharacterPositions,
-                   "Highlighted attributed strings are expected to be received")
+                   "Highlighted attributed strings are expected to receive")
   }
   
   func testStringShouldBeReceivedFromSeparatedWords() {
@@ -76,6 +76,6 @@ class MnemonicHelperTest: XCTestCase {
     
     let string = MnemonicHelper.getStringFromSeparatedWords(in: words)
     
-    XCTAssertEqual(expectedString, string, "String is expected to be received from string array")
+    XCTAssertEqual(expectedString, string, "Expected to receive a string from string array")
   }
 }

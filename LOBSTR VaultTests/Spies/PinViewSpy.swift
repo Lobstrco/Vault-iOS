@@ -2,7 +2,9 @@
 import Foundation
 
 class PinViewSpy: PinView {
-  func showTitle(_ title: String) {
+  
+  func setTitle(_ title: String) {
+    
   }
   
   func fillPinDot(at index: Int) {
