@@ -3,37 +3,44 @@ import stellarsdk
 
 struct TransactionHelper {
   
-  static func getListOfOperationNames(from xdr: String) -> [String] {
-    var operationNames: [String] = []
-  
-    do {
-      let transactionXDR = try TransactionXDR(xdr: xdr)
+  static func getListOfOperationNames(from xdr: String) throws -> [String] {
     
-      for operation in transactionXDR.operations {
-        let operationTypeValue = operation.body.type()
-      
-        let operationType = OperationType.init(rawValue: operationTypeValue)
-      
-        if let type = operationType {
-          operationNames.append(type.description)
-        }
+    guard let transactionXDR = try? TransactionXDR(xdr: xdr) else {
+      throw VaultError.TransactionError.invalidTransaction
+    }
+  
+    var operationNames: [String] = []
+    
+    for operation in transactionXDR.operations {
+      let operationTypeValue = operation.body.type()
+    
+      let operationType = OperationType.init(rawValue: operationTypeValue)
+    
+      if let type = operationType {
+        operationNames.append(type.description)
       }
-    } catch {
-      fatalError()
     }
     
     return operationNames
   }
   
-  static func getOperation(from xdr: String, by index: Int) -> stellarsdk.Operation {
-    do {
-      let transactionXDR = try TransactionXDR(xdr: xdr)
-      let operation = transactionXDR.operations[index]
-      let operationXDR = try OperationXDR(xdr: operation.xdrEncoded!)
-      return try Operation.fromXDR(operationXDR: operationXDR)
-    } catch {
-      fatalError()
+  static func getOperation(from xdr: String, by index: Int) throws -> stellarsdk.Operation {
+    
+    guard let transactionXDR = try? TransactionXDR(xdr: xdr) else {
+      throw VaultError.TransactionError.invalidTransaction
     }
+    
+    guard transactionXDR.operations.count > index else {
+      throw VaultError.TransactionError.outOfOperationRange
+    }
+    
+    let operationXDR = transactionXDR.operations[index]
+    
+    guard let operation = try? Operation.fromXDR(operationXDR: operationXDR) else {
+      throw VaultError.OperationError.invalidOperation
+    }
+    
+    return operation
   }
   
   static func getNamesAndValuesOfProperties(from operation: stellarsdk.Operation) -> [(String, String)] {

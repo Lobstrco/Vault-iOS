@@ -1,10 +1,9 @@
 import UIKit
 
-class TransactionDetailsViewController: UIViewController, TransactionDetailsView, StoryboardCreation {
+class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .transactions
-  
-  var presenter = TransactionDetailsPresenterImpl()
+  var presenter: TransactionDetailsPresenter!
   
   @IBOutlet weak var tableView: UITableView!
   
@@ -13,9 +12,7 @@ class TransactionDetailsViewController: UIViewController, TransactionDetailsView
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    presenter.initData(view: self)
-    presenter.transactionDetailsViewDidLoad()
-    
+    presenter.transactionDetailsViewDidLoad()    
     configureTableView()
   }
   
@@ -37,7 +34,16 @@ class TransactionDetailsViewController: UIViewController, TransactionDetailsView
     presenter.denyButtonWasPressed()
   }
   
-  // MARK: - TransactionDetailsView
+  // MARK: - Public
+  
+  func configureTableView() {
+    tableView.tableFooterView = UIView()
+  }
+}
+
+// MARK: - TransactionDetailsView
+
+extension TransactionDetailsViewController: TransactionDetailsView {
   
   func setOperationList() {
     tableView.delegate = self
@@ -47,20 +53,18 @@ class TransactionDetailsViewController: UIViewController, TransactionDetailsView
   }
   
   func setConfirmationAlert() {
-    let alert = UIAlertController(title: "Are you sure?", message: "Are you sure you want to deny the operation?", preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: "Deny", style: .destructive, handler: { _ in
+    let alert = UIAlertController(title: "DENY_TITLE".localized(), message: "DENY_MESSAGE".localized(), preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: "DENY_TEXT".localized(), style: .destructive, handler: { _ in
       self.presenter.denyOperationWasConfirmed()
     }))
     
-    alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+    alert.addAction(UIAlertAction(title: "CANCEL_TEXT".localized(), style: .cancel))
     
     self.present(alert, animated: true, completion: nil)
   }
   
-  // MARK: - Public
-  
-  func configureTableView() {
-    tableView.tableFooterView = UIView()
+  func setErrorAlert(for error: Error) {
+    UIAlertController.defaultAlert(for: error, presentingViewController: self)
   }
 }
 
@@ -69,12 +73,12 @@ class TransactionDetailsViewController: UIViewController, TransactionDetailsView
 extension TransactionDetailsViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return presenter.operationNumber
+    return presenter.numberOfOperation
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "OperationTableViewCell", for: indexPath) as! OperationTableViewCell
-    cell.setOperationTitle(presenter.operationNames[indexPath.item])
+    presenter.configure(cell, forRow: indexPath.item)
     
     return cell
   }

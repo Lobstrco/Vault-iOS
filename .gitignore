@@ -63,3 +63,5 @@ fastlane/screenshots.DS_Store
 *.swp
 *.swo
 *~
+
+GoogleService-Info.plist

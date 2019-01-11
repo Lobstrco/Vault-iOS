@@ -168,7 +168,7 @@ class VaultStorageTests: XCTestCase {
     let plainData = "Sample text".data(using: .utf8)!
     
     let cipherData = sut.encrypt(plainData, with: publicKey!)
-    XCTAssertNotNil(cipherData, "Expcted cipher data not nil.")
+    XCTAssertNotNil(cipherData, "Expected cipher data not nil.")
     
     let success = sut.storeEncryptedMnemonicInKeychain(data: cipherData!)
     XCTAssertTrue(success, "Expected successful storing in keychain.")

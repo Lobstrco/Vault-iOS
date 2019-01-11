@@ -1,12 +1,13 @@
 import Foundation
 
 typealias SettingsPresenter =
-  SettingsLifeCycle &
+  SettingsLifecycle &
   SettingsDataSource &
   SettingsCellConfigurator &
-  SettingsDelegate
+  SettingsDelegate &
+  BiometricIDTableViewCellDelegate
 
-protocol SettingsLifeCycle {
+protocol SettingsLifecycle {
   func settingsViewDidLoad()
 }
 
@@ -24,10 +25,11 @@ protocol SettingsDelegate {
 
 protocol SettingsCellConfigurator {
   func configure(publicKeyCell: PublicKeyTableViewCell)
-  func configure(biometricIdCell: BiometricIdTableViewCell)
+  func configure(biometricIDCell: BiometricIDTableViewCell)
   func configure(rightDetailCell: RightDetailTableViewCell,
                  row: SettingsRow)
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,
                  row: SettingsRow)
 }
+
 

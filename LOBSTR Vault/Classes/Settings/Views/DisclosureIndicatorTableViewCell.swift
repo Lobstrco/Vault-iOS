@@ -10,5 +10,4 @@ class DisclosureIndicatorTableViewCell: UITableViewCell,
   func setTitle(_ title: String) {
     textLabel?.text = title
   }
-  
 }

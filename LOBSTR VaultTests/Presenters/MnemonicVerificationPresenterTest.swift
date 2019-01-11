@@ -8,8 +8,7 @@ class MnemonicVerificationPresenterTest: XCTestCase {
   override func setUp() {
     super.setUp()
     
-    mnemonicVerificationPresenter = MnemonicVerificationPresenterImpl()
-    mnemonicVerificationPresenter.initData(view: mnemonicVerificationViewSpy)
+    mnemonicVerificationPresenter = MnemonicVerificationPresenterImpl(view: mnemonicVerificationViewSpy)
   }
   
   func testShuffledMnemonicListShouldBeInitialized() {

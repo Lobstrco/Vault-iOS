@@ -73,10 +73,10 @@ struct MnemonicHelper {
     }
   }
   
-  static func get24WordMnemonic() -> (mnemonic: String,
-                                      separatedWords: [String]) {
-    let mnemonic = Wallet.generate24WordMnemonic()
+  static func getWordMnemonic() -> (mnemonic: String, separatedWords: [String]) {
+    let mnemonic = Wallet.generate12WordMnemonic()
     let separetedWords = MnemonicHelper.getSeparatedWords(from: mnemonic)
+    
     return (mnemonic: mnemonic, separatedWords: separetedWords)
   }
   

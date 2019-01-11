@@ -24,20 +24,19 @@ class ApplicationCoordinator {
   }
   
   func showHomeScreen() {
-    guard let tabBarViewController = TabBarViewController.createFromStoryboard() else { return }
+    let tabBarViewController = TabBarViewController.createFromStoryboard()
     window?.rootViewController = tabBarViewController
   }
   
   func showMenuScreen() {
-    guard let menuViewController = MnemonicMenuViewController.createFromStoryboard()
-    else { return }
+    let menuViewController = MnemonicMenuViewController.createFromStoryboard()
+    
     let navigation = UINavigationController(rootViewController: menuViewController)
     window?.rootViewController = navigation
   }
   
   func showPinScreen() {
-    guard let pinViewController = PinViewController.createFromStoryboard()
-    else { return }
+    let pinViewController = PinViewController.createFromStoryboard()    
     
     pinViewController.mode = .enterPin
     

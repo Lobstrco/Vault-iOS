@@ -37,7 +37,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="oka-uD-f7R">
-                                <rect key="frame" x="10" y="74" width="355" height="514"/>
+                                <rect key="frame" x="10" y="74" width="355" height="544"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TransactionListTableViewCell" id="gou-Ql-NvM" customClass="TransactionListTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
@@ -84,7 +84,7 @@
                         <constraints>
                             <constraint firstItem="k1B-R5-ZVU" firstAttribute="trailing" secondItem="oka-uD-f7R" secondAttribute="trailing" constant="10" id="IOw-RB-zv3"/>
                             <constraint firstItem="oka-uD-f7R" firstAttribute="top" secondItem="k1B-R5-ZVU" secondAttribute="top" constant="10" id="ObK-NM-aDy"/>
-                            <constraint firstItem="k1B-R5-ZVU" firstAttribute="bottom" secondItem="oka-uD-f7R" secondAttribute="bottom" constant="30" id="XPn-O1-A75"/>
+                            <constraint firstItem="k1B-R5-ZVU" firstAttribute="bottom" secondItem="oka-uD-f7R" secondAttribute="bottom" id="XPn-O1-A75"/>
                             <constraint firstItem="oka-uD-f7R" firstAttribute="leading" secondItem="k1B-R5-ZVU" secondAttribute="leading" constant="10" id="kcX-gB-z99"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="k1B-R5-ZVU"/>
@@ -167,7 +167,7 @@
                         <constraints>
                             <constraint firstItem="1DX-9e-aKv" firstAttribute="top" secondItem="7TV-pv-kP1" secondAttribute="bottom" constant="20" id="3CA-ei-5XD"/>
                             <constraint firstItem="xjN-5x-O7I" firstAttribute="trailing" secondItem="i7O-hb-34a" secondAttribute="trailing" constant="30" id="Ael-aM-my2"/>
-                            <constraint firstItem="xjN-5x-O7I" firstAttribute="bottom" secondItem="i7O-hb-34a" secondAttribute="bottom" constant="30" id="LzZ-5q-d0h"/>
+                            <constraint firstItem="xjN-5x-O7I" firstAttribute="bottom" secondItem="i7O-hb-34a" secondAttribute="bottom" constant="30" id="BnY-i2-btr"/>
                             <constraint firstItem="7TV-pv-kP1" firstAttribute="leading" secondItem="xjN-5x-O7I" secondAttribute="leading" constant="10" id="NEs-yY-cGb"/>
                             <constraint firstItem="1DX-9e-aKv" firstAttribute="leading" secondItem="xjN-5x-O7I" secondAttribute="leading" constant="30" id="UYG-cg-iHf"/>
                             <constraint firstItem="i7O-hb-34a" firstAttribute="leading" secondItem="xjN-5x-O7I" secondAttribute="leading" constant="30" id="VDH-iN-ohA"/>
@@ -179,7 +179,6 @@
                         <viewLayoutGuide key="safeArea" id="xjN-5x-O7I"/>
                     </view>
                     <navigationItem key="navigationItem" title="Transaction Detail" id="1WV-hK-1HS"/>
-                    <nil key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="7TV-pv-kP1" id="v0F-tP-DFX"/>
                     </connections>

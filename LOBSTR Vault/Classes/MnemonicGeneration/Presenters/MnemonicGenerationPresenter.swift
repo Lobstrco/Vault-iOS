@@ -12,30 +12,58 @@ protocol MnemonicCellView {
 protocol MnemonicGenerationPresenter {
   var numberOfMnemonicWords: Int { get }
   
+  func mnemonicGenerationViewDidLoad()
   func copyToClipboardWasPressed()
   func nextButtondWasPressed()
   func configure(cell: MnemonicCollectionViewCell, forRow row: Int)
 }
 
-class MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
+class MnemonicGenerationPresenterImpl {
   fileprivate weak var view: MnemonicGenerationView?
   
   var mnemonicList: [String] = []
-  
-  var numberOfMnemonicWords: Int {
-    return mnemonicList.count
-  }
-  
   var mnemonicManager: MnemonicManager
+  
+  // MARK: - Init
   
   init(view: MnemonicGenerationView,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
     self.mnemonicManager = mnemonicManager
-    generateMnemonicList()
   }
   
-  // MARK: - MnemonicGenerationPresenter
+  // MARK: - Public Methods
+  
+  func transitionToMnemonicVerificationScreen() {
+    let mnemonicVerificationViewController = MnemonicVerificationViewController.createFromStoryboard()
+    
+    mnemonicVerificationViewController.presenter = MnemonicVerificationPresenterImpl(view: mnemonicVerificationViewController)
+    mnemonicVerificationViewController.presenter.setGeneratedMnemonicList(generatedList: mnemonicList)
+    
+    let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
+    mnemonicGenerationViewController.navigationController?.pushViewController(mnemonicVerificationViewController,
+                                                                              animated: true)
+  }
+  
+  func generateMnemonicList() {
+    let mnemonicData = MnemonicHelper.getWordMnemonic()
+    mnemonicList = mnemonicData.separatedWords
+    store(mnemonic: mnemonicData.mnemonic)
+    view?.displayMnemonicList(mnemonicList: mnemonicList)
+  }
+}
+
+// MARK: - MnemonicGenerationPresenter
+
+extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
+  
+  var numberOfMnemonicWords: Int {
+    return mnemonicList.count
+  }
+  
+  func mnemonicGenerationViewDidLoad() {
+    generateMnemonicList()
+  }
   
   func copyToClipboardWasPressed() {
     view?.copyToClipboard(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: mnemonicList))
@@ -47,25 +75,6 @@ class MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   
   func nextButtondWasPressed() {
     transitionToMnemonicVerificationScreen()
-  }
-  
-  // MARK: - Public Methods
-  
-  func transitionToMnemonicVerificationScreen() {
-    guard let vc = MnemonicVerificationViewController.createFromStoryboard()
-    else { fatalError() }
-    vc.presenter.setGeneratedMnemonicList(generatedList: mnemonicList)
-    
-    let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
-    mnemonicGenerationViewController.navigationController?.pushViewController(vc,
-                                                                              animated: true)
-  }
-  
-  func generateMnemonicList() {
-    let mnemonicData = MnemonicHelper.get24WordMnemonic()
-    mnemonicList = mnemonicData.separatedWords
-    store(mnemonic: mnemonicData.mnemonic)
-    view?.displayMnemonicList(mnemonicList: mnemonicList)
   }
 }
 

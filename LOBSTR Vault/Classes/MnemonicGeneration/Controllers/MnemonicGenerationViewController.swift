@@ -7,10 +7,13 @@ class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView
   @IBOutlet var collectionView: UICollectionView!
   var presenter: MnemonicGenerationPresenter!
   
+  // MARK: - Lifecycle
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
     presenter = MnemonicGenerationPresenterImpl(view: self)
+    presenter.mnemonicGenerationViewDidLoad()
   }
   
   // MARK: - IBAction

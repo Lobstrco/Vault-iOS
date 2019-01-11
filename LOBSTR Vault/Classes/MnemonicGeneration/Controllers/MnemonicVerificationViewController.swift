@@ -7,21 +7,21 @@ class MnemonicVerificationViewController: UIViewController, MnemonicVerification
   @IBOutlet var shuffledCollectionView: UICollectionView!
   @IBOutlet var сollectionViewForVerification: UICollectionView!
   
-  var presenter = MnemonicVerificationPresenterImpl()
+  var presenter: MnemonicVerificationPresenter!
   
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    presenter.initData(view: self)
-    presenter.initShuffledMnemonicList()
+    presenter.mnemonicVerificationViewDidLoad()
     
     сollectionViewForVerification.dataSource = self
     сollectionViewForVerification.delegate = self
   }
   
   // MARK: - IBAction
+  
   @IBAction func nextButtonAction(_ sender: Any) {
     presenter.nextButtonAction()
   }

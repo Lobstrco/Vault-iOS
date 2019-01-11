@@ -14,40 +14,21 @@ protocol MnemonicRecoveryPresenter {
   func recoveryButtonWasPressed()
 }
 
-class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
+class MnemonicRecoveryPresenterImpl {
   fileprivate weak var view: MnemonicRecoveryView?
   
   var mnemonic: String = ""
   var suggestionList: [String] = []
-  let wordsNumberInMnemonic = 24
+  let wordsNumberInMnemonic = 12
   
   let mnemonicManager: MnemonicManager
+  
+  // MARK: - Init
   
   init(view: MnemonicRecoveryView, mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
     self.view?.displayRecoveryButton(isEnabled: true)
     self.mnemonicManager = mnemonicManager
-  }
-  
-  // MARK: - MnemonicRecoveryPresenter
-  
-  func suggestionWordWasPressed(suggestionWord: String, text: String) {
-    add(suggestionWord, to: text)
-  }
-  
-  func textViewWasChanged(text: String) {
-    clearSuggestionList()
-    
-    guard text.count > 0 else { return }
-    
-    mnemonic = text
-    suggestionListRequest(by: text)
-    highlightWrongWords(in: text)
-  }
-  
-  func recoveryButtonWasPressed() {
-    store(mnemonic: mnemonic)
-    transitionToPinScreen()
   }
   
   // MARK: - Public Methods
@@ -89,8 +70,7 @@ class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   }
   
   func transitionToPinScreen() {
-    guard let pinViewController = PinViewController.createFromStoryboard()
-    else { fatalError() }
+    let pinViewController = PinViewController.createFromStoryboard()    
     
     pinViewController.mode = .createPinFirstStep
     
@@ -102,8 +82,34 @@ class MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   }
 }
 
+// MARK: - MnemonicRecoveryPresenter
+
+extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
+
+  func suggestionWordWasPressed(suggestionWord: String, text: String) {
+    add(suggestionWord, to: text)
+  }
+
+  func textViewWasChanged(text: String) {
+    clearSuggestionList()
+    
+    guard text.count > 0 else { return }
+    
+    mnemonic = text
+    suggestionListRequest(by: text)
+    highlightWrongWords(in: text)
+  }
+
+  func recoveryButtonWasPressed() {
+    store(mnemonic: mnemonic)
+    transitionToPinScreen()
+  }
+  
+}
+
 private extension MnemonicRecoveryPresenterImpl {
   private func store(mnemonic: String) {
     _ = mnemonicManager.encryptAndStoreInKeychain(mnemonic: mnemonic)
   }
 }
+

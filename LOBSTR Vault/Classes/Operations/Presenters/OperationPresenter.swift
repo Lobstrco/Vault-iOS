@@ -5,27 +5,43 @@ protocol OperationPresenter {
   var countOfOperationProperties: Int { get }
   func operationViewDidLoad()
   func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int)
+  func setOperation(_ operation: stellarsdk.Operation)
 }
 
 protocol OperationDetailsView: class {
   func setListOfOperationDetails()
 }
 
-class OperationPresenterImpl: OperationPresenter{
+class OperationPresenterImpl {
   
   fileprivate weak var view: OperationDetailsView?
+  fileprivate weak var crashlyticsService: CrashlyticsService?
   fileprivate var operationProperties: [(name: String , value: String)] = []
-  
-  var countOfOperationProperties: Int {
-    return operationProperties.count
-  }
   
   var operation: stellarsdk.Operation?
   
-  // MARK: - OperationDetailsPresenter
+  // MARK: - Init
   
-  func initData(view: OperationDetailsView) {
+  init(view: OperationDetailsView, crashlyticsService: CrashlyticsService = CrashlyticsService()) {
     self.view = view
+    self.crashlyticsService = crashlyticsService
+  }
+  
+  // MARK: - Public
+  
+  func operationParse() {
+    guard let parsedOperation = operation else { return }
+    operationProperties = TransactionHelper.getNamesAndValuesOfProperties(from: parsedOperation)
+  }
+  
+}
+
+// MARK: - OperationDetailsPresenter
+
+extension OperationPresenterImpl: OperationPresenter {
+  
+  var countOfOperationProperties: Int {
+    return operationProperties.count
   }
   
   func operationViewDidLoad() {
@@ -40,12 +56,4 @@ class OperationPresenterImpl: OperationPresenter{
   func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int) {
     cell.setData(title: operationProperties[row].name, value: operationProperties[row].value)
   }
-  
-  // MARK: - Public
-  
-  func operationParse() {
-    guard let parsedOperation = operation else { return }
-    operationProperties = TransactionHelper.getNamesAndValuesOfProperties(from: parsedOperation)
-  }
-  
 }

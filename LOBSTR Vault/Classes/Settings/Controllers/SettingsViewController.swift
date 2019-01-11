@@ -2,6 +2,7 @@ import UIKit
 
 protocol SettingsView: class {
   func setSettings()
+  func setErrorAlert(for error: Error)
 }
 
 class SettingsViewController: UIViewController,
@@ -34,7 +35,7 @@ class SettingsViewController: UIViewController,
   
   func tableView(_ tableView: UITableView,
                  heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 44.0
+    return UITableViewCell.defaultHeight
   }
   
   // MARK: - UITableViewDataSource
@@ -71,8 +72,8 @@ class SettingsViewController: UIViewController,
     case .biometricId:
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
-          as BiometricIdTableViewCell
-      presenter.configure(biometricIdCell: cell)
+          as BiometricIDTableViewCell
+      presenter.configure(biometricIDCell: cell)
       
       return cell
     case .changePin:
@@ -109,5 +110,9 @@ class SettingsViewController: UIViewController,
   
   func setSettings() {
     tableView.reloadData()
+  }
+  
+  func setErrorAlert(for error: Error) {
+    UIAlertController.defaultAlert(for: error, presentingViewController: self)
   }
 }

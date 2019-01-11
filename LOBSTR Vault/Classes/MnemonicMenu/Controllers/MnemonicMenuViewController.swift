@@ -21,12 +21,12 @@ class MnemonicMenuViewController: UIViewController, StoryboardCreation {
   // MARK: - Public Methods
   
   func transitionToMnemonicGenerationScreen() {
-    guard let vc = MnemonicGenerationViewController.createFromStoryboard() else { fatalError() }
-    navigationController?.pushViewController(vc, animated: true)
+    let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
+    navigationController?.pushViewController(mnemonicGenerationViewController, animated: true)
   }
   
   func transitionToMnemonicRecoveryScreen() {
-    guard let vc = MnemonicRecoveryViewController.createFromStoryboard() else { fatalError() }
-    navigationController?.pushViewController(vc, animated: true)
+    let mnemonicRecoveryViewController = MnemonicRecoveryViewController.createFromStoryboard()
+    navigationController?.pushViewController(mnemonicRecoveryViewController, animated: true)
   }
 }

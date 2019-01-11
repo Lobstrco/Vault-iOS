@@ -1,17 +1,19 @@
+import Firebase
 import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
-  
+
   lazy var applicationCoordinator: ApplicationCoordinator = {
-    return ApplicationCoordinator(window: window)
+    ApplicationCoordinator(window: window)
   }()
 
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    
+//    FirebaseApp.configure()
 //    clearKeychain()
+
     applicationCoordinator.startUserFlow()
 
     return true
@@ -30,5 +32,4 @@ extension AppDelegate {
       SecItemDelete(dictionary as CFDictionary)
     }
   }
-  
 }

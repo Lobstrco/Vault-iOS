@@ -4,7 +4,7 @@ class OperationViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .transactions
   
-  var presenter = OperationPresenterImpl()
+  var presenter: OperationPresenter!
   
   @IBOutlet weak var tableView: UITableView!
   
@@ -13,10 +13,8 @@ class OperationViewController: UIViewController, StoryboardCreation {
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    configureTableView()
-    
-    presenter.initData(view: self)
     presenter.operationViewDidLoad()
+    configureTableView()
   }
   
   override func viewWillAppear(_ animated: Bool) {

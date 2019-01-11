@@ -5,6 +5,12 @@ public struct SettingsSection {
   var rows: [SettingsRow]
 }
 
+extension SettingsSection: Equatable {
+  public static func == (lhs: SettingsSection, rhs: SettingsSection) -> Bool {
+    return lhs.type == rhs.type && lhs.rows == rhs.rows
+  }
+}
+
 public enum SettingsSectionType {
   case account
   case security

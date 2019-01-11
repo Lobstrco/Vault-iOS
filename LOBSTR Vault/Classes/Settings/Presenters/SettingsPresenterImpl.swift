@@ -3,41 +3,35 @@ import stellarsdk
 
 class SettingsPresenterImpl: SettingsPresenter {
   private weak var view: SettingsView?
-  private var sections: [SettingsSection] = []
+  
+  private lazy var sections: [SettingsSection] =
+    self.settingsSectionsBuilder.buildSections()
+  
   private let mnemonicManager: MnemonicManager
+  private var biometricAuthManager: BiometricAuthManager
+  private let settingsSectionsBuilder: SettingsSectionsBuilder
+  
   private let navigationController: UINavigationController
   
   // MARK: - Init
   
   init(view: SettingsView,
        navigationController: UINavigationController,
-       mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
+       mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
+       biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl(),
+       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl()) {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
+    self.biometricAuthManager = biometricAuthManager
+    self.settingsSectionsBuilder = settingsSectionsBuilder
   }
 }
 
-// MARK: - SettingsLifeCycle
+// MARK: - SettingsLifecycle
 
 extension SettingsPresenterImpl {
   func settingsViewDidLoad() {
-    let wallet = SettingsSection(type: .account, rows: [.publicKey])
-    
-    var securityRows: [SettingsRow] = []
-    
-    if Device.biometricType != .none {
-      securityRows = [.mnemonicCode, .biometricId, .changePin]
-    } else {
-      securityRows = [.mnemonicCode, .changePin]
-    }
-    
-    let security = SettingsSection(type: .security,
-                                   rows: securityRows)
-    
-    let about = SettingsSection(type: .about, rows: [.version, .help])
-    
-    sections = [wallet, security, about]
     view?.setSettings()
   }
 }
@@ -87,8 +81,10 @@ extension SettingsPresenterImpl {
     }
   }
   
-  func configure(biometricIdCell: BiometricIdTableViewCell) {
-    biometricIdCell.setTitle(Device.biometricType.name)
+  func configure(biometricIDCell: BiometricIDTableViewCell) {
+    biometricIDCell.setTitle(Device.biometricType.name)
+    biometricIDCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
+    biometricIDCell.delegate = self
   }
   
   func configure(rightDetailCell: RightDetailTableViewCell,
@@ -136,12 +132,36 @@ extension SettingsPresenterImpl {
   }
 }
 
-// MARK: -  Coordinator
+// MARK: - BiometricIDTableViewCellDelegate
+
+extension SettingsPresenterImpl {
+  func biometricIDSwitchValueChanged(_ value: Bool) {
+    
+    self.biometricAuthManager.isBiometricAuthEnabled = value
+    
+    guard self.biometricAuthManager.isBiometricAuthEnabled == true
+    else {return }
+
+    biometricAuthManager.authenticateUser { [weak self] result in
+      switch result {
+      case .success:
+        self?.view?.setSettings()
+      case .failure(let error):
+        guard let error = error as? VaultError.BiometricError else { return }
+        self?.biometricAuthManager.isBiometricAuthEnabled = false
+        self?.view?.setErrorAlert(for: error)
+        self?.view?.setSettings()
+      }
+    }
+    
+  }
+}
+
+// MARK: -  Navigation
 
 extension SettingsPresenterImpl {
   func showChangePin() {
-    guard let pinViewController = PinViewController.createFromStoryboard()
-    else { fatalError() }
+    let pinViewController = PinViewController.createFromStoryboard()    
     
     pinViewController.hidesBottomBarWhenPushed = true
     pinViewController.mode = .changePin

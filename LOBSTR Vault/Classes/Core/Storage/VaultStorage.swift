@@ -5,11 +5,11 @@ public enum Result<T> {
   case failure(Error)
 }
 
-public enum VaultError: Error {
-  case keychainDataNotFound
-  
-  case decryptionFailed
-}
+//public enum VaultError: Error {
+//  case keychainDataNotFound
+//
+//  case decryptionFailed
+//}
 
 typealias VaultStorageType = VaultStorageCryptography & VaultStorageKeychain
 

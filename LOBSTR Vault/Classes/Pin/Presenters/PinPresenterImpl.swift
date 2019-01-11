@@ -9,7 +9,8 @@ class PinPresenterImpl: PinPresenter {
   
   weak var view: PinView?
   
-  let pinManager: PinManager
+  private let pinManager: PinManager
+  private var biometricAuthManager: BiometricAuthManager
   
   let navigationController: UINavigationController
   
@@ -18,17 +19,33 @@ class PinPresenterImpl: PinPresenter {
   init(view: PinView,
        navigationController: UINavigationController,
        mode: PinMode,
-       pinManager: PinManager = PinManagerImpl()) {
+       pinManager: PinManager = PinManagerImpl(),
+       biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl()) {
     self.view = view
     self.mode = mode
     self.navigationController = navigationController
     self.pinManager = pinManager
+    self.biometricAuthManager = biometricAuthManager
   }
   
   // MARK: - PinPresenter
   
   func pinViewDidLoad() {
     switch mode {
+    case .enterPin:
+      view?.setTitle("Enter Pin")
+      
+      guard biometricAuthManager.isBiometricAuthEnabled else { return }
+      
+      biometricAuthManager.authenticateUser { [weak self] result in
+        switch result {
+        case .success:
+          self?.transitionToHomeScreen()
+        case .failure:
+          break
+        }
+      }
+    
     case .createPinFirstStep:
       view?.setTitle("Create Pin")
     case .createPinSecondStep:
@@ -50,7 +67,7 @@ class PinPresenterImpl: PinPresenter {
         
       case .createPinSecondStep(let pinFromFirstStep):
         
-        if pinManager.validate(pinFromFirstStep, pin) && pinManager.store(pin) {
+        if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
           updateToken()
         } else {
           view?.shakePinView()
@@ -102,18 +119,28 @@ class PinPresenterImpl: PinPresenter {
     AuthenticationService().updateToken { result in
       switch result {
       case .success:
-        self.transitionToHomeScreen()
+        self.transitionToBiometricID()
       case .failure(let error):
         print("Couldn't get token. \(error)")
       }
     }
   }
-  
-  // MARK: - Navigation
+}
+
+// MARK: - Navigation
+
+extension PinPresenterImpl {
+  func transitionToHomeScreen() {
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else { return }
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      appDelegate.applicationCoordinator.showHomeScreen()
+    }
+  }
   
   func transitionToCreatePinFirstStep() {
-    guard let pinViewController = PinViewController.createFromStoryboard()
-    else { return }
+    let pinViewController = PinViewController.createFromStoryboard()
     
     pinViewController.mode = .createPinFirstStep
     
@@ -122,8 +149,7 @@ class PinPresenterImpl: PinPresenter {
   }
   
   func transitionToCreatePinSecondStep() {
-    guard let pinViewController = PinViewController.createFromStoryboard()
-    else { return }
+    let pinViewController = PinViewController.createFromStoryboard()    
     
     pinViewController.mode = .createPinSecondStep(pin)
     
@@ -131,12 +157,10 @@ class PinPresenterImpl: PinPresenter {
                                             animated: true)
   }
   
-  func transitionToHomeScreen() {
-    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    else { return }
+  func transitionToBiometricID() {
+    let biometricIDViewController = BiometricIDViewController.createFromStoryboard()
     
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-      appDelegate.applicationCoordinator.showHomeScreen()
-    }
+    navigationController.pushViewController(biometricIDViewController,
+                                            animated: true)
   }
 }

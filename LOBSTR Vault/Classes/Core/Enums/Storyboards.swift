@@ -7,6 +7,7 @@ enum Storyboards: String {
   case mnemonicMenu = "MnemonicMenu"
   case home = "Home"
   case pin = "Pin"
+  case biometricID = "BiometricID"
   case tabBar = "TabBar"
   case settings = "Settings"
 }

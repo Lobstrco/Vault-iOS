@@ -45,7 +45,7 @@ extension VaultStorage: VaultStorageCryptography {
       if #available(iOS 11.3, *) {
         print(SecCopyErrorMessageString(status, nil) ?? "")
       }
-      completion(.failure(VaultError.keychainDataNotFound))
+      completion(.failure(VaultError.VaultStorageError.keychainDataNotFound))
       return
     }
     
@@ -56,7 +56,7 @@ extension VaultStorage: VaultStorageCryptography {
         cipherData as CFData,
         nil
       ) else {
-        completion(.failure(VaultError.decryptionFailed))
+        completion(.failure(VaultError.VaultStorageError.decryptionFailed))
         return
       }
       

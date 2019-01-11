@@ -2,41 +2,87 @@ import Foundation
 import stellarsdk
 
 protocol TransactionDetailsPresenter {
+  var numberOfOperation: Int { get }
   func setTransactionData(_ transaction: Transaction)
   func transactionDetailsViewDidLoad()
   func operationWasSelected(by index: Int)
   func confirmButtonWasPressed()
   func denyButtonWasPressed()
   func denyOperationWasConfirmed()
+  func configure(_ cell: OperationTableViewCell, forRow row: Int)
 }
 
 protocol TransactionDetailsView: class {
   func setOperationList()
   func setConfirmationAlert()
+  func setErrorAlert(for error: Error)
 }
 
-class TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
+class TransactionDetailsPresenterImpl {
   
   fileprivate weak var view: TransactionDetailsView?
+  fileprivate weak var crashlyticsService: CrashlyticsService?
   fileprivate var transaction: Transaction?
   
-  var operationNames: [String] = []
-  var operationNumber = 0
+  fileprivate var operationNames: [String] = []
   
-  func initData(view: TransactionDetailsView) {
-    self.view = view
+  var numberOfOperation: Int {
+    return operationNames.count
   }
   
-  // MARK: - TransactionDetailsPresenter
+  // MARK: - Init
+
+  init(view: TransactionDetailsView, crashlyticsService: CrashlyticsService = CrashlyticsService()) {
+    self.view = view
+    self.crashlyticsService = crashlyticsService
+  }
+  
+  // MARK: - Public
+  
+  func setOperationList() {
+    guard let transaction = transaction else { return }
+    guard let xdr = transaction.xdr else { return }
+    
+    do {
+      operationNames = try TransactionHelper.getListOfOperationNames(from: xdr)
+    } catch {
+      crashlyticsService?.recordCustomException(error)
+      view?.setErrorAlert(for: error)
+      return
+    }
+    
+    view?.setOperationList()
+  }
+  
+  func transitionToTransactionListScreen() {
+    let transactionDetailsViewController = view as! TransactionDetailsViewController
+    transactionDetailsViewController.navigationController?.popToRootViewController(animated: true)
+  }
+  
+  func transitionToTransactionStatus() {
+    let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
+
+    let transactionDetailsViewController = view as! TransactionDetailsViewController
+    transactionDetailsViewController.navigationController?.pushViewController(transactionStatusViewController, animated: true)
+  }
+  
+  func transition(to operation: stellarsdk.Operation) {
+    let operationViewController = OperationViewController.createFromStoryboard()
+    
+    operationViewController.presenter = OperationPresenterImpl(view: operationViewController)
+    operationViewController.presenter.setOperation(operation)
+
+    let transactionDetailsViewController = view as! TransactionDetailsViewController
+    transactionDetailsViewController.navigationController?.pushViewController(operationViewController, animated: true)
+  }
+}
+
+// MARK: - TransactionDetailsPresenter
+
+extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   
   func transactionDetailsViewDidLoad() {
-    guard let transaction = transaction else { return }
-    
-    if let xdr = transaction.xdr {
-      operationNames = TransactionHelper.getListOfOperationNames(from: xdr)
-      operationNumber = operationNames.count
-      view?.setOperationList()
-    }
+    setOperationList()
   }
   
   func setTransactionData(_ transaction: Transaction) {
@@ -44,7 +90,15 @@ class TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func operationWasSelected(by index: Int) {
-    transitionToOperationDetailsScreen(by: index)
+    guard let xdr = transaction?.xdr else { return }
+    
+    do {
+      let operation = try TransactionHelper.getOperation(from: xdr, by: index)
+      transition(to: operation)
+    } catch {
+      crashlyticsService?.recordCustomException(error)
+      view?.setErrorAlert(for: error)
+    }
   }
   
   func confirmButtonWasPressed() {
@@ -59,28 +113,7 @@ class TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
     transitionToTransactionListScreen()
   }
   
-  // MARK: - Public
-  
-  func transitionToTransactionListScreen() {
-    let transactionDetailsViewController = view as! TransactionDetailsViewController
-    transactionDetailsViewController.navigationController?.popToRootViewController(animated: true)
-  }
-  
-  func transitionToTransactionStatus() {
-    guard let vc = TransactionStatusViewController.createFromStoryboard() else { fatalError() }
-    
-    let transactionDetailsViewController = view as! TransactionDetailsViewController
-    transactionDetailsViewController.navigationController?.pushViewController(vc, animated: true)
-  }
-  
-  func transitionToOperationDetailsScreen(by index: Int) {
-    guard let xdr = transaction?.xdr else { return }
-    
-    let operation = TransactionHelper.getOperation(from: xdr, by: index)
-    guard let vc = OperationViewController.createFromStoryboard() else { fatalError() }
-    vc.presenter.setOperation(operation)
-    
-    let transactionDetailsViewController = view as! TransactionDetailsViewController
-    transactionDetailsViewController.navigationController?.pushViewController(vc, animated: true)
+  func configure(_ cell: OperationTableViewCell, forRow row: Int) {
+    cell.setOperationTitle(operationNames[row])
   }
 }

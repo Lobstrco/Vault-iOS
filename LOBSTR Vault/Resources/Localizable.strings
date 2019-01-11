@@ -1,0 +1,23 @@
+"INVALID_TRANSACTION_TITLE" = "Invalid Transaction";
+"INVALID_TRANSACTION_MESSAGE" = "Transaction was failed. Please, contact to support.";
+
+"INVALID_OPERATION_TITLE" = "Invalid Operation";
+"INVALID_OPERATION_MESSAGE" = "Operation was failed. Please, contact to support.";
+
+"OUT_OF_OPERATION_RANGE_TITLE" = "";
+"OUT_OF_OPERATION_RANGE_MESSAGE" = "";
+
+"OK_TEXT" = "OK";
+"DENY_TEXT" = "Deny";
+"CANCEL_TEXT" = "Cancel";
+
+"DENY_TITLE" = "Are you sure?";
+"DENY_MESSAGE" = "Are you sure you want to deny the operation?";
+
+"BIOMETRIC_NOT_AVAILABLE_TITLE" = "Not available";
+"BIOMETRIC_NOT_AVAILABLE_MESSAGE" = "Biometric authentication not available.";
+"BIOMETRIC_NOT_VERIFIED_IDENTITY_MESSAGE" = "There was a problem verifying your identity.";
+"BIOMETRIC_PRESSED_CANCEL_MESSAGE" = "You pressed cancel.";
+"BIOMETRIC_PRESSED_PASSWORD_MESSAGE" = "You pressed password.";
+"BIOMETRIC_NOT_CONFIGURED_MESSAGE" =  "Face ID/Touch ID may not be configured.";
+

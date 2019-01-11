@@ -13,7 +13,7 @@
         <!--Settings-->
         <scene sceneID="GOG-ov-APo">
             <objects>
-                <navigationController id="JMB-xt-Bqe" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JMB-xt-Bqe" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Settings" image="ic_settings" id="smB-XG-aZk"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="UFs-78-4ww">
@@ -117,7 +117,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BiometricIdTableViewCell" id="8dl-dX-JBI" customClass="BiometricIdTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="BiometricIDTableViewCell" id="8dl-dX-JBI" customClass="BiometricIDTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="187.5" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8dl-dX-JBI" id="Sfy-90-Umc">
@@ -135,6 +135,9 @@
                                                         </label>
                                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mwE-Vh-gVG">
                                                             <rect key="frame" x="294" y="0.0" width="51" height="27.5"/>
+                                                            <connections>
+                                                                <action selector="biometricIDSwitchAction:" destination="8dl-dX-JBI" eventType="valueChanged" id="Y5p-yJ-HNB"/>
+                                                            </connections>
                                                         </switch>
                                                     </subviews>
                                                 </stackView>
@@ -147,6 +150,7 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="biometricIDSwitch" destination="mwE-Vh-gVG" id="5nm-TC-2qF"/>
                                             <outlet property="titleLabel" destination="XRN-4d-9d2" id="xcA-C0-ycs"/>
                                         </connections>
                                     </tableViewCell>

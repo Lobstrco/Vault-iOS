@@ -1,6 +1,6 @@
 import UIKit
 
-class TransactionListViewController: UIViewController, TransactionListView {
+class TransactionListViewController: UIViewController {
 
   var presenter: TransactionListPresenter!
   
@@ -17,19 +17,26 @@ class TransactionListViewController: UIViewController, TransactionListView {
     configureTableView()
   }
   
-  // MARK: - TransactionListView
+  // MARK: - Public
   
-  func displayTransactionList() {
+  func configureTableView() {
+    tableView.tableFooterView = UIView()
+  }
+}
+
+// MARK: - TransactionListView
+
+extension TransactionListViewController: TransactionListView {
+  
+  func setTransactionList() {
     tableView.delegate = self
     tableView.dataSource = self
     
     tableView.reloadData()
   }
   
-  // MARK: - Public
-  
-  func configureTableView() {
-    tableView.tableFooterView = UIView()
+  func setErrorAlert(for error: Error) {
+    UIAlertController.defaultAlert(for: error, presentingViewController: self)
   }
 }
 
@@ -43,7 +50,7 @@ extension TransactionListViewController: UITableViewDelegate, UITableViewDataSou
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = self.tableView.dequeueReusableCell(withIdentifier: "TransactionListTableViewCell") as! TransactionListTableViewCell
-    presenter.configure(cell: cell, forRow: indexPath.item)
+    presenter.configure(cell, forRow: indexPath.item)
     
     return cell
   }

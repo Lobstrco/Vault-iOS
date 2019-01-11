@@ -1,6 +1,6 @@
 import UIKit
 
-class MnemonicRecoveryViewController: UIViewController, MnemonicRecoveryView, StoryboardCreation {
+class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .mnemonicRecovery
   
@@ -9,6 +9,8 @@ class MnemonicRecoveryViewController: UIViewController, MnemonicRecoveryView, St
   
   var presenter: MnemonicRecoveryPresenter!
   var mnemonicSuggestionsView: MnemonicSuggestionsView?
+  
+  // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -24,8 +26,11 @@ class MnemonicRecoveryViewController: UIViewController, MnemonicRecoveryView, St
   @IBAction func recoveryButtonAction(_ sender: Any) {
     presenter.recoveryButtonWasPressed()
   }
-  
-  // MARK: - RecoveryView
+}
+
+// MARK: - RecoveryView
+
+extension MnemonicRecoveryViewController: MnemonicRecoveryView {
   
   func displayRecoveryButton(isEnabled: Bool) {
     recoveryButton.isHidden = !isEnabled
