@@ -6,7 +6,7 @@ protocol MnemonicManager {
   func isMnemonicStoredInKeychain() -> Bool
 }
 
-struct MnemonicManagerImpl: MnemonicManager {
+final public class MnemonicManagerImpl: MnemonicManager {
   
   let vaultStorage: VaultStorageType
   

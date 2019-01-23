@@ -8,13 +8,16 @@ protocol BiometricIDPresenter {
 
 class BiometricIDPresenterImpl: BiometricIDPresenter {
   private weak var view: BiometricIDView?
+  private let navigationController: UINavigationController
   private var biometricAuthManager: BiometricAuthManager
 
   // MARK: - Init
 
   init(view: BiometricIDView,
+       navigationController: UINavigationController,
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl()) {
     self.view = view
+    self.navigationController = navigationController
     self.biometricAuthManager = biometricAuthManager
   }
 }
@@ -22,9 +25,9 @@ class BiometricIDPresenterImpl: BiometricIDPresenter {
 // MARK: - BiometricIDPresenter
 
 extension BiometricIDPresenterImpl {
+  
   func biometricIDViewDidLoad() {
-    let title = "Protect your wallet"
-    view?.setTitle(title)
+    
   }
 
   func turnOnButtonWasPressed() {
@@ -32,7 +35,7 @@ extension BiometricIDPresenterImpl {
       switch result {
       case .success:
         self?.biometricAuthManager.isBiometricAuthEnabled = true
-        self?.transitionToHomeScreen()
+        self?.transitionToPublicKey()
       case .failure(let error):
         guard let error = error as? VaultError.BiometricError  else { return }
         self?.view?.setErrorAlert(for: error)
@@ -41,19 +44,17 @@ extension BiometricIDPresenterImpl {
   }
   
   func skipButtonWasPressed() {
-    transitionToHomeScreen()
+    transitionToPublicKey()
   }
 }
 
 // MARK: - Navigation
 
 extension BiometricIDPresenterImpl {
-  func transitionToHomeScreen() {
-    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    else { return }
-
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-      appDelegate.applicationCoordinator.showHomeScreen()
-    }
+  func transitionToPublicKey() {
+    let publicKeyViewController = PublicKeyViewController.createFromStoryboard()
+    
+    navigationController.pushViewController(publicKeyViewController,
+                                            animated: true)
   }
 }

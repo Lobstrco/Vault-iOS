@@ -52,12 +52,14 @@ PODS:
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
   - stellar-ios-mac-sdk (1.5.6)
+  - SwiftGen (6.0.2)
 
 DEPENDENCIES:
   - Crashlytics (~> 3.12.0)
   - Fabric (~> 1.9.0)
   - Firebase/Core
   - stellar-ios-mac-sdk (~> 1.5.6)
+  - SwiftGen (~> 6.0.2)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -71,6 +73,7 @@ SPEC REPOS:
     - GoogleUtilities
     - nanopb
     - stellar-ios-mac-sdk
+    - SwiftGen
 
 SPEC CHECKSUMS:
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
@@ -83,7 +86,8 @@ SPEC CHECKSUMS:
   GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   stellar-ios-mac-sdk: b0c589f5d5a7776edffcf4ebbe4e12d988030e7e
+  SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
 
-PODFILE CHECKSUM: a23bfb90c31266c7c28c3f1319d28c2a929520a7
+PODFILE CHECKSUM: 624e564ef9962a0fd9cf012b079cb4035dbcd8f1
 
 COCOAPODS: 1.5.3

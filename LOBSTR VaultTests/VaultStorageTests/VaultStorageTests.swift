@@ -2,10 +2,15 @@
 import XCTest
 
 class VaultStorageTests: XCTestCase {
+  let vaultSecAttrService = "com.ultrastellar.lobstr.vault"
+  
+  let mnemonicSecAttrAccount = "mnemonic"
+  let pinSecAttrAccount = "pin"
+  let jwtSecAttrAccount  = "jwt"
+  let publicKeySecAttrAccount = "publicKey"
+  
   let encryptionPrivateKeyTag = "com.ultrastellar.lobstr.vault.privatekey".data(using: .utf8)!
-  let encryptedMnemonicService = "com.ultrastellar.lobstr.vault.mnemonic"
-  let pinService = "com.ultrastellar.lobstr.vault.pin"
-  let jwtService = "com.ultrastellar.lobstr.vault.jwt"
+  let publicKeyKeychainAccessGroupName = "6ZVXG76XRR.com.ultrastellar.lobstr.vault.publickey"
   
   var sut: VaultStorage!
   
@@ -98,8 +103,13 @@ class VaultStorageTests: XCTestCase {
                    "Expected security class for storing generic password.")
   
     let secAttrService = parameters[kSecAttrService as String] as! CFString
-    XCTAssertEqual(secAttrService, encryptedMnemonicService as CFString,
-                   "Expected service string for encrypted mnemonic.")
+    XCTAssertEqual(secAttrService, vaultSecAttrService as CFString,
+                   "Expected service string for vault.")
+    
+    let secAttrAccount = parameters[kSecAttrAccount as String] as! CFString
+    XCTAssertEqual(secAttrAccount, mnemonicSecAttrAccount as CFString,
+                   "Expected account string for encrypted mnemonic.")
+    
     
     let secAttrAccessible = parameters[kSecAttrAccessible as String] as! CFString
     XCTAssertEqual(secAttrAccessible, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
@@ -114,8 +124,12 @@ class VaultStorageTests: XCTestCase {
                    "Expected security class for storing generic password.")
     
     let secAttrService = parameters[kSecAttrService as String] as! CFString
-    XCTAssertEqual(secAttrService, pinService as CFString,
-                   "Expected service string for pin.")
+    XCTAssertEqual(secAttrService, vaultSecAttrService as CFString,
+                   "Expected service string for vault.")
+    
+    let secAttrAccount = parameters[kSecAttrAccount as String] as! CFString
+    XCTAssertEqual(secAttrAccount, pinSecAttrAccount as CFString,
+                   "Expected account string for pin.")
     
     let secAttrAccessible = parameters[kSecAttrAccessible as String] as! CFString
     XCTAssertEqual(secAttrAccessible, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
@@ -127,17 +141,46 @@ class VaultStorageTests: XCTestCase {
     
     let secClass = parameters[kSecClass as String] as! CFString
     XCTAssertEqual(secClass, kSecClassGenericPassword,
-                   "Expected security class for storing generic password.")
+                   "Expected security class for storing is generic password.")
     
     let secAttrService = parameters[kSecAttrService as String] as! CFString
-    XCTAssertEqual(secAttrService, jwtService as CFString,
-                   "Expected service string for jwt.")
+    XCTAssertEqual(secAttrService, vaultSecAttrService as CFString,
+                   "Expected service string for vault.")
+    
+    let secAttrAccount = parameters[kSecAttrAccount as String] as! CFString
+    XCTAssertEqual(secAttrAccount, jwtSecAttrAccount as CFString,
+                   "Expected account string for jwt.")
     
     let secAttrAccessible = parameters[kSecAttrAccessible as String] as! CFString
     XCTAssertEqual(secAttrAccessible, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
                    "Exptected kSecAttrAccessibleWhenUnlockedThisDeviceOnly level.")
   }
   
+  func testPublicKeyQueryParameters() {
+    let parameters = sut.publicKeyQueryParameters
+    
+    let secClass = parameters[kSecClass as String] as! CFString
+    XCTAssertEqual(secClass, kSecClassGenericPassword,
+                   "Expected security class for storing is generic password.")
+    
+    let secAttrService = parameters[kSecAttrService as String] as! CFString
+    XCTAssertEqual(secAttrService, vaultSecAttrService as CFString,
+                   "Expected service string for vault.")
+    
+    let secAttrAccount = parameters[kSecAttrAccount as String] as! CFString
+    XCTAssertEqual(secAttrAccount, publicKeySecAttrAccount as CFString,
+                   "Expected account string for public key.")
+    
+    
+    let secAttrAccessible = parameters[kSecAttrAccessible as String] as! CFString
+    XCTAssertEqual(secAttrAccessible, kSecAttrAccessibleWhenUnlockedThisDeviceOnly,
+                   "Exptected kSecAttrAccessibleWhenUnlockedThisDeviceOnly level.")
+    
+    let secAttrAccessGroup = parameters[kSecAttrAccessGroup as String] as! CFString
+    XCTAssertEqual(secAttrAccessGroup, publicKeyKeychainAccessGroupName as CFString,
+                   "Exptected access group name for shared public key with team id prefix.")
+    
+  }
   
   func testEncryptionAlgorithmShouldBeEciesEncryptionCofactorX963SHA256AESGCM() {
     XCTAssertEqual(sut.encryptionAlgorithm,
@@ -201,12 +244,21 @@ class VaultStorageTests: XCTestCase {
     XCTAssertTrue(result, "Expected storing pin in keychain.")
     
     let pinFromKeychain = sut.getPinFromKeychain()
-    XCTAssertEqual(pinFromKeychain, pin, "Expected successful getting of pin.")
+    XCTAssertEqual(pinFromKeychain, pin, "Expected successful retrieving of pin.")
+  }
+  
+  func testStoringAndRetrievingPublicKeyFromKeychain() {
+    let publicKey = "GD6TGHMC7GCHLWQ44PWHJC6D7PT56HCT2RHAXPLBQXZYAOWNCUQQFGIR"
+    
+    let result = sut.storePublicKeyInKeychain(publicKey)
+    XCTAssertTrue(result, "Expected storing publickey in keychain.")
+    
+    let publicKeyFromKeychain = sut.getPublicKeyFromKeychain()
+    XCTAssertEqual(publicKeyFromKeychain, publicKey, "Expected successful retrieving of public key.")
   }
 }
 
 // MARK: - Helpers
-
 extension VaultStorageTests {
   private func clearKeychain() {
     let secItemClasses = [kSecClassGenericPassword,

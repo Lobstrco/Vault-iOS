@@ -1,18 +1,113 @@
-"INVALID_TRANSACTION_TITLE" = "Invalid Transaction";
-"INVALID_TRANSACTION_MESSAGE" = "Transaction was failed. Please, contact to support.";
+// Button titles
+"button_title_ok" = "OK";
+"button_title_deny" = "Deny";
+"button_title_back" = "Back";
+"button_title_cancel" = "Cancel";
+"button_title_next" = "Next";
+"button_title_copy_key" = "Copy Key";
+"button_title_signed_accounts" = "Signed Accounts";
 
-"INVALID_OPERATION_TITLE" = "Invalid Operation";
-"INVALID_OPERATION_MESSAGE" = "Operation was failed. Please, contact to support.";
+// Navigation titles
+"nav_title_restore_account" = "Restore account";
+"nav_title_mnemonic_generation" = "Mnemonic codes";
+"nav_title_mnemonic_verification" = "Verify codes";
+"nav_title_create_passcode" = "Create a Passcode";
+"nav_title_reenter_passcode" = "Re-enter a Passcode";
+"nav_title_transactions" = "Transactions";
+"nav_title_transaction_details" = "Transaction Details";
+"nav_title_settings" = "Settings";
+"nav_title_change_passcode_enter_old" = "Change Passcode";
+"nav_title_change_passcode_enter_new" = "Change Passcode";
+"nav_title_change_passcode_confirm_new" = "Change Passcode";
 
-"OUT_OF_OPERATION_RANGE_TITLE" = "";
-"OUT_OF_OPERATION_RANGE_MESSAGE" = "";
+// Enter Pin screen
+"text_logout_info" = "Forgot PIN?";
+"button_title_logout" = "Logout";
 
-"OK_TEXT" = "OK";
-"DENY_TEXT" = "Deny";
-"CANCEL_TEXT" = "Cancel";
+// Start menu
+"text_secure_your_lumens" = "Secure your Lumens";
+"button_title_terms" = "By registering you agree to our Terms of Service and Privacy Policy.";
+"button_title_create_new_account" = "Create New Account";
+"button_title_restore_account" = "Restore Account";
 
-"DENY_TITLE" = "Are you sure?";
-"DENY_MESSAGE" = "Are you sure you want to deny the operation?";
+// Backup screen
+"text_backup_title" = "Backup Your Account";
+"text_backup_description" = "In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.";
+"button_title_understand" = "I understand";
+
+// Mnemonic generation screen
+"text_mnemonic_description" = "In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.";
+"text_copy_description" = "Write down this words or just copy them";
+"text_confirm_description" = "You will confirm phrase on the next screen";
+
+// Restore Account screen
+"text_restore_info" = "This is 12 word phrase you were given when you created your previous wallet";
+
+// Mnemonic verification screen
+"text_mnemonic_verification_description" = "In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.";
+"text_mnemonic_verifivation_help" = "Tap the words in correct order";
+"text_mnemonic_verifivation_incorrect_order" = "Wrong order. Please try again.";
+
+// Create/re-enter passcode screens
+"text_create_passcode_note" = "NOTE If you forget PIN, you won’t be able to access your transactions";
+"text_reenter_passcode_note" = "NOTE If you forget PIN, you won’t be able to access your transactions";
+
+// Touch ID screen
+"text_protect_your_wallet" = "Protect your wallet";
+"text_protect_your_wallet_description" = "Add an extra layer of security to keep your Stellars safe";
+"text_turn_on_description" = "You can do it later in Settings Panel";
+"button_title_turn_on" = "Turn On";
+"button_title_skip_for_now" = "Skip for now";
+
+// Public Key screen
+"text_public_key_title" = "Your Public Key";
+"text_public_key_description" = "This key will be use for transactions confirmation.  To protect your Lobstr Wallet, copy and paste the code to Lobstr (Settings→Multisign→Enable)";
+
+// Signer Check screen
+"text_signer_check_information" = "You are not a signer for";
+"button_title_re_check" = "Re-Check";
+
+// Home screen
+"text_transactions_to_sign" = "Transactions to Sign";
+"text_vault_publicKey" = "Vault Public Key";
+"text_signer_for" = "Signer For";
+"button_title_view_transactions_list" = "View Transactions List";
+"text_copied_key_snack" = "Copied";
+
+// Transaction screen
+"text_add_transaction_title" = "Add Transaction XDR";
+"text_add_transaction_description" = "To submit transaction add unique code into";
+"text_add_transaction_placeholder" = "Transaction XDR";
+"text_add_transaction_error" = "Transaction is invalid. Please, try again.";
+"button_title_submit" = "Submit";
+
+// Transaction details
+"button_title_deny" = "Confirm";
+"text_deny_dialog_title" = "Are you sure?";
+"text_deny_dialog_description" = "Are you sure you want to deny the operation?";
+
+// Settings
+"text_account_section" = "ACCOUNT";
+"text_security_section" = "SECURITY";
+"text_about_section" = "ABOUT";
+"text_public_key_field" = "Public key";
+"text_signer_for_field" = "Signer for 5 accounts";
+"text_mnemonic_field" = "Mnemonic Code";
+"text_change_pin_field" = "Change PIN";
+"text_touch_id_field" = "Touch ID";
+"text_version_field" = "Version";
+"text_help_field" = "Help";
+"text_copyright" = "©2019. All rights reserved";
+"text_settings_public_key_title" = "Vault Public Key";
+"button_title_show" = "Show";
+
+// Change Passcode
+"text_change_passcode_enter_old" = "Enter old PIN-code";
+"text_change_passcode_enter_new" = "Enter new PIN-code";
+"text_change_passcode_confirm_new" = "Confirm new PIN-code";
+"text_change_passcode_error" = "New codes doesn’t match";
+
+
 
 "BIOMETRIC_NOT_AVAILABLE_TITLE" = "Not available";
 "BIOMETRIC_NOT_AVAILABLE_MESSAGE" = "Biometric authentication not available.";
@@ -21,3 +116,11 @@
 "BIOMETRIC_PRESSED_PASSWORD_MESSAGE" = "You pressed password.";
 "BIOMETRIC_NOT_CONFIGURED_MESSAGE" =  "Face ID/Touch ID may not be configured.";
 
+"INVALID_TRANSACTION_TITLE" = "Invalid Transaction";
+"INVALID_TRANSACTION_MESSAGE" = "Transaction was failed. Please, contact to support.";
+
+"INVALID_OPERATION_TITLE" = "Invalid Operation";
+"INVALID_OPERATION_MESSAGE" = "Operation was failed. Please, contact to support.";
+
+"OUT_OF_OPERATION_RANGE_TITLE" = "";
+"OUT_OF_OPERATION_RANGE_MESSAGE" = "";

@@ -5,19 +5,20 @@ public enum Result<T> {
   case failure(Error)
 }
 
-//public enum VaultError: Error {
-//  case keychainDataNotFound
-//
-//  case decryptionFailed
-//}
-
 typealias VaultStorageType = VaultStorageCryptography & VaultStorageKeychain
 
-public struct VaultStorage {
+private struct KeychainKey {
+  public static let mnemonic = "mnemonic"
+  public static let pin = "pin"
+  public static let jwt = "jwt"
+  public static let publicKey = "publicKey"
+}
+
+final public class VaultStorage {
+  private let vaultSecAttrService = "com.ultrastellar.lobstr.vault"
+  
   private let encryptionPrivateKeyTag = "com.ultrastellar.lobstr.vault.privatekey"
-  private let encryptedMnemonicService = "com.ultrastellar.lobstr.vault.mnemonic"
-  private let pinService = "com.ultrastellar.lobstr.vault.pin"
-  private let jwtService = "com.ultrastellar.lobstr.vault.jwt"
+  private let publicKeyKeychainAccessGroupName = "6ZVXG76XRR.com.ultrastellar.lobstr.vault.publickey"
   
   public let encryptionAlgorithm: SecKeyAlgorithm = .eciesEncryptionCofactorX963SHA256AESGCM
   public let securityAttributeAccessible: CFString = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
@@ -71,24 +72,37 @@ public struct VaultStorage {
   public var encryptedMnemonicQueryParameters: [String: Any] {
     return [
       kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: encryptedMnemonicService,
+      kSecAttrService as String: vaultSecAttrService,
+      kSecAttrAccount as String: KeychainKey.mnemonic,
       kSecAttrAccessible as String: securityAttributeAccessible,
+    ]
+  }
+  
+  public var publicKeyQueryParameters: [String: Any] {
+    return [
+      kSecClass as String: kSecClassGenericPassword,
+      kSecAttrService as String: vaultSecAttrService,
+      kSecAttrAccount as String: KeychainKey.publicKey,
+      kSecAttrAccessible as String: securityAttributeAccessible,
+      kSecAttrAccessGroup as String: publicKeyKeychainAccessGroupName
     ]
   }
   
   public var pinQueryParameters: [String: Any] {
     return [
       kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: pinService,
-      kSecAttrAccessible as String: securityAttributeAccessible,
+      kSecAttrService as String: vaultSecAttrService,
+      kSecAttrAccount as String: KeychainKey.pin,
+      kSecAttrAccessible as String: securityAttributeAccessible
     ]
   }
   
   public var jwtQueryParameters: [String: Any] {
     return [
       kSecClass as String: kSecClassGenericPassword,
-      kSecAttrService as String: jwtService,
-      kSecAttrAccessible as String: securityAttributeAccessible,
+      kSecAttrService as String: vaultSecAttrService,
+      kSecAttrAccount as String: KeychainKey.jwt,
+      kSecAttrAccessible as String: securityAttributeAccessible
     ]
   }
 }

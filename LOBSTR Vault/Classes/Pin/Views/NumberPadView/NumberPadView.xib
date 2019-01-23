@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NumberPadView" customModule="PinViewController" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NumberPadView" customModule="LOBSTR_Vault" customModuleProvider="target">
             <connections>
                 <outlet property="contentView" destination="iN0-l3-epB" id="sdt-UW-8Wp"/>
                 <outlet property="leftButton" destination="47L-VV-XWL" id="Fv0-iy-XPn"/>
@@ -39,6 +39,7 @@
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NLU-36-N6R">
                                     <rect key="frame" x="0.0" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="1"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="fmA-QF-VnI"/>
@@ -46,6 +47,7 @@
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KUH-Hh-c6h">
                                     <rect key="frame" x="125" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="2"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="Uxx-lx-ZGM"/>
@@ -53,6 +55,7 @@
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vm1-jB-IbD">
                                     <rect key="frame" x="250" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="3"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="eiF-B8-ekJ"/>
@@ -65,6 +68,7 @@
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wf3-ph-rdf">
                                     <rect key="frame" x="0.0" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="4"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="bOF-Jf-Zpg"/>
@@ -72,6 +76,7 @@
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sEQ-RA-26G">
                                     <rect key="frame" x="125" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="5"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="BE9-jY-XBl"/>
@@ -79,6 +84,7 @@
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Mi-6M-WDL">
                                     <rect key="frame" x="250" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="6"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="jfB-ZD-Sa0"/>
@@ -91,6 +97,7 @@
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0kb-Os-lSp">
                                     <rect key="frame" x="0.0" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="7"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="oba-D6-5zo"/>
@@ -98,6 +105,7 @@
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="VkE-1Q-SP8">
                                     <rect key="frame" x="125" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="8"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="Wmb-Pr-CEK"/>
@@ -105,6 +113,7 @@
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QuC-vk-F0x">
                                     <rect key="frame" x="250" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="9"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="Wk2-BI-zW4"/>
@@ -117,21 +126,21 @@
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="47L-VV-XWL">
                                     <rect key="frame" x="0.0" y="0.0" width="125" height="112"/>
-                                    <state key="normal" title="-"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="1VK-M5-7yd"/>
                                     </connections>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s8M-KW-Hlq">
                                     <rect key="frame" x="125" y="0.0" width="125" height="112"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
                                     <state key="normal" title="0"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="eif-B7-X00"/>
                                     </connections>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1BG-a6-wDi">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1BG-a6-wDi">
                                     <rect key="frame" x="250" y="0.0" width="125" height="112"/>
-                                    <state key="normal" title="&lt;"/>
+                                    <state key="normal" image="Icons/Other/delete"/>
                                     <connections>
                                         <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="iVx-FV-DUo"/>
                                     </connections>
@@ -141,7 +150,6 @@
                     </subviews>
                 </stackView>
             </subviews>
-            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstAttribute="bottom" secondItem="Cdf-J5-cJf" secondAttribute="bottom" id="Qjn-SQ-45c"/>
                 <constraint firstItem="Cdf-J5-cJf" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="SmJ-hL-xLB"/>
@@ -152,4 +160,7 @@
             <point key="canvasLocation" x="21.600000000000001" y="-49.475262368815599"/>
         </view>
     </objects>
+    <resources>
+        <image name="Icons/Other/delete" width="23" height="18"/>
+    </resources>
 </document>

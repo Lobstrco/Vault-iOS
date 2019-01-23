@@ -4,8 +4,9 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .mnemonicRecovery
   
-  @IBOutlet var recoveryButton: UIButton!
+  @IBOutlet var nextButton: UIButton!
   @IBOutlet var textView: UITextView!
+  @IBOutlet var restoreAccountInfoLabel: UILabel!
   
   var presenter: MnemonicRecoveryPresenter!
   var mnemonicSuggestionsView: MnemonicSuggestionsView?
@@ -19,12 +20,36 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
     
     presenter = MnemonicRecoveryPresenterImpl(view: self)
     setupMnemonicSuggestionsView()
+    
+    setAppearance()
+    setStaticStrings()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController?.setNavigationBarHidden(false, animated: true)
   }
   
   // MARK: - IBActions
   
   @IBAction func recoveryButtonAction(_ sender: Any) {
     presenter.recoveryButtonWasPressed()
+  }
+  
+  // MARK: - Private
+  
+  private func setAppearance() {
+    textView.layer.borderWidth = 1
+    textView.layer.borderColor = Asset.Colors.gray.color.cgColor
+    
+    AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
+    AppearanceHelper.set(navigationController)
+    AppearanceHelper.setBackButton(in: navigationController)
+  }
+  
+  private func setStaticStrings() {
+    restoreAccountInfoLabel.text = L10n.textRestoreInfo
+    navigationItem.title = L10n.navTitleRestoreAccount
   }
 }
 
@@ -33,7 +58,7 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
 extension MnemonicRecoveryViewController: MnemonicRecoveryView {
   
   func displayRecoveryButton(isEnabled: Bool) {
-    recoveryButton.isHidden = !isEnabled
+    nextButton.isHidden = !isEnabled
   }
   
   func displaySuggestionList(suggestionList: [String]) {
@@ -67,6 +92,12 @@ extension MnemonicRecoveryViewController: MnemonicSuggestionsViewDelegate {
                                                        owner: self,
                                                        options: nil)?.first as? MnemonicSuggestionsView
     mnemonicSuggestionsView?.delegate = self
+    
+    mnemonicSuggestionsView?.layer.shadowColor = UIColor.black.cgColor
+    mnemonicSuggestionsView?.layer.shadowOffset = CGSize(width: 0, height: -1.0)
+    mnemonicSuggestionsView?.layer.shadowOpacity = 0.2
+    mnemonicSuggestionsView?.layer.shadowRadius = 4.0
+    
     textView.inputAccessoryView = mnemonicSuggestionsView
   }
   

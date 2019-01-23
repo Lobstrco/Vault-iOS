@@ -14,7 +14,7 @@
         <scene sceneID="GOG-ov-APo">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="JMB-xt-Bqe" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" image="ic_settings" id="smB-XG-aZk"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="Icons/Tabbar/settingsOut" id="smB-XG-aZk"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="UFs-78-4ww">
                         <rect key="frame" x="0.0" y="20" width="375" height="44"/>
@@ -181,6 +181,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="ic_settings" width="24" height="24"/>
+        <image name="Icons/Tabbar/settingsOut" width="24" height="24"/>
     </resources>
 </document>

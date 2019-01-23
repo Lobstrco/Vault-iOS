@@ -57,8 +57,8 @@ struct TransactionHelper {
       switch valueType {
       case is KeyPair.Type:
         valueParam = (value as! KeyPair).accountId
-      case is Asset.Type:
-        valueParam = (value as! Asset).code ?? "XLM"
+//      case is Asset.Type:
+//        valueParam = (value as! Asset).code ?? "XLM"
       case is Decimal.Type:
         valueParam = (value as! Decimal).description
       case is UInt32?.Type:
@@ -77,7 +77,7 @@ struct TransactionHelper {
   
   static func getValidatedDate(from sourceDate: String) -> String {
     let inputDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZ"
-    let outputDateFormat = "MMM dd, yyyy, HH:mm"
+    let outputDateFormat = "MMM dd yyyy HH:mm a"
     
     let dateFormatterGet = DateFormatter()
     dateFormatterGet.dateFormat = inputDateFormat

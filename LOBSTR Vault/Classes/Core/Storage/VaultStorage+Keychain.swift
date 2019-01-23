@@ -4,6 +4,7 @@ protocol VaultStorageKeychain {
   func storeEncryptedMnemonicInKeychain(data: Data) -> Bool
   func storePinInKeychain(_ pin: String) -> Bool
   func storeJWTInKeychain(_ jwt: String) -> Bool
+  func storePublicKeyInKeychain(_ publicKey: String) -> Bool
   
   func removeJWTFromKeychain() -> Bool
   func removePinFromKeychain() -> Bool
@@ -11,6 +12,7 @@ protocol VaultStorageKeychain {
   func getEncryptedMnemonicFromKeychain() -> Data?
   func getPinFromKeychain() -> String?
   func getJWTFromKeychain() -> String?
+  func getPublicKeyFromKeychain() -> String?
 }
 
 // MARK: - VaultStorageKeychain
@@ -27,6 +29,11 @@ extension VaultStorage: VaultStorageKeychain {
   
   public func storeJWTInKeychain(_ jwt: String) -> Bool {
     return storeStringInKeychain(jwt, with: jwtQueryParameters)
+  }
+  
+  @discardableResult
+  public func storePublicKeyInKeychain(_ publicKey: String) -> Bool {
+    return storeStringInKeychain(publicKey, with: publicKeyQueryParameters)
   }
   
   public func removeJWTFromKeychain() -> Bool {
@@ -50,6 +57,10 @@ extension VaultStorage: VaultStorageKeychain {
   
   public func getJWTFromKeychain() -> String? {
     return getStringFromKeychain(with: jwtQueryParameters)
+  }
+  
+  public func getPublicKeyFromKeychain() -> String? {
+    return getStringFromKeychain(with: publicKeyQueryParameters)
   }
   
   private func storeStringInKeychain(_ string: String,

@@ -2,7 +2,12 @@ import Foundation
 import stellarsdk
 
 protocol HomeView: class {
-  func displayTransactionNumber(_ number: Int)
+  func setTransactionNumber(_ number: Int)
+  func setDesignDetails()
+  func setPublicKey(_ publicKey: String)
+  func setSignerDetails()
+  func setStaticStrings()
+  func setButtonTitles()
 }
 
 protocol HomePresenter {
@@ -20,7 +25,10 @@ class HomePresenterImpl: HomePresenter {
   // MARK: - HomePresenter
   
   func homeViewDidLoad() {
-    displayTransactionNumber()    
+    view?.setStaticStrings()
+    view?.setButtonTitles()
+    view?.setDesignDetails()
+    displayTransactionNumber()
   }
   
   // MARK: - HomeView
@@ -32,7 +40,7 @@ class HomePresenterImpl: HomePresenter {
     apiLoader.loadAPIRequest(requestData: nil) { result in
       switch result {
       case .success(let paginationResponse):
-        self.view?.displayTransactionNumber(paginationResponse.count)
+        self.view?.setTransactionNumber(paginationResponse.count)
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:

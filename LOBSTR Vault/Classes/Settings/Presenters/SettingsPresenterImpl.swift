@@ -10,6 +10,7 @@ class SettingsPresenterImpl: SettingsPresenter {
   private let mnemonicManager: MnemonicManager
   private var biometricAuthManager: BiometricAuthManager
   private let settingsSectionsBuilder: SettingsSectionsBuilder
+  private let vaultStorage: VaultStorage
   
   private let navigationController: UINavigationController
   
@@ -19,12 +20,14 @@ class SettingsPresenterImpl: SettingsPresenter {
        navigationController: UINavigationController,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl(),
-       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl()) {
+       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl(),
+       vaultStorage: VaultStorage = VaultStorage()) {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
     self.biometricAuthManager = biometricAuthManager
     self.settingsSectionsBuilder = settingsSectionsBuilder
+    self.vaultStorage = vaultStorage
   }
 }
 
@@ -63,22 +66,11 @@ extension SettingsPresenterImpl {
 
 extension SettingsPresenterImpl {
   func configure(publicKeyCell: PublicKeyTableViewCell) {
-    // With use autoreleasepool we clear sensitive memory immediately.
-    autoreleasepool {
-      mnemonicManager.getDecryptedMnemonicFromKeychain { result in
-        switch result {
-        case .success(let mnemonic):
-          DispatchQueue.global(qos: .userInteractive).async {
-            let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic)
-            DispatchQueue.main.async {
-              publicKeyCell.setPublicKey(keyPair.accountId)
-            }
-          }
-        case .failure:
-          break
-        }
-      }
-    }
+    
+    guard let publicKey = vaultStorage.getPublicKeyFromKeychain()
+    else { return }
+
+    publicKeyCell.setPublicKey(publicKey)
   }
   
   func configure(biometricIDCell: BiometricIDTableViewCell) {

@@ -29,18 +29,13 @@ class ApplicationCoordinator {
   }
   
   func showMenuScreen() {
-    let menuViewController = MnemonicMenuViewController.createFromStoryboard()
-    
-    let navigation = UINavigationController(rootViewController: menuViewController)
+    let startMenuViewController = StartMenuViewController.createFromStoryboard()
+    let navigation = UINavigationController(rootViewController: startMenuViewController)
     window?.rootViewController = navigation
-  }
+  }  
   
   func showPinScreen() {
-    let pinViewController = PinViewController.createFromStoryboard()    
-    
-    pinViewController.mode = .enterPin
-    
-    let navigation = UINavigationController(rootViewController: pinViewController)
-    window?.rootViewController = navigation
+    let pinViewController = PinEnterViewController.createFromStoryboard()
+    window?.rootViewController = pinViewController
   }
 }

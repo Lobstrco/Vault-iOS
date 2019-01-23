@@ -88,7 +88,15 @@ extension MnemonicManagerTests {
       return false
     }
     
+    func storePublicKeyInKeychain(_ publicKey: String) -> Bool {
+      return false
+    }
+    
     func getJWTFromKeychain() -> String? {
+      return nil
+    }
+    
+    func getPublicKeyFromKeychain() -> String? {
       return nil
     }
     

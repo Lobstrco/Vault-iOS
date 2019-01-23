@@ -43,7 +43,8 @@ extension MnemonicSuggestionsView: UICollectionViewDelegate, UICollectionViewDat
                       cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "MnemonicSuggestionsViewCell",
                                                   for: indexPath) as! MnemonicSuggestionsViewCell
-    cell.title.text = suggestionList[indexPath.item]
+    cell.title.text = suggestionList[indexPath.item]        
+    cell.layer.cornerRadius = 5
     
     return cell
   }
@@ -61,4 +62,8 @@ extension MnemonicSuggestionsView: UICollectionViewDelegate, UICollectionViewDat
                       minimumLineSpacingForSectionAt section: Int) -> CGFloat {
     return 10.0
   }
+  
+//  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+//    return CGSize(width: 79, height: 30)
+//  }
 }

@@ -1,6 +1,13 @@
 import Foundation
 import UIKit
 
+protocol PinView: class {
+  func setTitle(_ title: String)
+  func fillPinDot(at index: Int)
+  func clearPinDot(at index: Int)
+  func shakePinView()
+}
+
 class PinPresenterImpl: PinPresenter {
   var pin: String = ""
   let pinLength = 6
@@ -12,18 +19,14 @@ class PinPresenterImpl: PinPresenter {
   private let pinManager: PinManager
   private var biometricAuthManager: BiometricAuthManager
   
-  let navigationController: UINavigationController
-  
   // MARK: - Init
   
   init(view: PinView,
-       navigationController: UINavigationController,
        mode: PinMode,
        pinManager: PinManager = PinManagerImpl(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl()) {
     self.view = view
     self.mode = mode
-    self.navigationController = navigationController
     self.pinManager = pinManager
     self.biometricAuthManager = biometricAuthManager
   }
@@ -33,8 +36,6 @@ class PinPresenterImpl: PinPresenter {
   func pinViewDidLoad() {
     switch mode {
     case .enterPin:
-      view?.setTitle("Enter Pin")
-      
       guard biometricAuthManager.isBiometricAuthEnabled else { return }
       
       biometricAuthManager.authenticateUser { [weak self] result in
@@ -47,9 +48,9 @@ class PinPresenterImpl: PinPresenter {
       }
     
     case .createPinFirstStep:
-      view?.setTitle("Create Pin")
+      view?.setTitle(L10n.navTitleCreatePasscode)
     case .createPinSecondStep:
-      view?.setTitle("Confirm Pin")
+      view?.setTitle(L10n.navTitleReenterPasscode)
     default:
       break
     }
@@ -68,7 +69,7 @@ class PinPresenterImpl: PinPresenter {
       case .createPinSecondStep(let pinFromFirstStep):
         
         if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
-          updateToken()
+          transitionToBiometricID()
         } else {
           view?.shakePinView()
         }
@@ -114,17 +115,6 @@ class PinPresenterImpl: PinPresenter {
       view?.shakePinView()
     }
   }
-  
-  private func updateToken() {
-    AuthenticationService().updateToken { result in
-      switch result {
-      case .success:
-        self.transitionToBiometricID()
-      case .failure(let error):
-        print("Couldn't get token. \(error)")
-      }
-    }
-  }
 }
 
 // MARK: - Navigation
@@ -144,7 +134,8 @@ extension PinPresenterImpl {
     
     pinViewController.mode = .createPinFirstStep
     
-    navigationController.pushViewController(pinViewController,
+    let currentPinViewController = view as! PinViewController
+    currentPinViewController.navigationController?.pushViewController(pinViewController,
                                             animated: true)
   }
   
@@ -153,14 +144,16 @@ extension PinPresenterImpl {
     
     pinViewController.mode = .createPinSecondStep(pin)
     
-    navigationController.pushViewController(pinViewController,
+    let currentPinViewController = view as! PinViewController
+    currentPinViewController.navigationController?.pushViewController(pinViewController,
                                             animated: true)
   }
   
   func transitionToBiometricID() {
     let biometricIDViewController = BiometricIDViewController.createFromStoryboard()
     
-    navigationController.pushViewController(biometricIDViewController,
+    let pinViewController = view as! PinViewController
+    pinViewController.navigationController?.pushViewController(biometricIDViewController,
                                             animated: true)
   }
 }

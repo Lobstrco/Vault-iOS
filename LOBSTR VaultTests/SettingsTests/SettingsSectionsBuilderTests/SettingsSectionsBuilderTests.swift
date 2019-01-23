@@ -21,10 +21,10 @@ class SettingsSectionsBuilderTests: XCTestCase {
     
     let about = SettingsSection(type: .about, rows: [.version, .help])
     
-    let settingsSections: [SettingsSection] = [wallet, security, about]
-    let result = sut.buildSections()
+    let expectedSections: [SettingsSection] = [wallet, security, about]
+    let resultSections = sut.buildSections()
     
-    XCTAssertEqual(result, settingsSections)
+    XCTAssertEqual(resultSections, expectedSections)
   }
   
   

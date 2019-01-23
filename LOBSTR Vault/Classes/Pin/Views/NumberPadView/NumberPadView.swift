@@ -54,4 +54,12 @@ class NumberPadView: UIView {
 
     delegate?.numberPadButtonWasPressed(button: pressedButton)
   }
+  
+  func setupAppearance(with color: UIColor) {
+    for button in buttons {
+      button.setTitleColor(color, for: .normal)
+    }
+    
+    rightButton.tintColor = color
+  }
 }

@@ -1,12 +1,7 @@
 import UIKit
 
 class MnemonicCollectionViewCell: UICollectionViewCell, MnemonicCellView {
-  @IBOutlet var label: UILabel!
-  
-  override func awakeFromNib() {
-    contentView.layer.borderColor = UIColor.gray.cgColor
-    contentView.layer.borderWidth = 1
-  }
+  @IBOutlet var label: UILabel!  
   
   func display(title: String) {
     self.label.text = title

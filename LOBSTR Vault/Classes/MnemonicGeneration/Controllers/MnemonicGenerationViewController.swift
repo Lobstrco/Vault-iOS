@@ -1,16 +1,26 @@
 import UIKit
 
-class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView, StoryboardCreation {
+class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .mnemonicGeneration
   
   @IBOutlet var collectionView: UICollectionView!
+  
+  @IBOutlet var mnemonicDescriptionLabel: UILabel!
+  @IBOutlet var copyDescriptionLabel: UILabel!
+  @IBOutlet var confirmDescriptionLabel: UILabel!
+  
+  @IBOutlet var nextButton: UIButton!
+  
   var presenter: MnemonicGenerationPresenter!
   
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    setAppearance()
+    setStaticStrings()
     
     presenter = MnemonicGenerationPresenterImpl(view: self)
     presenter.mnemonicGenerationViewDidLoad()
@@ -26,8 +36,26 @@ class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView
     presenter.copyToClipboardWasPressed()
   }
   
-  // MARK: - MnemonicGenerationView
+  // MARK: - Private
   
+  private func setAppearance() {
+    AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
+    AppearanceHelper.setBackButton(in: navigationController)
+  }
+  
+  private func setStaticStrings() {
+    mnemonicDescriptionLabel.text = L10n.textMnemonicDescription
+    copyDescriptionLabel.text = L10n.textCopyDescription
+    confirmDescriptionLabel.text = L10n.textConfirmDescription
+    navigationItem.title = L10n.navTitleMnemonicGeneration
+  }
+  
+}
+
+// MARK: - MnemonicGenerationView
+
+extension MnemonicGenerationViewController: MnemonicGenerationView {
+ 
   func displayMnemonicList(mnemonicList: [String]) {
     collectionView.dataSource = self
     collectionView.delegate = self
@@ -37,6 +65,7 @@ class MnemonicGenerationViewController: UIViewController, MnemonicGenerationView
     UIPasteboard.general.string = mnemonic
   }
 }
+
 
 // MARK: - UICollection
 

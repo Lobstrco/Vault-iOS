@@ -1,15 +1,12 @@
 import Foundation
 
 public protocol KeychainManager {
-  func store(_ data: Data,
-             with parameters: [String: Any]) -> Bool
-  
+  func store(_ data: Data, with parameters: [String: Any]) -> Bool
   func removeData(with parameters: [String: Any]) -> Bool
-  
   func getData(with parameters: [String: Any]) -> Data?
 }
 
-public struct KeychainManagerImpl: KeychainManager {
+final public class KeychainManagerImpl: KeychainManager {
   public func store(_ data: Data,
                     with parameters: [String: Any]) -> Bool {
     var parameters = parameters

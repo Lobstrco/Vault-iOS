@@ -1,20 +1,14 @@
 import UIKit
 
-protocol PinView: class {
-  func setTitle(_ title: String)
-  func fillPinDot(at index: Int)
-  func clearPinDot(at index: Int)
-  func shakePinView()
-}
-
-class PinViewController: UIViewController, PinView, NumberPadViewDelegate,
-  StoryboardCreation {
+class PinViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .pin
   
   var mode: PinMode = .undefined
   
-  @IBOutlet var pinView: PinInputView!
   @IBOutlet var numberPadView: NumberPadView!
+  @IBOutlet var pinDotView: PinDotView!
+  
+  @IBOutlet var createPasscodeNoteLabel: UILabel?
   
   let impact = UIImpactFeedbackGenerator(style: .light)
   var presenter: PinPresenter!
@@ -24,36 +18,57 @@ class PinViewController: UIViewController, PinView, NumberPadViewDelegate,
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    presenter = PinPresenterImpl(view: self,
-                                 navigationController: navigationController!,
-                                 mode: mode)
-    pinView.clearPinDots()
+    presenter = PinPresenterImpl(view: self, mode: mode)
+    
     numberPadView.delegate = self
     
     presenter.pinViewDidLoad()
+    pinDotView.clearPinDots()
+    
+    setAppearance()
+    setStaticStrings()
   }
   
-  // MARK: - PinView
+  // MARK: - Private
+  
+  private func setAppearance() {
+    pinDotView.setupAppearance(with: (fillColor: Asset.Colors.main.color, outColor: Asset.Colors.background.color))
+    numberPadView.setupAppearance(with: Asset.Colors.black.color)
+    AppearanceHelper.setBackButton(in: navigationController)
+  }
+  
+  private func setStaticStrings() {
+    createPasscodeNoteLabel?.text = L10n.textCreatePasscodeNote
+  }
+}
+
+// MARK: - PinView
+
+extension PinViewController: PinView {
   
   func setTitle(_ title: String) {
-    self.title = title
+    navigationItem.title = title
   }
   
   func fillPinDot(at index: Int) {
-    pinView.fillPinDot(at: index)
+    pinDotView.fillPinDot(at: index)
   }
   
   func clearPinDot(at index: Int) {
-    pinView.clearPinDot(at: index)
+    pinDotView.clearPinDot(at: index)
   }
   
   func shakePinView() {
-    pinView.shake()
+    pinDotView.shake()
   }
-  
-  // MARK: - NumberPadViewDelegate
+}
+
+// MARK: - NumberPadViewDelegate
+
+extension PinViewController: NumberPadViewDelegate {
   
   func numberPadButtonWasPressed(button: NumberPadButton) {
+    
     impact.impactOccurred()
     
     switch button {
@@ -66,4 +81,3 @@ class PinViewController: UIViewController, PinView, NumberPadViewDelegate,
     }
   }
 }
-

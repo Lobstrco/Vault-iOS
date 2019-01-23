@@ -14,6 +14,8 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
     
     presenter.transactionDetailsViewDidLoad()    
     configureTableView()
+    
+    self.navigationController?.navigationBar.prefersLargeTitles = false
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -85,5 +87,9 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     presenter.operationWasSelected(by: indexPath.item)
-  }  
+  }
+  
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 50
+  }
 }

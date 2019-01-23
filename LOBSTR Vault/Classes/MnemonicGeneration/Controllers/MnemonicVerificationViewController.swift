@@ -1,11 +1,14 @@
 import UIKit
 
-class MnemonicVerificationViewController: UIViewController, MnemonicVerificationView, StoryboardCreation {
+class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .mnemonicGeneration
   
   @IBOutlet var shuffledCollectionView: UICollectionView!
   @IBOutlet var сollectionViewForVerification: UICollectionView!
+  
+  @IBOutlet var errorLabel: UILabel!
+  @IBOutlet var descriptionLabel: UILabel!
   
   var presenter: MnemonicVerificationPresenter!
   
@@ -18,15 +21,40 @@ class MnemonicVerificationViewController: UIViewController, MnemonicVerification
     
     сollectionViewForVerification.dataSource = self
     сollectionViewForVerification.delegate = self
+    
+    setAppearance()
+    setStaticStrings()
   }
   
-  // MARK: - IBAction
+  // MARK: - Private
   
-  @IBAction func nextButtonAction(_ sender: Any) {
+  private func setAppearance() {
+    setNextButton()
+    AppearanceHelper.setBackButton(in: navigationController)
+  }
+  
+  private func setNextButton() {
+    let rightBarButtonItem = UIBarButtonItem.init(title: L10n.buttonTitleNext,
+                                                  style: .plain,
+                                                  target: self,
+                                                  action: #selector(nextButtonAction(_:)))
+    
+    self.navigationItem.rightBarButtonItem = rightBarButtonItem
+  }
+  
+  @objc private func nextButtonAction(_ sender : UIButton) {
     presenter.nextButtonAction()
   }
   
-  // MARK: - MnemonicVerificationView
+  private func setStaticStrings() {
+    descriptionLabel.text = L10n.textMnemonicVerificationDescription
+    navigationItem.title = L10n.navTitleMnemonicVerification
+  }
+}
+
+// MARK: - MnemonicVerificationView
+
+extension MnemonicVerificationViewController: MnemonicVerificationView {
   
   func displayShuffledMnemonicList() {
     shuffledCollectionView.dataSource = self
