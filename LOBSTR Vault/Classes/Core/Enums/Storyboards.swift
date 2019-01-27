@@ -12,4 +12,5 @@ enum Storyboards: String {
   case settings = "Settings"
   case backUpAccount = "BackUpAccount"
   case publicKey = "PublicKey"
+  case signerDetails = "SignerDetails"
 }

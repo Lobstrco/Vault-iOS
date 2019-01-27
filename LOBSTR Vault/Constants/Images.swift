@@ -36,9 +36,12 @@ internal enum Asset {
 
     internal enum Other {
       internal static let delete = ImageAsset(name: "Icons/Other/delete")
+      internal static let icClose = ImageAsset(name: "Icons/Other/icClose")
       internal static let icCopy = ImageAsset(name: "Icons/Other/icCopy")
       internal static let icFinger = ImageAsset(name: "Icons/Other/icFinger")
       internal static let icKey = ImageAsset(name: "Icons/Other/icKey")
+      internal static let icPlus = ImageAsset(name: "Icons/Other/icPlus")
+      internal static let icQuestionSign = ImageAsset(name: "Icons/Other/icQuestionSign")
     }
     internal enum Tabbar {
       internal static let arrowsFill = ImageAsset(name: "Icons/Tabbar/arrowsFill")

@@ -41,16 +41,28 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="267"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="w50-5z-qxL">
-                                        <rect key="frame" x="40" y="39" width="295" height="189"/>
+                                        <rect key="frame" x="40" y="43" width="295" height="181"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5jv-Vp-ouC">
-                                                <rect key="frame" x="0.0" y="0.0" width="295" height="95.5"/>
-                                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="80"/>
-                                                <color key="textColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9y2-pl-xlj">
+                                                <rect key="frame" x="0.0" y="0.0" width="295" height="90"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5jv-Vp-ouC">
+                                                        <rect key="frame" x="0.0" y="0.0" width="295" height="90"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="black" pointSize="80"/>
+                                                        <color key="textColor" name="Colors/White"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                                <constraints>
+                                                    <constraint firstItem="5jv-Vp-ouC" firstAttribute="leading" secondItem="9y2-pl-xlj" secondAttribute="leading" id="11B-vw-mrv"/>
+                                                    <constraint firstAttribute="height" constant="90" id="1Fc-AV-nkU"/>
+                                                    <constraint firstAttribute="bottom" secondItem="5jv-Vp-ouC" secondAttribute="bottom" id="AFg-fP-OA4"/>
+                                                    <constraint firstItem="5jv-Vp-ouC" firstAttribute="top" secondItem="9y2-pl-xlj" secondAttribute="top" id="Iwl-GU-sey"/>
+                                                    <constraint firstAttribute="trailing" secondItem="5jv-Vp-ouC" secondAttribute="trailing" id="wOK-0P-lqv"/>
+                                                </constraints>
+                                            </view>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transactions to sign" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oFH-77-3bt">
-                                                <rect key="frame" x="0.0" y="95.5" width="295" height="21"/>
+                                                <rect key="frame" x="0.0" y="90" width="295" height="21"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="21" id="pzZ-gM-tRd"/>
                                                 </constraints>
@@ -59,7 +71,7 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ohD-fY-MrK">
-                                                <rect key="frame" x="0.0" y="139" width="295" height="50"/>
+                                                <rect key="frame" x="0.0" y="131" width="295" height="50"/>
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ooe-4g-8hg">
                                                         <rect key="frame" x="72.5" y="19" width="150" height="31"/>
@@ -72,6 +84,9 @@
                                                         <state key="normal" title="view transactions list">
                                                             <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </state>
+                                                        <connections>
+                                                            <action selector="transactionListButtonAction:" destination="uIU-Zc-0cV" eventType="touchUpInside" id="1hv-Xs-ZQP"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                                 <constraints>
@@ -105,7 +120,7 @@
                                                         <color key="textColor" name="Colors/Black"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GBIDASRVG3OLGNFEAUHQAZUJJI7SOCG5CJK676CUTWXHF3W2OIR6GSGJ" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ubg-vt-fSh">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ubg-vt-fSh">
                                                         <rect key="frame" x="0.0" y="56" width="315" height="56.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                         <color key="textColor" name="Colors/GrayOpacity30"/>
@@ -125,6 +140,9 @@
                                                                 <state key="normal" title="copy key">
                                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 </state>
+                                                                <connections>
+                                                                    <action selector="copyKeyButtonAction:" destination="uIU-Zc-0cV" eventType="touchUpInside" id="71I-g7-7Ea"/>
+                                                                </connections>
                                                             </button>
                                                         </subviews>
                                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -162,19 +180,10 @@
                                                 <color key="textColor" name="Colors/Black"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GBIDASRVG3OLGNFEAUHQAZUJJI7SOCG5CJK676CUTWXHF3W2OIR6GSGJ" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="waM-D2-9Nu">
-                                                <rect key="frame" x="14" y="65.5" width="315" height="36"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                <color key="textColor" name="Colors/GrayOpacity30"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
-                                            <constraint firstItem="waM-D2-9Nu" firstAttribute="top" secondItem="7jL-77-T7v" secondAttribute="bottom" constant="15" id="Jd8-lN-dGb"/>
-                                            <constraint firstItem="waM-D2-9Nu" firstAttribute="leading" secondItem="0XN-LQ-s4z" secondAttribute="leading" constant="14" id="O4w-un-yNE"/>
                                             <constraint firstItem="7jL-77-T7v" firstAttribute="top" secondItem="0XN-LQ-s4z" secondAttribute="top" constant="30" id="sgE-gG-Ju0"/>
-                                            <constraint firstAttribute="trailing" secondItem="waM-D2-9Nu" secondAttribute="trailing" constant="14" id="vdL-PE-g7q"/>
                                             <constraint firstItem="7jL-77-T7v" firstAttribute="centerX" secondItem="0XN-LQ-s4z" secondAttribute="centerX" id="w34-xz-fhu"/>
                                         </constraints>
                                     </view>
@@ -211,7 +220,7 @@
                         <outlet property="copyKeyButton" destination="1ZL-Yj-u3g" id="cHq-b9-NEd"/>
                         <outlet property="infoContainerView" destination="4bP-Vy-9cS" id="wth-MH-L5P"/>
                         <outlet property="publicKeyLabel" destination="Ubg-vt-fSh" id="PZ4-1a-Hfh"/>
-                        <outlet property="signerForLabel" destination="waM-D2-9Nu" id="lnY-Yl-Xy1"/>
+                        <outlet property="signerDetailsView" destination="0XN-LQ-s4z" id="Y1Y-jI-mDV"/>
                         <outlet property="titleOfPublicKeyLabel" destination="kHe-5n-j1P" id="0IK-Qu-9Yo"/>
                         <outlet property="titleOfsignerForLabel" destination="7jL-77-T7v" id="uEv-0x-hr1"/>
                         <outlet property="transactionListButton" destination="ooe-4g-8hg" id="ix0-pm-w6T"/>
@@ -237,6 +246,9 @@
         </namedColor>
         <namedColor name="Colors/Main">
             <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

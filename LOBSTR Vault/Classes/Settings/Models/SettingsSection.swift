@@ -19,21 +19,24 @@ public enum SettingsSectionType {
   var title: String {
     switch self {
     case .account:
-      return "Account"
+      return L10n.textSettingsAccountSection
     case .security:
-      return "Security"
+      return L10n.textSettingsSecuritySection
     case .about:
-      return "About"
+      return L10n.textSettingsAboutSection
     }
   }
 }
 
 public enum SettingsRow {
   case publicKey
+  case signerForAccounts
   case mnemonicCode
   case biometricId
   case changePin
   case version
   case help
+  case logout
+  case copyright
 }
 

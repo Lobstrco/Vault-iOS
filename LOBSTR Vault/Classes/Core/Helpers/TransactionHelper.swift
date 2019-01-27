@@ -77,7 +77,7 @@ struct TransactionHelper {
   
   static func getValidatedDate(from sourceDate: String) -> String {
     let inputDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZ"
-    let outputDateFormat = "MMM dd yyyy HH:mm a"
+    let outputDateFormat = "MMM dd, yyyy, HH:mm"
     
     let dateFormatterGet = DateFormatter()
     dateFormatterGet.dateFormat = inputDateFormat
@@ -91,5 +91,66 @@ struct TransactionHelper {
       return "none"
     }
   }
+  
+  static func signTransaction(transactionEnvelopeXDR: TransactionEnvelopeXDR, userKeyPair: KeyPair) -> String? {
+    let envelopeXDR = transactionEnvelopeXDR
+    do {
+      let tx = envelopeXDR.tx
+      
+      // user signature
+      let transactionHash = try [UInt8](tx.hash(network: .public))
+      let userSignature = userKeyPair.signDecorated(transactionHash)
+      
+      envelopeXDR.signatures.append(userSignature)
+      
+      if let xdrEncodedEnvelope = envelopeXDR.xdrEncoded {
+        return xdrEncodedEnvelope
+      } else {
+        return nil
+      }
+    } catch _ {
+      return nil
+    }
+  }
+  
+  static func signTransaction(transactionEnvelopeXDR: TransactionEnvelopeXDR,
+                              mnemonicManager: MnemonicManager,
+                              completion: @escaping (Result<String>) -> Void) {
+    
+    guard mnemonicManager.isMnemonicStoredInKeychain() else {
+      return
+    }
+    
+    mnemonicManager.getDecryptedMnemonicFromKeychain { result in
+      switch result {
+      case .success(let mnemonic):
+        let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic)
+        guard let transactionEnvelope = TransactionHelper.signTransaction(transactionEnvelopeXDR: transactionEnvelopeXDR,
+                                                                          userKeyPair: keyPair)
+        else {
+          completion(.failure(VaultError.TransactionError.invalidTransaction))
+          return
+        }
+        
+        completion(.success(transactionEnvelope))
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+  
+  static func isNeedAdditionalSignature(from message: String) -> Bool {    
+    guard let errorMessage = try? JSONDecoder().decode(HorizonErrorMessage.self, from: message.data(using: String.Encoding.utf8)!) else {
+      return false
+    }
+    
+//    "tx_bad_seq"
+    if errorMessage.extras?.result_codes?.transaction == "tx_bad_auth" {
+      return true
+    }
+    
+    return false
+  }
 }
+
 

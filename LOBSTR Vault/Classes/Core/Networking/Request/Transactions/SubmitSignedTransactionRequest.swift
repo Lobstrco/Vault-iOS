@@ -1,23 +1,31 @@
 import Foundation
 
 struct SubmitSignedTransactionRequestParameters {
+  let submit: Bool?
   let xdr: String
 }
 
 struct SubmitSignedTransactionRequest: APIRequest {
   
   func makeRequest(from data: SubmitSignedTransactionRequestParameters?, jwtToken: String?) throws -> URLRequest {
-    let path = "/api/authentication/"
+    let path = "/api/transactions/"
     let urlString = Constants.baseURL + path
     let url = URL(string: urlString)!
 
     var urlRequest = URLRequest(url: url)
     urlRequest.httpMethod = APIRequestHTTPMethod.post.rawValue
 
-    if let xdr = data?.xdr {
-      let parameters: [String: String] = ["xdr": xdr]
-      urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+    guard let data = data else {
+      throw VaultError.TransactionError.invalidTransaction
     }
+    
+    var parameters: [String: Any] = ["xdr": data.xdr]
+    
+    if let submit = data.submit {
+      parameters["submit"] = submit
+    }
+    
+    urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
     
     if let token = jwtToken {
       let autrhorizationHeaderField = "Authorization"

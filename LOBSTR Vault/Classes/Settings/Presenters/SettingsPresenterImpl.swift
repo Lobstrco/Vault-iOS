@@ -83,7 +83,7 @@ extension SettingsPresenterImpl {
                  row: SettingsRow) {
     switch row {
     case .version:
-      let title = "Version"
+      let title = L10n.textSettingsVersionField
       let version = ApplicationInfo.version
       rightDetailCell.setTitle(title, detail: version)
     default:
@@ -94,14 +94,20 @@ extension SettingsPresenterImpl {
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,
                  row: SettingsRow) {
     switch row {
+    case .signerForAccounts:
+      let title = "Signer for accounts"
+      disclosureIndicatorTableViewCell.setTitle(title)
     case .mnemonicCode:
-      let title = "Mnemonic Code"
+      let title = L10n.textSettingsMnemonicField
       disclosureIndicatorTableViewCell.setTitle(title)
     case .changePin:
-      let title = "Change PIN"
+      let title = L10n.textSettingsChangePinField
       disclosureIndicatorTableViewCell.setTitle(title)
     case .help:
-      let title = "Help"
+      let title = L10n.textSettingsHelpField
+      disclosureIndicatorTableViewCell.setTitle(title)
+    case .logout:
+      let title = L10n.textSettingsLogoutfield
       disclosureIndicatorTableViewCell.setTitle(title)
     default:
       break
@@ -116,8 +122,12 @@ extension SettingsPresenterImpl {
     let selectedRow = row(for: indexPath)
     
     switch selectedRow {
+    case .signerForAccounts:
+      showSignerDetails()
     case .changePin:
       showChangePin()
+    case .logout:
+      logout()
     default:
       break
     }
@@ -159,5 +169,33 @@ extension SettingsPresenterImpl {
     pinViewController.mode = .changePin
     
     navigationController.pushViewController(pinViewController, animated: true)
+  }
+  
+  func showSignerDetails() {
+    let signerDetailsTableViewController = SignerDetailsTableViewController.createFromStoryboard()
+    
+    let settingsViewController = view as! SettingsViewController
+    settingsViewController.navigationController?.pushViewController(signerDetailsTableViewController, animated: true)
+  }
+  
+  // temp
+  func logout() {
+    func clearKeychain() {
+      let secItemClasses = [kSecClassGenericPassword,
+                            kSecClassInternetPassword,
+                            kSecClassCertificate,
+                            kSecClassKey,
+                            kSecClassIdentity]
+      for secItemClass in secItemClasses {
+        let dictionary = [kSecClass as String: secItemClass]
+        SecItemDelete(dictionary as CFDictionary)
+      }
+    }
+    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+      else { return }
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      appDelegate.applicationCoordinator.showMenuScreen()
+    }
   }
 }

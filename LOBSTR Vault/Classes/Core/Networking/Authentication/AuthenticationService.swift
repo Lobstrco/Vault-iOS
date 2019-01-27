@@ -26,7 +26,7 @@ class AuthenticationService {
               }
               
               let transactionEnvelope = try TransactionEnvelopeXDR(xdr: transaction)
-              if let signedTransaction = self.signTransaction(transactionEnvelopeXDR: transactionEnvelope, userKeyPair: keyPair) {
+              if let signedTransaction = TransactionHelper.signTransaction(transactionEnvelopeXDR: transactionEnvelope, userKeyPair: keyPair) {
                 let submitChallengeRequestParameters = SubmitChallengeRequestParameters(transaction: signedTransaction)
                 let apiLoader = APIRequestLoader<SubmitChallengeRequest>(apiRequest: SubmitChallengeRequest())
                 apiLoader.loadAPIRequest(requestData: submitChallengeRequestParameters) { result in
@@ -53,28 +53,6 @@ class AuthenticationService {
       case .failure(let error):
         completion(.failure(error))
       }
-    }
-  }
-  
-  // MARK: - Private Methods
-  
-  private func signTransaction(transactionEnvelopeXDR: TransactionEnvelopeXDR, userKeyPair: KeyPair) -> String? {
-    let envelopeXDR = transactionEnvelopeXDR
-    do {
-      let tx = envelopeXDR.tx
-      
-      let transactionHash = try [UInt8](tx.hash(network: .public))
-      let userSignature = userKeyPair.signDecorated(transactionHash)
-      
-      envelopeXDR.signatures.append(userSignature)
-      
-      if let xdrEncodedEnvelope = envelopeXDR.xdrEncoded {
-        return xdrEncodedEnvelope
-      } else {
-        return nil
-      }
-    } catch _ {
-      return nil
     }
   }
 }

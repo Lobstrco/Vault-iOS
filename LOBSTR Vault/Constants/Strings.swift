@@ -29,10 +29,12 @@ internal enum L10n {
   internal static let buttonTitleCancel = L10n.tr("Localizable", "button_title_cancel")
   /// Copy Key
   internal static let buttonTitleCopyKey = L10n.tr("Localizable", "button_title_copy_key")
-  /// Create New Account
+  /// Create Account
   internal static let buttonTitleCreateNewAccount = L10n.tr("Localizable", "button_title_create_new_account")
   /// Confirm
   internal static let buttonTitleDeny = L10n.tr("Localizable", "button_title_deny")
+  /// Done
+  internal static let buttonTitleDone = L10n.tr("Localizable", "button_title_done")
   /// Logout
   internal static let buttonTitleLogout = L10n.tr("Localizable", "button_title_logout")
   /// Next
@@ -41,19 +43,19 @@ internal enum L10n {
   internal static let buttonTitleOk = L10n.tr("Localizable", "button_title_ok")
   /// Re-Check
   internal static let buttonTitleReCheck = L10n.tr("Localizable", "button_title_re_check")
-  /// Restore Account
+  /// Recover Account
   internal static let buttonTitleRestoreAccount = L10n.tr("Localizable", "button_title_restore_account")
   /// Show
   internal static let buttonTitleShow = L10n.tr("Localizable", "button_title_show")
   /// Signed Accounts
   internal static let buttonTitleSignedAccounts = L10n.tr("Localizable", "button_title_signed_accounts")
-  /// Skip for now
+  /// I will do this later
   internal static let buttonTitleSkipForNow = L10n.tr("Localizable", "button_title_skip_for_now")
   /// Submit
   internal static let buttonTitleSubmit = L10n.tr("Localizable", "button_title_submit")
   /// By registering you agree to our Terms of Service and Privacy Policy.
   internal static let buttonTitleTerms = L10n.tr("Localizable", "button_title_terms")
-  /// Turn On
+  /// Enable Fingerprint
   internal static let buttonTitleTurnOn = L10n.tr("Localizable", "button_title_turn_on")
   /// I understand
   internal static let buttonTitleUnderstand = L10n.tr("Localizable", "button_title_understand")
@@ -67,24 +69,26 @@ internal enum L10n {
   internal static let invalidTransactionMessage = L10n.tr("Localizable", "INVALID_TRANSACTION_MESSAGE")
   /// Invalid Transaction
   internal static let invalidTransactionTitle = L10n.tr("Localizable", "INVALID_TRANSACTION_TITLE")
-  /// Change Passcode
+  /// Change PIN
   internal static let navTitleChangePasscodeConfirmNew = L10n.tr("Localizable", "nav_title_change_passcode_confirm_new")
-  /// Change Passcode
+  /// Change PIN
   internal static let navTitleChangePasscodeEnterNew = L10n.tr("Localizable", "nav_title_change_passcode_enter_new")
-  /// Change Passcode
+  /// Change PIN
   internal static let navTitleChangePasscodeEnterOld = L10n.tr("Localizable", "nav_title_change_passcode_enter_old")
-  /// Create a Passcode
+  /// Create PIN
   internal static let navTitleCreatePasscode = L10n.tr("Localizable", "nav_title_create_passcode")
-  /// Mnemonic codes
+  /// Recovery Phrase
   internal static let navTitleMnemonicGeneration = L10n.tr("Localizable", "nav_title_mnemonic_generation")
-  /// Verify codes
+  /// Verify Recovery Phrase
   internal static let navTitleMnemonicVerification = L10n.tr("Localizable", "nav_title_mnemonic_verification")
-  /// Re-enter a Passcode
+  /// Confirm PIN
   internal static let navTitleReenterPasscode = L10n.tr("Localizable", "nav_title_reenter_passcode")
-  /// Restore account
+  /// Recover Account
   internal static let navTitleRestoreAccount = L10n.tr("Localizable", "nav_title_restore_account")
   /// Settings
   internal static let navTitleSettings = L10n.tr("Localizable", "nav_title_settings")
+  /// Signed Accounts
+  internal static let navTitleSettingsSignedAccounts = L10n.tr("Localizable", "nav_title_settings_signed_accounts")
   /// Transaction Details
   internal static let navTitleTransactionDetails = L10n.tr("Localizable", "nav_title_transaction_details")
   /// Transactions
@@ -93,96 +97,106 @@ internal enum L10n {
   internal static let outOfOperationRangeMessage = L10n.tr("Localizable", "OUT_OF_OPERATION_RANGE_MESSAGE")
   /// 
   internal static let outOfOperationRangeTitle = L10n.tr("Localizable", "OUT_OF_OPERATION_RANGE_TITLE")
-  /// ABOUT
-  internal static let textAboutSection = L10n.tr("Localizable", "text_about_section")
-  /// ACCOUNT
-  internal static let textAccountSection = L10n.tr("Localizable", "text_account_section")
-  /// To submit transaction add unique code into
+  /// To submit transaction enter its XDR below
   internal static let textAddTransactionDescription = L10n.tr("Localizable", "text_add_transaction_description")
-  /// Transaction is invalid. Please, try again.
+  /// Transaction is invalid. Please try again.
   internal static let textAddTransactionError = L10n.tr("Localizable", "text_add_transaction_error")
   /// Transaction XDR
   internal static let textAddTransactionPlaceholder = L10n.tr("Localizable", "text_add_transaction_placeholder")
   /// Add Transaction XDR
   internal static let textAddTransactionTitle = L10n.tr("Localizable", "text_add_transaction_title")
-  /// In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.
+  /// You will be shown a 12 word recovery phrase. It will allow you to recover access to your account in case your phone is lost or stolen.
   internal static let textBackupDescription = L10n.tr("Localizable", "text_backup_description")
   /// Backup Your Account
   internal static let textBackupTitle = L10n.tr("Localizable", "text_backup_title")
-  /// Confirm new PIN-code
+  /// Confirm PIN
   internal static let textChangePasscodeConfirmNew = L10n.tr("Localizable", "text_change_passcode_confirm_new")
-  /// Enter new PIN-code
+  /// Create PIN
   internal static let textChangePasscodeEnterNew = L10n.tr("Localizable", "text_change_passcode_enter_new")
-  /// Enter old PIN-code
+  /// Enter PIN
   internal static let textChangePasscodeEnterOld = L10n.tr("Localizable", "text_change_passcode_enter_old")
-  /// New codes doesn’t match
+  /// PIN’s do not match
   internal static let textChangePasscodeError = L10n.tr("Localizable", "text_change_passcode_error")
-  /// Change PIN
-  internal static let textChangePinField = L10n.tr("Localizable", "text_change_pin_field")
-  /// You will confirm phrase on the next screen
+  /// You can not use old PIN
+  internal static let textChangeTheSamePasscode = L10n.tr("Localizable", "text_change_the_same_passcode")
+  /// You will need to confirm recovery phrase on the next screen
   internal static let textConfirmDescription = L10n.tr("Localizable", "text_confirm_description")
   /// Copied
   internal static let textCopiedKeySnack = L10n.tr("Localizable", "text_copied_key_snack")
-  /// Write down this words or just copy them
+  /// Write down these 12 words and keep them secure. Don’t email them or screenshot them.
   internal static let textCopyDescription = L10n.tr("Localizable", "text_copy_description")
-  /// ©2019. All rights reserved
-  internal static let textCopyright = L10n.tr("Localizable", "text_copyright")
-  /// NOTE If you forget PIN, you won’t be able to access your transactions
-  internal static let textCreatePasscodeNote = L10n.tr("Localizable", "text_create_passcode_note")
-  /// Are you sure you want to deny the operation?
+  /// Want to deny the operation?
   internal static let textDenyDialogDescription = L10n.tr("Localizable", "text_deny_dialog_description")
   /// Are you sure?
   internal static let textDenyDialogTitle = L10n.tr("Localizable", "text_deny_dialog_title")
-  /// Help
-  internal static let textHelpField = L10n.tr("Localizable", "text_help_field")
+  /// Signed accounts not found
+  internal static let textEmptyStateSignedAccounts = L10n.tr("Localizable", "text_empty_state_signed_accounts")
+  /// Transactions not found
+  internal static let textEmptyStateTransactions = L10n.tr("Localizable", "text_empty_state_transactions")
   /// Forgot PIN?
   internal static let textLogoutInfo = L10n.tr("Localizable", "text_logout_info")
-  /// In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.
+  /// Recovery phrase can help you to recover access to your account in case your phone is lost or stolen.
   internal static let textMnemonicDescription = L10n.tr("Localizable", "text_mnemonic_description")
-  /// Mnemonic Code
-  internal static let textMnemonicField = L10n.tr("Localizable", "text_mnemonic_field")
-  /// In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.
+  /// Tap the words in the correct order
   internal static let textMnemonicVerificationDescription = L10n.tr("Localizable", "text_mnemonic_verification_description")
-  /// Tap the words in correct order
-  internal static let textMnemonicVerifivationHelp = L10n.tr("Localizable", "text_mnemonic_verifivation_help")
   /// Wrong order. Please try again.
   internal static let textMnemonicVerifivationIncorrectOrder = L10n.tr("Localizable", "text_mnemonic_verifivation_incorrect_order")
-  /// Protect your wallet
+  /// Protect your account
   internal static let textProtectYourWallet = L10n.tr("Localizable", "text_protect_your_wallet")
-  /// Add an extra layer of security to keep your Stellars safe
+  /// Use fingerprint login instead of your PIN to access your account.
   internal static let textProtectYourWalletDescription = L10n.tr("Localizable", "text_protect_your_wallet_description")
-  /// This key will be use for transactions confirmation.  To protect your Lobstr Wallet, copy and paste the code to Lobstr (Settings→Multisign→Enable)
+  /// This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)
   internal static let textPublicKeyDescription = L10n.tr("Localizable", "text_public_key_description")
-  /// Public key
-  internal static let textPublicKeyField = L10n.tr("Localizable", "text_public_key_field")
-  /// Your Public Key
+  /// Your Vault Public Key
   internal static let textPublicKeyTitle = L10n.tr("Localizable", "text_public_key_title")
-  /// NOTE If you forget PIN, you won’t be able to access your transactions
-  internal static let textReenterPasscodeNote = L10n.tr("Localizable", "text_reenter_passcode_note")
-  /// This is 12 word phrase you were given when you created your previous wallet
+  /// Enter the 12 word recovery phrase you were given when you created your account
   internal static let textRestoreInfo = L10n.tr("Localizable", "text_restore_info")
-  /// Secure your Lumens
+  /// Multiply your security
   internal static let textSecureYourLumens = L10n.tr("Localizable", "text_secure_your_lumens")
-  /// SECURITY
-  internal static let textSecuritySection = L10n.tr("Localizable", "text_security_section")
+  /// ABOUT
+  internal static let textSettingsAboutSection = L10n.tr("Localizable", "text_settings_about_section")
+  /// ACCOUNT
+  internal static let textSettingsAccountSection = L10n.tr("Localizable", "text_settings_account_section")
+  /// Change PIN
+  internal static let textSettingsChangePinField = L10n.tr("Localizable", "text_settings_change_pin_field")
+  /// ©2019. All rights reserved
+  internal static let textSettingsCopyright = L10n.tr("Localizable", "text_settings_copyright")
+  /// Help
+  internal static let textSettingsHelpField = L10n.tr("Localizable", "text_settings_help_field")
+  /// Logout
+  internal static let textSettingsLogoutfield = L10n.tr("Localizable", "text_settings_logoutfield")
+  /// Recovery Phrase
+  internal static let textSettingsMnemonicField = L10n.tr("Localizable", "text_settings_mnemonic_field")
+  /// Vault Public key
+  internal static let textSettingsPublicKeyField = L10n.tr("Localizable", "text_settings_public_key_field")
   /// Vault Public Key
   internal static let textSettingsPublicKeyTitle = L10n.tr("Localizable", "text_settings_public_key_title")
-  /// You are not a signer for
+  /// SECURITY
+  internal static let textSettingsSecuritySection = L10n.tr("Localizable", "text_settings_security_section")
+  /// Signer for 5 accounts
+  internal static let textSettingsSignerForField = L10n.tr("Localizable", "text_settings_signer_for_field")
+  /// Fingerprint Login
+  internal static let textSettingsTouchIdField = L10n.tr("Localizable", "text_settings_touch_id_field")
+  /// Version
+  internal static let textSettingsVersionField = L10n.tr("Localizable", "text_settings_version_field")
+  /// Your Vault account is not a signer for any other Stellar accounts
   internal static let textSignerCheckInformation = L10n.tr("Localizable", "text_signer_check_information")
   /// Signer For
   internal static let textSignerFor = L10n.tr("Localizable", "text_signer_for")
-  /// Signer for 5 accounts
-  internal static let textSignerForField = L10n.tr("Localizable", "text_signer_for_field")
-  /// Touch ID
-  internal static let textTouchIdField = L10n.tr("Localizable", "text_touch_id_field")
+  /// You need more signatures
+  internal static let textStatusDescription = L10n.tr("Localizable", "text_status_description")
+  /// Failure
+  internal static let textStatusFailureTitle = L10n.tr("Localizable", "text_status_failure_title")
+  /// Signed XDR
+  internal static let textStatusSignedXdrTitle = L10n.tr("Localizable", "text_status_signed_xdr_title")
+  /// Success
+  internal static let textStatusSuccessTitle = L10n.tr("Localizable", "text_status_success_title")
   /// Transactions to Sign
   internal static let textTransactionsToSign = L10n.tr("Localizable", "text_transactions_to_sign")
-  /// You can do it later in Settings Panel
+  /// You can do it later in Settings
   internal static let textTurnOnDescription = L10n.tr("Localizable", "text_turn_on_description")
   /// Vault Public Key
   internal static let textVaultPublicKey = L10n.tr("Localizable", "text_vault_publicKey")
-  /// Version
-  internal static let textVersionField = L10n.tr("Localizable", "text_version_field")
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name

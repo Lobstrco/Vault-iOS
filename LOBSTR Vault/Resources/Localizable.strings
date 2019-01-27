@@ -6,65 +6,62 @@
 "button_title_next" = "Next";
 "button_title_copy_key" = "Copy Key";
 "button_title_signed_accounts" = "Signed Accounts";
+"button_title_done" = "Done";
 
 // Navigation titles
-"nav_title_restore_account" = "Restore account";
-"nav_title_mnemonic_generation" = "Mnemonic codes";
-"nav_title_mnemonic_verification" = "Verify codes";
-"nav_title_create_passcode" = "Create a Passcode";
-"nav_title_reenter_passcode" = "Re-enter a Passcode";
+"nav_title_restore_account" = "Recover Account";
+"nav_title_mnemonic_generation" = "Recovery Phrase";
+"nav_title_mnemonic_verification" = "Verify Recovery Phrase";
+"nav_title_create_passcode" = "Create PIN";
+"nav_title_reenter_passcode" = "Confirm PIN";
 "nav_title_transactions" = "Transactions";
 "nav_title_transaction_details" = "Transaction Details";
 "nav_title_settings" = "Settings";
-"nav_title_change_passcode_enter_old" = "Change Passcode";
-"nav_title_change_passcode_enter_new" = "Change Passcode";
-"nav_title_change_passcode_confirm_new" = "Change Passcode";
+"nav_title_settings_signed_accounts" = "Signed Accounts";
+"nav_title_change_passcode_enter_old" = "Change PIN";
+"nav_title_change_passcode_enter_new" = "Change PIN";
+"nav_title_change_passcode_confirm_new" = "Change PIN";
 
 // Enter Pin screen
 "text_logout_info" = "Forgot PIN?";
 "button_title_logout" = "Logout";
 
 // Start menu
-"text_secure_your_lumens" = "Secure your Lumens";
+"text_secure_your_lumens" = "Multiply your security";
 "button_title_terms" = "By registering you agree to our Terms of Service and Privacy Policy.";
-"button_title_create_new_account" = "Create New Account";
-"button_title_restore_account" = "Restore Account";
+"button_title_create_new_account" = "Create Account";
+"button_title_restore_account" = "Recover Account";
 
 // Backup screen
 "text_backup_title" = "Backup Your Account";
-"text_backup_description" = "In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.";
+"text_backup_description" = "You will be shown a 12 word recovery phrase. It will allow you to recover access to your account in case your phone is lost or stolen.";
 "button_title_understand" = "I understand";
 
 // Mnemonic generation screen
-"text_mnemonic_description" = "In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.";
-"text_copy_description" = "Write down this words or just copy them";
-"text_confirm_description" = "You will confirm phrase on the next screen";
+"text_mnemonic_description" = "Recovery phrase can help you to recover access to your account in case your phone is lost or stolen.";
+"text_copy_description" = "Write down these 12 words and keep them secure. Don’t email them or screenshot them.";
+"text_confirm_description" = "You will need to confirm recovery phrase on the next screen";
 
 // Restore Account screen
-"text_restore_info" = "This is 12 word phrase you were given when you created your previous wallet";
+"text_restore_info" = "Enter the 12 word recovery phrase you were given when you created your account";
 
 // Mnemonic verification screen
-"text_mnemonic_verification_description" = "In this step you will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone is lost or stolen.";
-"text_mnemonic_verifivation_help" = "Tap the words in correct order";
+"text_mnemonic_verification_description" = "Tap the words in the correct order";
 "text_mnemonic_verifivation_incorrect_order" = "Wrong order. Please try again.";
 
-// Create/re-enter passcode screens
-"text_create_passcode_note" = "NOTE If you forget PIN, you won’t be able to access your transactions";
-"text_reenter_passcode_note" = "NOTE If you forget PIN, you won’t be able to access your transactions";
-
 // Touch ID screen
-"text_protect_your_wallet" = "Protect your wallet";
-"text_protect_your_wallet_description" = "Add an extra layer of security to keep your Stellars safe";
-"text_turn_on_description" = "You can do it later in Settings Panel";
-"button_title_turn_on" = "Turn On";
-"button_title_skip_for_now" = "Skip for now";
+"text_protect_your_wallet" = "Protect your account";
+"text_protect_your_wallet_description" = "Use fingerprint login instead of your PIN to access your account.";
+"text_turn_on_description" = "You can do it later in Settings";
+"button_title_turn_on" = "Enable Fingerprint";
+"button_title_skip_for_now" = "I will do this later";
 
 // Public Key screen
-"text_public_key_title" = "Your Public Key";
-"text_public_key_description" = "This key will be use for transactions confirmation.  To protect your Lobstr Wallet, copy and paste the code to Lobstr (Settings→Multisign→Enable)";
+"text_public_key_title" = "Your Vault Public Key";
+"text_public_key_description" = "This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)";
 
 // Signer Check screen
-"text_signer_check_information" = "You are not a signer for";
+"text_signer_check_information" = "Your Vault account is not a signer for any other Stellar accounts";
 "button_title_re_check" = "Re-Check";
 
 // Home screen
@@ -76,38 +73,48 @@
 
 // Transaction screen
 "text_add_transaction_title" = "Add Transaction XDR";
-"text_add_transaction_description" = "To submit transaction add unique code into";
+"text_add_transaction_description" = "To submit transaction enter its XDR below";
 "text_add_transaction_placeholder" = "Transaction XDR";
-"text_add_transaction_error" = "Transaction is invalid. Please, try again.";
+"text_add_transaction_error" = "Transaction is invalid. Please try again.";
 "button_title_submit" = "Submit";
+"text_empty_state_transactions" = "Transactions not found";
 
-// Transaction details
+// Transaction details screen
 "button_title_deny" = "Confirm";
 "text_deny_dialog_title" = "Are you sure?";
-"text_deny_dialog_description" = "Are you sure you want to deny the operation?";
+"text_deny_dialog_description" = "Want to deny the operation?";
 
-// Settings
-"text_account_section" = "ACCOUNT";
-"text_security_section" = "SECURITY";
-"text_about_section" = "ABOUT";
-"text_public_key_field" = "Public key";
-"text_signer_for_field" = "Signer for 5 accounts";
-"text_mnemonic_field" = "Mnemonic Code";
-"text_change_pin_field" = "Change PIN";
-"text_touch_id_field" = "Touch ID";
-"text_version_field" = "Version";
-"text_help_field" = "Help";
-"text_copyright" = "©2019. All rights reserved";
+// Settings screen
+"text_settings_account_section" = "ACCOUNT";
+"text_settings_security_section" = "SECURITY";
+"text_settings_about_section" = "ABOUT";
+"text_settings_public_key_field" = "Vault Public key";
+"text_settings_signer_for_field" = "Signer for 5 accounts";
+"text_settings_mnemonic_field" = "Recovery Phrase";
+"text_settings_change_pin_field" = "Change PIN";
+"text_settings_touch_id_field" = "Fingerprint Login";
+"text_settings_version_field" = "Version";
+"text_settings_help_field" = "Help";
+"text_settings_logoutfield" = "Logout";
+"text_settings_copyright" = "©2019. All rights reserved"; // change current year
 "text_settings_public_key_title" = "Vault Public Key";
 "button_title_show" = "Show";
 
-// Change Passcode
-"text_change_passcode_enter_old" = "Enter old PIN-code";
-"text_change_passcode_enter_new" = "Enter new PIN-code";
-"text_change_passcode_confirm_new" = "Confirm new PIN-code";
-"text_change_passcode_error" = "New codes doesn’t match";
+// Change Passcode screen
+"text_change_passcode_enter_old" = "Enter PIN";
+"text_change_passcode_enter_new" = "Create PIN";
+"text_change_passcode_confirm_new" = "Confirm PIN";
+"text_change_passcode_error" = "PIN’s do not match";
+"text_change_the_same_passcode" = "You can not use old PIN";
 
+// Transaction Status screen
+"text_status_success_title" = "Success";
+"text_status_failure_title" = "Failure";
+"text_status_description" = "You need more signatures";
+"text_status_signed_xdr_title" = "Signed XDR";
 
+// Signed Details screen
+"text_empty_state_signed_accounts" = "Signed accounts not found";
 
 "BIOMETRIC_NOT_AVAILABLE_TITLE" = "Not available";
 "BIOMETRIC_NOT_AVAILABLE_MESSAGE" = "Biometric authentication not available.";

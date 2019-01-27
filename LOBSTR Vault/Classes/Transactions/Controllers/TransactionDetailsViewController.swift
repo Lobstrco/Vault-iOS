@@ -7,6 +7,8 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   @IBOutlet weak var tableView: UITableView!
   
+  let progressHUD = ProgressHUD(withBackground: true)
+  
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
@@ -32,7 +34,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
     presenter.confirmButtonWasPressed()
   }
   
-  @IBAction func DenyButtonAction(_ sender: Any) {
+  @IBAction func denyButtonAction(_ sender: Any) {
     presenter.denyButtonWasPressed()
   }
   
@@ -55,18 +57,22 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setConfirmationAlert() {
-    let alert = UIAlertController(title: "DENY_TITLE".localized(), message: "DENY_MESSAGE".localized(), preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: "DENY_TEXT".localized(), style: .destructive, handler: { _ in
+    let alert = UIAlertController(title: L10n.textDenyDialogTitle, message: L10n.textDenyDialogDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleDeny, style: .destructive, handler: { _ in
       self.presenter.denyOperationWasConfirmed()
     }))
     
-    alert.addAction(UIAlertAction(title: "CANCEL_TEXT".localized(), style: .cancel))
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
     self.present(alert, animated: true, completion: nil)
   }
   
   func setErrorAlert(for error: Error) {
     UIAlertController.defaultAlert(for: error, presentingViewController: self)
+  }
+  
+  func setProgressAnimation(isEnable: Bool) {
+    isEnable ? progressHUD.display(onView: view) : progressHUD.remove()
   }
 }
 

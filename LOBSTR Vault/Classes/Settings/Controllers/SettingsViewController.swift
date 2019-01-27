@@ -23,6 +23,14 @@ class SettingsViewController: UIViewController,
                                       navigationController: navigationController!)
     
     presenter.settingsViewDidLoad()
+    setAppearance()
+  }
+  
+  // MARK: - Private
+  
+  func setAppearance() {
+    navigationItem.title = L10n.navTitleSettings
+    navigationController?.navigationBar.prefersLargeTitles = true
   }
   
   // MARK: - UITableViewDelegate
@@ -35,7 +43,14 @@ class SettingsViewController: UIViewController,
   
   func tableView(_ tableView: UITableView,
                  heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return UITableViewCell.defaultHeight
+    let row = presenter.row(for: indexPath)
+    
+    switch row {
+    case .copyright:
+      return 70
+    default:
+      return UITableViewCell.defaultHeight
+    }
   }
   
   // MARK: - UITableViewDataSource
@@ -58,9 +73,14 @@ class SettingsViewController: UIViewController,
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
         as PublicKeyTableViewCell
-      
       presenter.configure(publicKeyCell: cell)
-      
+      return cell
+    case .signerForAccounts:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
       return cell
     case .mnemonicCode:
       let cell =
@@ -97,7 +117,20 @@ class SettingsViewController: UIViewController,
       presenter.configure(disclosureIndicatorTableViewCell: cell,
                           row: row)
       return cell
-    }
+    case .logout:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
+    case .copyright:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as CopyrightTableViewCell
+      cell.setStaticString()
+      return cell
+    }  
   }
   
   func tableView(_ tableView: UITableView,

@@ -11,6 +11,9 @@ target 'LOBSTR Vault' do
   # SwiftGen is a tool to auto-generate Swift code for resources of your projects, to make them type-safe to use.
   pod 'SwiftGen', '~> 6.0.2'
   
+  # An iOS library to natively render After Effects vector animations
+  pod 'lottie-ios', '~> 2.5.2'
+  
   pod 'Firebase/Core'
   pod 'Fabric', '~> 1.9.0'
   pod 'Crashlytics', '~> 3.12.0'

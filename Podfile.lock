@@ -46,6 +46,7 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (5.3.6):
     - GoogleUtilities/Logger
+  - lottie-ios (2.5.2)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -58,6 +59,7 @@ DEPENDENCIES:
   - Crashlytics (~> 3.12.0)
   - Fabric (~> 1.9.0)
   - Firebase/Core
+  - lottie-ios (~> 2.5.2)
   - stellar-ios-mac-sdk (~> 1.5.6)
   - SwiftGen (~> 6.0.2)
 
@@ -71,6 +73,7 @@ SPEC REPOS:
     - FirebaseInstanceID
     - GoogleAppMeasurement
     - GoogleUtilities
+    - lottie-ios
     - nanopb
     - stellar-ios-mac-sdk
     - SwiftGen
@@ -84,10 +87,11 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
   GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
   GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
+  lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   stellar-ios-mac-sdk: b0c589f5d5a7776edffcf4ebbe4e12d988030e7e
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
 
-PODFILE CHECKSUM: 624e564ef9962a0fd9cf012b079cb4035dbcd8f1
+PODFILE CHECKSUM: 29cf9982009cfb98a677ba0c8984b81ce7a6aefe
 
 COCOAPODS: 1.5.3

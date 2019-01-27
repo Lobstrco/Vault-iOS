@@ -8,8 +8,6 @@ class PinViewController: UIViewController, StoryboardCreation {
   @IBOutlet var numberPadView: NumberPadView!
   @IBOutlet var pinDotView: PinDotView!
   
-  @IBOutlet var createPasscodeNoteLabel: UILabel?
-  
   let impact = UIImpactFeedbackGenerator(style: .light)
   var presenter: PinPresenter!
   
@@ -38,7 +36,7 @@ class PinViewController: UIViewController, StoryboardCreation {
   }
   
   private func setStaticStrings() {
-    createPasscodeNoteLabel?.text = L10n.textCreatePasscodeNote
+    
   }
 }
 

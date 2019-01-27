@@ -7,15 +7,18 @@ class HomeViewController: UIViewController, StoryboardCreation {
   @IBOutlet weak var transactionsToSignLabel: UILabel!
   @IBOutlet weak var titleOfPublicKeyLabel: UILabel!
   @IBOutlet weak var titleOfsignerForLabel: UILabel!
-  @IBOutlet weak var signerForLabel: UILabel!
   @IBOutlet weak var publicKeyLabel: UILabel!
   
   @IBOutlet weak var infoContainerView: UIView!
+  @IBOutlet weak var signerDetailsView: UIView!
   
   @IBOutlet weak var transactionListButton: UIButton!
   @IBOutlet weak var copyKeyButton: UIButton!
   
   var presenter: HomePresenter!
+  
+  let signerDetailsProgressHUD = ProgressHUD()
+  let transactionNumberProgressHUD = ProgressHUD(isWhite: true)
   
   // MARK: - Lifecycle
   
@@ -24,13 +27,44 @@ class HomeViewController: UIViewController, StoryboardCreation {
    
     presenter = HomePresenterImpl(view: self)
     presenter.homeViewDidLoad()
+    
+    setAppearance()
+    setStaticStrings()
+    
+    signerDetailsProgressHUD.display(onView: signerDetailsView)
+    transactionNumberProgressHUD.display(onView: transactionNumberLabel)
   }
 
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return .lightContent
   }
   
+  // MARK: - IBActions
+  
+  @IBAction func copyKeyButtonAction(_ sender: Any) {
+    presenter.copyKeyButtonWasPressed()
+  }
+  
+  @IBAction func transactionListButtonAction(_ sender: Any) {
+    self.tabBarController?.selectedIndex = 2
+  }
+  
   // MARK: - Private
+  
+  private func setAppearance() {
+    AppearanceHelper.set(transactionListButton, with: L10n.buttonTitleViewTransactionsList)
+    AppearanceHelper.set(copyKeyButton, with: L10n.buttonTitleCopyKey)
+    setShadowAndCornersForInfoContainerView()
+    
+    publicKeyLabel.setLineHeight(lineHeight: 15)
+    publicKeyLabel.textAlignment = .center
+  }
+  
+  private func setStaticStrings() {
+    transactionsToSignLabel.text = L10n.textTransactionsToSign
+    titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
+    titleOfsignerForLabel.text = L10n.textSignerFor
+  }
   
   private func setShadowAndCornersForInfoContainerView() {
     let containerViewMargin: CGFloat = 16 + 16
@@ -53,39 +87,24 @@ class HomeViewController: UIViewController, StoryboardCreation {
 
 extension HomeViewController: HomeView {
   
-  func setDesignDetails() {
-    setShadowAndCornersForInfoContainerView()
+  func setSignerDetails(_ signedAccounts: [SignedAccounts]) {
     
-    copyKeyButton.layer.cornerRadius = 6
-    transactionListButton.layer.cornerRadius = 6
+    if signedAccounts.count == 1 {
+      guard let address = signedAccounts.first?.address else { return }
+      HomeHelper().createSignerDetailsViewForSingleAddress(in: signerDetailsView, address: address, bottomAnchor: titleOfsignerForLabel.bottomAnchor)
+    } else {
+      HomeHelper().createSignerDetailsViewForMultipleAddresses(in: signerDetailsView, for: String(signedAccounts.count), bottomAnchor: titleOfsignerForLabel.bottomAnchor)
+    }
     
-    publicKeyLabel.setLineHeight(lineHeight: 15)
-    publicKeyLabel.textAlignment = .center
-    
-    signerForLabel.setLineHeight(lineHeight: 15)
-    signerForLabel.textAlignment = .center
+    signerDetailsProgressHUD.remove()
   }
   
   func setPublicKey(_ publicKey: String) {
-    
-  }
-  
-  func setSignerDetails() {
-    
+    publicKeyLabel.text = publicKey
   }
   
   func setTransactionNumber(_ number: Int) {
     transactionNumberLabel.text = String(number)
-  }
-  
-  func setStaticStrings() {
-    transactionsToSignLabel.text = L10n.textTransactionsToSign
-    titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
-    titleOfsignerForLabel.text = L10n.textSignerFor
-  }
-  
-  func setButtonTitles() {
-    transactionListButton.setTitle(L10n.buttonTitleViewTransactionsList, for: .normal)
-    copyKeyButton.setTitle(L10n.buttonTitleCopyKey, for: .normal)
+    transactionNumberProgressHUD.remove()
   }
 }
