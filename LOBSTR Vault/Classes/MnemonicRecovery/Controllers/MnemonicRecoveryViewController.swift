@@ -30,6 +30,11 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
     navigationController?.setNavigationBarHidden(false, animated: true)
   }
   
+  // TEMP
+  override func viewDidLayoutSubviews() {
+    AppearanceHelper.setDashBorders(for: textView, with: Asset.Colors.gray.color.cgColor)
+  }
+  
   // MARK: - IBActions
   
   @IBAction func recoveryButtonAction(_ sender: Any) {
@@ -39,17 +44,14 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
   // MARK: - Private
   
   private func setAppearance() {
-    textView.layer.borderWidth = 1
-    textView.layer.borderColor = Asset.Colors.gray.color.cgColor
-    
-    AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
-    AppearanceHelper.set(navigationController)
-    AppearanceHelper.setBackButton(in: navigationController)
+    AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)    
+    textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 20)
   }
   
   private func setStaticStrings() {
     restoreAccountInfoLabel.text = L10n.textRestoreInfo
     navigationItem.title = L10n.navTitleRestoreAccount
+//    textView.placeholder = L10n.textRestorePlaceholder
   }
 }
 
@@ -57,8 +59,8 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
 
 extension MnemonicRecoveryViewController: MnemonicRecoveryView {
   
-  func displayRecoveryButton(isEnabled: Bool) {
-    nextButton.isHidden = !isEnabled
+  func displayRecoveryButton(isHidden: Bool) {
+    nextButton.isHidden = isHidden
   }
   
   func displaySuggestionList(suggestionList: [String]) {
@@ -69,10 +71,18 @@ extension MnemonicRecoveryViewController: MnemonicRecoveryView {
     textView.text = updatedText
   }
   
-  func displayHighlightedWords(attributedStrings: [NSMutableAttributedString]) {
-    for string in attributedStrings {
-      textView.attributedText = string
-    }
+  func displayHighlightedWords(attributedStrings: NSMutableAttributedString) {
+    
+    attributedStrings.addAttribute(NSAttributedString.Key.font,
+                                  value: UIFont.systemFont(ofSize: 20),
+                                  range: NSRange(location: 0, length: textView.text.utf16.count))
+    
+    textView.attributedText = attributedStrings
+  }
+  
+  func setHighlightTextView(isEnabled: Bool) {
+    let borderColor = isEnabled ? Asset.Colors.red.color.cgColor : Asset.Colors.gray.color.cgColor
+    AppearanceHelper.changeDashBorderColor(for: textView, with: borderColor)
   }
 }
 

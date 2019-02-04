@@ -136,7 +136,6 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="COL-Pw-afm"/>
                     </view>
-                    <navigationItem key="navigationItem" id="E2k-ng-8Ff"/>
                     <connections>
                         <outlet property="createNewAccountButton" destination="aTr-UY-wsZ" id="XcN-4k-OfI"/>
                         <outlet property="infoLabel" destination="5hb-rY-Pop" id="SO3-g9-9sa"/>

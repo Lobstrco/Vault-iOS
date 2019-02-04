@@ -10,19 +10,17 @@ class MnemonicSuggestionsView: UIView {
   var suggestionList: [String] = []
   var delegate: MnemonicSuggestionsViewDelegate?
   
+  // MARK: - Lifecycle
+  
   override func awakeFromNib() {
     collectionView.delegate = self
     collectionView.dataSource = self
     
     collectionView.register(UINib(nibName: "MnemonicSuggestionsViewCell", bundle: Bundle.main),
                             forCellWithReuseIdentifier: "MnemonicSuggestionsViewCell")
-    
-    if let flowLayout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-      flowLayout.estimatedItemSize = CGSize(width: 1, height: 1)
-    }
   }
   
-  // MARK: - Private Methods
+  // MARK: - Private
   
   func setData(suggestions: [String]) {
     suggestionList = suggestions
@@ -63,7 +61,7 @@ extension MnemonicSuggestionsView: UICollectionViewDelegate, UICollectionViewDat
     return 10.0
   }
   
-//  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-//    return CGSize(width: 79, height: 30)
-//  }
+  func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    return CGSize(width: 79, height: 36)
+  }
 }

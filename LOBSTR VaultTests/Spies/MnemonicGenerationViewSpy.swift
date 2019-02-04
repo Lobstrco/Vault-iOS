@@ -8,7 +8,7 @@ class MnemonicGenerationViewSpy: MnemonicGenerationView {
   }
   
   
-  func displayMnemonicList(mnemonicList: [String]) {
+  func setMnemonicList(mnemonicList: [String]) {
     
   }
   

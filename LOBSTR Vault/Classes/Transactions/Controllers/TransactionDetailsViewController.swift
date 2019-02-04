@@ -13,11 +13,10 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    setStaticStrings()
     
     presenter.transactionDetailsViewDidLoad()    
-    configureTableView()
-    
-    self.navigationController?.navigationBar.prefersLargeTitles = false
+    configureTableView()    
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -39,6 +38,10 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   }
   
   // MARK: - Public
+  
+  private func setStaticStrings() {
+    navigationItem.title = L10n.navTitleTransactionDetails
+  }
   
   func configureTableView() {
     tableView.tableFooterView = UIView()

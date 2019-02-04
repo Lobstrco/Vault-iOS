@@ -31,9 +31,9 @@ class BackUpAccountPresenterImpl: BackUpAccountPresenter {
 
 extension BackUpAccountPresenterImpl {
   func transitionToMnemenicGeneration() {
-    let mnemonicGenerationViewController =
-      MnemonicGenerationViewController.createFromStoryboard()
-    navigationController.pushViewController(mnemonicGenerationViewController,
-                                            animated: true)
+    let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
+    mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
+                                                                                 mnemonicMode: .generationMnemonic)
+    navigationController.pushViewController(mnemonicGenerationViewController, animated: true)
   }
 }

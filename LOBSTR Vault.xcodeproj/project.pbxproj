@@ -90,6 +90,8 @@
 		923EBAA721F369190071E242 /* AppearanceHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923EBAA621F369190071E242 /* AppearanceHelper.swift */; };
 		923EBAA921F4D42D0071E242 /* PinDotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 923EBAA821F4D42C0071E242 /* PinDotView.swift */; };
 		9244328B21F50EFB00E9868A /* PinEnterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9244328A21F50EFB00E9868A /* PinEnterViewController.swift */; };
+		9244A3DA21FF086B007FF360 /* Snackbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9244A3D921FF086B007FF360 /* Snackbar.swift */; };
+		9244A3DC21FF10A8007FF360 /* UITextView+Placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9244A3DB21FF10A8007FF360 /* UITextView+Placeholder.swift */; };
 		9248462C21EDF255000CC546 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9248462B21EDF255000CC546 /* Assets.xcassets */; };
 		9248462E21EDF2D7000CC546 /* Images.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248462D21EDF2D7000CC546 /* Images.swift */; };
 		9248463021EDF53A000CC546 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9248462F21EDF539000CC546 /* Strings.swift */; };
@@ -253,6 +255,8 @@
 		923EBAA621F369190071E242 /* AppearanceHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppearanceHelper.swift; sourceTree = "<group>"; };
 		923EBAA821F4D42C0071E242 /* PinDotView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinDotView.swift; sourceTree = "<group>"; };
 		9244328A21F50EFB00E9868A /* PinEnterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinEnterViewController.swift; sourceTree = "<group>"; };
+		9244A3D921FF086B007FF360 /* Snackbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Snackbar.swift; sourceTree = "<group>"; };
+		9244A3DB21FF10A8007FF360 /* UITextView+Placeholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextView+Placeholder.swift"; sourceTree = "<group>"; };
 		9248462B21EDF255000CC546 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9248462D21EDF2D7000CC546 /* Images.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Images.swift; sourceTree = "<group>"; };
 		9248462F21EDF539000CC546 /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
@@ -490,6 +494,7 @@
 				9248463521EF6101000CC546 /* UILabel+LineHeight.swift */,
 				92C8C22C21F85812003E4F5A /* Notification+Name.swift */,
 				92C8C23821FB1427003E4F5A /* CALayer+Borders.swift */,
+				9244A3DB21FF10A8007FF360 /* UITextView+Placeholder.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -660,6 +665,7 @@
 		9221B7A921BE869A0070A526 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				9244A3D821FF082F007FF360 /* Custom */,
 				92E48FC821E4D4BF006281E4 /* Errors */,
 				84835AB821D651A10039F1C5 /* Extensions */,
 				84A8260621E4D54A004EF5D9 /* Enums */,
@@ -842,6 +848,15 @@
 			path = AppDelegate;
 			sourceTree = "<group>";
 		};
+		9244A3D821FF082F007FF360 /* Custom */ = {
+			isa = PBXGroup;
+			children = (
+				92D94EEE21F639990092F4BB /* CustomPopoverViewController.swift */,
+				9244A3D921FF086B007FF360 /* Snackbar.swift */,
+			);
+			path = Custom;
+			sourceTree = "<group>";
+		};
 		9248463121EE0A24000CC546 /* Launch */ = {
 			isa = PBXGroup;
 			children = (
@@ -977,7 +992,6 @@
 		9277ABAB21CA5B4100379971 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
-				92D94EEE21F639990092F4BB /* CustomPopoverViewController.swift */,
 				9277ABAC21CA5B5700379971 /* TransactionListViewController.swift */,
 				922C641A21CBB56B00EDD409 /* TransactionDetailsViewController.swift */,
 				925CCAE021DE4CE200E75602 /* TransactionStatusViewController.swift */,
@@ -1546,6 +1560,7 @@
 				92C8C22521F72B91003E4F5A /* SubmitChallengeRequest.swift in Sources */,
 				845CDCA521C92E6300791C94 /* PinViewController.swift in Sources */,
 				84BBE7FF21CE32C90074CCC3 /* JWTManager.swift in Sources */,
+				9244A3DA21FF086B007FF360 /* Snackbar.swift in Sources */,
 				8486F68A21CBA8660099F1F2 /* Device.swift in Sources */,
 				92D94EF321F63B0B0092F4BB /* ImportXDR.swift in Sources */,
 				92C8C23121F9E78F003E4F5A /* HorizonErrorMessage.swift in Sources */,
@@ -1609,6 +1624,7 @@
 				9277ABAD21CA5B5700379971 /* TransactionListViewController.swift in Sources */,
 				92BD385621C7AFF500E974E0 /* StartMenuViewController.swift in Sources */,
 				844639CF21DCE73700719011 /* BiometricIDTableViewCell.swift in Sources */,
+				9244A3DC21FF10A8007FF360 /* UITextView+Placeholder.swift in Sources */,
 				84CFB07C21D7B02E0020073C /* ApplicationInfo.swift in Sources */,
 				9277ABB821CA770D00379971 /* Transaction.swift in Sources */,
 				9277AB8421C8E7C200379971 /* APIRequestLoader.swift in Sources */,
@@ -1735,7 +1751,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1790,7 +1806,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;

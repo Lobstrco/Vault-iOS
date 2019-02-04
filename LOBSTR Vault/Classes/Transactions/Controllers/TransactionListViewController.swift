@@ -29,6 +29,7 @@ class TransactionListViewController: UIViewController {
     presenter.transactionListViewDidLoad()
     
     setAppearance()
+    setStaticStrings()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -47,11 +48,14 @@ class TransactionListViewController: UIViewController {
     presenter.pullToRefreshWasActivated()
   }
   
+  private func setStaticStrings() {
+    navigationItem.title = L10n.navTitleTransactions
+  }
+  
   private func setAppearance() {
     configureTableView()
     importButton.layer.cornerRadius = 56 / 2
     refreshControl.tintColor = Asset.Colors.main.color
-    navigationController?.navigationBar.prefersLargeTitles = false
   }
   
   private func configureTableView() {

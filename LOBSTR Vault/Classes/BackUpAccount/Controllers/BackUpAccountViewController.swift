@@ -18,12 +18,13 @@ class BackUpAccountViewController: UIViewController, StoryboardCreation, BackUpA
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    setAppearance()
+    
     presenter = BackUpAccountPresenterImpl(view: self,
                                            navigationController: navigationController!)
     presenter.backUpAccountViewDidLoad()
     
     setStaticStrings()
-    setAppearance()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -40,9 +41,7 @@ class BackUpAccountViewController: UIViewController, StoryboardCreation, BackUpA
   // MARK: - Private
   
   private func setAppearance() {
-    AppearanceHelper.set(navigationController)
     AppearanceHelper.set(understandButton, with: L10n.buttonTitleUnderstand)
-    AppearanceHelper.setBackButton(in: navigationController)
   }
   
   private func setStaticStrings() {

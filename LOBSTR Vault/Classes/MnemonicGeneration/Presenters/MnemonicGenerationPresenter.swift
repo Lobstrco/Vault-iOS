@@ -1,12 +1,20 @@
 import Foundation
 
+enum MnemonicMode {
+  case generationMnemonic
+  case showMnemonic
+}
+
 protocol MnemonicGenerationView: class {
-  func displayMnemonicList(mnemonicList: [String])
+  func setMnemonicList(mnemonicList: [String])
   func copyToClipboard(mnemonic: String)
+  func setNextButton(isHidden: Bool)
+  func setNavigationItem()
 }
 
 protocol MnemonicCellView {
-  func display(title: String)
+  var isSelected: Bool { get set }
+  func set(title: String)
 }
 
 protocol MnemonicGenerationPresenter {
@@ -23,12 +31,15 @@ class MnemonicGenerationPresenterImpl {
   
   var mnemonicList: [String] = []
   var mnemonicManager: MnemonicManager
+  var mnemonicMode: MnemonicMode
   
   // MARK: - Init
   
   init(view: MnemonicGenerationView,
+       mnemonicMode: MnemonicMode,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
+    self.mnemonicMode = mnemonicMode
     self.mnemonicManager = mnemonicManager
   }
   
@@ -49,7 +60,7 @@ class MnemonicGenerationPresenterImpl {
     let mnemonicData = MnemonicHelper.getWordMnemonic()
     mnemonicList = mnemonicData.separatedWords
     store(mnemonic: mnemonicData.mnemonic)
-    view?.displayMnemonicList(mnemonicList: mnemonicList)
+    view?.setMnemonicList(mnemonicList: mnemonicList)
   }
 }
 
@@ -62,7 +73,28 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   }
   
   func mnemonicGenerationViewDidLoad() {
-    generateMnemonicList()
+    view?.setNextButton(isHidden: mnemonicMode == .showMnemonic)
+    
+    switch mnemonicMode {
+    case .generationMnemonic:
+      generateMnemonicList()
+    case .showMnemonic:
+      view?.setNavigationItem()
+      guard mnemonicManager.isMnemonicStoredInKeychain() else {
+        return
+      }
+      
+      mnemonicManager.getDecryptedMnemonicFromKeychain() { result in
+        switch result {
+        case .success(let mnemonic):
+          self.mnemonicList = MnemonicHelper.getSeparatedWords(from: mnemonic)
+          self.view?.setMnemonicList(mnemonicList: self.mnemonicList)
+        case .failure(let error):
+          print("error: \(error)")
+        }
+      }
+    }
+    
   }
   
   func copyToClipboardWasPressed() {
@@ -70,7 +102,7 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   }
   
   func configure(cell: MnemonicCollectionViewCell, forRow row: Int) {
-    cell.display(title: mnemonicList[row])
+    cell.set(title: mnemonicList[row])
   }
   
   func nextButtondWasPressed() {

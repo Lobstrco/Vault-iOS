@@ -19,18 +19,17 @@ class SettingsViewController: UIViewController,
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    setAppearance()
     presenter = SettingsPresenterImpl(view: self,
                                       navigationController: navigationController!)
     
     presenter.settingsViewDidLoad()
-    setAppearance()
   }
   
   // MARK: - Private
   
   func setAppearance() {
     navigationItem.title = L10n.navTitleSettings
-    navigationController?.navigationBar.prefersLargeTitles = true
   }
   
   // MARK: - UITableViewDelegate

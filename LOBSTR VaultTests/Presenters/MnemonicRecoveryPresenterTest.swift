@@ -51,4 +51,11 @@ class MnemonicRecoveryPresenterTest: XCTestCase {
                    mnemonicRecoveryPresenter.suggestionList.count,
                    "Expected to the empty suggestion list")
   }
+  
+//  func testMnemonicShouldBeValidated() {
+//    let mnemonic = "oval graan trick over betray page want actress major bid web tape carpet clog bottom affair error donate catch render crater radar jaguar clip"
+//    mnemonicRecoveryPresenter.mnemonic = mnemonic
+//
+//    mnemonicRecoveryPresenter.getstr
+//  }
 }

@@ -41,7 +41,6 @@ class PublicKeyViewController: UIViewController, StoryboardCreation, PublicKeyVi
   
   private func setAppearance() {    
     AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
-    AppearanceHelper.setBackButton(in: navigationController)
   }
   
   // MARK: - PublicKeyView

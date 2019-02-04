@@ -12,15 +12,17 @@
 "nav_title_restore_account" = "Recover Account";
 "nav_title_mnemonic_generation" = "Recovery Phrase";
 "nav_title_mnemonic_verification" = "Verify Recovery Phrase";
-"nav_title_create_passcode" = "Create PIN";
-"nav_title_reenter_passcode" = "Confirm PIN";
+
 "nav_title_transactions" = "Transactions";
+"nav_title_operation_details" = "Operation Details";
 "nav_title_transaction_details" = "Transaction Details";
 "nav_title_settings" = "Settings";
 "nav_title_settings_signed_accounts" = "Signed Accounts";
-"nav_title_change_passcode_enter_old" = "Change PIN";
-"nav_title_change_passcode_enter_new" = "Change PIN";
-"nav_title_change_passcode_confirm_new" = "Change PIN";
+"nav_title_create_passcode" = "Create PIN";
+"nav_title_reenter_passcode" = "Confirm PIN";
+"nav_title_change_passcode_enter_old" = "Enter Old PIN";
+"nav_title_change_passcode_enter_new" = "Create New PIN";
+"nav_title_change_passcode_confirm_new" = "Confirm New PIN";
 
 // Enter Pin screen
 "text_logout_info" = "Forgot PIN?";
@@ -44,6 +46,7 @@
 
 // Restore Account screen
 "text_restore_info" = "Enter the 12 word recovery phrase you were given when you created your account";
+"text_restore_placeholder" = "Mnemonic Code...";
 
 // Mnemonic verification screen
 "text_mnemonic_verification_description" = "Tap the words in the correct order";

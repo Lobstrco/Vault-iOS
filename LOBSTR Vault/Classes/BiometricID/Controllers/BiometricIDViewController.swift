@@ -33,8 +33,7 @@ class BiometricIDViewController: UIViewController, StoryboardCreation {
   // MARK: - Private
   
   private func setupAppearance() {
-    AppearanceHelper.set(turnOnButton, with: L10n.buttonTitleTurnOn)
-    AppearanceHelper.setBackButton(in: navigationController)
+    AppearanceHelper.set(turnOnButton, with: L10n.buttonTitleTurnOn)    
   }
   
   private func setStaticStrings() {

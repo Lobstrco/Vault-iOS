@@ -5,5 +5,7 @@ public enum PinMode {
   case createPinSecondStep(String)
   case enterPin
   case changePin
+  case createNewPinFirstStep
+  case createNewPinSecondStep(String)
   case undefined
 }

@@ -44,10 +44,10 @@ class MnemonicHelperTest: XCTestCase {
   }
   
   func testHighlightedAttributedStringShouldBeReceived() {
-    let highlightedWord = "heart"
-    let text = "hello galaxy gallery game yellow heart"
+    let highlightedWord = "ga"
+    let text = "hello galaxy gallery game yellow ga"
     let highlightColor = UIColor.red
-    let expectedHighlightedCharacterPositions = [33, 34, 35, 36, 37]
+    let expectedHighlightedCharacterPositions = [33, 34, 35]
     var highlightedCharacterPositions: [Int] = []
     
     let attributedString = NSMutableAttributedString(string: text)

@@ -4,6 +4,8 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .mnemonicGeneration
   
+  @IBOutlet var containerForVerification: UIView!
+  
   @IBOutlet var shuffledCollectionView: UICollectionView!
   @IBOutlet var сollectionViewForVerification: UICollectionView!
   
@@ -16,21 +18,25 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   
   override func viewDidLoad() {
     super.viewDidLoad()
-    
-    presenter.mnemonicVerificationViewDidLoad()
-    
+    shuffledCollectionView.allowsMultipleSelection = true  
     сollectionViewForVerification.dataSource = self
     сollectionViewForVerification.delegate = self
     
     setAppearance()
     setStaticStrings()
+    
+    presenter.mnemonicVerificationViewDidLoad()
+  }
+  
+  // TEMP
+  override func viewDidLayoutSubviews() {
+    AppearanceHelper.setDashBorders(for: containerForVerification, with: Asset.Colors.gray.color.cgColor)
   }
   
   // MARK: - Private
   
   private func setAppearance() {
     setNextButton()
-    AppearanceHelper.setBackButton(in: navigationController)
   }
   
   private func setNextButton() {
@@ -43,12 +49,13 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   }
   
   @objc private func nextButtonAction(_ sender : UIButton) {
-    presenter.nextButtonAction()
+    presenter.nextButtonWasPressed()
   }
   
   private func setStaticStrings() {
     descriptionLabel.text = L10n.textMnemonicVerificationDescription
     navigationItem.title = L10n.navTitleMnemonicVerification
+    errorLabel.text = L10n.textMnemonicVerifivationIncorrectOrder
   }
 }
 
@@ -56,7 +63,7 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
 
 extension MnemonicVerificationViewController: MnemonicVerificationView {
   
-  func displayShuffledMnemonicList() {
+  func setShuffledMnemonicList() {
     shuffledCollectionView.dataSource = self
     shuffledCollectionView.delegate = self
   }
@@ -65,9 +72,17 @@ extension MnemonicVerificationViewController: MnemonicVerificationView {
     сollectionViewForVerification.reloadData()
   }
   
-  func updateShuffledCollectionView(by indexPath: IndexPath,
-                                    color: UIColor) {
-    shuffledCollectionView.cellForItem(at: indexPath)?.backgroundColor = color
+  func setRightBarButton(isEnabled: Bool) {
+    navigationItem.rightBarButtonItem?.isEnabled = isEnabled
+  }
+  
+  func setErrorLabel(isHidden: Bool) {
+    errorLabel.isHidden = isHidden
+  }
+  
+  func setDashBordersColor(isError: Bool) {
+    let bordersColor = isError ? Asset.Colors.red.color.cgColor : Asset.Colors.gray.color.cgColor
+    AppearanceHelper.changeDashBorderColor(for: containerForVerification, with: bordersColor)
   }
 }
 
@@ -102,11 +117,7 @@ extension MnemonicVerificationViewController: UICollectionViewDelegate, UICollec
   
   func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                       sizeForItemAt indexPath: IndexPath) -> CGSize {
-    if collectionView == shuffledCollectionView {
-      return CGSize(width: 80, height: 35)
-    } else {
-      return CGSize(width: 65, height: 25)
-    }
+    return CGSize(width: 80, height: 35)
   }
   
   func collectionView(_ collectionView: UICollectionView,
@@ -125,7 +136,13 @@ extension MnemonicVerificationViewController: UICollectionViewDelegate, UICollec
     if collectionView == shuffledCollectionView {
       presenter.shuffledWordWasPressed(with: indexPath)
     } else {
+      let newIndexPath = presenter.getIndexPathFromShuffledMnemonicList(by: indexPath.item)
+      shuffledCollectionView.deselectItem(at: newIndexPath, animated: false)
       presenter.wordForVerificationWasPressed(with: indexPath)
     }
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
+    return false
   }
 }

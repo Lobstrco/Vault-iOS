@@ -10,8 +10,7 @@ class PinPresenterTests: XCTestCase {
     super.setUp()
     
     pinViewSpy = PinViewSpy()
-    sut = PinPresenterImpl(view: pinViewSpy,
-                           navigationController: UINavigationController(),
+    sut = PinPresenterImpl(view: pinViewSpy,                           
                            mode: .createPinFirstStep)
   }
 

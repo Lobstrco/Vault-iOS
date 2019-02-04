@@ -54,6 +54,14 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
 
 extension PinEnterViewController: PinView {
   
+  func clearPinDots() {
+    pinDotView.clearPinDots()
+  }
+  
+  func setNavigationItem() {
+    
+  }  
+  
   func setTitle(_ title: String) {}
   
   func fillPinDot(at index: Int) {

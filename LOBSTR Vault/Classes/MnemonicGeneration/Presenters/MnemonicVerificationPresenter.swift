@@ -2,9 +2,11 @@ import Foundation
 import UIKit
 
 protocol MnemonicVerificationView: class {
-  func displayShuffledMnemonicList()
+  func setShuffledMnemonicList()
   func updateCollectionViewForVerification()
-  func updateShuffledCollectionView(by indexPath: IndexPath, color: UIColor)
+  func setRightBarButton(isEnabled: Bool)
+  func setErrorLabel(isHidden: Bool)
+  func setDashBordersColor(isError: Bool)
 }
 
 protocol MnemonicVerificationPresenter {
@@ -12,15 +14,14 @@ protocol MnemonicVerificationPresenter {
   var countOfMnemonicListForVerification: Int { get }
   var getShuffledMnemonicList: [String] { get }
   var getMnemonicListForVerification: [String] { get }
-  
   func mnemonicVerificationViewDidLoad()
   func setGeneratedMnemonicList(generatedList: [String])
   func shuffledWordWasPressed(with indexPath: IndexPath)
   func wordForVerificationWasPressed(with indexPath: IndexPath)
-  func configureShuffled(_ cell: MnemonicCollectionViewCell, forRow row: Int)
-  func configure(cellForVerification: MnemonicCollectionViewCell, forRow row: Int)
-  
-  func nextButtonAction()
+  func configureShuffled(_ cell: MnemonicCellView, forRow row: Int)
+  func configure(cellForVerification: MnemonicCellView, forRow row: Int)
+  func nextButtonWasPressed()
+  func getIndexPathFromShuffledMnemonicList(by index: Int) -> IndexPath
 }
 
 class MnemonicVerificationPresenterImpl {
@@ -38,32 +39,51 @@ class MnemonicVerificationPresenterImpl {
     self.crashlyticsService = crashlyticsService
   }
   
-  // MARK: - Public Methods
+  // MARK: - Public
   
   func initShuffledMnemonicList() {
     guard !generatedMnemonicList.isEmpty else { return }
     
     shuffledMnemonicList = generatedMnemonicList.shuffled()
-    view?.displayShuffledMnemonicList()
-  }
-  
-  func getIndexPathFromShuffledMnemonicList(by index: Int) -> IndexPath {
-    let indexInShuffledList =
-      shuffledMnemonicList.firstIndex(of: mnemonicListForVerification[index])
-    return IndexPath(item: indexInShuffledList!, section: 0)
+    view?.setShuffledMnemonicList()
   }
   
   func moveShuffledWordToListForVerification(by indexPath: IndexPath) {
     mnemonicListForVerification.append(shuffledMnemonicList[indexPath.item])
-    view?.updateShuffledCollectionView(by: indexPath, color: UIColor.gray)
     view?.updateCollectionViewForVerification()
   }
   
   func moveWordForVerificationToShuffledMnemonicList(by indexPath: IndexPath) {
-    view?.updateShuffledCollectionView(by: getIndexPathFromShuffledMnemonicList(by: indexPath.item),
-                                       color: UIColor.white)
     mnemonicListForVerification.remove(at: indexPath.item)
     view?.updateCollectionViewForVerification()
+  }
+  
+  func validateVerificationList() {
+    guard mnemonicListForVerification.count == 12 else {
+      view?.setRightBarButton(isEnabled: false)
+      view?.setErrorLabel(isHidden: true)
+      view?.setDashBordersColor(isError: false)
+      return
+    }
+    
+    if mnemonicListForVerification == generatedMnemonicList {
+      view?.setRightBarButton(isEnabled: true)
+    } else {
+      view?.setErrorLabel(isHidden: false)
+      view?.setDashBordersColor(isError: true)
+    }
+  }
+  
+  func transitionToPinScreen() {
+    let pinViewController = PinViewController.createFromStoryboard()
+    
+    pinViewController.mode = .createPinFirstStep
+    
+    let mnemonicVerificationViewController =
+      view as! MnemonicVerificationViewController
+    mnemonicVerificationViewController.navigationController?
+      .pushViewController(pinViewController,
+                          animated: true)
   }
 }
 
@@ -73,6 +93,12 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   
   var countOfMnemonicListForVerification: Int {
     return mnemonicListForVerification.count
+  }
+
+  func getIndexPathFromShuffledMnemonicList(by index: Int) -> IndexPath {
+    let indexInShuffledList =
+      shuffledMnemonicList.firstIndex(of: mnemonicListForVerification[index])
+    return IndexPath(item: indexInShuffledList!, section: 0)
   }
   
   var countOfShuffledMnemonicList: Int {
@@ -89,6 +115,7 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   
   func mnemonicVerificationViewDidLoad() {
     initShuffledMnemonicList()
+    view?.setRightBarButton(isEnabled: false)
   }
   
   func setGeneratedMnemonicList(generatedList: [String]) {
@@ -97,35 +124,26 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   
   func shuffledWordWasPressed(with indexPath: IndexPath) {
     moveShuffledWordToListForVerification(by: indexPath)
+//    validateVerificationList()
+    // temp
+    view?.setRightBarButton(isEnabled: true)
   }
   
   func wordForVerificationWasPressed(with indexPath: IndexPath) {
     moveWordForVerificationToShuffledMnemonicList(by: indexPath)
   }
   
-  func configureShuffled(_ cell: MnemonicCollectionViewCell,
+  func configureShuffled(_ cell: MnemonicCellView,
                          forRow row: Int) {
-    cell.display(title: shuffledMnemonicList[row])
+    cell.set(title: shuffledMnemonicList[row])
   }
   
-  func configure(cellForVerification: MnemonicCollectionViewCell,
+  func configure(cellForVerification: MnemonicCellView,
                  forRow row: Int) {
-    cellForVerification.display(title: mnemonicListForVerification[row])
+    cellForVerification.set(title: mnemonicListForVerification[row])
   }
   
-  func nextButtonAction() {
+  func nextButtonWasPressed() {
     transitionToPinScreen()
-  }
-  
-  func transitionToPinScreen() {
-    let pinViewController = PinViewController.createFromStoryboard()
-    
-    pinViewController.mode = .createPinFirstStep
-    
-    let mnemonicVerificationViewController =
-      view as! MnemonicVerificationViewController
-    mnemonicVerificationViewController.navigationController?
-      .pushViewController(pinViewController,
-                          animated: true)
   }
 }

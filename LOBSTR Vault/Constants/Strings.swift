@@ -69,11 +69,11 @@ internal enum L10n {
   internal static let invalidTransactionMessage = L10n.tr("Localizable", "INVALID_TRANSACTION_MESSAGE")
   /// Invalid Transaction
   internal static let invalidTransactionTitle = L10n.tr("Localizable", "INVALID_TRANSACTION_TITLE")
-  /// Change PIN
+  /// Confirm New PIN
   internal static let navTitleChangePasscodeConfirmNew = L10n.tr("Localizable", "nav_title_change_passcode_confirm_new")
-  /// Change PIN
+  /// Create New PIN
   internal static let navTitleChangePasscodeEnterNew = L10n.tr("Localizable", "nav_title_change_passcode_enter_new")
-  /// Change PIN
+  /// Enter Old PIN
   internal static let navTitleChangePasscodeEnterOld = L10n.tr("Localizable", "nav_title_change_passcode_enter_old")
   /// Create PIN
   internal static let navTitleCreatePasscode = L10n.tr("Localizable", "nav_title_create_passcode")
@@ -81,6 +81,8 @@ internal enum L10n {
   internal static let navTitleMnemonicGeneration = L10n.tr("Localizable", "nav_title_mnemonic_generation")
   /// Verify Recovery Phrase
   internal static let navTitleMnemonicVerification = L10n.tr("Localizable", "nav_title_mnemonic_verification")
+  /// Operation Details
+  internal static let navTitleOperationDetails = L10n.tr("Localizable", "nav_title_operation_details")
   /// Confirm PIN
   internal static let navTitleReenterPasscode = L10n.tr("Localizable", "nav_title_reenter_passcode")
   /// Recover Account
@@ -151,6 +153,8 @@ internal enum L10n {
   internal static let textPublicKeyTitle = L10n.tr("Localizable", "text_public_key_title")
   /// Enter the 12 word recovery phrase you were given when you created your account
   internal static let textRestoreInfo = L10n.tr("Localizable", "text_restore_info")
+  /// Mnemonic Code...
+  internal static let textRestorePlaceholder = L10n.tr("Localizable", "text_restore_placeholder")
   /// Multiply your security
   internal static let textSecureYourLumens = L10n.tr("Localizable", "text_secure_your_lumens")
   /// ABOUT

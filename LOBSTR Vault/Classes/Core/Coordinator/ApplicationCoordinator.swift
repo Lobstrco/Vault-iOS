@@ -30,12 +30,23 @@ class ApplicationCoordinator {
   
   func showMenuScreen() {
     let startMenuViewController = StartMenuViewController.createFromStoryboard()
-    let navigation = UINavigationController(rootViewController: startMenuViewController)
-    window?.rootViewController = navigation
+    let navigationController = UINavigationController(rootViewController: startMenuViewController)
+    setNavigationApperance(navigationController)
+    window?.rootViewController = navigationController
   }  
   
   func showPinScreen() {
     let pinViewController = PinEnterViewController.createFromStoryboard()
     window?.rootViewController = pinViewController
   }
+  
+  private func setNavigationApperance(_ navigationController: UINavigationController) {
+    navigationController.navigationBar.prefersLargeTitles = true
+    navigationController.navigationBar.tintColor = Asset.Colors.main.color
+    navigationController.navigationBar.barTintColor = Asset.Colors.white.color
+    navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    navigationController.navigationBar.shadowImage = UIImage()
+    navigationController.navigationBar.topItem?.title = ""
+  }
+
 }

@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Signer Details Table View Controller-->
+        <!--Title-->
         <scene sceneID="2I0-JJ-Uho">
             <objects>
                 <tableViewController storyboardIdentifier="SignerDetailsTableViewController" id="SK7-Li-j6h" customClass="SignerDetailsTableViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
@@ -48,6 +48,7 @@
                             <outlet property="delegate" destination="SK7-Li-j6h" id="Jce-Nu-2nK"/>
                         </connections>
                     </tableView>
+                    <navigationItem key="navigationItem" title="Title" largeTitleDisplayMode="never" id="ogn-Tq-Gf1"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kic-iN-aKW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

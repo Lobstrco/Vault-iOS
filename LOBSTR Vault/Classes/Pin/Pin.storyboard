@@ -150,6 +150,7 @@
                             <constraint firstItem="IAE-x9-CKx" firstAttribute="top" secondItem="xWk-OQ-VZa" secondAttribute="bottom" constant="30" id="zgy-J9-xxh"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="yx6-hZ-JAQ"/>
                     <connections>
                         <outlet property="numberPadView" destination="xWk-OQ-VZa" id="LLy-Eh-AO2"/>
                         <outlet property="pinDotView" destination="45n-eq-3A7" id="xQJ-ti-nan"/>

@@ -15,6 +15,8 @@ class OperationViewController: UIViewController, StoryboardCreation {
     
     presenter.operationViewDidLoad()
     configureTableView()
+    
+    setStaticStrings()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +34,10 @@ class OperationViewController: UIViewController, StoryboardCreation {
     
     tableView.delegate = self
     tableView.dataSource = self
+  }
+  
+  private func setStaticStrings() {
+    navigationItem.title = L10n.navTitleOperationDetails
   }
 }
 

@@ -32,7 +32,6 @@ class PinViewController: UIViewController, StoryboardCreation {
   private func setAppearance() {
     pinDotView.setupAppearance(with: (fillColor: Asset.Colors.main.color, outColor: Asset.Colors.background.color))
     numberPadView.setupAppearance(with: Asset.Colors.black.color)
-    AppearanceHelper.setBackButton(in: navigationController)
   }
   
   private func setStaticStrings() {
@@ -56,8 +55,16 @@ extension PinViewController: PinView {
     pinDotView.clearPinDot(at: index)
   }
   
+  func clearPinDots() {
+    pinDotView.clearPinDots()
+  }
+  
   func shakePinView() {
     pinDotView.shake()
+  }
+  
+  func setNavigationItem() {
+    navigationItem.largeTitleDisplayMode = .never
   }
 }
 

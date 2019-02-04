@@ -123,9 +123,11 @@ extension SettingsPresenterImpl {
     
     switch selectedRow {
     case .signerForAccounts:
-      showSignerDetails()
+      transitionToSignerDetails()
     case .changePin:
-      showChangePin()
+      transitionToChangePin()
+    case .mnemonicCode:
+      transitionToMnemonicCode()
     case .logout:
       logout()
     default:
@@ -162,7 +164,7 @@ extension SettingsPresenterImpl {
 // MARK: -  Navigation
 
 extension SettingsPresenterImpl {
-  func showChangePin() {
+  func transitionToChangePin() {
     let pinViewController = PinViewController.createFromStoryboard()    
     
     pinViewController.hidesBottomBarWhenPushed = true
@@ -171,11 +173,18 @@ extension SettingsPresenterImpl {
     navigationController.pushViewController(pinViewController, animated: true)
   }
   
-  func showSignerDetails() {
+  func transitionToSignerDetails() {
     let signerDetailsTableViewController = SignerDetailsTableViewController.createFromStoryboard()
     
     let settingsViewController = view as! SettingsViewController
     settingsViewController.navigationController?.pushViewController(signerDetailsTableViewController, animated: true)
+  }
+  
+  func transitionToMnemonicCode() {
+    let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
+    mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
+                                                                                 mnemonicMode: .showMnemonic)
+    navigationController.pushViewController(mnemonicGenerationViewController, animated: true)
   }
   
   // temp

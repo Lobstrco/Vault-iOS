@@ -16,7 +16,7 @@ class MnemonicVerificationViewSpy: MnemonicVerificationView {
     collectionViewForVerificationWasUpdated = true
   }
   
-  func displayShuffledMnemonicList() {
+  func setShuffledMnemonicList() {
     displayShuffledMnemonicListWasCalled = true
   }
   

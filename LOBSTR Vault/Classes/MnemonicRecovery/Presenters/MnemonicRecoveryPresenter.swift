@@ -1,11 +1,11 @@
 import Foundation
-import UIKit
 
 protocol MnemonicRecoveryView: class {
-  func displayRecoveryButton(isEnabled: Bool)
+  func displayRecoveryButton(isHidden: Bool)
+  func setHighlightTextView(isEnabled: Bool)
   func displaySuggestionList(suggestionList: [String])
   func displayPickedWordFromSuggestionList(updatedText: String)
-  func displayHighlightedWords(attributedStrings: [NSMutableAttributedString])
+  func displayHighlightedWords(attributedStrings: NSMutableAttributedString)
 }
 
 protocol MnemonicRecoveryPresenter {
@@ -27,17 +27,19 @@ class MnemonicRecoveryPresenterImpl {
   
   init(view: MnemonicRecoveryView, mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
-    self.view?.displayRecoveryButton(isEnabled: true)
+    self.view?.displayRecoveryButton(isHidden: true)
     self.mnemonicManager = mnemonicManager
   }
   
-  // MARK: - Public Methods
+  // MARK: - Public
   
   func add(_ suggestionWord: String, to text: String) {
     let updatedText = MnemonicHelper.addSuggestionWord(to: text, suggestionWord)
     view?.displayPickedWordFromSuggestionList(updatedText: updatedText)
     clearSuggestionList()
     highlightWrongWords(in: updatedText)
+    mnemonic = updatedText
+    validateMnemonic()
   }
   
   func clearSuggestionList() {
@@ -53,22 +55,6 @@ class MnemonicRecoveryPresenterImpl {
     view?.displaySuggestionList(suggestionList: suggestionList)
   }
   
-  func highlightWrongWords(in string: String) {
-    var attributedString = NSMutableAttributedString(string: string)
-    let listOfSeparatedWords = MnemonicHelper.getSeparatedWords(from: string)
-    
-    for word in listOfSeparatedWords {
-      if !MnemonicHelper.mnemonicWordIsExist(word) {
-        attributedString = MnemonicHelper.getHighlightedAttributedString(attributedString: attributedString,
-                                                                         word: word,
-                                                                         in: string,
-                                                                         highlightColor: UIColor.red)
-      }
-    }
-    
-    view?.displayHighlightedWords(attributedStrings: [attributedString])
-  }
-  
   func transitionToPinScreen() {
     let pinViewController = PinViewController.createFromStoryboard()    
     
@@ -79,6 +65,43 @@ class MnemonicRecoveryPresenterImpl {
     mnemonicRecoveryViewController.navigationController?
       .pushViewController(pinViewController,
                           animated: true)
+  }
+  
+  func highlightWrongWords(in text: String) {
+    let phrases = MnemonicHelper.getSeparatedWords(from: text)
+    
+    var attributedString = NSMutableAttributedString(string: text)
+    for word in phrases {
+      if !MnemonicHelper.mnemonicWordIsExist(word) {
+        attributedString = MnemonicHelper.getHighlightedAttributedString(attributedString: attributedString,
+                                                                         word: word,
+                                                                         in: text,
+                                                                         highlightColor: Asset.Colors.red.color)
+      }
+    }
+    
+    view?.displayHighlightedWords(attributedStrings: attributedString)
+  }
+  
+  func validateMnemonic() {
+    let phrases = MnemonicHelper.getSeparatedWords(from: mnemonic)
+
+    for word in phrases {
+      if !MnemonicHelper.mnemonicWordIsExist(word) {
+        view?.displayRecoveryButton(isHidden: true)
+        view?.setHighlightTextView(isEnabled: true)
+        return
+      } else {
+        view?.setHighlightTextView(isEnabled: false)
+      }
+    }
+    
+    guard phrases.count > wordsNumberInMnemonic else {
+      view?.displayRecoveryButton(isHidden: true)
+      return
+    }
+    
+    view?.displayRecoveryButton(isHidden: false)
   }
 }
 
@@ -98,6 +121,7 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
     mnemonic = text
     suggestionListRequest(by: text)
     highlightWrongWords(in: text)
+    validateMnemonic()
   }
 
   func recoveryButtonWasPressed() {

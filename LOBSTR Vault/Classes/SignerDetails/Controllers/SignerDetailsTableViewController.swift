@@ -13,10 +13,10 @@ class SignerDetailsTableViewController: UITableViewController, StoryboardCreatio
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    setAppearance()
     presenter = SignerDetailsPresenterImpl(view: self)
     presenter.signerDetailsViewDidLoad()
-    
-    setAppearance()
+    tableView.tableFooterView = UIView()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -32,10 +32,6 @@ class SignerDetailsTableViewController: UITableViewController, StoryboardCreatio
   // MARK: - Private
 
   private func setAppearance() {
-    tableView.tableFooterView = UIView()
-    navigationController?.navigationBar.prefersLargeTitles = false
-    AppearanceHelper.set(navigationController)
-    AppearanceHelper.setBackButton(in: navigationController)
     navigationItem.title = L10n.navTitleSettingsSignedAccounts
   }
   

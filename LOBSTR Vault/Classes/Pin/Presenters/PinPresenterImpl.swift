@@ -5,7 +5,9 @@ protocol PinView: class {
   func setTitle(_ title: String)
   func fillPinDot(at index: Int)
   func clearPinDot(at index: Int)
+  func clearPinDots()
   func shakePinView()
+  func setNavigationItem()
 }
 
 class PinPresenterImpl: PinPresenter {
@@ -46,11 +48,17 @@ class PinPresenterImpl: PinPresenter {
           break
         }
       }
-    
     case .createPinFirstStep:
       view?.setTitle(L10n.navTitleCreatePasscode)
     case .createPinSecondStep:
       view?.setTitle(L10n.navTitleReenterPasscode)
+    case .changePin:
+      view?.setNavigationItem()
+      view?.setTitle(L10n.navTitleChangePasscodeEnterOld)
+    case .createNewPinFirstStep:
+      view?.setTitle(L10n.navTitleChangePasscodeEnterNew)
+    case .createNewPinSecondStep(_):
+      view?.setTitle(L10n.navTitleChangePasscodeConfirmNew)
     default:
       break
     }
@@ -64,24 +72,25 @@ class PinPresenterImpl: PinPresenter {
     if pin.count == pinLength {
       switch mode {
       case .createPinFirstStep:
-        transitionToCreatePinSecondStep()
-        
+        transitionToCreatePinSecondStep(with: .createPinSecondStep(pin))
       case .createPinSecondStep(let pinFromFirstStep):
-        
         if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
           transitionToBiometricID()
         } else {
-          view?.shakePinView()
+          resetPinAfterWrongDialing()
         }
-        
       case .enterPin:
-        
         validateEnteredPin()
-        
       case .changePin:
-        
         validateChangedPin()
-        
+      case .createNewPinFirstStep:
+        transitionToCreatePinSecondStep(with: .createNewPinSecondStep(pin))
+      case .createNewPinSecondStep(let pinFromFirstStep):
+        if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
+          transitionToSettings()
+        } else {
+          resetPinAfterWrongDialing()
+        }
       case .undefined:
         fatalError()
       }
@@ -96,13 +105,19 @@ class PinPresenterImpl: PinPresenter {
   
   // MARK: - Private
   
+  private func resetPinAfterWrongDialing() {
+    view?.shakePinView()
+    pin.removeAll()
+    view?.clearPinDots()
+  }
+  
   private func validateEnteredPin() {
     guard let storedPin = pinManager.getPin() else { return }
     
     if pinManager.validate(storedPin, pin) == true {
       transitionToHomeScreen()
     } else {
-      view?.shakePinView()
+      resetPinAfterWrongDialing()
     }
   }
   
@@ -110,9 +125,9 @@ class PinPresenterImpl: PinPresenter {
     guard let storedPin = pinManager.getPin() else { return }
     
     if pinManager.validate(storedPin, pin) == true {
-      transitionToCreatePinFirstStep()
+      transitionToCreatePinFirstStep(with: .createNewPinFirstStep)
     } else {
-      view?.shakePinView()
+      resetPinAfterWrongDialing()
     }
   }
 }
@@ -129,20 +144,22 @@ extension PinPresenterImpl {
     }
   }
   
-  func transitionToCreatePinFirstStep() {
+  func transitionToCreatePinFirstStep(with mode: PinMode) {
     let pinViewController = PinViewController.createFromStoryboard()
     
-    pinViewController.mode = .createPinFirstStep
+//    pinViewController.mode = .createPinFirstStep
+    pinViewController.mode = mode
     
     let currentPinViewController = view as! PinViewController
     currentPinViewController.navigationController?.pushViewController(pinViewController,
                                             animated: true)
   }
   
-  func transitionToCreatePinSecondStep() {
+  func transitionToCreatePinSecondStep(with mode: PinMode) {
     let pinViewController = PinViewController.createFromStoryboard()    
     
-    pinViewController.mode = .createPinSecondStep(pin)
+//    pinViewController.mode = .createPinSecondStep(pin)
+    pinViewController.mode = mode
     
     let currentPinViewController = view as! PinViewController
     currentPinViewController.navigationController?.pushViewController(pinViewController,
@@ -155,5 +172,10 @@ extension PinPresenterImpl {
     let pinViewController = view as! PinViewController
     pinViewController.navigationController?.pushViewController(biometricIDViewController,
                                             animated: true)
+  }
+  
+  func transitionToSettings() {
+    let pinViewController = view as! PinViewController
+    pinViewController.navigationController?.popToRootViewController(animated: true)
   }
 }

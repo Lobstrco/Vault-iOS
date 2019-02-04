@@ -22,8 +22,20 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
     setAppearance()
     setStaticStrings()
     
-    presenter = MnemonicGenerationPresenterImpl(view: self)
     presenter.mnemonicGenerationViewDidLoad()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    tabBarController?.tabBar.isHidden = true
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    tabBarController?.tabBar.isHidden = false
+  }
+  
+  // TEMP
+  override func viewDidLayoutSubviews() {
+    AppearanceHelper.setDashBorders(for: collectionView, with: Asset.Colors.gray.color.cgColor)
   }
   
   // MARK: - IBAction
@@ -40,7 +52,8 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
   
   private func setAppearance() {
     AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
-    AppearanceHelper.setBackButton(in: navigationController)
+//    navigationController?.navigationBar.topItem?.title = ""
+//    navigationItem.largeTitleDisplayMode = .never
   }
   
   private func setStaticStrings() {
@@ -56,13 +69,22 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
 
 extension MnemonicGenerationViewController: MnemonicGenerationView {
  
-  func displayMnemonicList(mnemonicList: [String]) {
+  func setMnemonicList(mnemonicList: [String]) {
     collectionView.dataSource = self
     collectionView.delegate = self
   }
   
   func copyToClipboard(mnemonic: String) {
     UIPasteboard.general.string = mnemonic
+  }
+  
+  func setNextButton(isHidden: Bool) {
+    nextButton.isHidden = isHidden
+    confirmDescriptionLabel.isHidden = isHidden
+  }
+  
+  func setNavigationItem() {
+    navigationItem.largeTitleDisplayMode = .never
   }
 }
 
@@ -95,12 +117,16 @@ extension MnemonicGenerationViewController: UICollectionViewDelegate,
   func collectionView(_ collectionView: UICollectionView,
                       layout collectionViewLayout: UICollectionViewLayout,
                       minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-    return 2.0
+    return 5.0
   }
   
   func collectionView(_ collectionView: UICollectionView, layout
     collectionViewLayout: UICollectionViewLayout,
                       minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-    return 10.0
+    return 12.0
+  }
+  
+  func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+    return false
   }
 }

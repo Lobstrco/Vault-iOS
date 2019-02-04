@@ -33,6 +33,8 @@ class HomeViewController: UIViewController, StoryboardCreation {
     
     signerDetailsProgressHUD.display(onView: signerDetailsView)
     transactionNumberProgressHUD.display(onView: transactionNumberLabel)
+    
+    
   }
 
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -43,6 +45,7 @@ class HomeViewController: UIViewController, StoryboardCreation {
   
   @IBAction func copyKeyButtonAction(_ sender: Any) {
     presenter.copyKeyButtonWasPressed()
+    Snackbar(parentView: signerDetailsView, snackType: .copy).show()
   }
   
   @IBAction func transactionListButtonAction(_ sender: Any) {
