@@ -1,4 +1,5 @@
 import UIKit
+import PKHUD
 
 protocol ImportXDROutput {
   func submitXDR(_ xdr: String)
@@ -6,7 +7,7 @@ protocol ImportXDROutput {
 
 protocol ImportXDRInput {
   func setError(error: String)
-  func closePopup()
+  func closePopup()  
   func setProgressAnimation(isEnable: Bool)
 }
 
@@ -21,8 +22,6 @@ class ImportXDR: UIView, UITextViewDelegate {
   
   var output: ImportXDROutput?
   var popoverDelegate: CustomPopoverDelegate?
-  
-  let progressHUD = ProgressHUD(withBackground: true)
   
   // MARK: - IBAction
   
@@ -91,7 +90,7 @@ extension ImportXDR: ImportXDRInput {
   }
   
   func setProgressAnimation(isEnable: Bool) {
-    isEnable ? progressHUD.display(onView: self) : progressHUD.remove()
+    isEnable ? HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) : HUD.hide()
   }
   
 }

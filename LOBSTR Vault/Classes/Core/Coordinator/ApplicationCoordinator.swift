@@ -2,24 +2,22 @@ import UIKit
 
 class ApplicationCoordinator {
   private let window: UIWindow?
-  private let mnemonicManager = MnemonicManagerImpl()
-  private let pinManager = PinManagerImpl()
   
   init(window: UIWindow?) {
     self.window = window
   }
   
-  func startUserFlow() {
-    if mnemonicManager.isMnemonicStoredInKeychain() {
-      
-      if pinManager.isPinStoredInKeychain() {
-        showPinScreen()
-      } else {
-        showHomeScreen()
-      }
-      
-    } else {
+  func openRequiredScreen() {
+    let accountStatus = ApplicationCoordinatorHelper.getAccountStatus()
+    
+    switch accountStatus {
+    case .notCreated:
+      ApplicationCoordinatorHelper.clearKeychain()
       showMenuScreen()
+    case .waitingToBecomeSinger:
+      showPublicKeyScreen()
+    case .created:
+      showPinScreen()
     }
   }
   
@@ -31,7 +29,7 @@ class ApplicationCoordinator {
   func showMenuScreen() {
     let startMenuViewController = StartMenuViewController.createFromStoryboard()
     let navigationController = UINavigationController(rootViewController: startMenuViewController)
-    setNavigationApperance(navigationController)
+    AppearanceHelper.setNavigationApperance(navigationController)
     window?.rootViewController = navigationController
   }  
   
@@ -40,13 +38,10 @@ class ApplicationCoordinator {
     window?.rootViewController = pinViewController
   }
   
-  private func setNavigationApperance(_ navigationController: UINavigationController) {
-    navigationController.navigationBar.prefersLargeTitles = true
-    navigationController.navigationBar.tintColor = Asset.Colors.main.color
-    navigationController.navigationBar.barTintColor = Asset.Colors.white.color
-    navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
-    navigationController.navigationBar.shadowImage = UIImage()
-    navigationController.navigationBar.topItem?.title = ""
+  func showPublicKeyScreen() {
+    let publicKeyViewController = PublicKeyViewController.createFromStoryboard()
+    let navigationController = UINavigationController(rootViewController: publicKeyViewController)
+    AppearanceHelper.setNavigationApperance(navigationController)
+    window?.rootViewController = navigationController
   }
-
 }

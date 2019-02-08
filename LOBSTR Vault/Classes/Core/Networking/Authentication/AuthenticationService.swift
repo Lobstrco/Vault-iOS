@@ -7,6 +7,7 @@ class AuthenticationService {
   
   func updateToken(completion: @escaping (Result<String>) -> Void) {
     guard mnemonicManager.isMnemonicStoredInKeychain() else {
+      print("Mnemonic doesn't exist")
       return
     }
     

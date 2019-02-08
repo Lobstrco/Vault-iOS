@@ -1,5 +1,6 @@
 import UIKit
 import Lottie
+import PKHUD
 
 class TransactionStatusViewController: UIViewController, StoryboardCreation {
   
@@ -9,11 +10,10 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   @IBOutlet weak var statusLabel: UILabel!
   @IBOutlet weak var doneButton: UIButton!
   @IBOutlet weak var xdrLabel: UILabel!
-  
-  @IBOutlet weak var statusDescriptionLabel: UILabel!
+  @IBOutlet weak var errorMessageLabel: UILabel!
   @IBOutlet weak var signedXDRTitleLabel: UILabel!
-  
   @IBOutlet weak var animationContainer: UIView!
+  
   var presenter: TransactionStatusPresenter!
   
   // MARK: - Lifecycle
@@ -28,6 +28,7 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   }
   
   override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
     tabBarController?.tabBar.isHidden = true
   }
   
@@ -38,23 +39,30 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   }
   
   @IBAction func copyXDRAction(_ sender: Any) {
-//    presenter.copyXDRButtonWasPressed(xdr: xdrLabel.text)
+    guard let xdr = xdrLabel.text else {
+      return
+    }
+    
+    presenter.copyXDRButtonWasPressed(xdr: xdr)
+    HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.animationCopy), delay: 1.0)
   }
   
   // MARK: - Private
+  
   private func setAppearance() {
-    AppearanceHelper.set(navigationController)
-    
     AppearanceHelper.set(doneButton, with: L10n.buttonTitleDone)
-    XDRContainerView.layer.cornerRadius = 5
-    XDRContainerView.layer.borderColor = Asset.Colors.grayOpacity70.color.cgColor
-    XDRContainerView.layer.borderWidth = 1
+    navigationItem.hidesBackButton = true    
     
-    navigationItem.hidesBackButton = true
+    guard let xdrView = XDRContainerView.subviews.first else {
+      return
+    }
+    
+    xdrView.layer.cornerRadius = 5
+    xdrView.layer.borderColor = Asset.Colors.grayOpacity70.color.cgColor
+    xdrView.layer.borderWidth = 1
   }
   
   private func setStaticString() {
-    statusDescriptionLabel.text = L10n.textStatusDescription
     signedXDRTitleLabel.text = L10n.textStatusSignedXdrTitle
   }
 }
@@ -84,5 +92,8 @@ extension TransactionStatusViewController: TransactionStatusView {
     xdrLabel.text = xdr
   }
   
+  func setErrorMessage(_ message: String) {
+    errorMessageLabel.text = message
+  }
   
 }

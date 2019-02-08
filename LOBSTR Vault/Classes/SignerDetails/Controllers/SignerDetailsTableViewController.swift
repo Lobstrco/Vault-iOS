@@ -1,10 +1,10 @@
 import UIKit
+import PKHUD
 
 class SignerDetailsTableViewController: UITableViewController, StoryboardCreation {
 
   static var storyboardType: Storyboards = .signerDetails
   
-  let progressHUD = ProgressHUD()
   var emptyStateLabel: UILabel?
   var presenter: SignerDetailsPresenter!
   
@@ -81,7 +81,7 @@ extension SignerDetailsTableViewController: SignerDetailsView {
   
   func setAccountList(isEmpty: Bool) {
     tableView.reloadData()
-    progressHUD.remove()
+    HUD.hide()
     
     if isEmpty {
       setEmptyStateLabel()
@@ -89,7 +89,7 @@ extension SignerDetailsTableViewController: SignerDetailsView {
   }
   
   func setProgressAnimation() {
-    progressHUD.display(onView: view)
+    HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting))
   }
   
 }

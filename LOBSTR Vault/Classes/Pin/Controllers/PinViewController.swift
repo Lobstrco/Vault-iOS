@@ -66,6 +66,10 @@ extension PinViewController: PinView {
   func setNavigationItem() {
     navigationItem.largeTitleDisplayMode = .never
   }
+  
+  func hideBackButton() {
+    navigationItem.hidesBackButton = true
+  }
 }
 
 // MARK: - NumberPadViewDelegate

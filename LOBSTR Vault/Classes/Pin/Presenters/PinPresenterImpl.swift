@@ -8,6 +8,7 @@ protocol PinView: class {
   func clearPinDots()
   func shakePinView()
   func setNavigationItem()
+  func hideBackButton()  
 }
 
 class PinPresenterImpl: PinPresenter {
@@ -50,6 +51,7 @@ class PinPresenterImpl: PinPresenter {
       }
     case .createPinFirstStep:
       view?.setTitle(L10n.navTitleCreatePasscode)
+      view?.hideBackButton()
     case .createPinSecondStep:
       view?.setTitle(L10n.navTitleReenterPasscode)
     case .changePin:

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Mnemonic Recovery View Controller-->
+        <scene sceneID="aQI-qO-Uka">
+            <objects>
+                <viewController storyboardIdentifier="MnemonicRecoveryViewController" id="jMx-Df-eZn" customClass="MnemonicRecoveryViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="c4q-42-f14">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign in with a recovery phrase" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bII-4e-i7c">
+                                <rect key="frame" x="16" y="36" width="343" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/GrayOpacity70"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v3l-eT-S8h">
+                                <rect key="frame" x="16" y="104" width="343" height="139"/>
+                                <color key="backgroundColor" name="Colors/Background"/>
+                                <color key="tintColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="139" id="BhP-IT-H8Y"/>
+                                </constraints>
+                                <color key="textColor" name="Colors/GrayOpacity30"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Evf-tn-SzP">
+                                <rect key="frame" x="16" y="273" width="343" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="krY-BT-C44"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Next">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="recoveryButtonAction:" destination="jMx-Df-eZn" eventType="touchUpInside" id="RZs-G9-evs"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ePm-pK-B0j">
+                                <rect key="frame" x="30" y="326" width="315" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <color key="textColor" red="1" green="0.1843137255" blue="0.57254901960000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="bII-4e-i7c" firstAttribute="top" secondItem="s2L-cY-ZcR" secondAttribute="top" constant="16" id="0tD-1O-2qC"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="Evf-tn-SzP" secondAttribute="trailing" constant="16" id="9T3-oj-tyg"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="ePm-pK-B0j" secondAttribute="trailing" constant="30" id="Jew-55-vd3"/>
+                            <constraint firstItem="bII-4e-i7c" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="16" id="Orh-5x-NFm"/>
+                            <constraint firstItem="ePm-pK-B0j" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="30" id="Pen-2O-25Y"/>
+                            <constraint firstItem="Evf-tn-SzP" firstAttribute="top" secondItem="v3l-eT-S8h" secondAttribute="bottom" constant="30" id="UMS-xf-WMs"/>
+                            <constraint firstItem="v3l-eT-S8h" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="16" id="X04-rS-gQX"/>
+                            <constraint firstItem="v3l-eT-S8h" firstAttribute="top" secondItem="bII-4e-i7c" secondAttribute="bottom" constant="50" id="YuE-gl-aam"/>
+                            <constraint firstItem="ePm-pK-B0j" firstAttribute="top" secondItem="Evf-tn-SzP" secondAttribute="bottom" constant="5" id="ahg-Bq-Mdg"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="v3l-eT-S8h" secondAttribute="trailing" constant="16" id="dU9-xR-s2c"/>
+                            <constraint firstItem="s2L-cY-ZcR" firstAttribute="trailing" secondItem="bII-4e-i7c" secondAttribute="trailing" constant="16" id="gAB-TW-Gy0"/>
+                            <constraint firstItem="Evf-tn-SzP" firstAttribute="leading" secondItem="s2L-cY-ZcR" secondAttribute="leading" constant="16" id="r0Z-A0-Dcg"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="s2L-cY-ZcR"/>
+                    </view>
+                    <connections>
+                        <outlet property="nextButton" destination="Evf-tn-SzP" id="J4u-sR-hHi"/>
+                        <outlet property="restoreAccountInfoLabel" destination="bII-4e-i7c" id="Uyj-jx-4ck"/>
+                        <outlet property="textView" destination="v3l-eT-S8h" id="uhX-Um-kvV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="JSP-eA-f7H" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2809" y="-556"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="Colors/Background">
+            <color red="0.95294117647058818" green="0.95294117647058818" blue="0.98431372549019602" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/GrayOpacity30">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/GrayOpacity70">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.69999998807907104" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

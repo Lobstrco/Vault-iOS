@@ -8,6 +8,7 @@ protocol TransactionListView: class {
   func setErrorAlert(for error: Error)
   func setImportXDRPopover(_ popover: CustomPopoverViewController)
   func deleteRow(by index: Int, isEmpty: Bool)
+  func setHUDSuccessViewAfterRemoveOperation()
 }
 
 protocol TransactionListPresenter {
@@ -43,14 +44,22 @@ class TransactionListPresenterImpl {
     self.transactionService = transactionService
     self.mnemonicManager = mnemonicManager
     
+    NotificationCenter.default.addObserver(self, selector: #selector(onDidRemoveTransaction(_:)), name: .didRemoveTransaction, object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(onDidChangeTransactionList(_:)), name: .didChangeTransactionList, object: nil)
   }
   
   @objc func onDidChangeTransactionList(_ notification: Notification) {
-    transactionList.remove(at: 0)
+    view?.setProgressAnimation()
+    displayPendingTransactions()
+  }
+  
+  @objc func onDidRemoveTransaction(_ notification: Notification) {
+    guard let transactionIndex = notification.userInfo?["transactionIndex"] as? Int else { return }
+    transactionList.remove(at: transactionIndex)
     let delayBeforeTableRowWillBeDeleted = 1.2
     DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeTableRowWillBeDeleted) {
-      self.view?.deleteRow(by: 0, isEmpty: self.transactionList.isEmpty)
+      self.view?.deleteRow(by: transactionIndex, isEmpty: self.transactionList.isEmpty)
+      self.view?.setHUDSuccessViewAfterRemoveOperation()
     }
   }
   
@@ -83,36 +92,46 @@ class TransactionListPresenterImpl {
   private func submitTransaction(with transactionEnvelope: String) {
     StellarSDK(withHorizonUrl: Constants.horizonURL).transactions.postTransaction(transactionEnvelope: transactionEnvelope) { (response) -> (Void) in
       switch response {
-      case .success(let details):
+      case .success(_):
         DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
           self.submitTransactionToVaultServer(transactionEnvelope)
         }
       case .failure(let error):
-        switch error {
-        case .badRequest(let message, _):
-          if TransactionHelper.isNeedAdditionalSignature(from: message) {
-            self.submitTransactionToVaultServer(transactionEnvelope, isNeedAdditionalSignature: true)
-          } else {
-            DispatchQueue.main.async {
-              self.transitionToTransactionStatus(.failure, isNeedToShowXDR: false)
-              self.importXDRInput?.setProgressAnimation(isEnable: false)
-              self.importXDRInput?.closePopup()
-            }
-          }
-        default:
-          self.importXDRInput?.setProgressAnimation(isEnable: false)
-          self.view?.setErrorAlert(for: error)
-        }
+        self.resolveTransactionRequest(error, in: transactionEnvelope)
       }
     }
   }
   
+  private func resolveTransactionRequest(_ error: HorizonRequestError, in transactionEnvelope: String) {
+    switch error {
+    case .badRequest(let message, _):
+      let resultCode = try! TransactionHelper.getTransactionResultCode(from: message)
+      switch resultCode {
+      case .badAuth:
+        self.submitTransactionToVaultServer(transactionEnvelope, isNeedAdditionalSignature: true)
+      default:
+        DispatchQueue.main.async {
+          self.transitionToTransactionStatus(.failure, resultCode: resultCode)
+          self.importXDRInput?.setProgressAnimation(isEnable: false)
+          self.importXDRInput?.closePopup()
+        }
+      }
+    default:
+      self.importXDRInput?.setProgressAnimation(isEnable: false)
+      self.view?.setErrorAlert(for: error)
+    }
+  }
+  
   private func submitTransactionToVaultServer(_ transactionEnvelope: String, isNeedAdditionalSignature: Bool = false) {
-    transactionService.submitSignedTransaction(xdr: transactionEnvelope, isNeedAdditionalSignature: isNeedAdditionalSignature) { result in
+    transactionService.submitSignedTransaction(xdr: transactionEnvelope,
+                                               isNeedAdditionalSignature: isNeedAdditionalSignature) { result in
       switch result {
       case .success(_):
         DispatchQueue.main.async {
-          self.transitionToTransactionStatus(.success, isNeedToShowXDR: isNeedAdditionalSignature, xdr: transactionEnvelope.xdrEncoded)
+          let resultCode: TransactionResultCode = isNeedAdditionalSignature ? .badAuth : .success
+          let xdr: String? = isNeedAdditionalSignature ? transactionEnvelope : nil
+          
+          self.transitionToTransactionStatus(.success, resultCode: resultCode, xdr: xdr)
           self.importXDRInput?.setProgressAnimation(isEnable: false)
           self.importXDRInput?.closePopup()
         }
@@ -130,7 +149,7 @@ extension TransactionListPresenterImpl: ImportXDROutput {
   
   private func displayImportXDRPopover() {
     let importXDRView = Bundle.main.loadNibNamed("ImportXDR", owner: view, options: nil)?.first as! ImportXDR
-    let popoverHeight: CGFloat = 600 // 433
+    let popoverHeight: CGFloat = 550
     let popover = CustomPopoverViewController(height: popoverHeight, view: importXDRView)
     
     importXDRView.popoverDelegate = popover
@@ -217,17 +236,19 @@ extension TransactionListPresenterImpl {
     let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
     
     transactionDetailsViewController.presenter = TransactionDetailsPresenterImpl(view: transactionDetailsViewController)
-    transactionDetailsViewController.presenter.setTransactionData(transactionList[index])
+    transactionDetailsViewController.presenter.setTransactionData(transactionList[index], withIndex: index)
     
     let transactionListViewController = view as! TransactionListViewController
     transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
   }
   
-  func transitionToTransactionStatus(_ status: TransactionStatus, isNeedToShowXDR: Bool, xdr: String? = nil) {
+  func transitionToTransactionStatus(_ status: TransactionStatus, resultCode: TransactionResultCode, xdr: String? = nil) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
-    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController)
-    transactionStatusViewController.presenter.setTransactionStatus(status, isNeedToShowXDR, xdr: xdr)
+    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,
+                                                                               with: status,
+                                                                               resultCode: resultCode,
+                                                                               xdr: xdr)
     
     let transactionListViewController = view as! TransactionListViewController
     transactionListViewController.navigationController?.pushViewController(transactionStatusViewController, animated: true)

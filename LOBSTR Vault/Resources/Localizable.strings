@@ -8,6 +8,18 @@
 "button_title_signed_accounts" = "Signed Accounts";
 "button_title_done" = "Done";
 
+// Animations
+"animation_copy" = "Copied";
+"animation_waiting" = "Please Wait";
+
+// Logout
+"logout_alert_title" = "Have you secured your recovery phrase?";
+"logout_alert_message" = "Without this you will not be able to recover your account";
+
+// Cancel of generated mnemonic
+"cancel_alert_mnemonic_title" = "Are you sure?";
+"cancel_alert_mnemonic_message" = "Generated recovery phrase will not be saved";
+
 // Navigation titles
 "nav_title_restore_account" = "Recover Account";
 "nav_title_mnemonic_generation" = "Recovery Phrase";
@@ -52,16 +64,21 @@
 "text_mnemonic_verification_description" = "Tap the words in the correct order";
 "text_mnemonic_verifivation_incorrect_order" = "Wrong order. Please try again.";
 
-// Touch ID screen
+// Biometric ID screen
 "text_protect_your_wallet" = "Protect your account";
-"text_protect_your_wallet_description" = "Use fingerprint login instead of your PIN to access your account.";
+"text_protect_your_wallet_description" = "Use Biometric login instead of your PIN to access your account.";
 "text_turn_on_description" = "You can do it later in Settings";
-"button_title_turn_on" = "Enable Fingerprint";
+"button_title_turn_on_fingerprint" = "Enable Fingerprint";
+"button_title_turn_on_faceid" = "Enable Face ID";
 "button_title_skip_for_now" = "I will do this later";
 
 // Public Key screen
 "text_public_key_title" = "Your Vault Public Key";
 "text_public_key_description" = "This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)";
+
+// Re-check screen
+"text_recheck_info" = "You are not a signer";
+"button_title_recheck" = "Re-Check";
 
 // Signer Check screen
 "text_signer_check_information" = "Your Vault account is not a signer for any other Stellar accounts";
@@ -119,12 +136,27 @@
 // Signed Details screen
 "text_empty_state_signed_accounts" = "Signed accounts not found";
 
-"BIOMETRIC_NOT_AVAILABLE_TITLE" = "Not available";
-"BIOMETRIC_NOT_AVAILABLE_MESSAGE" = "Biometric authentication not available.";
-"BIOMETRIC_NOT_VERIFIED_IDENTITY_MESSAGE" = "There was a problem verifying your identity.";
-"BIOMETRIC_PRESSED_CANCEL_MESSAGE" = "You pressed cancel.";
-"BIOMETRIC_PRESSED_PASSWORD_MESSAGE" = "You pressed password.";
-"BIOMETRIC_NOT_CONFIGURED_MESSAGE" =  "Face ID/Touch ID may not be configured.";
+// Error messages
+"error_biometric_not_available" = "error_biometric_not_available";
+"error_biometric_not_available_title" = "Not available";
+"error_biometric_not_available_message" = "Biometric authentication not available.";
+
+"error_biometric_pressed_cancel" = "error_biometric_pressed_cancel";
+"error_biometric_pressed_cancel_title" = "Biometric disabled";
+"error_biometric_pressed_cancel_message" = "You pressed cancel";
+
+"error_biometric_pressed_password" = "error_biometric_pressed_password";
+"error_biometric_pressed_password_title" = "Biometric disabled";
+"error_biometric_pressed_password_message" = "You pressed password";
+
+"error_biometric_not_configured" = "error_biometric_not_configured";
+"error_biometric_not_configured_title" = "Biometric disabled";
+"error_biometric_not_configured_message" = "Face ID/Touch ID may not be configured";
+
+"error_biometric_not_verified_identity" = "error_biometric_not_verified_identity";
+"error_biometric_not_verified_identity_title" = "Biometric disabled";
+"error_biometric_not_verified_identity_message" = "There was a problem verifying your identity";
+
 
 "INVALID_TRANSACTION_TITLE" = "Invalid Transaction";
 "INVALID_TRANSACTION_MESSAGE" = "Transaction was failed. Please, contact to support.";

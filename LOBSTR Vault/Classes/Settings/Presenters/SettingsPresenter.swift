@@ -5,7 +5,8 @@ typealias SettingsPresenter =
   SettingsDataSource &
   SettingsCellConfigurator &
   SettingsDelegate &
-  BiometricIDTableViewCellDelegate
+  BiometricIDTableViewCellDelegate &
+  SettingsLogout
 
 protocol SettingsLifecycle {
   func settingsViewDidLoad()
@@ -32,4 +33,8 @@ protocol SettingsCellConfigurator {
                  row: SettingsRow)
 }
 
+protocol SettingsLogout {
+  func logoutButtonWasPressed()
+  func logoutOperationWasConfirmed()
+}
 

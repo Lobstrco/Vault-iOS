@@ -1,4 +1,5 @@
 import UIKit
+import PKHUD
 
 class TransactionListViewController: UIViewController {
 
@@ -86,6 +87,10 @@ class TransactionListViewController: UIViewController {
   func removeEmptyStateLabel() {
     emptyStateLabel?.removeFromSuperview()
   }
+  
+  func setHUDSuccessViewAfterRemoveOperation() {
+    HUD.flash(.labeledSuccess(title: nil, subtitle: "Denied Transaction"), delay: 1.5)
+  }
 }
 
 // MARK: - TransactionListView
@@ -105,6 +110,7 @@ extension TransactionListViewController: TransactionListView {
   func setTransactionList(isEmpty: Bool) {
     tableView.delegate = self
     tableView.dataSource = self
+    tableView.reloadData()
     clearWaitingAnimation()
     
     if isEmpty {
@@ -124,7 +130,7 @@ extension TransactionListViewController: TransactionListView {
   }
   
   func setImportXDRPopover(_ popover: CustomPopoverViewController) {
-    present(popover, animated: true, completion: nil)
+    present(popover, animated: true, completion: nil)    
   }
   
   func setErrorAlert(for error: Error) {

@@ -11,18 +11,10 @@ import Foundation
 // swiftlint:disable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:disable nesting type_body_length type_name
 internal enum L10n {
-  /// Biometric authentication not available.
-  internal static let biometricNotAvailableMessage = L10n.tr("Localizable", "BIOMETRIC_NOT_AVAILABLE_MESSAGE")
-  /// Not available
-  internal static let biometricNotAvailableTitle = L10n.tr("Localizable", "BIOMETRIC_NOT_AVAILABLE_TITLE")
-  /// Face ID/Touch ID may not be configured.
-  internal static let biometricNotConfiguredMessage = L10n.tr("Localizable", "BIOMETRIC_NOT_CONFIGURED_MESSAGE")
-  /// There was a problem verifying your identity.
-  internal static let biometricNotVerifiedIdentityMessage = L10n.tr("Localizable", "BIOMETRIC_NOT_VERIFIED_IDENTITY_MESSAGE")
-  /// You pressed cancel.
-  internal static let biometricPressedCancelMessage = L10n.tr("Localizable", "BIOMETRIC_PRESSED_CANCEL_MESSAGE")
-  /// You pressed password.
-  internal static let biometricPressedPasswordMessage = L10n.tr("Localizable", "BIOMETRIC_PRESSED_PASSWORD_MESSAGE")
+  /// Copied
+  internal static let animationCopy = L10n.tr("Localizable", "animation_copy")
+  /// Please Wait
+  internal static let animationWaiting = L10n.tr("Localizable", "animation_waiting")
   /// Back
   internal static let buttonTitleBack = L10n.tr("Localizable", "button_title_back")
   /// Cancel
@@ -43,6 +35,8 @@ internal enum L10n {
   internal static let buttonTitleOk = L10n.tr("Localizable", "button_title_ok")
   /// Re-Check
   internal static let buttonTitleReCheck = L10n.tr("Localizable", "button_title_re_check")
+  /// Re-Check
+  internal static let buttonTitleRecheck = L10n.tr("Localizable", "button_title_recheck")
   /// Recover Account
   internal static let buttonTitleRestoreAccount = L10n.tr("Localizable", "button_title_restore_account")
   /// Show
@@ -55,12 +49,48 @@ internal enum L10n {
   internal static let buttonTitleSubmit = L10n.tr("Localizable", "button_title_submit")
   /// By registering you agree to our Terms of Service and Privacy Policy.
   internal static let buttonTitleTerms = L10n.tr("Localizable", "button_title_terms")
+  /// Enable Face ID
+  internal static let buttonTitleTurnOnFaceid = L10n.tr("Localizable", "button_title_turn_on_faceid")
   /// Enable Fingerprint
-  internal static let buttonTitleTurnOn = L10n.tr("Localizable", "button_title_turn_on")
+  internal static let buttonTitleTurnOnFingerprint = L10n.tr("Localizable", "button_title_turn_on_fingerprint")
   /// I understand
   internal static let buttonTitleUnderstand = L10n.tr("Localizable", "button_title_understand")
   /// View Transactions List
   internal static let buttonTitleViewTransactionsList = L10n.tr("Localizable", "button_title_view_transactions_list")
+  /// Generated recovery phrase will not be saved
+  internal static let cancelAlertMnemonicMessage = L10n.tr("Localizable", "cancel_alert_mnemonic_message")
+  /// Are you sure?
+  internal static let cancelAlertMnemonicTitle = L10n.tr("Localizable", "cancel_alert_mnemonic_title")
+  /// error_biometric_not_available
+  internal static let errorBiometricNotAvailable = L10n.tr("Localizable", "error_biometric_not_available")
+  /// Biometric authentication not available.
+  internal static let errorBiometricNotAvailableMessage = L10n.tr("Localizable", "error_biometric_not_available_message")
+  /// Not available
+  internal static let errorBiometricNotAvailableTitle = L10n.tr("Localizable", "error_biometric_not_available_title")
+  /// error_biometric_not_configured
+  internal static let errorBiometricNotConfigured = L10n.tr("Localizable", "error_biometric_not_configured")
+  /// Face ID/Touch ID may not be configured
+  internal static let errorBiometricNotConfiguredMessage = L10n.tr("Localizable", "error_biometric_not_configured_message")
+  /// Biometric disabled
+  internal static let errorBiometricNotConfiguredTitle = L10n.tr("Localizable", "error_biometric_not_configured_title")
+  /// error_biometric_not_verified_identity
+  internal static let errorBiometricNotVerifiedIdentity = L10n.tr("Localizable", "error_biometric_not_verified_identity")
+  /// There was a problem verifying your identity
+  internal static let errorBiometricNotVerifiedIdentityMessage = L10n.tr("Localizable", "error_biometric_not_verified_identity_message")
+  /// Biometric disabled
+  internal static let errorBiometricNotVerifiedIdentityTitle = L10n.tr("Localizable", "error_biometric_not_verified_identity_title")
+  /// error_biometric_pressed_cancel
+  internal static let errorBiometricPressedCancel = L10n.tr("Localizable", "error_biometric_pressed_cancel")
+  /// You pressed cancel
+  internal static let errorBiometricPressedCancelMessage = L10n.tr("Localizable", "error_biometric_pressed_cancel_message")
+  /// Biometric disabled
+  internal static let errorBiometricPressedCancelTitle = L10n.tr("Localizable", "error_biometric_pressed_cancel_title")
+  /// error_biometric_pressed_password
+  internal static let errorBiometricPressedPassword = L10n.tr("Localizable", "error_biometric_pressed_password")
+  /// You pressed password
+  internal static let errorBiometricPressedPasswordMessage = L10n.tr("Localizable", "error_biometric_pressed_password_message")
+  /// Biometric disabled
+  internal static let errorBiometricPressedPasswordTitle = L10n.tr("Localizable", "error_biometric_pressed_password_title")
   /// Operation was failed. Please, contact to support.
   internal static let invalidOperationMessage = L10n.tr("Localizable", "INVALID_OPERATION_MESSAGE")
   /// Invalid Operation
@@ -69,6 +99,10 @@ internal enum L10n {
   internal static let invalidTransactionMessage = L10n.tr("Localizable", "INVALID_TRANSACTION_MESSAGE")
   /// Invalid Transaction
   internal static let invalidTransactionTitle = L10n.tr("Localizable", "INVALID_TRANSACTION_TITLE")
+  /// Without this you will not be able to recover your account
+  internal static let logoutAlertMessage = L10n.tr("Localizable", "logout_alert_message")
+  /// Have you secured your recovery phrase?
+  internal static let logoutAlertTitle = L10n.tr("Localizable", "logout_alert_title")
   /// Confirm New PIN
   internal static let navTitleChangePasscodeConfirmNew = L10n.tr("Localizable", "nav_title_change_passcode_confirm_new")
   /// Create New PIN
@@ -145,12 +179,14 @@ internal enum L10n {
   internal static let textMnemonicVerifivationIncorrectOrder = L10n.tr("Localizable", "text_mnemonic_verifivation_incorrect_order")
   /// Protect your account
   internal static let textProtectYourWallet = L10n.tr("Localizable", "text_protect_your_wallet")
-  /// Use fingerprint login instead of your PIN to access your account.
+  /// Use Biometric login instead of your PIN to access your account.
   internal static let textProtectYourWalletDescription = L10n.tr("Localizable", "text_protect_your_wallet_description")
   /// This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)
   internal static let textPublicKeyDescription = L10n.tr("Localizable", "text_public_key_description")
   /// Your Vault Public Key
   internal static let textPublicKeyTitle = L10n.tr("Localizable", "text_public_key_title")
+  /// You are not a signer
+  internal static let textRecheckInfo = L10n.tr("Localizable", "text_recheck_info")
   /// Enter the 12 word recovery phrase you were given when you created your account
   internal static let textRestoreInfo = L10n.tr("Localizable", "text_restore_info")
   /// Mnemonic Code...

@@ -1,4 +1,5 @@
 import UIKit
+import PKHUD
 
 class HomeViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .home
@@ -30,11 +31,6 @@ class HomeViewController: UIViewController, StoryboardCreation {
     
     setAppearance()
     setStaticStrings()
-    
-    signerDetailsProgressHUD.display(onView: signerDetailsView)
-    transactionNumberProgressHUD.display(onView: transactionNumberLabel)
-    
-    
   }
 
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -45,11 +41,14 @@ class HomeViewController: UIViewController, StoryboardCreation {
   
   @IBAction func copyKeyButtonAction(_ sender: Any) {
     presenter.copyKeyButtonWasPressed()
-    Snackbar(parentView: signerDetailsView, snackType: .copy).show()
+//    HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.animationCopy), delay: 1.0)
+    PKHUD.sharedHUD.contentView = PKHUDSuccessViewCustom(title: nil, subtitle: L10n.animationCopy)
+    PKHUD.sharedHUD.show()
+    PKHUD.sharedHUD.hide(afterDelay: 1.0)
   }
   
   @IBAction func transactionListButtonAction(_ sender: Any) {
-    self.tabBarController?.selectedIndex = 2
+    self.tabBarController?.selectedIndex = 1
   }
   
   // MARK: - Private
@@ -109,5 +108,13 @@ extension HomeViewController: HomeView {
   func setTransactionNumber(_ number: Int) {
     transactionNumberLabel.text = String(number)
     transactionNumberProgressHUD.remove()
+  }
+  
+  func setProgressAnimationForTransactionNumber() {
+    transactionNumberProgressHUD.display(onView: transactionNumberLabel)
+  }
+  
+  func setProgressAnimationForSignerDetails() {
+    signerDetailsProgressHUD.display(onView: signerDetailsView)
   }
 }

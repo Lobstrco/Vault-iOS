@@ -6,6 +6,7 @@ struct HorizonErrorMessage: Decodable {
 
 struct Extras: Decodable {
   let result_codes: ResultCodes?
+  let result_xdr: String?
 }
 
 struct ResultCodes: Decodable {

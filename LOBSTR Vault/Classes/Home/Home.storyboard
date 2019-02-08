@@ -40,69 +40,57 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aQm-Jg-k1l">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="267"/>
                                 <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="w50-5z-qxL">
-                                        <rect key="frame" x="40" y="43" width="295" height="181"/>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9y2-pl-xlj">
+                                        <rect key="frame" x="187.5" y="55" width="0.0" height="90"/>
                                         <subviews>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9y2-pl-xlj">
-                                                <rect key="frame" x="0.0" y="0.0" width="295" height="90"/>
-                                                <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5jv-Vp-ouC">
-                                                        <rect key="frame" x="0.0" y="0.0" width="295" height="90"/>
-                                                        <fontDescription key="fontDescription" type="system" weight="black" pointSize="80"/>
-                                                        <color key="textColor" name="Colors/White"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
-                                                </subviews>
-                                                <constraints>
-                                                    <constraint firstItem="5jv-Vp-ouC" firstAttribute="leading" secondItem="9y2-pl-xlj" secondAttribute="leading" id="11B-vw-mrv"/>
-                                                    <constraint firstAttribute="height" constant="90" id="1Fc-AV-nkU"/>
-                                                    <constraint firstAttribute="bottom" secondItem="5jv-Vp-ouC" secondAttribute="bottom" id="AFg-fP-OA4"/>
-                                                    <constraint firstItem="5jv-Vp-ouC" firstAttribute="top" secondItem="9y2-pl-xlj" secondAttribute="top" id="Iwl-GU-sey"/>
-                                                    <constraint firstAttribute="trailing" secondItem="5jv-Vp-ouC" secondAttribute="trailing" id="wOK-0P-lqv"/>
-                                                </constraints>
-                                            </view>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transactions to sign" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oFH-77-3bt">
-                                                <rect key="frame" x="0.0" y="90" width="295" height="21"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="21" id="pzZ-gM-tRd"/>
-                                                </constraints>
-                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                                <color key="textColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5jv-Vp-ouC">
+                                                <rect key="frame" x="0.0" y="0.0" width="0.0" height="90"/>
+                                                <fontDescription key="fontDescription" type="system" weight="black" pointSize="80"/>
+                                                <color key="textColor" name="Colors/White"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ohD-fY-MrK">
-                                                <rect key="frame" x="0.0" y="131" width="295" height="50"/>
-                                                <subviews>
-                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ooe-4g-8hg">
-                                                        <rect key="frame" x="72.5" y="19" width="150" height="31"/>
-                                                        <color key="backgroundColor" red="0.25014079871309669" green="0.12582181144238952" blue="0.52894363380067055" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="31" id="NAy-HZ-D0S"/>
-                                                            <constraint firstAttribute="width" constant="150" id="dZk-sG-JNZ"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                        <state key="normal" title="view transactions list">
-                                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        </state>
-                                                        <connections>
-                                                            <action selector="transactionListButtonAction:" destination="uIU-Zc-0cV" eventType="touchUpInside" id="1hv-Xs-ZQP"/>
-                                                        </connections>
-                                                    </button>
-                                                </subviews>
-                                                <constraints>
-                                                    <constraint firstItem="ooe-4g-8hg" firstAttribute="centerX" secondItem="ohD-fY-MrK" secondAttribute="centerX" id="sLu-Zm-BeQ"/>
-                                                    <constraint firstAttribute="bottom" secondItem="ooe-4g-8hg" secondAttribute="bottom" id="tlW-ai-FnK"/>
-                                                </constraints>
-                                            </view>
                                         </subviews>
-                                    </stackView>
+                                        <constraints>
+                                            <constraint firstItem="5jv-Vp-ouC" firstAttribute="leading" secondItem="9y2-pl-xlj" secondAttribute="leading" id="11B-vw-mrv"/>
+                                            <constraint firstAttribute="height" constant="90" id="1Fc-AV-nkU"/>
+                                            <constraint firstAttribute="bottom" secondItem="5jv-Vp-ouC" secondAttribute="bottom" id="AFg-fP-OA4"/>
+                                            <constraint firstItem="5jv-Vp-ouC" firstAttribute="top" secondItem="9y2-pl-xlj" secondAttribute="top" id="Iwl-GU-sey"/>
+                                            <constraint firstAttribute="trailing" secondItem="5jv-Vp-ouC" secondAttribute="trailing" id="wOK-0P-lqv"/>
+                                        </constraints>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transactions to sign" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oFH-77-3bt">
+                                        <rect key="frame" x="107" y="155" width="161.5" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="pzZ-gM-tRd"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                        <color key="textColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ooe-4g-8hg">
+                                        <rect key="frame" x="112.5" y="190" width="150" height="31"/>
+                                        <color key="backgroundColor" red="0.25014079871309669" green="0.12582181144238952" blue="0.52894363380067055" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="31" id="NAy-HZ-D0S"/>
+                                            <constraint firstAttribute="width" constant="150" id="dZk-sG-JNZ"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <state key="normal" title="view transactions list">
+                                            <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="transactionListButtonAction:" destination="uIU-Zc-0cV" eventType="touchUpInside" id="1hv-Xs-ZQP"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" name="Colors/Main"/>
                                 <constraints>
-                                    <constraint firstItem="w50-5z-qxL" firstAttribute="centerX" secondItem="aQm-Jg-k1l" secondAttribute="centerX" id="BOY-Pf-Td9"/>
-                                    <constraint firstItem="w50-5z-qxL" firstAttribute="centerY" secondItem="aQm-Jg-k1l" secondAttribute="centerY" id="Eyj-KX-KFH"/>
-                                    <constraint firstAttribute="trailing" secondItem="w50-5z-qxL" secondAttribute="trailing" constant="40" id="vFi-Hx-dpl"/>
-                                    <constraint firstItem="w50-5z-qxL" firstAttribute="leading" secondItem="aQm-Jg-k1l" secondAttribute="leading" constant="40" id="yFg-tx-RxZ"/>
+                                    <constraint firstItem="oFH-77-3bt" firstAttribute="centerX" secondItem="aQm-Jg-k1l" secondAttribute="centerX" id="Eo2-86-X6u"/>
+                                    <constraint firstItem="9y2-pl-xlj" firstAttribute="centerX" secondItem="aQm-Jg-k1l" secondAttribute="centerX" id="g88-OE-yBl"/>
+                                    <constraint firstItem="oFH-77-3bt" firstAttribute="top" secondItem="9y2-pl-xlj" secondAttribute="bottom" constant="10" id="s9T-N1-hl0"/>
+                                    <constraint firstItem="ooe-4g-8hg" firstAttribute="top" secondItem="oFH-77-3bt" secondAttribute="bottom" constant="14" id="sAU-pa-Uoj"/>
+                                    <constraint firstItem="9y2-pl-xlj" firstAttribute="top" secondItem="aQm-Jg-k1l" secondAttribute="top" constant="55" id="sdx-Tl-Hbt"/>
+                                    <constraint firstItem="ooe-4g-8hg" firstAttribute="centerX" secondItem="aQm-Jg-k1l" secondAttribute="centerX" id="xF4-o7-JWx"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4bP-Vy-9cS">

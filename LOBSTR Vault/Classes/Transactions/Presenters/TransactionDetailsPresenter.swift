@@ -3,7 +3,7 @@ import stellarsdk
 
 protocol TransactionDetailsPresenter {
   var numberOfOperation: Int { get }
-  func setTransactionData(_ transaction: Transaction)
+  func setTransactionData(_ transaction: Transaction, withIndex: Int)
   func transactionDetailsViewDidLoad()
   func operationWasSelected(by index: Int)
   func confirmButtonWasPressed()
@@ -26,6 +26,7 @@ class TransactionDetailsPresenterImpl {
   fileprivate var transactionService: TransactionService
   fileprivate var mnemonicManager: MnemonicManager
   fileprivate var transaction: Transaction?
+  fileprivate var indexForTransactionList: Int?
   
   fileprivate var operationNames: [String] = []
   
@@ -74,11 +75,14 @@ class TransactionDetailsPresenterImpl {
       case .failure(let error):
         switch error {
         case .badRequest(let message, _):
-          if TransactionHelper.isNeedAdditionalSignature(from: message) {
+          let resultCode = try! TransactionHelper.getTransactionResultCode(from: message)
+          switch resultCode {
+          case .badAuth:
             self.submitTransactionToVaultServer(transactionEnvelope, isNeedAdditionalSignature: true)
-          } else {
+          default:
             DispatchQueue.main.async {
-              self.transitionToTransactionStatus(.failure, isNeedToShowXDR: false)
+              self.transitionToTransactionStatus(.failure, resultCode: resultCode)
+              self.view?.setProgressAnimation(isEnable: false)
             }
           }
         default:
@@ -93,14 +97,15 @@ class TransactionDetailsPresenterImpl {
     transactionService.submitSignedTransaction(xdr: transactionEnvelope, isNeedAdditionalSignature: isNeedAdditionalSignature) { result in
       switch result {
       case .success(_):
-        print("SUCCESS")
         DispatchQueue.main.async {
-          self.transitionToTransactionStatus(.success, isNeedToShowXDR: isNeedAdditionalSignature, xdr: transactionEnvelope.xdrEncoded)
+          let resultCode: TransactionResultCode = isNeedAdditionalSignature ? .badAuth : .success
+          let xdr: String? = isNeedAdditionalSignature ? transactionEnvelope : nil
+          
+          self.transitionToTransactionStatus(.success, resultCode: resultCode, xdr: xdr)
           self.view?.setProgressAnimation(isEnable: false)
         }
         NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
       case .failure(let error):
-        print("FAILURE")
         self.view?.setErrorAlert(for: error)
         self.view?.setProgressAnimation(isEnable: false)
       }
@@ -116,8 +121,9 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
     setOperationList()
   }
   
-  func setTransactionData(_ transaction: Transaction) {
+  func setTransactionData(_ transaction: Transaction, withIndex indexForTransactionList: Int) {
     self.transaction = transaction
+    self.indexForTransactionList = indexForTransactionList
   }
   
   func operationWasSelected(by index: Int) {
@@ -169,12 +175,20 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       return
     }
     
+    guard let transactionIndex = indexForTransactionList else {
+      let error = VaultError.TransactionError.invalidTransaction
+      view?.setErrorAlert(for: error)
+      return
+    }
+    
     view?.setProgressAnimation(isEnable: true)
     
     transactionService.cancelTransaction(by: transactionHash) { result in
       switch result {
       case .success(_):
-        NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+        NotificationCenter.default.post(name: .didRemoveTransaction,
+                                        object: nil,
+                                        userInfo: ["transactionIndex": transactionIndex])
         self.transitionToTransactionListScreen()
         self.view?.setProgressAnimation(isEnable: false)
       case .failure(let error):
@@ -193,12 +207,14 @@ extension TransactionDetailsPresenterImpl {
     transactionDetailsViewController.navigationController?.popToRootViewController(animated: true)
   }
   
-  func transitionToTransactionStatus(_ status: TransactionStatus, isNeedToShowXDR: Bool, xdr: String? = nil) {
+  func transitionToTransactionStatus(_ status: TransactionStatus, resultCode: TransactionResultCode, xdr: String? = nil) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
-    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController)
-    transactionStatusViewController.presenter.setTransactionStatus(status, isNeedToShowXDR, xdr: xdr)
-    
+    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,
+                                                                               with: status,
+                                                                               resultCode: resultCode,
+                                                                               xdr: xdr)
+
     let transactionDetailsViewController = view as! TransactionDetailsViewController
     transactionDetailsViewController.navigationController?.pushViewController(transactionStatusViewController, animated: true)
   }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Recheck View Controller-->
+        <scene sceneID="bq9-5v-arH">
+            <objects>
+                <viewController storyboardIdentifier="RecheckViewController" id="EmD-cw-bGO" customClass="RecheckViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="u1b-As-6Wg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a2c-BA-Dig">
+                                <rect key="frame" x="60" y="283.5" width="255" height="100"/>
+                                <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icons/Other/icAlert" translatesAutoresizingMaskIntoConstraints="NO" id="LJ4-js-KdZ">
+                                        <rect key="frame" x="101.5" y="0.0" width="52" height="52"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="52" id="Zam-gf-qq6"/>
+                                            <constraint firstAttribute="height" constant="52" id="pc4-EY-z4U"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You are not a signer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J99-yo-zbJ">
+                                        <rect key="frame" x="47" y="62" width="161" height="21"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="J99-yo-zbJ" firstAttribute="top" secondItem="LJ4-js-KdZ" secondAttribute="bottom" constant="10" id="ChS-fR-2uv"/>
+                                    <constraint firstItem="LJ4-js-KdZ" firstAttribute="centerX" secondItem="a2c-BA-Dig" secondAttribute="centerX" id="Hkn-vy-i4f"/>
+                                    <constraint firstItem="J99-yo-zbJ" firstAttribute="centerX" secondItem="a2c-BA-Dig" secondAttribute="centerX" id="Ixl-3s-2jM"/>
+                                    <constraint firstAttribute="height" constant="100" id="MtN-pb-Qn6"/>
+                                    <constraint firstItem="LJ4-js-KdZ" firstAttribute="top" secondItem="a2c-BA-Dig" secondAttribute="top" id="cOz-Lf-IME"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gh6-EL-WQI">
+                                <rect key="frame" x="16" y="597" width="343" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="649-RH-rst"/>
+                                </constraints>
+                                <state key="normal" title="Button">
+                                    <color key="titleColor" name="Colors/White"/>
+                                </state>
+                                <connections>
+                                    <action selector="recheckButtonAction:" destination="EmD-cw-bGO" eventType="touchUpInside" id="n2L-Ud-8nX"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="q3e-O4-efS" firstAttribute="trailing" secondItem="Gh6-EL-WQI" secondAttribute="trailing" constant="16" id="CbT-jm-QQS"/>
+                            <constraint firstItem="a2c-BA-Dig" firstAttribute="leading" secondItem="q3e-O4-efS" secondAttribute="leading" constant="60" id="FaT-zS-A5c"/>
+                            <constraint firstItem="q3e-O4-efS" firstAttribute="trailing" secondItem="a2c-BA-Dig" secondAttribute="trailing" constant="60" id="MEm-KK-QAJ"/>
+                            <constraint firstItem="q3e-O4-efS" firstAttribute="bottom" secondItem="Gh6-EL-WQI" secondAttribute="bottom" constant="22" id="OVK-bf-vYc"/>
+                            <constraint firstItem="Gh6-EL-WQI" firstAttribute="leading" secondItem="q3e-O4-efS" secondAttribute="leading" constant="16" id="Sgg-0l-6uV"/>
+                            <constraint firstItem="a2c-BA-Dig" firstAttribute="centerY" secondItem="u1b-As-6Wg" secondAttribute="centerY" id="o6O-WS-kF0"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="q3e-O4-efS"/>
+                    </view>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="eYg-FR-1dw">
+                        <barButtonItem key="rightBarButtonItem" title="Logout" id="7Wj-1S-IYt">
+                            <connections>
+                                <action selector="logoutButtonAction:" destination="EmD-cw-bGO" id="eeP-6h-Zlb"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="recheckButton" destination="Gh6-EL-WQI" id="UjT-ls-SHU"/>
+                        <outlet property="recheckInfoLabel" destination="J99-yo-zbJ" id="cpJ-YW-Umw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="xU5-Xw-bnp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-57" y="108"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Icons/Other/icAlert" width="52" height="52"/>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

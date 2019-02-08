@@ -12,8 +12,8 @@ struct MnemonicHelper {
     var string = ""
     
     for (index, word) in wordArray.enumerated() {
-      let comma = (index < wordArray.count - 1) ? ", " : ""
-      string.append(word + comma)
+      let space = (index < wordArray.count - 1) ? " " : ""
+      string.append(word + space)
     }
     
     return string

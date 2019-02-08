@@ -3,6 +3,15 @@ import UIKit
 
 struct AppearanceHelper {
   
+  static func setNavigationApperance(_ navigationController: UINavigationController) {
+    navigationController.navigationBar.prefersLargeTitles = true
+    navigationController.navigationBar.tintColor = Asset.Colors.main.color
+    navigationController.navigationBar.barTintColor = Asset.Colors.white.color
+    navigationController.navigationBar.setBackgroundImage(UIImage(), for: .default)
+    navigationController.navigationBar.shadowImage = UIImage()
+    navigationController.navigationBar.topItem?.title = ""
+  }
+  
   static func set(_ navigationController: UINavigationController?) {
     navigationController?.navigationBar.tintColor = Asset.Colors.main.color
     navigationController?.navigationBar.barTintColor = Asset.Colors.white.color

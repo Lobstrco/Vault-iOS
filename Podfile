@@ -14,9 +14,14 @@ target 'LOBSTR Vault' do
   # An iOS library to natively render After Effects vector animations
   pod 'lottie-ios', '~> 2.5.2'
   
+  # Firebase.
   pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
   pod 'Fabric', '~> 1.9.0'
   pod 'Crashlytics', '~> 3.12.0'
+  
+  # A Swift based reimplementation of the Apple HUD 
+  pod 'PKHUD', '~> 5.0'
 
   target 'LOBSTR VaultTests' do
     inherit! :search_paths

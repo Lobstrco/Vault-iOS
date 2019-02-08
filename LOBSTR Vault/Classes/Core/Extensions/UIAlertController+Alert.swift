@@ -8,7 +8,7 @@ extension UIAlertController {
     let controller = UIAlertController(title: infoError.displayData.titleKey.localized(),
                                        message: infoError.displayData.messageKey.localized(), preferredStyle: .alert)
     
-    let action = UIAlertAction(title: "OK_TEXT".localized(), style: .default, handler: nil)
+    let action = UIAlertAction(title: L10n.buttonTitleOk, style: .default, handler: nil)
     controller.addAction(action)
     
     presentingViewController.present(controller, animated: true, completion: nil)

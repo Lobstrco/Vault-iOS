@@ -29,6 +29,7 @@ internal enum Asset {
     internal static let grayOpacity30 = ColorAsset(name: "Colors/GrayOpacity30")
     internal static let grayOpacity70 = ColorAsset(name: "Colors/GrayOpacity70")
     internal static let main = ColorAsset(name: "Colors/Main")
+    internal static let pinDotOut = ColorAsset(name: "Colors/PinDotOut")
     internal static let red = ColorAsset(name: "Colors/Red")
     internal static let white = ColorAsset(name: "Colors/White")
   }
@@ -36,6 +37,7 @@ internal enum Asset {
 
     internal enum Other {
       internal static let delete = ImageAsset(name: "Icons/Other/delete")
+      internal static let icAlert = ImageAsset(name: "Icons/Other/icAlert")
       internal static let icClose = ImageAsset(name: "Icons/Other/icClose")
       internal static let icCopy = ImageAsset(name: "Icons/Other/icCopy")
       internal static let icFinger = ImageAsset(name: "Icons/Other/icFinger")

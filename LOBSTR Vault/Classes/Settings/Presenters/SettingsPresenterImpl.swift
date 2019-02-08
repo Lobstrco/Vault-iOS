@@ -129,7 +129,7 @@ extension SettingsPresenterImpl {
     case .mnemonicCode:
       transitionToMnemonicCode()
     case .logout:
-      logout()
+      logoutButtonWasPressed()
     default:
       break
     }
@@ -157,7 +157,19 @@ extension SettingsPresenterImpl {
         self?.view?.setSettings()
       }
     }
-    
+  }
+}
+
+// MARK: - Logout
+
+extension SettingsPresenterImpl {
+  
+  func logoutButtonWasPressed() {
+    view?.setLogoutAlert()
+  }
+  
+  func logoutOperationWasConfirmed() {
+    ApplicationCoordinatorHelper.logout()
   }
 }
 
@@ -185,26 +197,5 @@ extension SettingsPresenterImpl {
     mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
                                                                                  mnemonicMode: .showMnemonic)
     navigationController.pushViewController(mnemonicGenerationViewController, animated: true)
-  }
-  
-  // temp
-  func logout() {
-    func clearKeychain() {
-      let secItemClasses = [kSecClassGenericPassword,
-                            kSecClassInternetPassword,
-                            kSecClassCertificate,
-                            kSecClassKey,
-                            kSecClassIdentity]
-      for secItemClass in secItemClasses {
-        let dictionary = [kSecClass as String: secItemClass]
-        SecItemDelete(dictionary as CFDictionary)
-      }
-    }
-    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else { return }
-    
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-      appDelegate.applicationCoordinator.showMenuScreen()
-    }
   }
 }

@@ -3,6 +3,7 @@ import UIKit
 protocol SettingsView: class {
   func setSettings()
   func setErrorAlert(for error: Error)
+  func setLogoutAlert()
 }
 
 class SettingsViewController: UIViewController,
@@ -146,5 +147,16 @@ class SettingsViewController: UIViewController,
   
   func setErrorAlert(for error: Error) {
     UIAlertController.defaultAlert(for: error, presentingViewController: self)
+  }
+  
+  func setLogoutAlert() {
+    let alert = UIAlertController(title: L10n.logoutAlertTitle, message: L10n.logoutAlertMessage, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleLogout, style: .destructive, handler: { _ in
+      self.presenter.logoutOperationWasConfirmed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    self.present(alert, animated: true, completion: nil)
   }
 }

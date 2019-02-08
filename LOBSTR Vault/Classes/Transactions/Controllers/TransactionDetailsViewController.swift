@@ -1,4 +1,5 @@
 import UIKit
+import PKHUD
 
 class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
@@ -6,8 +7,6 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   var presenter: TransactionDetailsPresenter!
   
   @IBOutlet weak var tableView: UITableView!
-  
-  let progressHUD = ProgressHUD(withBackground: true)
   
   // MARK: - Lifecycle
   
@@ -75,7 +74,8 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setProgressAnimation(isEnable: Bool) {
-    isEnable ? progressHUD.display(onView: view) : progressHUD.remove()
+    navigationItem.hidesBackButton = isEnable
+    isEnable ? HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) : HUD.hide()
   }
 }
 

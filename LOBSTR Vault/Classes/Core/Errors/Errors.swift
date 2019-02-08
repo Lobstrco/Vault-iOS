@@ -6,7 +6,7 @@ public protocol ErrorDisplayable: Error {
 
 extension ErrorDisplayable {
   public var displayData: ErrorDisplayData {
-    return (String(format: "%@_TITLE", errorKey), String(format: "%@_MESSAGE", errorKey))
+    return (String(format: "%@_title", errorKey), String(format: "%@_message", errorKey))
   }
 }
 
@@ -79,11 +79,11 @@ extension VaultError {
     
     public var errorKey: String {
       switch self {
-      case .notAvailable: return "BIOMETRIC_NOT_AVAILABLE"
-      case .authenticationFailed: return "BIOMETRIC_NOT_VERIFIED_IDENTITY"
-      case .cancelled: return "BIOMETRIC_PRESSED_CANCEL"
-      case .fallback: return "BIOMETRIC_PRESSED_PASSWORD"
-      case .undefined: return "BIOMETRIC_NOT_CONFIGURED"
+      case .notAvailable: return L10n.errorBiometricNotAvailable
+      case .cancelled: return L10n.errorBiometricPressedCancel
+      case .fallback: return L10n.errorBiometricPressedPassword
+      case .authenticationFailed: return L10n.errorBiometricNotVerifiedIdentity
+      case .undefined: return L10n.errorBiometricNotConfigured
       }
     }
   }

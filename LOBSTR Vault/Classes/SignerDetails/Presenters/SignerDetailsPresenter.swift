@@ -15,19 +15,19 @@ class SignerDetailsPresenterImpl {
   
   var accounts: [SignedAccounts] = []
   
-  private let homeService: HomeService
+  private let transactionService: TransactionService
   
   fileprivate weak var view: SignerDetailsView?
   
   init(view: SignerDetailsView,
-       homeService: HomeService = HomeService()) {
+       transactionService: TransactionService = TransactionService()) {
     self.view = view
-    self.homeService = homeService
-  }
+    self.transactionService = transactionService
+  }    
   
   func displayAccountList() {
     view?.setProgressAnimation()
-    homeService.getSignedAccounts() { result in
+    transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let signedAccounts):
         self.accounts = signedAccounts        

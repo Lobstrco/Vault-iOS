@@ -15,6 +15,7 @@ final class APIRequestLoader<T: APIRequest> {
                       completion: @escaping (NetworkingResult<T.ResponseDataType>) -> Void) {
     do {
       let urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwtManager.getJWT())
+//      print("JWT: \(jwtManager.getJWT())")
       urlSession.dataTask(with: urlRequest) { data, response, error in
         
         if let error = error {

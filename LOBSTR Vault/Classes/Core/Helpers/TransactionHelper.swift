@@ -57,8 +57,8 @@ struct TransactionHelper {
       switch valueType {
       case is KeyPair.Type:
         valueParam = (value as! KeyPair).accountId
-//      case is Asset.Type:
-//        valueParam = (value as! Asset).code ?? "XLM"
+      case is stellarsdk.Asset.Type:
+        valueParam = (value as! stellarsdk.Asset).code ?? "XLM"
       case is Decimal.Type:
         valueParam = (value as! Decimal).description
       case is UInt32?.Type:
@@ -139,17 +139,19 @@ struct TransactionHelper {
     }
   }
   
-  static func isNeedAdditionalSignature(from message: String) -> Bool {    
-    guard let errorMessage = try? JSONDecoder().decode(HorizonErrorMessage.self, from: message.data(using: String.Encoding.utf8)!) else {
-      return false
+  static func getTransactionResultCode(from message: String) throws -> TransactionResultCode {
+    guard let errorMessage = try? JSONDecoder().decode(HorizonErrorMessage.self,
+                                                       from: message.data(using: String.Encoding.utf8)!) else {
+      throw VaultError.TransactionError.invalidTransaction
     }
     
-//    "tx_bad_seq"
-    if errorMessage.extras?.result_codes?.transaction == "tx_bad_auth" {
-      return true
+    guard let resultXDR = errorMessage.extras?.result_xdr else {
+      throw VaultError.TransactionError.invalidTransaction
     }
     
-    return false
+    let transactionResultXDR = try TransactionResultXDR(xdr: resultXDR)
+    
+    return transactionResultXDR.code
   }
 }
 

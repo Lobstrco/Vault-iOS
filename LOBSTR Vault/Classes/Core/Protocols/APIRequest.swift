@@ -10,6 +10,7 @@ protocol APIRequest {
 
 enum APIRequestHTTPMethod: String {
   case post = "POST"
+  case put = "PUT"
   case get = "GET"
   case delete = "DELETE"
 }

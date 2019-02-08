@@ -19,6 +19,8 @@ class CustomPopoverViewController: UIViewController {
   var isPresenting = false
   var withBackground: Bool
   
+  var scrollView: UIScrollView?
+  
   init(height: CGFloat, view: UIView, withBackground: Bool = true) {
     
     self.height = height
@@ -49,12 +51,36 @@ class CustomPopoverViewController: UIViewController {
     menuView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
     menuView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     menuView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+    
+    scrollView = menuView.subviews.first as? UIScrollView
+    
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name:UIResponder.keyboardWillShowNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name:UIResponder.keyboardWillHideNotification, object: nil)
+  }
+  
+  @objc func keyboardWillShow(notification: NSNotification) {
+    
+    guard let scrollView = scrollView else {
+      return
+    }    
+    
+    let keyboardScreenEndFrame = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
+    let keyboardFrame = view.convert(keyboardScreenEndFrame, from: view.window)
+
+    var contentInset: UIEdgeInsets = scrollView.contentInset
+    contentInset.bottom = keyboardFrame.size.height
+    scrollView.contentInset = contentInset
+  }
+  
+  @objc func keyboardWillHide(notification:NSNotification){
+    scrollView?.contentInset = UIEdgeInsets.zero
   }
 }
 
 extension CustomPopoverViewController: CustomPopoverDelegate {
   
   func closePopover() {
+    NotificationCenter.default.removeObserver(self)
     dismiss(animated: true, completion: nil)
   }
 }
