@@ -25,7 +25,6 @@ protocol SettingsDelegate {
 }
 
 protocol SettingsCellConfigurator {
-  func configure(publicKeyCell: PublicKeyTableViewCell)
   func configure(biometricIDCell: BiometricIDTableViewCell)
   func configure(rightDetailCell: RightDetailTableViewCell,
                  row: SettingsRow)

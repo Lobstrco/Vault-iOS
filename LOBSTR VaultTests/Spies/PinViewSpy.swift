@@ -3,6 +3,19 @@ import Foundation
 
 class PinViewSpy: PinView {
   
+  func clearPinDots() {
+    
+  }
+  
+  func setNavigationItem() {
+    
+  }
+  
+  func hideBackButton() {
+    
+  }
+  
+  
   func setTitle(_ title: String) {
     
   }

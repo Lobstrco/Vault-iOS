@@ -9,7 +9,6 @@ enum TransactionStatus: String {
 
 protocol TransactionStatusPresenter {
   init(view: TransactionStatusView,
-       with status: TransactionStatus,
        resultCode: TransactionResultCode,
        xdr: String?)
   func transactionStatusViewDidLoad()
@@ -27,16 +26,13 @@ protocol TransactionStatusView: class {
 class TransactionStatusPresenterImpl {
   
   fileprivate var view: TransactionStatusView
-  fileprivate var status: TransactionStatus
   fileprivate var resultCode: TransactionResultCode
   fileprivate var xdr: String?
   
   required init(view: TransactionStatusView,
-       with status: TransactionStatus,
        resultCode: TransactionResultCode,
        xdr: String?) {
     self.view = view
-    self.status = status
     self.resultCode = resultCode
     self.xdr = xdr
   }
@@ -48,8 +44,11 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   
   func transactionStatusViewDidLoad() {
     displayErrorMessage()
-    let statusTitle = status == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
-    view.setAnimation(with: status)
+    
+    let transactionStatus = getTransactionStatus(by: resultCode)
+    
+    let statusTitle = transactionStatus == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
+    view.setAnimation(with: transactionStatus)
     view.setStatusTitle(statusTitle)
     
     if let xdr = xdr {
@@ -65,8 +64,22 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
     let transactionStatusViewController = view as! TransactionStatusViewController
     transactionStatusViewController.navigationController?.popToRootViewController(animated: true)
   }
+}
+
+// MARK: - Private
+
+extension TransactionStatusPresenterImpl {
   
-  func displayErrorMessage() {
+  private func getTransactionStatus(by resultCode: TransactionResultCode) -> TransactionStatus {
+    switch resultCode {
+    case .success, .badAuth:
+      return .success
+    default:
+      return .failure
+    }
+  }
+  
+  private func displayErrorMessage() {
     let errorMessage = getErrorMessage(from: resultCode)
     view.setErrorMessage(errorMessage)
   }

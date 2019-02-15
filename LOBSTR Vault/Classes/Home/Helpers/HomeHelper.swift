@@ -30,7 +30,7 @@ struct HomeHelper {
     signedAccountLabel.textColor = Asset.Colors.grayOpacity30.color
     signedAccountLabel.font = UIFont.systemFont(ofSize: 15)
     signedAccountLabel.text = address
-    signedAccountLabel.setLineHeight(lineHeight: 15)
+//    signedAccountLabel.setLineHeight(lineHeight: 15)
     signedAccountLabel.textAlignment = .center
     signedAccountLabel.numberOfLines = 2
     

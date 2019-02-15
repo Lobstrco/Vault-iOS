@@ -29,11 +29,6 @@ extension AppDelegate {
     let messagingAPNSTokenType: MessagingAPNSTokenType = .prod
     Messaging.messaging().setAPNSToken(deviceToken, type: messagingAPNSTokenType)
   }
-  
-  func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-    postNotification(accordingTo: userInfo)
-    completionHandler(.newData)
-  }
 }
 
 // MARK: - UNUserNotificationCenterDelegate
@@ -43,6 +38,13 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
   func userNotificationCenter(_: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler _: @escaping () -> Void) {
     let userInfo = response.notification.request.content.userInfo
     postNotification(accordingTo: userInfo)
+  }
+  
+  func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
+  {
+    let userInfo = notification.request.content.userInfo
+    postNotification(accordingTo: userInfo)
+    completionHandler([.alert, .sound])
   }
 }
 

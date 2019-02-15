@@ -1,7 +1,6 @@
 import Foundation
 
 struct SubmitSignedTransactionRequestParameters {
-  let submit: Bool?
   let xdr: String
 }
 
@@ -19,11 +18,7 @@ struct SubmitSignedTransactionRequest: APIRequest {
       throw VaultError.TransactionError.invalidTransaction
     }
     
-    var parameters: [String: Any] = ["xdr": data.xdr]
-    
-    if let submit = data.submit {
-      parameters["submit"] = submit
-    }
+    let parameters: [String: Any] = ["xdr": data.xdr]    
     
     urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
     

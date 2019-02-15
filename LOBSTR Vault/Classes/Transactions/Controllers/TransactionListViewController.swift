@@ -64,11 +64,6 @@ class TransactionListViewController: UIViewController {
     tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
   }
   
-  private func clearWaitingAnimation() {
-    refreshControl.endRefreshing()
-    progressHUD.remove()
-  }
-  
   private func setEmptyStateLabel() {
     emptyStateLabel = UILabel()
     
@@ -89,7 +84,7 @@ class TransactionListViewController: UIViewController {
   }
   
   func setHUDSuccessViewAfterRemoveOperation() {
-    HUD.flash(.labeledSuccess(title: nil, subtitle: "Denied Transaction"), delay: 1.5)
+    HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.textDeclinedTransaction), delay: 1.5)
   }
 }
 
@@ -111,7 +106,6 @@ extension TransactionListViewController: TransactionListView {
     tableView.delegate = self
     tableView.dataSource = self
     tableView.reloadData()
-    clearWaitingAnimation()
     
     if isEmpty {
       setEmptyStateLabel()
@@ -120,13 +114,17 @@ extension TransactionListViewController: TransactionListView {
   
   func reloadTransactionList(isEmpty: Bool) {
     tableView.reloadData()
-    clearWaitingAnimation()
     
     isEmpty ? setEmptyStateLabel(): removeEmptyStateLabel()
   }
   
-  func setProgressAnimation() {
-    progressHUD.display(onView: view)
+  func setProgressAnimation(isEnabled: Bool) {
+    if isEnabled {
+      progressHUD.display(onView: view)
+    } else {
+      refreshControl.endRefreshing()
+      progressHUD.remove()
+    }
   }
   
   func setImportXDRPopover(_ popover: CustomPopoverViewController) {

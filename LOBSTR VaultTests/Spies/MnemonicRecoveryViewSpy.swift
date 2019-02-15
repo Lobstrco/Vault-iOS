@@ -2,10 +2,6 @@ import Foundation
 @testable import LOBSTR_Vault
 
 class MnemonicRecoveryViewSpy: MnemonicRecoveryView {
-  func displayHighlightedWords(attributedStrings: NSMutableAttributedString) {
-    
-  }
-  
   
   var displaySuggestionListWasCalled = false
   var updatedTextAfterPickingSuggestionWord = ""
@@ -20,6 +16,14 @@ class MnemonicRecoveryViewSpy: MnemonicRecoveryView {
   
   func displayPickedWordFromSuggestionList(updatedText: String) {
     updatedTextAfterPickingSuggestionWord = updatedText
-  }  
+  }
+  
+  func setHighlightTextView(isEnabled: Bool) {
+    
+  }
+  
+  func displayHighlightedWords(attributedStrings: NSMutableAttributedString) {
+    
+  }
   
 }

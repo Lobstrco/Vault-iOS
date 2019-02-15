@@ -28,5 +28,16 @@ class MnemonicVerificationViewSpy: MnemonicVerificationView {
     
   }
   
+  func setRightBarButton(isEnabled: Bool) {
+    
+  }
+  
+  func setErrorLabel(isHidden: Bool) {
+    
+  }
+  
+  func setDashBordersColor(isError: Bool) {
+    
+  }
   
 }

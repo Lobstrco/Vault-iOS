@@ -27,6 +27,10 @@ class PinViewController: UIViewController, StoryboardCreation {
     setStaticStrings()
   }
   
+  @IBAction func helpButtonAction(_ sender: Any) {    
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setAppearance() {

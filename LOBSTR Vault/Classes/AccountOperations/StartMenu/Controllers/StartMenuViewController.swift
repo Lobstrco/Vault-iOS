@@ -69,4 +69,8 @@ extension StartMenuViewController: StartMenuView {
   func setTermsButton() {
     termsButton.setTitle(L10n.buttonTitleTerms, for: .normal)
   }
+  
+  func openPrivacyPolicy(by url: URL) {
+    UIApplication.shared.open(url)
+  }
 }

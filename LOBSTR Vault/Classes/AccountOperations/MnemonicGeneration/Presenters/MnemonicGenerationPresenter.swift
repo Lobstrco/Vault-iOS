@@ -11,6 +11,7 @@ protocol MnemonicGenerationView: class {
   func setNextButton(isHidden: Bool)
   func setNavigationItem()
   func setCancelAlert()
+  func setBackButton(isEnabled: Bool)
 }
 
 protocol MnemonicCellView {
@@ -27,6 +28,7 @@ protocol MnemonicGenerationPresenter {
   func cancelButtonWasPressed()
   func configure(cell: MnemonicCollectionViewCell, forRow row: Int)
   func cancelOperationWasConfirmed()
+  func helpButtonWasPressed()
 }
 
 class MnemonicGenerationPresenterImpl {
@@ -81,8 +83,10 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
     switch mnemonicMode {
     case .generationMnemonic:
       generateMnemonicList()
+      view?.setBackButton(isEnabled: false)
     case .showMnemonic:
       view?.setNavigationItem()
+      view?.setBackButton(isEnabled: true)
       guard mnemonicManager.isMnemonicStoredInKeychain() else {
         return
       }
@@ -114,6 +118,13 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   
   func cancelButtonWasPressed() {
     view?.setCancelAlert()
+  }
+  
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
+    mnemonicGenerationViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
   
   func cancelOperationWasConfirmed() {

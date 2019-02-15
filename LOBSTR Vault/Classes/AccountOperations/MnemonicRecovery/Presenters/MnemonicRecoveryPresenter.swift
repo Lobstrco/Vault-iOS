@@ -12,6 +12,7 @@ protocol MnemonicRecoveryPresenter {
   func suggestionWordWasPressed(suggestionWord: String, text: String)
   func textViewWasChanged(text: String)
   func recoveryButtonWasPressed()
+  func helpButtonWasPressed()
 }
 
 class MnemonicRecoveryPresenterImpl {
@@ -130,6 +131,12 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
     transitionToPinScreen()
   }
   
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let mnemonicRecoveryViewController = view as! MnemonicRecoveryViewController
+    mnemonicRecoveryViewController.navigationController?.pushViewController(helpViewController, animated: true)
+  }
 }
 
 private extension MnemonicRecoveryPresenterImpl {

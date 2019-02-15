@@ -24,8 +24,6 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
     setStaticStrings()
     
     presenter.mnemonicGenerationViewDidLoad()
-    
-    navigationItem.hidesBackButton = true
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -56,6 +54,10 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
     presenter.cancelButtonWasPressed()    
   }
   
+  @IBAction func helpButtonAcion() {
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setAppearance() {
@@ -68,9 +70,6 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
     confirmDescriptionLabel.text = L10n.textConfirmDescription
     navigationItem.title = L10n.navTitleMnemonicGeneration
   }
-  
-  
-  
 }
 
 // MARK: - MnemonicGenerationView
@@ -104,6 +103,15 @@ extension MnemonicGenerationViewController: MnemonicGenerationView {
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
     self.present(alert, animated: true, completion: nil)
+  }
+  
+  func setBackButton(isEnabled: Bool) {
+    guard isEnabled else {
+      navigationItem.hidesBackButton = true
+      return
+    }
+    navigationItem.hidesBackButton = false
+    navigationItem.leftBarButtonItem = nil
   }
 }
 

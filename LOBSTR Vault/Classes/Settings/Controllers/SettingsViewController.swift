@@ -4,10 +4,11 @@ protocol SettingsView: class {
   func setSettings()
   func setErrorAlert(for error: Error)
   func setLogoutAlert()
+  func setPublicKeyPopover(_ popover: CustomPopoverViewController)
 }
 
 class SettingsViewController: UIViewController,
-  UITableViewDelegate, UITableViewDataSource, StoryboardCreation, SettingsView {
+  UITableViewDelegate, UITableViewDataSource, StoryboardCreation {
   
   static var storyboardType: Storyboards = .settings
   
@@ -73,7 +74,6 @@ class SettingsViewController: UIViewController,
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
         as PublicKeyTableViewCell
-      presenter.configure(publicKeyCell: cell)
       return cell
     case .signerForAccounts:
       let cell =
@@ -138,8 +138,11 @@ class SettingsViewController: UIViewController,
     let title = presenter.title(for: section)
     return title
   }
-  
-  // MARK: - SettingsView
+}
+
+// MARK: - SettingsView
+
+extension SettingsViewController: SettingsView {
   
   func setSettings() {
     tableView.reloadData()
@@ -158,5 +161,9 @@ class SettingsViewController: UIViewController,
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
     self.present(alert, animated: true, completion: nil)
+  }
+  
+  func setPublicKeyPopover(_ popover: CustomPopoverViewController) {
+    present(popover, animated: true, completion: nil)    
   }
 }

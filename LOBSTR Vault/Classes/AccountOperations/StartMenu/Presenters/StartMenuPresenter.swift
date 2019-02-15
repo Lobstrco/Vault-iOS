@@ -10,6 +10,7 @@ protocol StartMenuPresenter {
 
 protocol StartMenuView: class {
   func setTermsButton()
+  func openPrivacyPolicy(by url: URL)
 }
 
 class StartMenuPresenterImpl {
@@ -58,6 +59,10 @@ extension StartMenuPresenterImpl: StartMenuPresenter {
   }
   
   func termsButtonWasPressed() {
+    let privacyPolicyUrlString = "https://lobstr.co/privacy/"
+    guard let privacyPolicyURL = URL(string: privacyPolicyUrlString)
+      else { return }
     
+    view?.openPrivacyPolicy(by: privacyPolicyURL)    
   }
 }

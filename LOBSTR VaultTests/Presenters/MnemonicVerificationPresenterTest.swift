@@ -45,8 +45,6 @@ class MnemonicVerificationPresenterTest: XCTestCase {
     
     XCTAssertEqual(mnemonicVerificationPresenter.getShuffledMnemonicList[indexOfShuffledWord], mnemonicVerificationPresenter.getMnemonicListForVerification[0],
                    "Expected to move shuffled word to list for verification")
-    XCTAssert(mnemonicVerificationViewSpy.shuffledCollectionViewWasUpdated,
-              "Expected to update shuffled collection view")
     XCTAssert(mnemonicVerificationViewSpy.collectionViewForVerificationWasUpdated,
               "Expected to update collection view for verification")
   }

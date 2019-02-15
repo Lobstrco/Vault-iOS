@@ -57,7 +57,7 @@ internal enum L10n {
   internal static let buttonTitleUnderstand = L10n.tr("Localizable", "button_title_understand")
   /// View Transactions List
   internal static let buttonTitleViewTransactionsList = L10n.tr("Localizable", "button_title_view_transactions_list")
-  /// Generated recovery phrase will not be saved
+  /// Recovery phrase will be cleared”
   internal static let cancelAlertMnemonicMessage = L10n.tr("Localizable", "cancel_alert_mnemonic_message")
   /// Are you sure?
   internal static let cancelAlertMnemonicTitle = L10n.tr("Localizable", "cancel_alert_mnemonic_title")
@@ -91,6 +91,26 @@ internal enum L10n {
   internal static let errorBiometricPressedPasswordMessage = L10n.tr("Localizable", "error_biometric_pressed_password_message")
   /// Biometric disabled
   internal static let errorBiometricPressedPasswordTitle = L10n.tr("Localizable", "error_biometric_pressed_password_title")
+  /// GET STARTED
+  internal static let helpFirstSectionTitle = L10n.tr("Localizable", "help_first_section_title")
+  /// A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.
+  internal static let helpMnemonicDescription = L10n.tr("Localizable", "help_mnemonic_description")
+  /// 1. What is Mnemonic Code?
+  internal static let helpMnemonicTitle = L10n.tr("Localizable", "help_mnemonic_title")
+  /// A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.
+  internal static let helpPasswordDescription = L10n.tr("Localizable", "help_password_description")
+  /// 4. How to add a Change Passcode?
+  internal static let helpPasswordTitle = L10n.tr("Localizable", "help_password_title")
+  /// A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.
+  internal static let helpPublicKeyDescription = L10n.tr("Localizable", "help_public_key_description")
+  /// 2. Where I can find Public Key?
+  internal static let helpPublicKeyTitle = L10n.tr("Localizable", "help_public_key_title")
+  /// HOW TO
+  internal static let helpSecondSectionTitle = L10n.tr("Localizable", "help_second_section_title")
+  /// A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.
+  internal static let helpTransactionDescription = L10n.tr("Localizable", "help_transaction_description")
+  /// 3. How to add a Transaction?
+  internal static let helpTransactionTitle = L10n.tr("Localizable", "help_transaction_title")
   /// Operation was failed. Please, contact to support.
   internal static let invalidOperationMessage = L10n.tr("Localizable", "INVALID_OPERATION_MESSAGE")
   /// Invalid Operation
@@ -99,9 +119,9 @@ internal enum L10n {
   internal static let invalidTransactionMessage = L10n.tr("Localizable", "INVALID_TRANSACTION_MESSAGE")
   /// Invalid Transaction
   internal static let invalidTransactionTitle = L10n.tr("Localizable", "INVALID_TRANSACTION_TITLE")
-  /// Without this you will not be able to recover your account
+  /// Make sure that you have your recovery phrase saved, otherwise you will not be able to recover your account.
   internal static let logoutAlertMessage = L10n.tr("Localizable", "logout_alert_message")
-  /// Have you secured your recovery phrase?
+  /// Logout
   internal static let logoutAlertTitle = L10n.tr("Localizable", "logout_alert_title")
   /// Confirm New PIN
   internal static let navTitleChangePasscodeConfirmNew = L10n.tr("Localizable", "nav_title_change_passcode_confirm_new")
@@ -113,7 +133,7 @@ internal enum L10n {
   internal static let navTitleCreatePasscode = L10n.tr("Localizable", "nav_title_create_passcode")
   /// Recovery Phrase
   internal static let navTitleMnemonicGeneration = L10n.tr("Localizable", "nav_title_mnemonic_generation")
-  /// Verify Recovery Phrase
+  /// Enter Recovery Phrase
   internal static let navTitleMnemonicVerification = L10n.tr("Localizable", "nav_title_mnemonic_verification")
   /// Operation Details
   internal static let navTitleOperationDetails = L10n.tr("Localizable", "nav_title_operation_details")
@@ -161,6 +181,8 @@ internal enum L10n {
   internal static let textCopiedKeySnack = L10n.tr("Localizable", "text_copied_key_snack")
   /// Write down these 12 words and keep them secure. Don’t email them or screenshot them.
   internal static let textCopyDescription = L10n.tr("Localizable", "text_copy_description")
+  /// Transaction Declined
+  internal static let textDeclinedTransaction = L10n.tr("Localizable", "text_declined_transaction")
   /// Want to deny the operation?
   internal static let textDenyDialogDescription = L10n.tr("Localizable", "text_deny_dialog_description")
   /// Are you sure?
@@ -185,9 +207,9 @@ internal enum L10n {
   internal static let textPublicKeyDescription = L10n.tr("Localizable", "text_public_key_description")
   /// Your Vault Public Key
   internal static let textPublicKeyTitle = L10n.tr("Localizable", "text_public_key_title")
-  /// You are not a signer
+  /// LOBSTR Vault is not a signer for any Stellar account now. Press “Re-Check” button after adding Vault signer in your wallet
   internal static let textRecheckInfo = L10n.tr("Localizable", "text_recheck_info")
-  /// Enter the 12 word recovery phrase you were given when you created your account
+  /// Enter the 12 or 24 word recovery phrase you were given when you created your Vault account
   internal static let textRestoreInfo = L10n.tr("Localizable", "text_restore_info")
   /// Mnemonic Code...
   internal static let textRestorePlaceholder = L10n.tr("Localizable", "text_restore_placeholder")

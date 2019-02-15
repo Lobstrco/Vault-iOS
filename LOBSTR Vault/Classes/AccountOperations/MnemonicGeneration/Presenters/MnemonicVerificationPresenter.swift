@@ -71,6 +71,7 @@ class MnemonicVerificationPresenterImpl {
     if mnemonicListForVerification == generatedMnemonicList {
       view?.setRightBarButton(isEnabled: true)
     } else {
+      view?.setRightBarButton(isEnabled: false)
       view?.setErrorLabel(isHidden: false)
       view?.setDashBordersColor(isError: true)
     }
@@ -127,13 +128,11 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   func shuffledWordWasPressed(with indexPath: IndexPath) {
     moveShuffledWordToListForVerification(by: indexPath)
     validateVerificationList()
-    
-//     for testing
-     view?.setRightBarButton(isEnabled: true)
   }
   
   func wordForVerificationWasPressed(with indexPath: IndexPath) {
     moveWordForVerificationToShuffledMnemonicList(by: indexPath)
+    validateVerificationList()
   }
   
   func configureShuffled(_ cell: MnemonicCellView,

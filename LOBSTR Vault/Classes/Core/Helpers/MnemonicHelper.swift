@@ -58,7 +58,7 @@ struct MnemonicHelper {
                                              in targetString: String,
                                              highlightColor: UIColor) -> NSMutableAttributedString {
     do {
-      let regex = try NSRegularExpression(pattern: word, options: .caseInsensitive)
+      let regex = try NSRegularExpression(pattern: word + " ", options: .caseInsensitive)
       let range = NSRange(location: 0, length: targetString.utf16.count)
       for match in regex.matches(in: targetString,
                                  options: .withTransparentBounds,

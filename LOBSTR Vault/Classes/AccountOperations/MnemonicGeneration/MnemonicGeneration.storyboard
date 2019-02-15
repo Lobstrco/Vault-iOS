@@ -136,9 +136,14 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="BOo-yO-2Pu">
-                        <barButtonItem key="rightBarButtonItem" systemItem="cancel" id="iG1-OR-QIz">
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="iG1-OR-QIz">
                             <connections>
                                 <action selector="cancelButtonAcion" destination="DQW-Ji-cHV" id="Fnu-KR-VeZ"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="QJN-Ko-ozU">
+                            <connections>
+                                <action selector="helpButtonAcion" destination="DQW-Ji-cHV" id="5fv-IS-roJ"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -295,6 +300,7 @@
     </scenes>
     <resources>
         <image name="Icons/Other/icCopy" width="16" height="18"/>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <namedColor name="Colors/Background">
             <color red="0.95294117647058818" green="0.95294117647058818" blue="0.98431372549019602" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -40,6 +40,10 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
     presenter.recoveryButtonWasPressed()
   }
   
+  @IBAction func helpButtonAction(_ sender: Any) {
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setAppearance() {

@@ -65,49 +65,47 @@ class TransactionDetailsPresenterImpl {
   
   // MARK: - Private
   
-  private func submitTransaction(with transactionEnvelope: String) {
-    StellarSDK(withHorizonUrl: Constants.horizonURL).transactions.postTransaction(transactionEnvelope: transactionEnvelope) { (response) -> (Void) in
-      switch response {
-      case .success(_):
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-          self.submitTransactionToVaultServer(transactionEnvelope)
+  private func submitTransaction(_ transactionEnvelopeXDR: TransactionEnvelopeXDR) {
+    view?.setProgressAnimation(isEnable: true)
+    
+    let gettingMnemonic = GettingMnemonicOperation()
+    let signTransaction = SignTransactionOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
+    let submitTransactionToHorizon = SubmitTransactionToHorizonOperation()
+    let submitTransactionToVaultServer = SubmitTransactionToVaultServerOperation(transactionHash: transaction?.hash)
+    
+    submitTransactionToVaultServer.addDependency(submitTransactionToHorizon)
+    submitTransactionToHorizon.addDependency(signTransaction)
+    signTransaction.addDependency(gettingMnemonic)
+    
+    OperationQueue().addOperations([gettingMnemonic,
+                                    signTransaction,
+                                    submitTransactionToHorizon,
+                                    submitTransactionToVaultServer],
+                                   waitUntilFinished: false)
+    
+    submitTransactionToHorizon.completionBlock = {
+      DispatchQueue.main.async {
+        self.view?.setProgressAnimation(isEnable: false)
+        
+        if let infoError = submitTransactionToVaultServer.outputError as? ErrorDisplayable {
+          self.view?.setErrorAlert(for: infoError)
+          return
         }
-      case .failure(let error):
-        switch error {
-        case .badRequest(let message, _):
-          let resultCode = try! TransactionHelper.getTransactionResultCode(from: message)
-          switch resultCode {
-          case .badAuth:
-            self.submitTransactionToVaultServer(transactionEnvelope, isNeedAdditionalSignature: true)
-          default:
-            DispatchQueue.main.async {
-              self.transitionToTransactionStatus(.failure, resultCode: resultCode)
-              self.view?.setProgressAnimation(isEnable: false)
-            }
-          }
-        default:
-          self.view?.setProgressAnimation(isEnable: false)
-          self.view?.setErrorAlert(for: error)
+        
+        guard let resultCode = submitTransactionToHorizon.horizonResultCode else {
+          return
         }
+        
+        NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+        self.transitionToTransactionStatus(with: resultCode)
       }
     }
-  }
-  
-  private func submitTransactionToVaultServer(_ transactionEnvelope: String, isNeedAdditionalSignature: Bool = false) {
-    transactionService.submitSignedTransaction(xdr: transactionEnvelope, isNeedAdditionalSignature: isNeedAdditionalSignature) { result in
-      switch result {
-      case .success(_):
-        DispatchQueue.main.async {
-          let resultCode: TransactionResultCode = isNeedAdditionalSignature ? .badAuth : .success
-          let xdr: String? = isNeedAdditionalSignature ? transactionEnvelope : nil
-          
-          self.transitionToTransactionStatus(.success, resultCode: resultCode, xdr: xdr)
-          self.view?.setProgressAnimation(isEnable: false)
+    
+    submitTransactionToVaultServer.completionBlock = {
+      DispatchQueue.main.async {
+        if let _ = submitTransactionToVaultServer.outputError {
+          // check errors from vault server and send to crashlytics
         }
-        NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
-      case .failure(let error):
-        self.view?.setErrorAlert(for: error)
-        self.view?.setProgressAnimation(isEnable: false)
       }
     }
   }
@@ -147,7 +145,6 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func confirmButtonWasPressed() {
-    view?.setProgressAnimation(isEnable: true)
     guard let xdr = self.transaction?.xdr else {
       return
     }
@@ -156,16 +153,7 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       return
     }
     
-    TransactionHelper.signTransaction(transactionEnvelopeXDR: transactionEnvelopeXDR,
-                                      mnemonicManager: mnemonicManager) { result in
-      switch result {
-      case .success(let transactionEnvelope):
-        self.submitTransaction(with: transactionEnvelope)
-      case .failure(let error):
-        self.view?.setProgressAnimation(isEnable: false)
-        self.view?.setErrorAlert(for: error)
-      }
-    }
+    submitTransaction(transactionEnvelopeXDR)
   }
   
   func denyOperationWasConfirmed() {
@@ -207,11 +195,10 @@ extension TransactionDetailsPresenterImpl {
     transactionDetailsViewController.navigationController?.popToRootViewController(animated: true)
   }
   
-  func transitionToTransactionStatus(_ status: TransactionStatus, resultCode: TransactionResultCode, xdr: String? = nil) {
+  func transitionToTransactionStatus(with resultCode: TransactionResultCode, xdr: String? = nil) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
     transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,
-                                                                               with: status,
                                                                                resultCode: resultCode,
                                                                                xdr: xdr)
 

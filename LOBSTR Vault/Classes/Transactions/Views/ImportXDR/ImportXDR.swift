@@ -2,7 +2,7 @@ import UIKit
 import PKHUD
 
 protocol ImportXDROutput {
-  func submitXDR(_ xdr: String)
+  func submitTransaction(with xdr: String)
 }
 
 protocol ImportXDRInput {
@@ -26,11 +26,11 @@ class ImportXDR: UIView, UITextViewDelegate {
   // MARK: - IBAction
   
   @IBAction func submitButtonAction(_ sender: Any) {
-    output?.submitXDR(textView.text)
+    output?.submitTransaction(with: textView.text)
   }
   
   @IBAction func closeButtonAction(_ sender: Any) {
-    popoverDelegate?.closePopover()
+    closePopover()
   }
   
   // MARK: - Lifecycle
@@ -74,6 +74,11 @@ class ImportXDR: UIView, UITextViewDelegate {
       errorLabel.isHidden = true
     }
   }
+  
+  private func closePopover() {
+    popoverDelegate?.closePopover()
+    popoverDelegate = nil
+  }
 }
 
 // MARK: - ImportXDRView
@@ -86,7 +91,7 @@ extension ImportXDR: ImportXDRInput {
   }
   
   func closePopup() {
-    popoverDelegate?.closePopover()
+    closePopover()
   }
   
   func setProgressAnimation(isEnable: Bool) {

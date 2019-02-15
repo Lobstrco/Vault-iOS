@@ -45,7 +45,7 @@ class MnemonicHelperTest: XCTestCase {
   
   func testHighlightedAttributedStringShouldBeReceived() {
     let highlightedWord = "ga"
-    let text = "hello galaxy gallery game yellow ga"
+    let text = "hello galaxy gallery game yellow ga "
     let highlightColor = UIColor.red
     let expectedHighlightedCharacterPositions = [33, 34, 35]
     var highlightedCharacterPositions: [Int] = []
@@ -72,7 +72,7 @@ class MnemonicHelperTest: XCTestCase {
   
   func testStringShouldBeReceivedFromSeparatedWords() {
     let words = ["hello", "galaxy", "gallery", "game", "yellow"]
-    let expectedString = "hello, galaxy, gallery, game, yellow"
+    let expectedString = "hello galaxy gallery game yellow"
     
     let string = MnemonicHelper.getStringFromSeparatedWords(in: words)
     

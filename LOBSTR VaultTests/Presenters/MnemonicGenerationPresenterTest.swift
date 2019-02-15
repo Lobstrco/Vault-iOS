@@ -8,6 +8,6 @@ class MnemonicGenerationPresenterTest: XCTestCase {
   
   override func setUp() {
     super.setUp()
-    mnemonicGenerationPresenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewSpy)
+    mnemonicGenerationPresenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewSpy, mnemonicMode: .generationMnemonic)
   }
 }

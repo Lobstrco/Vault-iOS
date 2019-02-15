@@ -5,13 +5,14 @@ protocol HomeView: class {
   func setTransactionNumber(_ number: Int)
   func setPublicKey(_ publicKey: String)
   func setSignerDetails(_ signedAccounts: [SignedAccounts])
-  func setProgressAnimationForTransactionNumber()
-  func setProgressAnimationForSignerDetails()
+  func setProgressAnimationForTransactionNumber(isEnabled: Bool)
+  func setProgressAnimationForSignerDetails(isEnabled: Bool)
 }
 
 protocol HomePresenter {
   func homeViewDidLoad()
   func copyKeyButtonWasPressed()
+  func updateSignerDetails()
 }
 
 class HomePresenterImpl: HomePresenter {
@@ -45,12 +46,16 @@ class HomePresenterImpl: HomePresenter {
   
   func homeViewDidLoad() {
     displayTransactionNumber()
-    displaySignerDetails()
+//    displaySignerDetails()
     displayPublicKey()
   }
   
   func copyKeyButtonWasPressed() {
     UIPasteboard.general.string = publicKey
+  }
+  
+  func updateSignerDetails() {
+    displaySignerDetails()
   }
   
   // MARK: - HomeView
@@ -62,31 +67,34 @@ class HomePresenterImpl: HomePresenter {
   }
   
   func displayTransactionNumber() {
-    view?.setProgressAnimationForTransactionNumber()
+    view?.setProgressAnimationForTransactionNumber(isEnabled: true)
     transactionService.getNumberOfTransactions() { result in
       switch result {
       case .success(let numberOfTransactions):
         self.view?.setTransactionNumber(numberOfTransactions)
+        self.view?.setProgressAnimationForTransactionNumber(isEnabled: false)
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:
           self.displayTransactionNumber()
         default:
+          self.view?.setProgressAnimationForTransactionNumber(isEnabled: false)
           print("Error:: \(serverRequestError)")
         }
-        break
       }
     }
   }
   
   func displaySignerDetails() {
-    view?.setProgressAnimationForSignerDetails()
+    view?.setProgressAnimationForSignerDetails(isEnabled: true)
     transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let signedAccounts):
         self.view?.setSignerDetails(signedAccounts)
+        self.view?.setProgressAnimationForSignerDetails(isEnabled: false)
       case .failure(let error):
         print("error: \(error)")
+        self.view?.setProgressAnimationForSignerDetails(isEnabled: false)
       }
     }
   }

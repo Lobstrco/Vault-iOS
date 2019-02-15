@@ -105,6 +105,13 @@ class PinPresenterImpl: PinPresenter {
     view?.clearPinDot(at: pin.count)
   }
   
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let pinViewController = view as! PinViewController
+    pinViewController.navigationController?.pushViewController(helpViewController, animated: true)
+  }
+  
   // MARK: - Private
   
   private func resetPinAfterWrongDialing() {
@@ -148,8 +155,6 @@ extension PinPresenterImpl {
   
   func transitionToCreatePinFirstStep(with mode: PinMode) {
     let pinViewController = PinViewController.createFromStoryboard()
-    
-//    pinViewController.mode = .createPinFirstStep
     pinViewController.mode = mode
     
     let currentPinViewController = view as! PinViewController
@@ -158,9 +163,7 @@ extension PinPresenterImpl {
   }
   
   func transitionToCreatePinSecondStep(with mode: PinMode) {
-    let pinViewController = PinViewController.createFromStoryboard()    
-    
-//    pinViewController.mode = .createPinSecondStep(pin)
+    let pinViewController = PinViewController.createFromStoryboard()
     pinViewController.mode = mode
     
     let currentPinViewController = view as! PinViewController

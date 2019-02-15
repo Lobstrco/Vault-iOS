@@ -1,10 +1,22 @@
 class TransactionService {
   
-  func submitSignedTransaction(xdr: String, isNeedAdditionalSignature: Bool, completion: @escaping (Result<Bool>) -> Void) {
+  func submitSignedTransaction(xdr: String, completion: @escaping (Result<Bool>) -> Void) {
     let apiLoader = APIRequestLoader<SubmitSignedTransactionRequest>(apiRequest: SubmitSignedTransactionRequest())
-    let submit = isNeedAdditionalSignature ? nil : true
-    let submitSignedTransactionRequestParameters = SubmitSignedTransactionRequestParameters(submit: submit, xdr: xdr)
+    let submitSignedTransactionRequestParameters = SubmitSignedTransactionRequestParameters(xdr: xdr)
     apiLoader.loadAPIRequest(requestData: submitSignedTransactionRequestParameters) { result in
+      switch result {
+      case .success(_):
+        completion(.success(true))
+      case .failure(let serverRequestError):
+        completion(.failure(serverRequestError))
+      }
+    }
+  }
+  
+  func markTransactionAsSubmitted(by hash: String, xdr: String, completion: @escaping (Result<Bool>) -> Void) {
+    let apiLoader = APIRequestLoader<MarkTransactionAsSubmittedRequest>(apiRequest: MarkTransactionAsSubmittedRequest())
+    let markTransactionAsSubmittedRequestParameters = MarkTransactionAsSubmittedRequestParameters(xdr: xdr, hash: hash)
+    apiLoader.loadAPIRequest(requestData: markTransactionAsSubmittedRequestParameters) { result in
       switch result {
       case .success(_):
         completion(.success(true))

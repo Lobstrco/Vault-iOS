@@ -10,7 +10,6 @@ class SettingsPresenterImpl: SettingsPresenter {
   private let mnemonicManager: MnemonicManager
   private var biometricAuthManager: BiometricAuthManager
   private let settingsSectionsBuilder: SettingsSectionsBuilder
-  private let vaultStorage: VaultStorage
   
   private let navigationController: UINavigationController
   
@@ -20,14 +19,12 @@ class SettingsPresenterImpl: SettingsPresenter {
        navigationController: UINavigationController,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl(),
-       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl(),
-       vaultStorage: VaultStorage = VaultStorage()) {
+       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl()) {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
     self.biometricAuthManager = biometricAuthManager
     self.settingsSectionsBuilder = settingsSectionsBuilder
-    self.vaultStorage = vaultStorage
   }
 }
 
@@ -65,13 +62,6 @@ extension SettingsPresenterImpl {
 // MARK: - SettingsCellConfigurator
 
 extension SettingsPresenterImpl {
-  func configure(publicKeyCell: PublicKeyTableViewCell) {
-    
-    guard let publicKey = vaultStorage.getPublicKeyFromKeychain()
-    else { return }
-
-    publicKeyCell.setPublicKey(publicKey)
-  }
   
   func configure(biometricIDCell: BiometricIDTableViewCell) {
     biometricIDCell.setTitle(Device.biometricType.name)
@@ -122,14 +112,18 @@ extension SettingsPresenterImpl {
     let selectedRow = row(for: indexPath)
     
     switch selectedRow {
+    case .publicKey:
+      showPublicKeyButtonWasPressed()
     case .signerForAccounts:
-      transitionToSignerDetails()
+      transitionToSignerDetails()      
     case .changePin:
       transitionToChangePin()
     case .mnemonicCode:
       transitionToMnemonicCode()
     case .logout:
       logoutButtonWasPressed()
+    case .help:
+      transitionToHelp()
     default:
       break
     }
@@ -158,6 +152,21 @@ extension SettingsPresenterImpl {
       }
     }
   }
+}
+
+extension SettingsPresenterImpl {
+  
+  func showPublicKeyButtonWasPressed() {
+    let publicKeyView = Bundle.main.loadNibNamed("PublicKeyPopover", owner: view, options: nil)?.first as! PublicKeyPopover
+    publicKeyView.initData()
+    
+    let popoverHeight: CGFloat = 214
+    let popover = CustomPopoverViewController(height: popoverHeight, view: publicKeyView)
+    publicKeyView.popoverDelegate = popover
+    
+    view?.setPublicKeyPopover(popover)
+  }
+  
 }
 
 // MARK: - Logout
@@ -197,5 +206,12 @@ extension SettingsPresenterImpl {
     mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
                                                                                  mnemonicMode: .showMnemonic)
     navigationController.pushViewController(mnemonicGenerationViewController, animated: true)
+  }
+  
+  func transitionToHelp() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let settingsViewController = view as! SettingsViewController
+    settingsViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }

@@ -20,17 +20,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a2c-BA-Dig">
-                                <rect key="frame" x="60" y="283.5" width="255" height="100"/>
+                                <rect key="frame" x="30" y="258.5" width="315" height="150"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icons/Other/icAlert" translatesAutoresizingMaskIntoConstraints="NO" id="LJ4-js-KdZ">
-                                        <rect key="frame" x="101.5" y="0.0" width="52" height="52"/>
+                                        <rect key="frame" x="131.5" y="0.0" width="52" height="52"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="52" id="Zam-gf-qq6"/>
                                             <constraint firstAttribute="height" constant="52" id="pc4-EY-z4U"/>
                                         </constraints>
                                     </imageView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You are not a signer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J99-yo-zbJ">
-                                        <rect key="frame" x="47" y="62" width="161" height="21"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You are not a signer" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="J99-yo-zbJ">
+                                        <rect key="frame" x="5" y="62" width="305" height="20.5"/>
                                         <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -41,7 +41,9 @@
                                     <constraint firstItem="J99-yo-zbJ" firstAttribute="top" secondItem="LJ4-js-KdZ" secondAttribute="bottom" constant="10" id="ChS-fR-2uv"/>
                                     <constraint firstItem="LJ4-js-KdZ" firstAttribute="centerX" secondItem="a2c-BA-Dig" secondAttribute="centerX" id="Hkn-vy-i4f"/>
                                     <constraint firstItem="J99-yo-zbJ" firstAttribute="centerX" secondItem="a2c-BA-Dig" secondAttribute="centerX" id="Ixl-3s-2jM"/>
-                                    <constraint firstAttribute="height" constant="100" id="MtN-pb-Qn6"/>
+                                    <constraint firstAttribute="height" constant="150" id="MtN-pb-Qn6"/>
+                                    <constraint firstItem="J99-yo-zbJ" firstAttribute="leading" secondItem="a2c-BA-Dig" secondAttribute="leading" constant="5" id="X6Y-gt-2vV"/>
+                                    <constraint firstAttribute="trailing" secondItem="J99-yo-zbJ" secondAttribute="trailing" constant="5" id="YCs-do-rm0"/>
                                     <constraint firstItem="LJ4-js-KdZ" firstAttribute="top" secondItem="a2c-BA-Dig" secondAttribute="top" id="cOz-Lf-IME"/>
                                 </constraints>
                             </view>
@@ -62,8 +64,8 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="q3e-O4-efS" firstAttribute="trailing" secondItem="Gh6-EL-WQI" secondAttribute="trailing" constant="16" id="CbT-jm-QQS"/>
-                            <constraint firstItem="a2c-BA-Dig" firstAttribute="leading" secondItem="q3e-O4-efS" secondAttribute="leading" constant="60" id="FaT-zS-A5c"/>
-                            <constraint firstItem="q3e-O4-efS" firstAttribute="trailing" secondItem="a2c-BA-Dig" secondAttribute="trailing" constant="60" id="MEm-KK-QAJ"/>
+                            <constraint firstItem="a2c-BA-Dig" firstAttribute="leading" secondItem="q3e-O4-efS" secondAttribute="leading" constant="30" id="FaT-zS-A5c"/>
+                            <constraint firstItem="q3e-O4-efS" firstAttribute="trailing" secondItem="a2c-BA-Dig" secondAttribute="trailing" constant="30" id="MEm-KK-QAJ"/>
                             <constraint firstItem="q3e-O4-efS" firstAttribute="bottom" secondItem="Gh6-EL-WQI" secondAttribute="bottom" constant="22" id="OVK-bf-vYc"/>
                             <constraint firstItem="Gh6-EL-WQI" firstAttribute="leading" secondItem="q3e-O4-efS" secondAttribute="leading" constant="16" id="Sgg-0l-6uV"/>
                             <constraint firstItem="a2c-BA-Dig" firstAttribute="centerY" secondItem="u1b-As-6Wg" secondAttribute="centerY" id="o6O-WS-kF0"/>

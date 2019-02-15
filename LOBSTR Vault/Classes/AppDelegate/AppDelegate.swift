@@ -17,7 +17,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     FirebaseApp.configure()
     applicationCoordinator.openRequiredScreen()
-    
+
     let accountStatus = ApplicationCoordinatorHelper.getAccountStatus()
     if accountStatus == .waitingToBecomeSinger || accountStatus == .created {
       registerForRemoteNotifications()

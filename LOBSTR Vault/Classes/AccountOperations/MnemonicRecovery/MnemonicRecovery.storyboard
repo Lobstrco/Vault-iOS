@@ -74,6 +74,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="s2L-cY-ZcR"/>
                     </view>
+                    <navigationItem key="navigationItem" id="VeS-1m-QMR">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="Icons/Other/icQuestionSign" id="lI1-Ck-zuJ">
+                            <connections>
+                                <action selector="helpButtonAction:" destination="jMx-Df-eZn" id="xxH-ry-e3Y"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="nextButton" destination="Evf-tn-SzP" id="J4u-sR-hHi"/>
                         <outlet property="restoreAccountInfoLabel" destination="bII-4e-i7c" id="Uyj-jx-4ck"/>
@@ -86,6 +93,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <namedColor name="Colors/Background">
             <color red="0.95294117647058818" green="0.95294117647058818" blue="0.98431372549019602" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

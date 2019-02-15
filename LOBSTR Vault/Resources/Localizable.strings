@@ -13,17 +13,17 @@
 "animation_waiting" = "Please Wait";
 
 // Logout
-"logout_alert_title" = "Have you secured your recovery phrase?";
-"logout_alert_message" = "Without this you will not be able to recover your account";
+"logout_alert_title" = "Logout";
+"logout_alert_message" = "Make sure that you have your recovery phrase saved, otherwise you will not be able to recover your account.";
 
 // Cancel of generated mnemonic
 "cancel_alert_mnemonic_title" = "Are you sure?";
-"cancel_alert_mnemonic_message" = "Generated recovery phrase will not be saved";
+"cancel_alert_mnemonic_message" = "Recovery phrase will be cleared”";
 
 // Navigation titles
 "nav_title_restore_account" = "Recover Account";
 "nav_title_mnemonic_generation" = "Recovery Phrase";
-"nav_title_mnemonic_verification" = "Verify Recovery Phrase";
+"nav_title_mnemonic_verification" = "Enter Recovery Phrase";
 
 "nav_title_transactions" = "Transactions";
 "nav_title_operation_details" = "Operation Details";
@@ -57,7 +57,7 @@
 "text_confirm_description" = "You will need to confirm recovery phrase on the next screen";
 
 // Restore Account screen
-"text_restore_info" = "Enter the 12 word recovery phrase you were given when you created your account";
+"text_restore_info" = "Enter the 12 or 24 word recovery phrase you were given when you created your Vault account";
 "text_restore_placeholder" = "Mnemonic Code...";
 
 // Mnemonic verification screen
@@ -77,7 +77,7 @@
 "text_public_key_description" = "This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)";
 
 // Re-check screen
-"text_recheck_info" = "You are not a signer";
+"text_recheck_info" = "LOBSTR Vault is not a signer for any Stellar account now. Press “Re-Check” button after adding Vault signer in your wallet";
 "button_title_recheck" = "Re-Check";
 
 // Signer Check screen
@@ -98,6 +98,7 @@
 "text_add_transaction_error" = "Transaction is invalid. Please try again.";
 "button_title_submit" = "Submit";
 "text_empty_state_transactions" = "Transactions not found";
+"text_declined_transaction" = "Transaction Declined";
 
 // Transaction details screen
 "button_title_deny" = "Confirm";
@@ -135,6 +136,22 @@
 
 // Signed Details screen
 "text_empty_state_signed_accounts" = "Signed accounts not found";
+
+// Help screen
+"help_mnemonic_title" = "1. What is Mnemonic Code?";
+"help_mnemonic_description" = "A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.";
+
+"help_public_key_title" = "2. Where I can find Public Key?";
+"help_public_key_description" = "A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.";
+
+"help_transaction_title" = "3. How to add a Transaction?";
+"help_transaction_description" = "A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.";
+
+"help_password_title" = "4. How to add a Change Passcode?";
+"help_password_description" = "A mnemonic phrase, mnemonic recovery phrase, mnemonic seed, seed key, and seed words are all different names of the same thing. If you break ‘mnemonic phrase’ you will understand ‘mnemonic’ stands for ‘a system such as a pattern of letters, ideas, or associations which assists in remembering something, while ‘phrase’ stands for ‘a small group of words’.";
+
+"help_first_section_title" = "GET STARTED";
+"help_second_section_title" = "HOW TO";
 
 // Error messages
 "error_biometric_not_available" = "error_biometric_not_available";

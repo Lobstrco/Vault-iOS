@@ -161,25 +161,21 @@
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0XN-LQ-s4z">
                                         <rect key="frame" x="0.0" y="209" width="343" height="171"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vault public key" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jL-77-T7v">
-                                                <rect key="frame" x="108" y="30" width="127.5" height="20.5"/>
-                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                                <color key="textColor" name="Colors/Black"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                        </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstItem="7jL-77-T7v" firstAttribute="top" secondItem="0XN-LQ-s4z" secondAttribute="top" constant="30" id="sgE-gG-Ju0"/>
-                                            <constraint firstItem="7jL-77-T7v" firstAttribute="centerX" secondItem="0XN-LQ-s4z" secondAttribute="centerX" id="w34-xz-fhu"/>
-                                        </constraints>
                                     </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="vault public key" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jL-77-T7v">
+                                        <rect key="frame" x="108" y="239" width="127.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                        <color key="textColor" name="Colors/Black"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="0XN-LQ-s4z" secondAttribute="trailing" id="Ddh-vy-25a"/>
                                     <constraint firstItem="SX7-Sd-lQo" firstAttribute="height" secondItem="4bP-Vy-9cS" secondAttribute="height" multiplier="0.55" id="ElF-yF-sbi"/>
+                                    <constraint firstItem="7jL-77-T7v" firstAttribute="centerX" secondItem="4bP-Vy-9cS" secondAttribute="centerX" id="Gag-Ah-Juj"/>
+                                    <constraint firstItem="7jL-77-T7v" firstAttribute="top" secondItem="SX7-Sd-lQo" secondAttribute="bottom" constant="30" id="PCW-hY-XHS"/>
                                     <constraint firstAttribute="trailing" secondItem="SX7-Sd-lQo" secondAttribute="trailing" id="Plh-ea-cBD"/>
                                     <constraint firstItem="0XN-LQ-s4z" firstAttribute="top" secondItem="SX7-Sd-lQo" secondAttribute="bottom" id="TLS-2D-xPB"/>
                                     <constraint firstItem="SX7-Sd-lQo" firstAttribute="top" secondItem="4bP-Vy-9cS" secondAttribute="top" id="Yr2-3n-fj1"/>
@@ -218,7 +214,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sgB-5u-gDd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-81" y="168"/>
+            <point key="canvasLocation" x="-82.400000000000006" y="167.76611694152925"/>
         </scene>
     </scenes>
     <resources>

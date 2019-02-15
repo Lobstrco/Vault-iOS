@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PublicKeyPopover" customModule="LOBSTR_Vault" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="214"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0J1-5x-mbX">
+                    <rect key="frame" x="16" y="150" width="343" height="48"/>
+                    <color key="backgroundColor" name="Colors/Main"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="48" id="qH4-jZ-bKF"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                    <state key="normal" title="Button">
+                        <color key="titleColor" name="Colors/White"/>
+                    </state>
+                    <connections>
+                        <action selector="copyButtonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="UHS-gE-B7T"/>
+                    </connections>
+                </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="823-IQ-nUn">
+                    <rect key="frame" x="30" y="87" width="315" height="36"/>
+                    <string key="text">Label
+Label</string>
+                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                    <color key="textColor" name="Colors/GrayOpacity30"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EBc-S4-pot">
+                    <rect key="frame" x="165.5" y="46" width="44.5" height="21"/>
+                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jdZ-vW-9YA">
+                    <rect key="frame" x="335" y="16" width="24" height="24"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="24" id="Nw8-QI-o6h"/>
+                        <constraint firstAttribute="height" constant="24" id="f2Q-aX-c3S"/>
+                    </constraints>
+                    <state key="normal" title="Button" image="Icons/Other/icClose"/>
+                    <connections>
+                        <action selector="closeButtonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="eRp-8F-ESR"/>
+                    </connections>
+                </button>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="823-IQ-nUn" firstAttribute="top" secondItem="EBc-S4-pot" secondAttribute="bottom" constant="20" id="G59-tu-54f"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="0J1-5x-mbX" secondAttribute="trailing" constant="16" id="Ig2-MC-5j7"/>
+                <constraint firstAttribute="trailing" secondItem="jdZ-vW-9YA" secondAttribute="trailing" constant="16" id="My8-XY-uL6"/>
+                <constraint firstItem="823-IQ-nUn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="30" id="R1X-Cs-cZW"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="823-IQ-nUn" secondAttribute="trailing" constant="30" id="UuQ-C8-eZB"/>
+                <constraint firstItem="jdZ-vW-9YA" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="16" id="VXz-hL-KIR"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="0J1-5x-mbX" secondAttribute="bottom" constant="16" id="gkR-ap-iTu"/>
+                <constraint firstItem="0J1-5x-mbX" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="hPP-L3-vci"/>
+                <constraint firstItem="EBc-S4-pot" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="tYI-ji-oqh"/>
+                <constraint firstItem="0J1-5x-mbX" firstAttribute="top" secondItem="823-IQ-nUn" secondAttribute="bottom" constant="27" id="vIT-m6-Sv0"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="closeButton" destination="jdZ-vW-9YA" id="pLb-te-ip0"/>
+                <outlet property="copyButton" destination="0J1-5x-mbX" id="Hic-lU-RFx"/>
+                <outlet property="publicKeyLabel" destination="823-IQ-nUn" id="uTO-ti-UiF"/>
+                <outlet property="publicKeyTitleLabel" destination="EBc-S4-pot" id="Cvk-Hs-hBD"/>
+            </connections>
+            <point key="canvasLocation" x="31" y="168"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Icons/Other/icClose" width="24" height="24"/>
+        <namedColor name="Colors/GrayOpacity30">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.30000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

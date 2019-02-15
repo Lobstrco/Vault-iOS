@@ -1,25 +1,33 @@
 import Foundation
 
-struct CancelTransactionRequestParameters {
+struct MarkTransactionAsSubmittedRequestParameters {
+  let xdr: String
   let hash: String
 }
 
-struct CancelTransactionRequest: APIRequest {
+struct MarkTransactionAsSubmittedRequest: APIRequest {
   
-  func makeRequest(from data: CancelTransactionRequestParameters?, jwtToken: String?) throws -> URLRequest {
-    guard let hash = data?.hash else {      
+  func makeRequest(from data: MarkTransactionAsSubmittedRequestParameters?, jwtToken: String?) throws -> URLRequest {
+    guard let hash = data?.hash else {
       throw VaultError.TransactionError.invalidTransaction
     }
     
-    let path = "/api/transactions/\(hash)/cancel/"
+    let path = "/api/transactions/\(hash)/submit/"
     let urlString = Constants.baseURL + path
     let url = URL(string: urlString)!
     
     var urlRequest = URLRequest(url: url)
     urlRequest.httpMethod = APIRequestHTTPMethod.post.rawValue
     
+    guard let data = data else {
+      throw VaultError.TransactionError.invalidTransaction
+    }
+    
+    let parameters: [String: Any] = ["xdr": data.xdr]
+    
+    urlRequest.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
+    
     guard let token = jwtToken else {
-      // rewrite
       throw VaultError.TransactionError.invalidTransaction
     }
     
