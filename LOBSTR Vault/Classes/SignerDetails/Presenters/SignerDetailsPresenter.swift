@@ -1,14 +1,11 @@
 import Foundation
-
-protocol SignerDetailsView: class {
-  func setAccountList(isEmpty: Bool)
-  func setProgressAnimation()
-}
+import UIKit
 
 protocol SignerDetailsPresenter {
   var countOfAccounts: Int { get }
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int)
   func signerDetailsViewDidLoad()
+  func copyAlertActionWasPressed(for index: Int)
 }
 
 class SignerDetailsPresenterImpl {
@@ -44,6 +41,11 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   var countOfAccounts: Int {
     return accounts.count
   }
+
+  func copyAlertActionWasPressed(for index: Int) {
+    guard let publicKey = accounts[index].address else { return }
+    view?.copy(publicKey)
+  }
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int) {
     guard let address = accounts[row].address else {
@@ -54,9 +56,13 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   }
   
   func signerDetailsViewDidLoad() {
-    displayAccountList()
+    guard let viewController = view as? UIViewController else {
+      return
+    }
+    
+    if ConnectionHelper.checkConnection(viewController) {
+      displayAccountList()
+    }
+    
   }
-  
-  
-  
 }

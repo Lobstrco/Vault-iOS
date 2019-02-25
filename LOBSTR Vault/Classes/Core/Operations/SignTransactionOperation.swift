@@ -3,8 +3,8 @@ import stellarsdk
 
 class SignTransactionOperation: AsyncOperation {
   
-  let transactionEnvelopeXDR: TransactionEnvelopeXDR?
-  var outputXdrEncodedEnvelope: String?
+  private let transactionEnvelopeXDR: TransactionEnvelopeXDR?
+  private var outputXdrEncodedEnvelope: String?
   
   var inputKeyPair: KeyPair? {
     var keyPair: KeyPair?

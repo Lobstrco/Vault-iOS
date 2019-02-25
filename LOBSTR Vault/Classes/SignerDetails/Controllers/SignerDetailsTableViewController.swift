@@ -1,8 +1,13 @@
-import UIKit
 import PKHUD
+import UIKit
+
+protocol SignerDetailsView: class {
+  func setAccountList(isEmpty: Bool)
+  func setProgressAnimation()
+  func copy(_ publicKey: String)
+}
 
 class SignerDetailsTableViewController: UITableViewController, StoryboardCreation {
-
   static var storyboardType: Storyboards = .signerDetails
   
   var emptyStateLabel: UILabel?
@@ -28,9 +33,9 @@ class SignerDetailsTableViewController: UITableViewController, StoryboardCreatio
     super.viewWillDisappear(animated)
     tabBarController?.tabBar.isHidden = false
   }
- 
+  
   // MARK: - Private
-
+  
   private func setAppearance() {
     navigationItem.title = L10n.navTitleSettingsSignedAccounts
   }
@@ -53,13 +58,11 @@ class SignerDetailsTableViewController: UITableViewController, StoryboardCreatio
   func removeEmptyStateLabel() {
     emptyStateLabel?.removeFromSuperview()
   }
-
 }
 
 // MARK: - UITableView
 
 extension SignerDetailsTableViewController {
-  
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return presenter.countOfAccounts
   }
@@ -67,6 +70,7 @@ extension SignerDetailsTableViewController {
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "SignerDetailsViewCell", for: indexPath) as! SignerDetailsTableViewCell
     presenter.configure(cell, forRow: indexPath.item)
+    cell.delegate = self
     return cell
   }
   
@@ -75,10 +79,33 @@ extension SignerDetailsTableViewController {
   }
 }
 
+// MARK: - SignerDetailsTableViewCellDelegate
+
+extension SignerDetailsTableViewController: SignerDetailsTableViewCellDelegate {
+  func menuButtonDidTap(in cell: SignerDetailsTableViewCell) {
+    guard let indexPath = tableView.indexPath(for: cell) else { return }
+    
+    let moreMenu = UIAlertController(title: nil,
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
+    
+    let copyAction = UIAlertAction(title: "Copy public key",
+                                   style: .default) { _ in
+      self.presenter.copyAlertActionWasPressed(for: indexPath.row)
+    }
+    
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+    
+    moreMenu.addAction(copyAction)
+    moreMenu.addAction(cancelAction)
+    
+    present(moreMenu, animated: true, completion: nil)
+  }
+}
+
 // MARK: - SignerDetailsView
 
 extension SignerDetailsTableViewController: SignerDetailsView {
-  
   func setAccountList(isEmpty: Bool) {
     tableView.reloadData()
     HUD.hide()
@@ -92,4 +119,10 @@ extension SignerDetailsTableViewController: SignerDetailsView {
     HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting))
   }
   
+  func copy(_ publicKey: String) {
+    let pasteboard = UIPasteboard.general
+    pasteboard.string = publicKey
+    HUD.flash(.labeledSuccess(title: nil,
+                              subtitle: L10n.animationCopy), delay: 1.0)
+  }
 }

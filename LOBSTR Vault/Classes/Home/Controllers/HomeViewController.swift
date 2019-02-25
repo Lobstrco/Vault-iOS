@@ -47,10 +47,6 @@ class HomeViewController: UIViewController, StoryboardCreation {
   
   @IBAction func copyKeyButtonAction(_ sender: Any) {
     presenter.copyKeyButtonWasPressed()
-    
-    PKHUD.sharedHUD.contentView = PKHUDSuccessViewCustom(title: nil, subtitle: L10n.animationCopy)
-    PKHUD.sharedHUD.show()
-    PKHUD.sharedHUD.hide(afterDelay: 1.0)
   }
   
   @IBAction func transactionListButtonAction(_ sender: Any) {
@@ -132,6 +128,11 @@ extension HomeViewController: HomeView {
         self.clear(self.signerDetailsView.subviews)
       }
     }
+  }
   
+  func setCopyHUD() {
+    PKHUD.sharedHUD.contentView = PKHUDSuccessViewCustom(title: nil, subtitle: L10n.animationCopy)
+    PKHUD.sharedHUD.show()
+    PKHUD.sharedHUD.hide(afterDelay: 1.0)
   }
 }

@@ -5,8 +5,13 @@ protocol BiometricIDTableViewCellView {
   func setSwitch(_ isOn: Bool)
 }
 
+enum SwitchType {
+  case biometricID
+  case notifications
+}
+
 protocol BiometricIDTableViewCellDelegate: class {
-  func biometricIDSwitchValueChanged(_ value: Bool)
+  func biometricIDSwitchValueChanged(_ value: Bool, type: SwitchType)
 }
 
 class BiometricIDTableViewCell: UITableViewCell {
@@ -14,12 +19,15 @@ class BiometricIDTableViewCell: UITableViewCell {
   @IBOutlet var titleLabel: UILabel!
   @IBOutlet var biometricIDSwitch: UISwitch!
   
+  var switchType: SwitchType?
   weak var delegate: BiometricIDTableViewCellDelegate?
   
   // MARK: - IBActions
   
   @IBAction func biometricIDSwitchAction(_ sender: UISwitch) {
-    delegate?.biometricIDSwitchValueChanged(sender.isOn)
+    if let switchType = switchType {
+      delegate?.biometricIDSwitchValueChanged(sender.isOn, type: switchType)
+    }
   }
 }
 

@@ -9,6 +9,7 @@ protocol MnemonicRecoveryView: class {
 }
 
 protocol MnemonicRecoveryPresenter {
+  func mnemonicRecoveryViewDidLoad()
   func suggestionWordWasPressed(suggestionWord: String, text: String)
   func textViewWasChanged(text: String)
   func recoveryButtonWasPressed()
@@ -86,7 +87,7 @@ class MnemonicRecoveryPresenterImpl {
   
   func validateMnemonic() {
     let phrases = MnemonicHelper.getSeparatedWords(from: mnemonic)
-
+    
     for word in phrases {
       if !MnemonicHelper.mnemonicWordIsExist(word) {
         view?.displayRecoveryButton(isHidden: true)
@@ -111,6 +112,10 @@ class MnemonicRecoveryPresenterImpl {
 
 extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
 
+  func mnemonicRecoveryViewDidLoad() {
+    ApplicationCoordinatorHelper.clearKeychain()
+  }
+  
   func suggestionWordWasPressed(suggestionWord: String, text: String) {
     add(suggestionWord, to: text)
   }
@@ -127,7 +132,8 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   }
 
   func recoveryButtonWasPressed() {
-    store(mnemonic: mnemonic)
+    let phrases = MnemonicHelper.getSeparatedWords(from: mnemonic)
+    MnemonicHelper.encryptAndStoreInKeychain(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: phrases))
     transitionToPinScreen()
   }
   
@@ -138,11 +144,3 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
     mnemonicRecoveryViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }
-
-private extension MnemonicRecoveryPresenterImpl {
-  private func store(mnemonic: String) {
-    ApplicationCoordinatorHelper.clearKeychain()
-    _ = mnemonicManager.encryptAndStoreInKeychain(mnemonic: mnemonic)
-  }
-}
-

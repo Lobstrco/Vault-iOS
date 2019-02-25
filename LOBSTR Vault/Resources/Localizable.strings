@@ -13,12 +13,16 @@
 "animation_waiting" = "Please Wait";
 
 // Logout
-"logout_alert_title" = "Logout";
-"logout_alert_message" = "Make sure that you have your recovery phrase saved, otherwise you will not be able to recover your account.";
+"logout_alert_title" = "Have you secured your recovery phrase?";
+"logout_alert_message" = "You will not be able to recover your account or sign in without it.";
 
 // Cancel of generated mnemonic
 "cancel_alert_mnemonic_title" = "Are you sure?";
 "cancel_alert_mnemonic_message" = "Recovery phrase will be cleared”";
+
+// Internet connection error
+"internet_connection_error_title" = "Network Error";
+"internet_connection_error_description" = "You are not connected to the Internet";
 
 // Navigation titles
 "nav_title_restore_account" = "Recover Account";
@@ -38,7 +42,7 @@
 
 // Enter Pin screen
 "text_logout_info" = "Forgot PIN?";
-"button_title_logout" = "Logout";
+"button_title_logout" = "Log Out";
 
 // Start menu
 "text_secure_your_lumens" = "Multiply your security";
@@ -108,17 +112,19 @@
 // Settings screen
 "text_settings_account_section" = "ACCOUNT";
 "text_settings_security_section" = "SECURITY";
-"text_settings_about_section" = "ABOUT";
+"text_settings_about_section" = "OTHER";
 "text_settings_public_key_field" = "Vault Public key";
+"text_settings_notifications_field" = "Notifications";
 "text_settings_signer_for_field" = "Signer for 5 accounts";
 "text_settings_mnemonic_field" = "Recovery Phrase";
 "text_settings_change_pin_field" = "Change PIN";
 "text_settings_touch_id_field" = "Fingerprint Login";
 "text_settings_version_field" = "Version";
 "text_settings_help_field" = "Help";
-"text_settings_logoutfield" = "Logout";
+"text_settings_logoutfield" = "Log Out";
 "text_settings_copyright" = "©2019. All rights reserved"; // change current year
 "text_settings_public_key_title" = "Vault Public Key";
+"text_settings_signers_field" = "Signer for accounts";
 "button_title_show" = "Show";
 
 // Change Passcode screen

@@ -11,6 +11,12 @@ enum AccountStatus: Int {
 struct ApplicationCoordinatorHelper {
   
   static let accountCreatedKey = "isAccountCreated"
+  static let pushNotificationKey = "isPushNotificationsEnabled"
+  
+  static var isNotificationsEnabled: Bool {
+    get { return UserDefaults.standard.bool(forKey: ApplicationCoordinatorHelper.pushNotificationKey) }
+    set { UserDefaults.standard.set(newValue, forKey: ApplicationCoordinatorHelper.pushNotificationKey) }
+  }
   
   static func clearKeychain() {
     let secItemClasses = [kSecClassGenericPassword,
@@ -41,6 +47,7 @@ struct ApplicationCoordinatorHelper {
     }
     
     ApplicationCoordinatorHelper.setAccountStatus(.notCreated)
+    ApplicationCoordinatorHelper.isNotificationsEnabled = false
     ApplicationCoordinatorHelper.clearKeychain()
     
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate

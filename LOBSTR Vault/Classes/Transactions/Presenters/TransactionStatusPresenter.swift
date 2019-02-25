@@ -10,7 +10,7 @@ enum TransactionStatus: String {
 protocol TransactionStatusPresenter {
   init(view: TransactionStatusView,
        resultCode: TransactionResultCode,
-       xdr: String?)
+       xdr: String)
   func transactionStatusViewDidLoad()
   func copyXDRButtonWasPressed(xdr: String)
   func doneButtonWasPressed()
@@ -21,17 +21,18 @@ protocol TransactionStatusView: class {
   func setErrorMessage(_ message: String)
   func setXdr(_ xdr: String)
   func setAnimation(with status: TransactionStatus)
+  func setFeedback(with status: TransactionStatus)
 }
 
 class TransactionStatusPresenterImpl {
   
   fileprivate var view: TransactionStatusView
   fileprivate var resultCode: TransactionResultCode
-  fileprivate var xdr: String?
+  fileprivate var xdr: String
   
   required init(view: TransactionStatusView,
        resultCode: TransactionResultCode,
-       xdr: String?) {
+       xdr: String) {
     self.view = view
     self.resultCode = resultCode
     self.xdr = xdr
@@ -50,8 +51,9 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
     let statusTitle = transactionStatus == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
     view.setAnimation(with: transactionStatus)
     view.setStatusTitle(statusTitle)
+    view.setFeedback(with: transactionStatus)
     
-    if let xdr = xdr {
+    if resultCode == .badAuth {
       view.setXdr(xdr)
     }
   }

@@ -15,7 +15,7 @@ class SettingsViewController: UIViewController,
   @IBOutlet var tableView: UITableView!
   
   var presenter: SettingsPresenter!
-
+  
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
@@ -82,6 +82,13 @@ class SettingsViewController: UIViewController,
       presenter.configure(disclosureIndicatorTableViewCell: cell,
                           row: row)
       return cell
+    case .notifications:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as BiometricIDTableViewCell
+      presenter.configure(biometricIDCell: cell, type: .notifications)
+      
+      return cell
     case .mnemonicCode:
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
@@ -93,7 +100,7 @@ class SettingsViewController: UIViewController,
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
           as BiometricIDTableViewCell
-      presenter.configure(biometricIDCell: cell)
+      presenter.configure(biometricIDCell: cell, type: .biometricID)
       
       return cell
     case .changePin:
@@ -144,6 +151,7 @@ class SettingsViewController: UIViewController,
 
 extension SettingsViewController: SettingsView {
   
+
   func setSettings() {
     tableView.reloadData()
   }
@@ -153,7 +161,8 @@ extension SettingsViewController: SettingsView {
   }
   
   func setLogoutAlert() {
-    let alert = UIAlertController(title: L10n.logoutAlertTitle, message: L10n.logoutAlertMessage, preferredStyle: .alert)
+    let alert = UIAlertController(title: L10n.logoutAlertTitle,
+                                  message: L10n.logoutAlertMessage, preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: L10n.buttonTitleLogout, style: .destructive, handler: { _ in
       self.presenter.logoutOperationWasConfirmed()
     }))

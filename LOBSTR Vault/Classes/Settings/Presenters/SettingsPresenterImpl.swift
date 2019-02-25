@@ -1,5 +1,6 @@
 import Foundation
 import stellarsdk
+import UIKit
 
 class SettingsPresenterImpl: SettingsPresenter {
   private weak var view: SettingsView?
@@ -13,18 +14,22 @@ class SettingsPresenterImpl: SettingsPresenter {
   
   private let navigationController: UINavigationController
   
+  private let notificationRegistrator: NotificationManager
+  
   // MARK: - Init
   
   init(view: SettingsView,
        navigationController: UINavigationController,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl(),
+       notificationRegistrator: NotificationManager = NotificationManager(),
        settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl()) {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
     self.biometricAuthManager = biometricAuthManager
     self.settingsSectionsBuilder = settingsSectionsBuilder
+    self.notificationRegistrator = notificationRegistrator
   }
 }
 
@@ -62,11 +67,18 @@ extension SettingsPresenterImpl {
 // MARK: - SettingsCellConfigurator
 
 extension SettingsPresenterImpl {
-  
-  func configure(biometricIDCell: BiometricIDTableViewCell) {
-    biometricIDCell.setTitle(Device.biometricType.name)
-    biometricIDCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
+  func configure(biometricIDCell: BiometricIDTableViewCell, type: SwitchType) {
+    biometricIDCell.switchType = type
     biometricIDCell.delegate = self
+    
+    switch type {
+    case .biometricID:
+      biometricIDCell.setTitle(Device.biometricType.name)
+      biometricIDCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
+    case .notifications:
+      biometricIDCell.setTitle(L10n.textSettingsNotificationsField)
+      biometricIDCell.setSwitch(ApplicationCoordinatorHelper.isNotificationsEnabled)
+    }
   }
   
   func configure(rightDetailCell: RightDetailTableViewCell,
@@ -85,7 +97,7 @@ extension SettingsPresenterImpl {
                  row: SettingsRow) {
     switch row {
     case .signerForAccounts:
-      let title = "Signer for accounts"
+      let title = L10n.textSettingsSignersField
       disclosureIndicatorTableViewCell.setTitle(title)
     case .mnemonicCode:
       let title = L10n.textSettingsMnemonicField
@@ -99,6 +111,7 @@ extension SettingsPresenterImpl {
     case .logout:
       let title = L10n.textSettingsLogoutfield
       disclosureIndicatorTableViewCell.setTitle(title)
+      disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.red.color)
     default:
       break
     }
@@ -115,7 +128,7 @@ extension SettingsPresenterImpl {
     case .publicKey:
       showPublicKeyButtonWasPressed()
     case .signerForAccounts:
-      transitionToSignerDetails()      
+      transitionToSignerDetails()
     case .changePin:
       transitionToChangePin()
     case .mnemonicCode:
@@ -133,31 +146,43 @@ extension SettingsPresenterImpl {
 // MARK: - BiometricIDTableViewCellDelegate
 
 extension SettingsPresenterImpl {
-  func biometricIDSwitchValueChanged(_ value: Bool) {
-    
-    self.biometricAuthManager.isBiometricAuthEnabled = value
-    
-    guard self.biometricAuthManager.isBiometricAuthEnabled == true
-    else {return }
-
-    biometricAuthManager.authenticateUser { [weak self] result in
-      switch result {
-      case .success:
-        self?.view?.setSettings()
-      case .failure(let error):
-        guard let error = error as? VaultError.BiometricError else { return }
-        self?.biometricAuthManager.isBiometricAuthEnabled = false
-        self?.view?.setErrorAlert(for: error)
-        self?.view?.setSettings()
+  func biometricIDSwitchValueChanged(_ value: Bool, type: SwitchType) {
+    switch type {
+    case .notifications:
+      ApplicationCoordinatorHelper.isNotificationsEnabled = !ApplicationCoordinatorHelper.isNotificationsEnabled
+      if ApplicationCoordinatorHelper.isNotificationsEnabled {
+        notificationRegistrator.register()
+      } else {
+        notificationRegistrator.unregister()
+      }
+      
+      view?.setSettings()
+    case .biometricID:
+      biometricAuthManager.isBiometricAuthEnabled = value
+      
+      guard biometricAuthManager.isBiometricAuthEnabled == true
+      else { return }
+      
+      biometricAuthManager.authenticateUser { [weak self] result in
+        switch result {
+        case .success:
+          self?.view?.setSettings()
+        case .failure(let error):
+          guard let error = error as? VaultError.BiometricError else { return }
+          self?.biometricAuthManager.isBiometricAuthEnabled = false
+          self?.view?.setErrorAlert(for: error)
+          self?.view?.setSettings()
+        }
       }
     }
   }
 }
 
 extension SettingsPresenterImpl {
-  
   func showPublicKeyButtonWasPressed() {
-    let publicKeyView = Bundle.main.loadNibNamed("PublicKeyPopover", owner: view, options: nil)?.first as! PublicKeyPopover
+    let publicKeyView = Bundle.main.loadNibNamed("PublicKeyPopover",
+                                                 owner: view,
+                                                 options: nil)?.first as! PublicKeyPopover
     publicKeyView.initData()
     
     let popoverHeight: CGFloat = 214
@@ -166,13 +191,11 @@ extension SettingsPresenterImpl {
     
     view?.setPublicKeyPopover(popover)
   }
-  
 }
 
 // MARK: - Logout
 
 extension SettingsPresenterImpl {
-  
   func logoutButtonWasPressed() {
     view?.setLogoutAlert()
   }
@@ -186,7 +209,7 @@ extension SettingsPresenterImpl {
 
 extension SettingsPresenterImpl {
   func transitionToChangePin() {
-    let pinViewController = PinViewController.createFromStoryboard()    
+    let pinViewController = PinViewController.createFromStoryboard()
     
     pinViewController.hidesBottomBarWhenPushed = true
     pinViewController.mode = .changePin
@@ -197,15 +220,25 @@ extension SettingsPresenterImpl {
   func transitionToSignerDetails() {
     let signerDetailsTableViewController = SignerDetailsTableViewController.createFromStoryboard()
     
-    let settingsViewController = view as! SettingsViewController
-    settingsViewController.navigationController?.pushViewController(signerDetailsTableViewController, animated: true)
+    navigationController.pushViewController(signerDetailsTableViewController,
+                                            animated: true)
   }
   
   func transitionToMnemonicCode() {
-    let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
-    mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
-                                                                                 mnemonicMode: .showMnemonic)
-    navigationController.pushViewController(mnemonicGenerationViewController, animated: true)
+    let pinViewController = PinViewController.createFromStoryboard()
+    
+    pinViewController.mode = .enterPinForMnemonicPhrase
+    pinViewController.completion = {
+      pinViewController.dismiss(animated: true, completion: nil)
+      let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
+      mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
+                                                                                   mnemonicMode: .showMnemonic)
+      self.navigationController.pushViewController(mnemonicGenerationViewController,
+                                              animated: true)
+    }
+    
+    let pinNavigationController = UINavigationController(rootViewController: pinViewController)
+    navigationController.present(pinNavigationController, animated: true, completion: nil)
   }
   
   func transitionToHelp() {

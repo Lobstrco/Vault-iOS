@@ -18,7 +18,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="SignerDetailsViewCell" id="zHj-g5-SRn" customClass="SignerDetailsTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="SignerDetailsViewCell" id="zHj-g5-SRn" customClass="SignerDetailsTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zHj-g5-SRn" id="9M7-LJ-dQJ">
@@ -26,16 +26,32 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Knf-IE-xII">
-                                            <rect key="frame" x="32" y="13" width="311" height="18"/>
+                                            <rect key="frame" x="16" y="13" width="299" height="18"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                             <nil key="textColor"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K8N-jC-Mel">
+                                            <rect key="frame" x="331" y="-0.5" width="44" height="44.5"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="44" id="Mku-yd-b5L"/>
+                                                <constraint firstAttribute="height" constant="44" id="h0j-y6-edP"/>
+                                            </constraints>
+                                            <state key="normal" image="Icons/Other/icMore">
+                                                <color key="titleColor" red="0.60392156862745094" green="0.60392156862745094" blue="0.60392156862745094" alpha="1" colorSpace="calibratedRGB"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="menuButtonAction:" destination="zHj-g5-SRn" eventType="touchUpInside" id="mMn-nt-NBb"/>
+                                            </connections>
+                                        </button>
                                     </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
+                                        <constraint firstItem="K8N-jC-Mel" firstAttribute="leading" secondItem="Knf-IE-xII" secondAttribute="trailing" constant="16" id="GpV-Rp-aSU"/>
+                                        <constraint firstItem="K8N-jC-Mel" firstAttribute="centerY" secondItem="9M7-LJ-dQJ" secondAttribute="centerY" id="I1d-Xm-O0y"/>
                                         <constraint firstItem="Knf-IE-xII" firstAttribute="centerY" secondItem="9M7-LJ-dQJ" secondAttribute="centerY" id="Iq5-ur-s9g"/>
-                                        <constraint firstItem="Knf-IE-xII" firstAttribute="leading" secondItem="9M7-LJ-dQJ" secondAttribute="leadingMargin" constant="16" id="IyB-1w-i1Z"/>
-                                        <constraint firstAttribute="trailingMargin" secondItem="Knf-IE-xII" secondAttribute="trailing" constant="16" id="niO-nm-Oyz"/>
+                                        <constraint firstAttribute="trailing" secondItem="K8N-jC-Mel" secondAttribute="trailing" id="K0x-bH-UaQ"/>
+                                        <constraint firstItem="Knf-IE-xII" firstAttribute="leading" secondItem="9M7-LJ-dQJ" secondAttribute="leading" constant="16" id="yBK-tM-a0B"/>
                                     </constraints>
                                 </tableViewCellContentView>
                                 <connections>
@@ -55,4 +71,7 @@
             <point key="canvasLocation" x="-18" y="171"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Icons/Other/icMore" width="24" height="24"/>
+    </resources>
 </document>

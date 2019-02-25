@@ -14,7 +14,7 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
   
   let impact = UIImpactFeedbackGenerator(style: .light)
   var presenter: PinPresenter!
-
+  
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
@@ -39,7 +39,8 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
   // MARK: - Private
   
   private func setupAppearance() {
-    pinDotView.setupAppearance(with: (fillColor: Asset.Colors.white.color, outColor: Asset.Colors.pinDotOut.color))
+    pinDotView.setupAppearance(with: (fillColor: Asset.Colors.white.color,
+                                      outColor: Asset.Colors.pinDotOut.color))
     numberPadView.setupAppearance(with: Asset.Colors.white.color)
   }
   
@@ -49,8 +50,10 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
   }
   
   private func setLogoutAlert() {
-    let alert = UIAlertController(title: L10n.logoutAlertTitle, message: L10n.logoutAlertMessage, preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: L10n.buttonTitleLogout, style: .destructive, handler: { _ in
+    let alert = UIAlertController(title: L10n.logoutAlertTitle,
+                                  message: L10n.logoutAlertMessage, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleLogout,
+                                  style: .destructive, handler: { _ in
       ApplicationCoordinatorHelper.logout()
     }))
     
@@ -63,9 +66,16 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
 // MARK: - PinView
 
 extension PinEnterViewController: PinView {
+  func setCancelBarButtonItem() {
+  }
+  
+  func executeCompletion() {
+  }
+  
+  func show(error: String) {
+  }  
   
   func hideBackButton() {
-    
   }  
   
   func clearPinDots() {
@@ -89,6 +99,7 @@ extension PinEnterViewController: PinView {
   func shakePinView() {
     pinDotView.shake()
   }
+  
 }
 
 // MARK: - NumberPadViewDelegate

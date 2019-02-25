@@ -70,6 +70,9 @@ class TransactionListPresenterImpl {
   }
   
   private func displayPendingTransactions(isFirstTime: Bool = false) {
+    guard ConnectionHelper.isConnectedToNetwork() else {
+      return
+    }
     transactionService.getPendingTransactionList() { result in
       switch result {
       case .success(let transactions):
@@ -94,6 +97,10 @@ class TransactionListPresenterImpl {
 extension TransactionListPresenterImpl: ImportXDROutput {
   
   private func displayImportXDRPopover() {
+    guard ConnectionHelper.isConnectedToNetwork() else {
+      return
+    }
+    
     let importXDRView = Bundle.main.loadNibNamed("ImportXDR", owner: view, options: nil)?.first as! ImportXDR
     let popoverHeight: CGFloat = 550
     let popover = CustomPopoverViewController(height: popoverHeight, view: importXDRView)
@@ -142,7 +149,11 @@ extension TransactionListPresenterImpl: ImportXDROutput {
           return
         }
         
-        self.transitionToTransactionStatus(with: resultCode)
+        guard let xdr = signTransaction.xdrEnvelope else {
+          return
+        }
+        
+        self.transitionToTransactionStatus(with: resultCode, xdr: xdr)
       }
     }
     
@@ -169,8 +180,15 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
   }
   
   func transactionListViewDidLoad() {
-    view?.setProgressAnimation(isEnabled: true)
-    displayPendingTransactions(isFirstTime: true)
+    
+    guard let viewController = view as? UIViewController else {
+      return
+    }
+    
+    if ConnectionHelper.checkConnection(viewController) {
+      view?.setProgressAnimation(isEnabled: true)
+      displayPendingTransactions(isFirstTime: true)
+    }
   }
   
   func configure(_ cell: TransactionListCellView, forRow row: Int) {
@@ -218,7 +236,7 @@ extension TransactionListPresenterImpl {
     transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
   }
   
-  func transitionToTransactionStatus(with resultCode: TransactionResultCode, xdr: String? = nil) {
+  func transitionToTransactionStatus(with resultCode: TransactionResultCode, xdr: String) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
     transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,

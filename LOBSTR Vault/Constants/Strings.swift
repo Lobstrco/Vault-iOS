@@ -27,7 +27,7 @@ internal enum L10n {
   internal static let buttonTitleDeny = L10n.tr("Localizable", "button_title_deny")
   /// Done
   internal static let buttonTitleDone = L10n.tr("Localizable", "button_title_done")
-  /// Logout
+  /// Log Out
   internal static let buttonTitleLogout = L10n.tr("Localizable", "button_title_logout")
   /// Next
   internal static let buttonTitleNext = L10n.tr("Localizable", "button_title_next")
@@ -111,6 +111,10 @@ internal enum L10n {
   internal static let helpTransactionDescription = L10n.tr("Localizable", "help_transaction_description")
   /// 3. How to add a Transaction?
   internal static let helpTransactionTitle = L10n.tr("Localizable", "help_transaction_title")
+  /// You are not connected to the Internet
+  internal static let internetConnectionErrorDescription = L10n.tr("Localizable", "internet_connection_error_description")
+  /// Network Error
+  internal static let internetConnectionErrorTitle = L10n.tr("Localizable", "internet_connection_error_title")
   /// Operation was failed. Please, contact to support.
   internal static let invalidOperationMessage = L10n.tr("Localizable", "INVALID_OPERATION_MESSAGE")
   /// Invalid Operation
@@ -119,9 +123,9 @@ internal enum L10n {
   internal static let invalidTransactionMessage = L10n.tr("Localizable", "INVALID_TRANSACTION_MESSAGE")
   /// Invalid Transaction
   internal static let invalidTransactionTitle = L10n.tr("Localizable", "INVALID_TRANSACTION_TITLE")
-  /// Make sure that you have your recovery phrase saved, otherwise you will not be able to recover your account.
+  /// You will not be able to recover your account or sign in without it.
   internal static let logoutAlertMessage = L10n.tr("Localizable", "logout_alert_message")
-  /// Logout
+  /// Have you secured your recovery phrase?
   internal static let logoutAlertTitle = L10n.tr("Localizable", "logout_alert_title")
   /// Confirm New PIN
   internal static let navTitleChangePasscodeConfirmNew = L10n.tr("Localizable", "nav_title_change_passcode_confirm_new")
@@ -215,7 +219,7 @@ internal enum L10n {
   internal static let textRestorePlaceholder = L10n.tr("Localizable", "text_restore_placeholder")
   /// Multiply your security
   internal static let textSecureYourLumens = L10n.tr("Localizable", "text_secure_your_lumens")
-  /// ABOUT
+  /// OTHER
   internal static let textSettingsAboutSection = L10n.tr("Localizable", "text_settings_about_section")
   /// ACCOUNT
   internal static let textSettingsAccountSection = L10n.tr("Localizable", "text_settings_account_section")
@@ -225,10 +229,12 @@ internal enum L10n {
   internal static let textSettingsCopyright = L10n.tr("Localizable", "text_settings_copyright")
   /// Help
   internal static let textSettingsHelpField = L10n.tr("Localizable", "text_settings_help_field")
-  /// Logout
+  /// Log Out
   internal static let textSettingsLogoutfield = L10n.tr("Localizable", "text_settings_logoutfield")
   /// Recovery Phrase
   internal static let textSettingsMnemonicField = L10n.tr("Localizable", "text_settings_mnemonic_field")
+  /// Notifications
+  internal static let textSettingsNotificationsField = L10n.tr("Localizable", "text_settings_notifications_field")
   /// Vault Public key
   internal static let textSettingsPublicKeyField = L10n.tr("Localizable", "text_settings_public_key_field")
   /// Vault Public Key
@@ -237,6 +243,8 @@ internal enum L10n {
   internal static let textSettingsSecuritySection = L10n.tr("Localizable", "text_settings_security_section")
   /// Signer for 5 accounts
   internal static let textSettingsSignerForField = L10n.tr("Localizable", "text_settings_signer_for_field")
+  /// Signer for accounts
+  internal static let textSettingsSignersField = L10n.tr("Localizable", "text_settings_signers_field")
   /// Fingerprint Login
   internal static let textSettingsTouchIdField = L10n.tr("Localizable", "text_settings_touch_id_field")
   /// Version

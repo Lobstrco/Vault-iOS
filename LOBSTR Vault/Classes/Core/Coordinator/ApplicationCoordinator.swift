@@ -3,13 +3,35 @@ import UIKit
 class ApplicationCoordinator {
   private let window: UIWindow?
   
+  let notificationRegistrator = NotificationManager()
+  let accountStatus: AccountStatus
+  
   init(window: UIWindow?) {
     self.window = window
+    accountStatus = ApplicationCoordinatorHelper.getAccountStatus()
   }
   
-  func openRequiredScreen() {
-    let accountStatus = ApplicationCoordinatorHelper.getAccountStatus()
+  func start() {    
+    if ApplicationCoordinatorHelper.isNotificationsEnabled {
+      notificationRegistrator.register()
+    }
     
+    openStartScreen()
+  }
+  
+  func didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) {
+    notificationRegistrator.setAPNSToken(deviceToken: deviceToken)
+  }
+  
+  func sendFCMTokenToServer() {
+    notificationRegistrator.sendFCMTokenToServer()
+  }
+  
+  func postNotification(accordingTo userInfo: [AnyHashable : Any]) {
+    notificationRegistrator.postNotification(accordingTo: userInfo)
+  }
+  
+  private func openStartScreen() {
     switch accountStatus {
     case .notCreated:
       ApplicationCoordinatorHelper.clearKeychain()

@@ -96,8 +96,12 @@ class TransactionDetailsPresenterImpl {
           return
         }
         
+        guard let xdr = signTransaction.xdrEnvelope else {
+          return
+        }
+        
         NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
-        self.transitionToTransactionStatus(with: resultCode)
+        self.transitionToTransactionStatus(with: resultCode, xdr: xdr)
       }
     }
     
@@ -195,7 +199,7 @@ extension TransactionDetailsPresenterImpl {
     transactionDetailsViewController.navigationController?.popToRootViewController(animated: true)
   }
   
-  func transitionToTransactionStatus(with resultCode: TransactionResultCode, xdr: String? = nil) {
+  func transitionToTransactionStatus(with resultCode: TransactionResultCode, xdr: String) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
     transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,

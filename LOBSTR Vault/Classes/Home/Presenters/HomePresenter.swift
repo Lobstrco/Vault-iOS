@@ -7,6 +7,7 @@ protocol HomeView: class {
   func setSignerDetails(_ signedAccounts: [SignedAccounts])
   func setProgressAnimationForTransactionNumber(isEnabled: Bool)
   func setProgressAnimationForSignerDetails(isEnabled: Bool)
+  func setCopyHUD()
 }
 
 protocol HomePresenter {
@@ -45,13 +46,21 @@ class HomePresenterImpl: HomePresenter {
   // MARK: - HomePresenter
   
   func homeViewDidLoad() {
-    displayTransactionNumber()
-//    displaySignerDetails()
-    displayPublicKey()
-  }
+    guard let viewController = view as? UIViewController else {
+      return
+    }
+    
+    if ConnectionHelper.checkConnection(viewController) {
+      displayTransactionNumber()
+      displayPublicKey()
+    }
+  }    
   
   func copyKeyButtonWasPressed() {
-    UIPasteboard.general.string = publicKey
+    if let publicKey = publicKey {
+      UIPasteboard.general.string = publicKey
+      view?.setCopyHUD()
+    }
   }
   
   func updateSignerDetails() {

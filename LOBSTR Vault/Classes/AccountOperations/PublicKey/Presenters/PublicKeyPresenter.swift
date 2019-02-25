@@ -10,6 +10,7 @@ protocol PublicKeyPresenter {
 protocol PublicKeyView: class {
   func setPublicKey(_ publicKey: String)
   func setProgressAnimation(isDisplay: Bool)
+  func setQRCode(from publicKey: String)
 }
 
 class PublicKeyPresenterImpl: PublicKeyPresenter {
@@ -18,6 +19,7 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
   private let mnemonicManager: MnemonicManager
   private let vaultStorage: VaultStorage
   private let transactionService: TransactionService
+  private let notificationRegistrator: NotificationManager
   
   private var publicKey: String?
   
@@ -27,23 +29,27 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
        navigationController: UINavigationController,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
        transactionService: TransactionService = TransactionService(),
+       notificationRegistrator: NotificationManager = NotificationManager(),
        vaultStorage: VaultStorage = VaultStorage()) {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
     self.vaultStorage = vaultStorage
     self.transactionService = transactionService
-    
-    NotificationCenter.default.addObserver(self, selector: #selector(onDidChangeSignerDetails(_:)), name: .didChangeSignerDetails, object: nil)
-  }
-  
-  @objc func onDidChangeSignerDetails(_ notification: Notification) {
-    updateToken()
+    self.notificationRegistrator = notificationRegistrator
   }
   
   // MARK: - Private
   
   private func updateToken() {
+    guard let viewController = view as? UIViewController else {
+      return
+    }
+    
+    guard ConnectionHelper.checkConnection(viewController) else {
+      return
+    }
+    
     view?.setProgressAnimation(isDisplay: true)
     AuthenticationService().updateToken { [weak self] result in
       switch result {
@@ -74,38 +80,21 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
     }
   }
   
-  private func setData(with publicKey: String) {
-    self.publicKey = publicKey
-    vaultStorage.storePublicKeyInKeychain(publicKey)
-    view?.setPublicKey(publicKey)
-    ApplicationCoordinatorHelper.setAccountStatus(.waitingToBecomeSinger)
-  }
-  
   private func registerForRemoteNotifications() {
-    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    appDelegate?.registerForRemoteNotifications(isStart: false)
+    notificationRegistrator.register()
   }
   
   // MARK: - PublicKeyPresenter
   
   func publicKeyViewDidLoad() {
-    autoreleasepool {
-      mnemonicManager.getDecryptedMnemonicFromKeychain { [weak self] result in
-        switch result {
-        case .success(let mnemonic):
-          DispatchQueue.global(qos: .userInteractive).async {
-            let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic)
-            DispatchQueue.main.async {
-              let publicKey = keyPair.accountId
-              self?.setData(with: publicKey)
-              self?.registerForRemoteNotifications()
-            }
-          }
-        case .failure:
-          break
-        }
-      }
-    }
+    guard let publicKey = vaultStorage.getPublicKeyFromKeychain() else { return }
+    self.publicKey = publicKey
+    
+    view?.setPublicKey(publicKey)
+    view?.setQRCode(from: publicKey)
+    registerForRemoteNotifications()
+    
+    ApplicationCoordinatorHelper.setAccountStatus(.waitingToBecomeSinger)
   }
   
   func nextButtonWasPressed() {

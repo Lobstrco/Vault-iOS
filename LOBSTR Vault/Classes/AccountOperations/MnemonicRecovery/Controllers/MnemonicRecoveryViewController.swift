@@ -19,6 +19,7 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
     textView.delegate = self
     
     presenter = MnemonicRecoveryPresenterImpl(view: self)
+    presenter.mnemonicRecoveryViewDidLoad()
     setupMnemonicSuggestionsView()
     
     setAppearance()

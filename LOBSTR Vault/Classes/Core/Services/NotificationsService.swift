@@ -13,7 +13,7 @@ struct NotificationsService {
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:
-          print("SUCCESS REGISTER DEVICE AFTER UPDATING JWT TOKEN")
+          print("NEED UPDATE TOKEN")
           self.registerDeviceForNotifications(with: registrationID)          
         default:
           print("FAILURE REGISTER DEVICE")

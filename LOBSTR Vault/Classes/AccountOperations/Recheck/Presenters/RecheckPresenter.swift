@@ -20,12 +20,6 @@ class RecheckPresenterImpl {
   init(view: RecheckView, transactionService: TransactionService = TransactionService()) {
     self.view = view
     self.transactionService = transactionService
-    
-    NotificationCenter.default.addObserver(self, selector: #selector(onDidChangeSignerDetails(_:)), name: .didChangeSignerDetails, object: nil)
-  }
-  
-  @objc func onDidChangeSignerDetails(_ notification: Notification) {
-    getSignerDetails()
   }
   
   func getSignerDetails() {
@@ -62,7 +56,13 @@ class RecheckPresenterImpl {
 extension RecheckPresenterImpl: RecheckPresenter {
   
   func recheckButtonWasPressed() {
-    getSignerDetails()
+    guard let viewController = view as? UIViewController else {
+      return
+    }
+    
+    if ConnectionHelper.checkConnection(viewController) {
+      getSignerDetails()
+    }
   }
   
   func logoutButtonWasPressed() {

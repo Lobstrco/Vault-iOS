@@ -64,7 +64,8 @@ class MnemonicGenerationPresenterImpl {
   func generateMnemonicList() {
     let mnemonicData = MnemonicHelper.getWordMnemonic()
     mnemonicList = mnemonicData.separatedWords
-    store(mnemonic: mnemonicData.mnemonic)
+    MnemonicHelper.encryptAndStoreInKeychain(mnemonic: mnemonicData.mnemonic)
+//    store(mnemonic: mnemonicData.mnemonic)
     view?.setMnemonicList(mnemonicList: mnemonicList)
   }
 }
@@ -128,13 +129,8 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   }
   
   func cancelOperationWasConfirmed() {
+    ApplicationCoordinatorHelper.clearKeychain()
     let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
     mnemonicGenerationViewController.navigationController?.popToRootViewController(animated: true)
-  }
-}
-
-private extension MnemonicGenerationPresenterImpl {
-  private func store(mnemonic: String) {
-    _ = mnemonicManager.encryptAndStoreInKeychain(mnemonic: mnemonic)
   }
 }

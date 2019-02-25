@@ -107,9 +107,7 @@ extension TransactionListViewController: TransactionListView {
     tableView.dataSource = self
     tableView.reloadData()
     
-    if isEmpty {
-      setEmptyStateLabel()
-    }
+    isEmpty ? setEmptyStateLabel(): removeEmptyStateLabel()
   }
   
   func reloadTransactionList(isEmpty: Bool) {

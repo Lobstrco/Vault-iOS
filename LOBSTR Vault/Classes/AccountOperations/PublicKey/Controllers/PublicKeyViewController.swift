@@ -11,7 +11,9 @@ class PublicKeyViewController: UIViewController, StoryboardCreation {
   @IBOutlet var publicKeyDescriptionLabel: UILabel!
   
   @IBOutlet var nextButton: UIButton!
-  @IBOutlet var copyButton: UIButton!  
+  @IBOutlet var copyButton: UIButton!
+  
+  @IBOutlet var qrCodeImageView: UIImageView!
   
   // MARK: - Lifecycle
   
@@ -51,6 +53,21 @@ class PublicKeyViewController: UIViewController, StoryboardCreation {
     AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
     navigationItem.hidesBackButton = true
   }
+  
+  private func generateQRCode(from string: String) -> UIImage? {
+    let data = string.data(using: String.Encoding.ascii)
+    
+    if let filter = CIFilter(name: "CIQRCodeGenerator") {
+      filter.setValue(data, forKey: "inputMessage")
+      let transform = CGAffineTransform(scaleX: 3, y: 3)
+      
+      if let output = filter.outputImage?.transformed(by: transform) {
+        return UIImage(ciImage: output)
+      }
+    }
+    
+    return nil
+  }
 }
 
 // MARK: - PublicKeyView
@@ -63,5 +80,9 @@ extension PublicKeyViewController: PublicKeyView {
   
   func setProgressAnimation(isDisplay: Bool) {
     isDisplay ? HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) : HUD.hide()
+  }
+  
+  func setQRCode(from publicKey: String) {
+    qrCodeImageView.image = generateQRCode(from: publicKey)
   }
 }

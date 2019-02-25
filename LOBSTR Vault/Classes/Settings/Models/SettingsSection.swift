@@ -31,6 +31,7 @@ public enum SettingsSectionType {
 public enum SettingsRow {
   case publicKey
   case signerForAccounts
+  case notifications
   case mnemonicCode
   case biometricId
   case changePin

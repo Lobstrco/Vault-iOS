@@ -1,16 +1,6 @@
 import Foundation
 import UIKit
 
-protocol PinView: class {
-  func setTitle(_ title: String)
-  func fillPinDot(at index: Int)
-  func clearPinDot(at index: Int)
-  func clearPinDots()
-  func shakePinView()
-  func setNavigationItem()
-  func hideBackButton()  
-}
-
 class PinPresenterImpl: PinPresenter {
   var pin: String = ""
   let pinLength = 6
@@ -38,13 +28,29 @@ class PinPresenterImpl: PinPresenter {
   
   func pinViewDidLoad() {
     switch mode {
-    case .enterPin:
+    case .enterPin, .enterPinForMnemonicPhrase:
+      
+      switch mode {
+      case .enterPinForMnemonicPhrase:
+        view?.setCancelBarButtonItem()
+      default: break
+      }
+      
       guard biometricAuthManager.isBiometricAuthEnabled else { return }
       
       biometricAuthManager.authenticateUser { [weak self] result in
+        guard let strongSelf = self else { return }
+        
         switch result {
         case .success:
-          self?.transitionToHomeScreen()
+          switch strongSelf.mode {
+          case .enterPin:
+            strongSelf.transitionToHomeScreen()
+          case .enterPinForMnemonicPhrase:
+            strongSelf.view?.executeCompletion()
+          default:
+            break
+          }
         case .failure:
           break
         }
@@ -66,6 +72,11 @@ class PinPresenterImpl: PinPresenter {
     }
   }
   
+  func pinViewWillAppear() {
+    resetPin()
+    view?.show(error: "")
+  }
+  
   func digitButtonWasPressed(with digit: Int) {
     guard pin.count < pinLength else { return }
     view?.fillPinDot(at: pin.count)
@@ -79,19 +90,23 @@ class PinPresenterImpl: PinPresenter {
         if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
           transitionToBiometricID()
         } else {
-          resetPinAfterWrongDialing()
+          view?.show(error: L10n.textChangePasscodeError)
+          resetPin()
+          shakePin()
         }
-      case .enterPin:
-        validateEnteredPin()
+      case .enterPin, .enterPinForMnemonicPhrase:
+        validateEnteredPin(mode: mode)
       case .changePin:
         validateChangedPin()
       case .createNewPinFirstStep:
-        transitionToCreatePinSecondStep(with: .createNewPinSecondStep(pin))
+        validateCreatedNewPin()
       case .createNewPinSecondStep(let pinFromFirstStep):
         if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
           transitionToSettings()
         } else {
-          resetPinAfterWrongDialing()
+          view?.show(error: L10n.textChangePasscodeError)
+          resetPin()
+          shakePin()
         }
       case .undefined:
         fatalError()
@@ -114,19 +129,43 @@ class PinPresenterImpl: PinPresenter {
   
   // MARK: - Private
   
-  private func resetPinAfterWrongDialing() {
-    view?.shakePinView()
+  private func resetPin() {
     pin.removeAll()
     view?.clearPinDots()
   }
   
-  private func validateEnteredPin() {
+  private func shakePin() {
+    view?.shakePinView()
+  }
+  
+  private func validateEnteredPin(mode: PinMode) {
     guard let storedPin = pinManager.getPin() else { return }
     
     if pinManager.validate(storedPin, pin) == true {
-      transitionToHomeScreen()
+      switch mode {
+      case .enterPin:
+        transitionToHomeScreen()
+      case .enterPinForMnemonicPhrase:
+        view?.executeCompletion()
+      default:
+        return
+      }
+      
     } else {
-      resetPinAfterWrongDialing()
+      resetPin()
+      shakePin()
+    }
+  }
+  
+  private func validateCreatedNewPin() {
+    guard let storedPin = pinManager.getPin() else { return }
+    
+    if storedPin == pin {
+      resetPin()
+      shakePin()
+      view?.show(error: L10n.textChangeTheSamePasscode)
+    } else {
+      transitionToCreatePinSecondStep(with: .createNewPinSecondStep(pin))
     }
   }
   
@@ -136,7 +175,8 @@ class PinPresenterImpl: PinPresenter {
     if pinManager.validate(storedPin, pin) == true {
       transitionToCreatePinFirstStep(with: .createNewPinFirstStep)
     } else {
-      resetPinAfterWrongDialing()
+      resetPin()
+      shakePin()
     }
   }
 }

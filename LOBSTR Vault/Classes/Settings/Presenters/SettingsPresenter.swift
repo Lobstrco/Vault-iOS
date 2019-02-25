@@ -25,7 +25,7 @@ protocol SettingsDelegate {
 }
 
 protocol SettingsCellConfigurator {
-  func configure(biometricIDCell: BiometricIDTableViewCell)
+  func configure(biometricIDCell: BiometricIDTableViewCell, type: SwitchType)
   func configure(rightDetailCell: RightDetailTableViewCell,
                  row: SettingsRow)
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,

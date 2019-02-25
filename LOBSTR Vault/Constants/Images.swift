@@ -42,6 +42,7 @@ internal enum Asset {
       internal static let icCopy = ImageAsset(name: "Icons/Other/icCopy")
       internal static let icFinger = ImageAsset(name: "Icons/Other/icFinger")
       internal static let icKey = ImageAsset(name: "Icons/Other/icKey")
+      internal static let icMore = ImageAsset(name: "Icons/Other/icMore")
       internal static let icPlus = ImageAsset(name: "Icons/Other/icPlus")
       internal static let icQuestionSign = ImageAsset(name: "Icons/Other/icQuestionSign")
     }
@@ -56,6 +57,7 @@ internal enum Asset {
   }
   internal enum Other {
 
+    internal static let bgMultitask = ImageAsset(name: "Other/bg_multitask")
     internal static let logo = ImageAsset(name: "Other/logo")
   }
 }

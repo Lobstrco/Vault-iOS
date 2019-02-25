@@ -21,20 +21,15 @@ public enum Device {
   
   public static var biometricType: BiometricType {
     let authContext = LAContext()
-    if #available(iOS 11, *) {
-      _ = authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
-                                        error: nil)
-      switch authContext.biometryType {
-      case .none:
-        return .none
-      case .touchID:
-        return .touch
-      case .faceID:
-        return .face
-      }
-    } else {
-      return authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
-                                           error: nil) ? .touch : .none
+    _ = authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics,
+                                      error: nil)
+    switch authContext.biometryType {
+    case .none:
+      return .none
+    case .touchID:
+      return .touch
+    case .faceID:
+      return .face
     }
   }
 }

@@ -15,6 +15,7 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   @IBOutlet weak var animationContainer: UIView!
   
   var presenter: TransactionStatusPresenter!
+  let feedbackGenerator = UINotificationFeedbackGenerator()
   
   // MARK: - Lifecycle
   
@@ -85,6 +86,12 @@ extension TransactionStatusViewController: TransactionStatusView {
     animationView.centerYAnchor.constraint(equalTo: animationContainer.centerYAnchor).isActive = true
     
     animationView.play()
+  }
+  
+  func setFeedback(with status: TransactionStatus) {
+    status == .success ?
+      feedbackGenerator.notificationOccurred(.success) :
+      feedbackGenerator.notificationOccurred(.error)
   }
   
   func setXdr(_ xdr: String) {

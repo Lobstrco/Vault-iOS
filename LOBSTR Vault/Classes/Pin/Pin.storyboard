@@ -137,15 +137,24 @@
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xWk-OQ-VZa" customClass="NumberPadView" customModule="LOBSTR_Vault" customModuleProvider="target">
-                                <rect key="frame" x="16" y="312" width="343" height="325"/>
+                                <rect key="frame" x="16" y="292" width="343" height="345"/>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nEm-Gn-CWc">
+                                <rect key="frame" x="46" y="242" width="283" height="0.0"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/Red"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" name="Colors/White"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="xWk-OQ-VZa" secondAttribute="trailing" id="0Xm-ic-Ip7"/>
+                            <constraint firstItem="nEm-Gn-CWc" firstAttribute="top" secondItem="45n-eq-3A7" secondAttribute="bottom" constant="30" id="3eH-9A-8yv"/>
+                            <constraint firstItem="nEm-Gn-CWc" firstAttribute="leading" secondItem="eQq-vM-WX3" secondAttribute="leadingMargin" constant="30" id="IOb-xV-hEx"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="nEm-Gn-CWc" secondAttribute="trailing" constant="30" id="QJe-6F-k4u"/>
+                            <constraint firstItem="xWk-OQ-VZa" firstAttribute="top" secondItem="nEm-Gn-CWc" secondAttribute="bottom" constant="50" id="R3F-Sm-2lG"/>
                             <constraint firstItem="45n-eq-3A7" firstAttribute="top" secondItem="9xS-FR-F68" secondAttribute="bottom" constant="176" id="RXf-U2-XGn"/>
                             <constraint firstItem="45n-eq-3A7" firstAttribute="centerX" secondItem="eQq-vM-WX3" secondAttribute="centerX" id="hux-Bf-he6"/>
-                            <constraint firstItem="xWk-OQ-VZa" firstAttribute="top" secondItem="45n-eq-3A7" secondAttribute="bottom" constant="100" id="jOL-fd-7L5"/>
                             <constraint firstItem="xWk-OQ-VZa" firstAttribute="leading" secondItem="eQq-vM-WX3" secondAttribute="leadingMargin" id="lvZ-ta-oeL"/>
                             <constraint firstItem="IAE-x9-CKx" firstAttribute="top" secondItem="xWk-OQ-VZa" secondAttribute="bottom" constant="30" id="zgy-J9-xxh"/>
                         </constraints>
@@ -158,6 +167,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="errorLabel" destination="nEm-Gn-CWc" id="TP8-XP-D4m"/>
                         <outlet property="numberPadView" destination="xWk-OQ-VZa" id="LLy-Eh-AO2"/>
                         <outlet property="pinDotView" destination="45n-eq-3A7" id="xQJ-ti-nan"/>
                     </connections>
@@ -172,6 +182,9 @@
         <image name="Other/logo" width="136" height="29"/>
         <namedColor name="Colors/Main">
             <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Red">
+            <color red="0.85098039215686272" green="0.32549019607843138" blue="0.30980392156862746" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="Colors/White">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

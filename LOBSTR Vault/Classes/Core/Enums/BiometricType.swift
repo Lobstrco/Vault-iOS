@@ -12,7 +12,7 @@ public enum BiometricType {
     case .face:
       return "Face ID"
     case .none:
-      return ""
+      return "Biometric ID"
     }
   }
 }

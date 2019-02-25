@@ -132,6 +132,8 @@
 		9277EDA721D52E350043F3E8 /* TransactionHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277EDA621D52E350043F3E8 /* TransactionHelperTests.swift */; };
 		9277EDAB21D53F1F0043F3E8 /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9277EDAA21D53F1F0043F3E8 /* SettingsViewController.swift */; };
 		9277EDAD21D53F3B0043F3E8 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9277EDAC21D53F3B0043F3E8 /* Settings.storyboard */; };
+		927BBBCC221AC6CF002C457A /* ConnectionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */; };
+		9287681C221C2CEE00014D23 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9287681B221C2CEE00014D23 /* NotificationManager.swift */; };
 		9287BDA8220CC45200F419B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9287BDA7220CC45200F419B8 /* Assets.xcassets */; };
 		92960A6322135CB80055E4AD /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92960A6222135CB80055E4AD /* AsyncOperation.swift */; };
 		92960A66221366480055E4AD /* GettingMnemonicOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92960A65221366480055E4AD /* GettingMnemonicOperation.swift */; };
@@ -314,6 +316,8 @@
 		9277EDA621D52E350043F3E8 /* TransactionHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHelperTests.swift; sourceTree = "<group>"; };
 		9277EDAA21D53F1F0043F3E8 /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		9277EDAC21D53F3B0043F3E8 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHelper.swift; sourceTree = "<group>"; };
+		9287681B221C2CEE00014D23 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		9287BDA7220CC45200F419B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		92960A6222135CB80055E4AD /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		92960A65221366480055E4AD /* GettingMnemonicOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GettingMnemonicOperation.swift; sourceTree = "<group>"; };
@@ -442,6 +446,7 @@
 			isa = PBXGroup;
 			children = (
 				844C581A21CA8101008B44B2 /* ApplicationCoordinator.swift */,
+				9287681B221C2CEE00014D23 /* NotificationManager.swift */,
 			);
 			path = Coordinator;
 			sourceTree = "<group>";
@@ -1249,11 +1254,10 @@
 		92C8C23E21FB32F2003E4F5A /* SignerDetails */ = {
 			isa = PBXGroup;
 			children = (
-				92C8C24C21FDB6CB003E4F5A /* Services */,
+				92C8C24721FB3707003E4F5A /* SignerDetails.storyboard */,
 				92C8C24921FDB076003E4F5A /* Views */,
 				92C8C24021FB333B003E4F5A /* Presenters */,
 				92C8C23F21FB3334003E4F5A /* Controllers */,
-				92C8C24721FB3707003E4F5A /* SignerDetails.storyboard */,
 			);
 			path = SignerDetails;
 			sourceTree = "<group>";
@@ -1280,13 +1284,6 @@
 				92C8C24A21FDB09E003E4F5A /* SignerDetailsTableViewCell.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		92C8C24C21FDB6CB003E4F5A /* Services */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Services;
 			sourceTree = "<group>";
 		};
 		92D3768521BAA95B00504713 = {
@@ -1383,6 +1380,7 @@
 				9221B7BD21BE893A0070A526 /* MnemonicHelper.swift */,
 				92C8C23A21FB148D003E4F5A /* ProgressHUD.swift */,
 				922A36392204721600371B35 /* ApplicationCoordinatorHelper.swift */,
+				927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1719,7 +1717,9 @@
 				9277ABA621CA5A8D00379971 /* HomeViewController.swift in Sources */,
 				92C8C24621FB33D9003E4F5A /* SignerDetailsPresenter.swift in Sources */,
 				9248462E21EDF2D7000CC546 /* Images.swift in Sources */,
+				9287681C221C2CEE00014D23 /* NotificationManager.swift in Sources */,
 				9248463421EE0CF3000CC546 /* StartMenuPresenter.swift in Sources */,
+				927BBBCC221AC6CF002C457A /* ConnectionHelper.swift in Sources */,
 				9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */,
 				92C4156621ECCF8800960170 /* TransactionService.swift in Sources */,
 				8477AC3521DCF54300D75173 /* PinMode.swift in Sources */,
