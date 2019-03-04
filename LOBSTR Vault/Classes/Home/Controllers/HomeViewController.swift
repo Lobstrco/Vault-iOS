@@ -51,7 +51,7 @@ class HomeViewController: UIViewController, StoryboardCreation {
   
   @IBAction func transactionListButtonAction(_ sender: Any) {
     self.tabBarController?.selectedIndex = 1
-  }
+  }  
   
   // MARK: - Private
   
@@ -98,10 +98,17 @@ extension HomeViewController: HomeView {
     
     if signedAccounts.count == 1 {
       guard let address = signedAccounts.first?.address else { return }
-      HomeHelper().createSignerDetailsViewForSingleAddress(in: signerDetailsView, address: address, bottomAnchor: titleOfsignerForLabel.bottomAnchor)
+      let copyButton = HomeHelper.createSignerDetailsViewForSingleAddress(in: signerDetailsView,
+                                                                            address: address,
+                                                                            bottomAnchor: titleOfsignerForLabel.bottomAnchor)
+      copyButton.addTarget(self, action: #selector(copySignerKeyButtonAction), for: .touchUpInside)
     } else {
-      HomeHelper().createSignerDetailsViewForMultipleAddresses(in: signerDetailsView, for: String(signedAccounts.count), bottomAnchor: titleOfsignerForLabel.bottomAnchor)
+      HomeHelper.createSignerDetailsViewForMultipleAddresses(in: signerDetailsView, for: String(signedAccounts.count), bottomAnchor: titleOfsignerForLabel.bottomAnchor)
     }
+  }
+  
+  @objc func copySignerKeyButtonAction(sender: UIButton!) {
+    presenter.copySignerKeyButtonWasPressed()
   }
   
   func setPublicKey(_ publicKey: String) {

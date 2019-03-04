@@ -53,21 +53,6 @@ class PublicKeyViewController: UIViewController, StoryboardCreation {
     AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
     navigationItem.hidesBackButton = true
   }
-  
-  private func generateQRCode(from string: String) -> UIImage? {
-    let data = string.data(using: String.Encoding.ascii)
-    
-    if let filter = CIFilter(name: "CIQRCodeGenerator") {
-      filter.setValue(data, forKey: "inputMessage")
-      let transform = CGAffineTransform(scaleX: 3, y: 3)
-      
-      if let output = filter.outputImage?.transformed(by: transform) {
-        return UIImage(ciImage: output)
-      }
-    }
-    
-    return nil
-  }
 }
 
 // MARK: - PublicKeyView
@@ -83,6 +68,6 @@ extension PublicKeyViewController: PublicKeyView {
   }
   
   func setQRCode(from publicKey: String) {
-    qrCodeImageView.image = generateQRCode(from: publicKey)
+    qrCodeImageView.image = UtilityHelper.generateQRCode(from: publicKey)
   }
 }

@@ -2,6 +2,18 @@
 import Foundation
 
 class PinViewSpy: PinView {
+  func setCancelBarButtonItem() {
+    
+  }
+  
+  func show(error: String) {
+    
+  }
+  
+  func executeCompletion() {
+    
+  }
+  
   
   func clearPinDots() {
     

@@ -8,11 +8,11 @@ class ApplicationCoordinator {
   
   init(window: UIWindow?) {
     self.window = window
-    accountStatus = ApplicationCoordinatorHelper.getAccountStatus()
+    accountStatus = UserDefaultsHelper.accountStatus
   }
   
   func start() {    
-    if ApplicationCoordinatorHelper.isNotificationsEnabled {
+    if UserDefaultsHelper.isNotificationsEnabled {
       notificationRegistrator.register()
     }
     

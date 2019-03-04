@@ -39,5 +39,6 @@ public enum SettingsRow {
   case help
   case logout
   case copyright
+  case licenses
 }
 

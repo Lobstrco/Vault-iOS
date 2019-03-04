@@ -152,6 +152,7 @@
                         <outlet property="collectionView" destination="pQm-Wr-hKa" id="8jw-YH-eaT"/>
                         <outlet property="confirmDescriptionLabel" destination="dpZ-sV-uFf" id="D1R-r0-GoK"/>
                         <outlet property="copyDescriptionLabel" destination="YbO-Ei-Ebj" id="3QS-Ag-WOA"/>
+                        <outlet property="heightConstraint" destination="XeW-mN-Iao" id="nSJ-Kr-YZI"/>
                         <outlet property="mnemonicDescriptionLabel" destination="4EP-Zi-e8S" id="C59-Jl-7Yz"/>
                         <outlet property="nextButton" destination="DeZ-LZ-7FA" id="V03-qd-ULb"/>
                     </connections>

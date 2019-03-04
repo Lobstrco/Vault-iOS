@@ -7,15 +7,19 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   var presenter: TransactionDetailsPresenter!
   
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var confirmButton: UIButton!
+  @IBOutlet weak var denyButton: UIButton!
+  @IBOutlet weak var expiredErrorLabel: UILabel!
   
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
     setStaticStrings()
+    setAppearance()
     
     presenter.transactionDetailsViewDidLoad()    
-    configureTableView()    
+    configureTableView()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -36,14 +40,18 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
     presenter.denyButtonWasPressed()
   }
   
-  // MARK: - Public
+  // MARK: - Private
   
   private func setStaticStrings() {
-    navigationItem.title = L10n.navTitleTransactionDetails
+    denyButton.setTitle(L10n.buttonTitleDeny, for: .normal)
   }
   
-  func configureTableView() {
+  private func configureTableView() {
     tableView.tableFooterView = UIView()
+  }
+  
+  private func setAppearance() {
+    AppearanceHelper.set(confirmButton, with: L10n.buttonTitleConfirm)
   }
 }
 
@@ -51,16 +59,24 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
 
 extension TransactionDetailsViewController: TransactionDetailsView {
   
-  func setOperationList() {
+  func setTitle(_ title: String) {
+    navigationItem.title = title
+  }
+  
+  func setTableViewData() {
     tableView.delegate = self
     tableView.dataSource = self
     
     tableView.reloadData()
   }
   
+  func disableBackButton() {
+    navigationItem.hidesBackButton = true
+  }
+  
   func setConfirmationAlert() {
     let alert = UIAlertController(title: L10n.textDenyDialogTitle, message: L10n.textDenyDialogDescription, preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: L10n.buttonTitleDeny, style: .destructive, handler: { _ in
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleConfirm, style: .destructive, handler: { _ in
       self.presenter.denyOperationWasConfirmed()
     }))
     
@@ -77,6 +93,28 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     navigationItem.hidesBackButton = isEnable
     isEnable ? HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) : HUD.hide()
   }
+  
+  func registerTableViewCell(with cellName: String) {
+    tableView.register(UINib(nibName: cellName, bundle: nil),
+                       forCellReuseIdentifier: cellName)
+  }
+  
+  func setConfirmButtonWithError(isInvalid: Bool) {
+    guard isInvalid else {
+      confirmButton.backgroundColor = Asset.Colors.main.color
+      return
+    }
+    
+    expiredErrorLabel.isHidden = false
+    expiredErrorLabel.text = L10n.textTransactionInvalidError
+    confirmButton.isEnabled = false
+    confirmButton.backgroundColor = Asset.Colors.disabled.color
+    confirmButton.setTitleColor(Asset.Colors.white.color, for: .normal)
+  }
+  
+  func openTransactionListScreen() {
+    navigationController?.popViewController(animated: true)
+  }
 }
 
 // MARK: - UITableView
@@ -84,17 +122,34 @@ extension TransactionDetailsViewController: TransactionDetailsView {
 extension TransactionDetailsViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return presenter.numberOfOperation
+    guard presenter.numberOfOperation == 1 else {
+      return presenter.numberOfOperation
+    }
+    
+    return presenter.numberOfOperationDetails
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "OperationTableViewCell", for: indexPath) as! OperationTableViewCell
-    presenter.configure(cell, forRow: indexPath.item)
+    guard presenter.numberOfOperation == 1 else {
+      let cell = tableView.dequeueReusableCell(withIdentifier: "OperationTableViewCell",
+                                               for: indexPath) as! OperationTableViewCell
+      presenter.configure(cell, forRow: indexPath.item)
+      return cell
+    }
     
+    let cell = tableView.dequeueReusableCell(withIdentifier: "OperationDetailsTableViewCell",
+                                             for: indexPath) as! OperationDetailsTableViewCell
+    presenter.configure(cell, forRow: indexPath.item)
+    cell.selectionStyle = .none
     return cell
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard presenter.numberOfOperation != 1 else {
+      return
+    }
+    
+    tableView.deselectRow(at: indexPath, animated: true)
     presenter.operationWasSelected(by: indexPath.item)
   }
   

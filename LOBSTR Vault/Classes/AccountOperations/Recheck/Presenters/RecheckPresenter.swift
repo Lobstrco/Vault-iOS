@@ -29,7 +29,7 @@ class RecheckPresenterImpl {
       case .success(let signedAccounts):
         self.view?.setProgressAnimation(isDisplay: false)
         if signedAccounts.count > 0 {
-          ApplicationCoordinatorHelper.setAccountStatus(.created)
+          UserDefaultsHelper.accountStatus = .created
           self.transitionToHomeScreen()
         } else {
           // show something for user

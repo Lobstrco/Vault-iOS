@@ -3,6 +3,7 @@ import UIKit
 protocol DisclosureIndicatorTableViewCellView {
   func setTitle(_ title: String)
   func setTextColor(_ color: UIColor)
+  func setAttribute(_ attribute: NSMutableAttributedString)
 }
 
 class DisclosureIndicatorTableViewCell: UITableViewCell,
@@ -14,5 +15,9 @@ class DisclosureIndicatorTableViewCell: UITableViewCell,
   
   func setTextColor(_ color: UIColor) {
     textLabel?.textColor = color
+  }
+  
+  func setAttribute(_ attribute: NSMutableAttributedString) {
+    textLabel?.attributedText = attribute
   }
 }

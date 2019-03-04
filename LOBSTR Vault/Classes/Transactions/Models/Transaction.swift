@@ -5,6 +5,7 @@ struct Transaction: Codable {
   var xdr: String?
   var addedAt: String?
   var cancelledAt: String?
+  var sequenceOutdatedAt: String?
   var signedAt: String?
   var status: Int?
   var getStatusDisplay: String?
@@ -15,6 +16,7 @@ struct Transaction: Codable {
     case addedAt = "added_at"
     case cancelledAt = "cancelled_at"
     case signedAt = "signed_at"
+    case sequenceOutdatedAt = "sequence_outdated_at"
     case status
     case getStatusDisplay = "get_status_display"
   }

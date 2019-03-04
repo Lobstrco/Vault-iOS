@@ -20,12 +20,12 @@ class NotificationManager {
     UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
       guard granted else {
 //        print("FLOW: REGISTER DENIED")
-        ApplicationCoordinatorHelper.isNotificationsEnabled = false
+        UserDefaultsHelper.isNotificationsEnabled = false
         return
       }
 //      print("FLOW: REGISTER")
       DispatchQueue.main.async {
-        ApplicationCoordinatorHelper.isNotificationsEnabled = true
+        UserDefaultsHelper.isNotificationsEnabled = true
         UIApplication.shared.registerForRemoteNotifications()
       }      
     }

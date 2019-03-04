@@ -124,6 +124,13 @@ class SettingsViewController: UIViewController,
       presenter.configure(disclosureIndicatorTableViewCell: cell,
                           row: row)
       return cell
+    case .licenses:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
     case .logout:
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)

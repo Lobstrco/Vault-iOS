@@ -25,6 +25,7 @@ internal enum Asset {
     internal static let cellBorder = ColorAsset(name: "Colors/CellBorder")
     internal static let confirm = ColorAsset(name: "Colors/Confirm")
     internal static let darkIndigo = ColorAsset(name: "Colors/DarkIndigo")
+    internal static let disabled = ColorAsset(name: "Colors/Disabled")
     internal static let gray = ColorAsset(name: "Colors/Gray")
     internal static let grayOpacity30 = ColorAsset(name: "Colors/GrayOpacity30")
     internal static let grayOpacity70 = ColorAsset(name: "Colors/GrayOpacity70")

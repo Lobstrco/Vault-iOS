@@ -22,6 +22,9 @@ target 'LOBSTR Vault' do
   
   # A Swift based reimplementation of the Apple HUD 
   pod 'PKHUD', '~> 5.0'
+  
+  # Ready to use “Acknowledgements”/“Licenses”/“Credits” view controller for CocoaPods.
+  pod 'AcknowList'
 
   target 'LOBSTR VaultTests' do
     inherit! :search_paths

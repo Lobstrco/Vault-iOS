@@ -53,7 +53,7 @@ class ImportXDR: UIView, UITextViewDelegate {
   // MARK: - Private
   
   private func setAppearance() {
-    AppearanceHelper.set(submitButton, with: L10n.buttonTitleSubmit)
+    AppearanceHelper.set(submitButton, with: L10n.buttonTitleNext)
     
     textView.layer.borderWidth = 1
     textView.layer.cornerRadius = 5

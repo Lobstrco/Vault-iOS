@@ -3,20 +3,32 @@ import stellarsdk
 
 protocol TransactionDetailsPresenter {
   var numberOfOperation: Int { get }
-  func setTransactionData(_ transaction: Transaction, withIndex: Int)
+  var numberOfOperationDetails: Int { get }
+  var transactionListIndex: Int? { get set }
   func transactionDetailsViewDidLoad()
   func operationWasSelected(by index: Int)
   func confirmButtonWasPressed()
   func denyButtonWasPressed()
   func denyOperationWasConfirmed()
   func configure(_ cell: OperationTableViewCell, forRow row: Int)
+  func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int)
 }
 
 protocol TransactionDetailsView: class {
-  func setOperationList()
+  func setTableViewData()
   func setConfirmationAlert()
   func setErrorAlert(for error: Error)
   func setProgressAnimation(isEnable: Bool)
+  func registerTableViewCell(with cellName: String)
+  func setConfirmButtonWithError(isInvalid: Bool)
+  func setTitle(_ title: String)
+  func disableBackButton()
+  func openTransactionListScreen()
+}
+
+enum TransactionType {
+  case imported
+  case standard
 }
 
 class TransactionDetailsPresenterImpl {
@@ -25,18 +37,33 @@ class TransactionDetailsPresenterImpl {
   fileprivate weak var crashlyticsService: CrashlyticsService?
   fileprivate var transactionService: TransactionService
   fileprivate var mnemonicManager: MnemonicManager
-  fileprivate var transaction: Transaction?
-  fileprivate var indexForTransactionList: Int?
+  fileprivate var indexInTransactionList: Int?
   
-  fileprivate var operationNames: [String] = []
+  fileprivate let transaction: Transaction
+  fileprivate var xdr: String
+  fileprivate let transactionType: TransactionType
+  
+  fileprivate var operations: [String] = []
+  fileprivate var operationDetails: [(name: String , value: String)] = []
+  
+  var transactionListIndex: Int? {
+    get { return indexInTransactionList }
+    set { indexInTransactionList = newValue }
+  }
   
   var numberOfOperation: Int {
-    return operationNames.count
+    return operations.count
+  }
+  
+  var numberOfOperationDetails: Int {
+    return operationDetails.count
   }
   
   // MARK: - Init
 
   init(view: TransactionDetailsView,
+       transaction: Transaction,
+       type: TransactionType,
        crashlyticsService: CrashlyticsService = CrashlyticsService(),
        transactionService: TransactionService = TransactionService(),
        mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
@@ -44,26 +71,93 @@ class TransactionDetailsPresenterImpl {
     self.crashlyticsService = crashlyticsService
     self.transactionService = transactionService
     self.mnemonicManager = mnemonicManager
+    self.transaction = transaction
+    self.transactionType = type
+    
+    guard let transactionXDR = transaction.xdr else {
+      fatalError()
+    }
+    
+    self.xdr = transactionXDR
   }
   
-  // MARK: - Public
+  // MARK: - Private
   
-  func setOperationList() {
-    guard let transaction = transaction else { return }
-    guard let xdr = transaction.xdr else { return }
-    
+  private func setOperationList() {
     do {
-      operationNames = try TransactionHelper.getListOfOperationNames(from: xdr)
+      operations = try TransactionHelper.getListOfOperationNames(from: xdr)
     } catch {
       crashlyticsService?.recordCustomException(error)
       view?.setErrorAlert(for: error)
       return
     }
-    
-    view?.setOperationList()
   }
   
-  // MARK: - Private
+  private func setOperationDetails() {
+    guard operations.count == 1 else { return }
+    do {
+      let operation = try TransactionHelper.getOperation(from: xdr, by: 0)
+      operationDetails = TransactionHelper.getNamesAndValuesOfProperties(from: operation)
+    } catch {
+      crashlyticsService?.recordCustomException(error)
+      view?.setErrorAlert(for: error)
+      return
+    }
+  }
+  
+  private func setTitle() {
+    var title = L10n.navTitleTransactionDetails
+    
+    if operations.count == 1, let operationName = operations.first {
+      title = operationName
+    }
+    
+    view?.setTitle(title)
+  }
+  
+  private func disableBackButtonIfNecessary() {
+    if transactionType == .imported {
+      view?.disableBackButton()
+    }
+  }
+  
+  private func registerTableViewCell() {
+    let cellName = numberOfOperation == 1 ? "OperationDetailsTableViewCell" : "OperationTableViewCell"
+    view?.registerTableViewCell(with: cellName)
+  }
+  
+  private func openTransactionListScreen() {
+    view?.openTransactionListScreen()
+  }
+  
+  private func cancelTransaction() {
+    guard let transactionHash = transaction.hash else {
+      let error = VaultError.TransactionError.invalidTransaction
+      view?.setErrorAlert(for: error)
+      return
+    }
+    
+    guard let transactionIndex = indexInTransactionList else {
+      let error = VaultError.TransactionError.invalidTransaction
+      view?.setErrorAlert(for: error)
+      return
+    }
+    
+    view?.setProgressAnimation(isEnable: true)
+    
+    transactionService.cancelTransaction(by: transactionHash) { result in
+      switch result {
+      case .success(_):
+        NotificationCenter.default.post(name: .didRemoveTransaction,
+                                        object: nil,
+                                        userInfo: ["transactionIndex": transactionIndex])
+        self.transitionToTransactionListScreen()
+        self.view?.setProgressAnimation(isEnable: false)
+      case .failure(let error):
+        self.view?.setErrorAlert(for: error)
+      }
+    }
+  }
   
   private func submitTransaction(_ transactionEnvelopeXDR: TransactionEnvelopeXDR) {
     view?.setProgressAnimation(isEnable: true)
@@ -71,23 +165,28 @@ class TransactionDetailsPresenterImpl {
     let gettingMnemonic = GettingMnemonicOperation()
     let signTransaction = SignTransactionOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
     let submitTransactionToHorizon = SubmitTransactionToHorizonOperation()
-    let submitTransactionToVaultServer = SubmitTransactionToVaultServerOperation(transactionHash: transaction?.hash)
+    let submitTransactionToVaultServer = SubmitTransactionToVaultServerOperation(transactionHash: transaction.hash)
     
     submitTransactionToVaultServer.addDependency(submitTransactionToHorizon)
     submitTransactionToHorizon.addDependency(signTransaction)
     signTransaction.addDependency(gettingMnemonic)
     
-    OperationQueue().addOperations([gettingMnemonic,
+    let operationQueue = OperationQueue()
+      
+    operationQueue.addOperations([gettingMnemonic,
                                     signTransaction,
-                                    submitTransactionToHorizon,
-                                    submitTransactionToVaultServer],
+                                    submitTransactionToHorizon],
                                    waitUntilFinished: false)
+    
+    if transactionType == .standard {
+      operationQueue.addOperation(submitTransactionToVaultServer)
+    }
     
     submitTransactionToHorizon.completionBlock = {
       DispatchQueue.main.async {
         self.view?.setProgressAnimation(isEnable: false)
         
-        if let infoError = submitTransactionToVaultServer.outputError as? ErrorDisplayable {
+        if let infoError = submitTransactionToHorizon.outputError as? ErrorDisplayable {
           self.view?.setErrorAlert(for: infoError)
           return
         }
@@ -121,16 +220,16 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   
   func transactionDetailsViewDidLoad() {
     setOperationList()
-  }
-  
-  func setTransactionData(_ transaction: Transaction, withIndex indexForTransactionList: Int) {
-    self.transaction = transaction
-    self.indexForTransactionList = indexForTransactionList
+    setOperationDetails()
+    setTitle()
+    disableBackButtonIfNecessary()
+    
+    registerTableViewCell()
+    view?.setTableViewData()
+    view?.setConfirmButtonWithError(isInvalid: transaction.sequenceOutdatedAt != nil)
   }
   
   func operationWasSelected(by index: Int) {
-    guard let xdr = transaction?.xdr else { return }
-    
     do {
       let operation = try TransactionHelper.getOperation(from: xdr, by: index)
       transition(to: operation)
@@ -145,14 +244,14 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func configure(_ cell: OperationTableViewCell, forRow row: Int) {
-    cell.setOperationTitle(operationNames[row])
+    cell.setOperationTitle(operations[row])
+  }
+  
+  func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int) {
+      cell.setData(title: operationDetails[row].name, value: operationDetails[row].value)
   }
   
   func confirmButtonWasPressed() {
-    guard let xdr = self.transaction?.xdr else {
-      return
-    }
-
     guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
       return
     }
@@ -161,31 +260,11 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func denyOperationWasConfirmed() {
-    guard let transactionHash = transaction?.hash else {
-      let error = VaultError.TransactionError.invalidTransaction
-      view?.setErrorAlert(for: error)
-      return
-    }
-    
-    guard let transactionIndex = indexForTransactionList else {
-      let error = VaultError.TransactionError.invalidTransaction
-      view?.setErrorAlert(for: error)
-      return
-    }
-    
-    view?.setProgressAnimation(isEnable: true)
-    
-    transactionService.cancelTransaction(by: transactionHash) { result in
-      switch result {
-      case .success(_):
-        NotificationCenter.default.post(name: .didRemoveTransaction,
-                                        object: nil,
-                                        userInfo: ["transactionIndex": transactionIndex])
-        self.transitionToTransactionListScreen()
-        self.view?.setProgressAnimation(isEnable: false)
-      case .failure(let error):
-        self.view?.setErrorAlert(for: error)
-      }
+    switch transactionType {
+    case .imported:
+      openTransactionListScreen()
+    case .standard:
+      cancelTransaction()
     }
   }
 }

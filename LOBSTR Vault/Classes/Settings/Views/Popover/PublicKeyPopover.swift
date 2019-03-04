@@ -7,6 +7,7 @@ class PublicKeyPopover: UIView {
   @IBOutlet weak var closeButton: UIButton!
   @IBOutlet weak var publicKeyLabel: UILabel!
   @IBOutlet weak var publicKeyTitleLabel: UILabel!
+  @IBOutlet weak var qrCodeImageView: UIImageView!
   
   var popoverDelegate: CustomPopoverDelegate?
   
@@ -28,6 +29,7 @@ class PublicKeyPopover: UIView {
     setAppearance()
     setStaticString()
     setPublicKey()
+    setQRCode()
   }
   
   // MARK: - Private
@@ -51,5 +53,11 @@ class PublicKeyPopover: UIView {
   private func closePopover() {
     popoverDelegate?.closePopover()
     popoverDelegate = nil
+  }
+  
+  private func setQRCode() {
+    if let key = publicKey {
+      qrCodeImageView.image = UtilityHelper.generateQRCode(from: key)
+    }
   }
 }

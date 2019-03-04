@@ -19,7 +19,7 @@ class SettingsSectionsBuilderTests: XCTestCase {
     let security = SettingsSection(type: .security,
                                    rows: [.mnemonicCode, .biometricId, .changePin])
     
-    let about = SettingsSection(type: .about, rows: [.version, .help, .logout, .copyright])
+    let about = SettingsSection(type: .about, rows: [.help, .notifications, .licenses, .version,  .logout, .copyright])
     
     let expectedSections: [SettingsSection] = [wallet, security, about]
     let resultSections = sut.buildSections()

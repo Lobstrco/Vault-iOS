@@ -13,42 +13,178 @@ class TransactionHelperTests: XCTestCase {
     XCTAssertEqual(expectedDate, newDate, "Expected to receive validate date")
   }
   
-  func testNamesAndVaulesFromPaymentOperationWithNotNativeAssetsShouldBeRecevied() throws {
+  // MARK: -  Payment operations
+  
+  func testNamesAndVaulesFromPaymentOperationWithNotNativeAssetsShouldBeReceived() throws {
     let accountId = "GCG5XRQF7KOVT47RNWBHOPP2QJCNRCWDRXQ64SC7T7K5AGC5WHR4B4IK"
-    let expectedNamesAndValues = [("destination", accountId), ("asset", "BTC"), ("amount", "20")]
+    let expectedNamesAndValues = [("destination", accountId),
+                                  ("asset", "BTC"),
+                                  ("amount", "20")]
     let paymentOperation = try PaymentOperation(destination: KeyPair(accountId: accountId),
                                                  asset: Asset.init(type: AssetType.ASSET_TYPE_CREDIT_ALPHANUM4, code: "BTC", issuer: KeyPair(accountId: "GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG"))!,
                                                  amount: Decimal(string: "20")!)
     
     let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: paymentOperation)
     
-    for (index, item) in namesAndValues.enumerated() {
-      assertStringPairsEqual(actual: item, expected: expectedNamesAndValues[index])
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
     }
   }
   
-  func testNamesAndVaulesFromPaymentOperationWithNativeAssetsShouldBeRecevied() throws {
+  func testNamesAndVaulesFromPaymentOperationWithNativeAssetsShouldBeReceived() throws {
     let accountId = "GCG5XRQF7KOVT47RNWBHOPP2QJCNRCWDRXQ64SC7T7K5AGC5WHR4B4IK"
     let expectedNamesAndValues = [("destination", accountId), ("asset", "XLM"), ("amount", "35")]
     let paymentOperation = try PaymentOperation(destination: KeyPair(accountId: accountId),
-                                                 asset: Asset.init(type: AssetType.ASSET_TYPE_NATIVE, code: nil, issuer: nil)!,
-                                                 amount: Decimal(string: "35")!)
+                                                asset: Asset.init(type: AssetType.ASSET_TYPE_NATIVE, code: nil, issuer: nil)!,
+                                                amount: Decimal(string: "35")!)
     
     let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: paymentOperation)
     
-    for (index, item) in namesAndValues.enumerated() {
-      assertStringPairsEqual(actual: item, expected: expectedNamesAndValues[index])
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
     }
   }
   
-  func testNamesAndVaulesFromSetOptionsOperationShouldBeRecevied() throws {
+  // MARK: -  Path Payment operations
+  
+  func testNamesAndValuesFromPathPaymentShouldBeReceived() throws {
+    let accountId = "GCG5XRQF7KOVT47RNWBHOPP2QJCNRCWDRXQ64SC7T7K5AGC5WHR4B4IK"
+    let destinationId = "GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG"
+    
+    let expectedNamesAndValues = [("sendAsset", "BTC"),
+                                  ("sendMax", "200"),
+                                  ("destination", destinationId),
+                                  ("destAsset", "XLM"),
+                                  ("destAmount", "10")]
+    let pathPaymentOperation = try
+      PathPaymentOperation(sourceAccount: KeyPair(accountId: accountId),
+                           sendAsset: Asset.init(
+                              type: AssetType.ASSET_TYPE_CREDIT_ALPHANUM4,
+                              code: "BTC",
+                              issuer: KeyPair(accountId: "GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG"))!,
+                           sendMax: 200,
+                           destination: KeyPair(accountId: destinationId),
+                           destAsset: Asset.init(type: AssetType.ASSET_TYPE_NATIVE)!,
+                           destAmount: 10,
+                           path: [])
+    
+    let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: pathPaymentOperation)
+    
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
+    }
+  }
+  
+  // MARK: -  Set Options operations
+  
+  func testNamesAndVaulesFromSetOptionsOperationShouldBeReceived() throws {
     let expectedNamesAndValues = [("masterKeyWeight", "20"), ("lowThreshold", "10"), ("mediumThreshold", "15"), ("highThreshold", "10")]
-    let setOptionsOperation = try SetOptionsOperation(sourceAccount: nil, inflationDestination: nil, clearFlags: nil, setFlags: nil, masterKeyWeight: 20, lowThreshold: 10, mediumThreshold: 15, highThreshold: 10, homeDomain: nil, signer: nil, signerWeight: nil)
+    let setOptionsOperation = try SetOptionsOperation(sourceAccount: nil,
+                                                      inflationDestination: nil,
+                                                      clearFlags: nil,
+                                                      setFlags: nil,
+                                                      masterKeyWeight: 20,
+                                                      lowThreshold: 10,
+                                                      mediumThreshold: 15,
+                                                      highThreshold: 10,
+                                                      homeDomain: nil,
+                                                      signer: nil,
+                                                      signerWeight: nil)
     
     let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: setOptionsOperation)
     
-    for (index, item) in expectedNamesAndValues.enumerated() {
-      assertStringPairsEqual(actual: namesAndValues[index], expected: item)
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
+    }
+  }
+  
+  // MARK: -  Manage Offer operations
+  
+  func testNamesAndVaulesFromManageOfferOperationShouldBeReceived() throws {
+    let expectedNamesAndValues = [("selling", "XLM"), ("buying", "KIN"), ("amount", "0.0004413"), ("price", "0.000294"), ("offerId", "0")]
+    
+    let manageOfferOperation =
+      try ManageOfferOperation(selling: Asset.init(type: AssetType.ASSET_TYPE_NATIVE)!,
+                               buying: Asset.init(type: AssetType.ASSET_TYPE_CREDIT_ALPHANUM4,
+                                                code: "KIN",
+                                                issuer: KeyPair(accountId: "GBDEVU63Y6NTHJQQZIKVTC23NWLQVP3WJ2RI2OTSJTNYOIGICST6DUXR"))!,
+                               amount: 0.0004413,
+                               price: Price(numerator: 667101597, denominator: 196328),
+                               offerId: 0)
+    
+    let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: manageOfferOperation)
+    
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
+    }
+  }
+  
+  // MARK: -  Change Trust operations
+  
+  func testNamesAndValuesFromChangeTrustOperationShoudBeReceived() throws {
+    let expectedNamesAndValues = [("asset", "KIN"), ("limit", "0")]
+    let changeTrustOperation = try
+      ChangeTrustOperation(sourceAccount: nil,
+                           asset: Asset.init(type: AssetType.ASSET_TYPE_CREDIT_ALPHANUM4,
+                                             code: "KIN",
+                                             issuer: KeyPair(accountId: "GBDEVU63Y6NTHJQQZIKVTC23NWLQVP3WJ2RI2OTSJTNYOIGICST6DUXR"))!,
+                           limit: 0)
+    
+    let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: changeTrustOperation)
+    
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
+    }
+  }
+  
+  // MARK: -  Change Trust operations
+  
+  func testNamesAndValuesFromAllowTrustOperationShoudBeReceived() throws {
+    let accountId = "GCG5XRQF7KOVT47RNWBHOPP2QJCNRCWDRXQ64SC7T7K5AGC5WHR4B4IK"
+    let expectedNamesAndValues = [("trustor", accountId), ("assetCode", "KIN"), ("authorize" , "true")]
+    let allowTrustOperation = try AllowTrustOperation(trustor: KeyPair(accountId: accountId),
+                                                      assetCode: "KIN",
+                                                      authorize: true)
+    
+    let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: allowTrustOperation)
+    
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
     }
   }
   
@@ -85,7 +221,7 @@ class TransactionHelperTests: XCTestCase {
     XCTAssertEqual(paymentOperation.destination.accountId, operation?.destination.accountId, "Expected to receive destination account id of payment operation")
   }
   
-  func testInvalidaTransactionErrorShouldBeReceviedWhileGettingOperationByIndex() {
+  func testInvalidaTransactionErrorShouldBeReceivedWhileGettingOperationByIndex() {
     let xdr = "wrong xdr"
     let operationIndex = 0
     
@@ -94,7 +230,7 @@ class TransactionHelperTests: XCTestCase {
     }
   }
   
-  func testOutOfOperationRangeErrorShouldBeReceviedWhileGettingOperationByIndex() {
+  func testOutOfOperationRangeErrorShouldBeReceivedWhileGettingOperationByIndex() {
     let xdr = "AAAAAI3bxgX6nVnz8W2Cdz36gkTYisON4e5IX5/V0BhdsePAAAAAyAFIyE8AAAAJAAAAAAAAAAAAAAACAAAAAAAAAAEAAAAAq4beUlPpxLFRF2ciNPPNUlULKae/kplLgE8MTCTMwVAAAAAAAAAAANCdwwAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAEAAAAUAAAAAQAAAAUAAAABAAAABQAAAAEAAAAFAAAAAAAAAAAAAAAAAAAAAV2x48AAAABAvQgSWvqVkVRfzVlFgCEq1BHlij1nWhLjghq9IwRV3S/ruJxzJkle3esf9AE2INQatFqCHtJYzE/4uelK6CxeCw=="
     let operationIndex = 10
     

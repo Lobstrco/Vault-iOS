@@ -10,14 +10,6 @@ enum AccountStatus: Int {
 
 struct ApplicationCoordinatorHelper {
   
-  static let accountCreatedKey = "isAccountCreated"
-  static let pushNotificationKey = "isPushNotificationsEnabled"
-  
-  static var isNotificationsEnabled: Bool {
-    get { return UserDefaults.standard.bool(forKey: ApplicationCoordinatorHelper.pushNotificationKey) }
-    set { UserDefaults.standard.set(newValue, forKey: ApplicationCoordinatorHelper.pushNotificationKey) }
-  }
-  
   static func clearKeychain() {
     let secItemClasses = [kSecClassGenericPassword,
                           kSecClassInternetPassword,
@@ -30,15 +22,6 @@ struct ApplicationCoordinatorHelper {
     }
   }
   
-  static func setAccountStatus(_ status: AccountStatus) {
-    UserDefaults.standard.set(status.rawValue, forKey: ApplicationCoordinatorHelper.accountCreatedKey)
-  }
-  
-  static func getAccountStatus() -> AccountStatus {
-    let accountStatusRawValue =  UserDefaults.standard.integer(forKey: ApplicationCoordinatorHelper.accountCreatedKey)
-    return AccountStatus(rawValue: accountStatusRawValue) ?? .notCreated
-  }
-  
   static func logout() {
     if let fcmToken = Messaging.messaging().fcmToken {
       NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
@@ -46,8 +29,8 @@ struct ApplicationCoordinatorHelper {
       print("Couldn't unregister device")
     }
     
-    ApplicationCoordinatorHelper.setAccountStatus(.notCreated)
-    ApplicationCoordinatorHelper.isNotificationsEnabled = false
+    UserDefaultsHelper.accountStatus = .notCreated
+    UserDefaultsHelper.isNotificationsEnabled = false
     ApplicationCoordinatorHelper.clearKeychain()
     
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate

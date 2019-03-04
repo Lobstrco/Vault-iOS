@@ -1,6 +1,7 @@
 import Foundation
 import stellarsdk
 import UIKit
+import AcknowList
 
 class SettingsPresenterImpl: SettingsPresenter {
   private weak var view: SettingsView?
@@ -77,7 +78,7 @@ extension SettingsPresenterImpl {
       biometricIDCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
     case .notifications:
       biometricIDCell.setTitle(L10n.textSettingsNotificationsField)
-      biometricIDCell.setSwitch(ApplicationCoordinatorHelper.isNotificationsEnabled)
+      biometricIDCell.setSwitch(UserDefaultsHelper.isNotificationsEnabled)
     }
   }
   
@@ -97,21 +98,19 @@ extension SettingsPresenterImpl {
                  row: SettingsRow) {
     switch row {
     case .signerForAccounts:
-      let title = L10n.textSettingsSignersField
-      disclosureIndicatorTableViewCell.setTitle(title)
-    case .mnemonicCode:
-      let title = L10n.textSettingsMnemonicField
-      disclosureIndicatorTableViewCell.setTitle(title)
+      disclosureIndicatorTableViewCell.setAttribute(getSignerForAccountsData().attribute)
+      disclosureIndicatorTableViewCell.setTitle(getSignerForAccountsData().title)
+    case .mnemonicCode:      
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsMnemonicField)
     case .changePin:
-      let title = L10n.textSettingsChangePinField
-      disclosureIndicatorTableViewCell.setTitle(title)
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsChangePinField)
     case .help:
-      let title = L10n.textSettingsHelpField
-      disclosureIndicatorTableViewCell.setTitle(title)
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsHelpField)
     case .logout:
-      let title = L10n.textSettingsLogoutfield
-      disclosureIndicatorTableViewCell.setTitle(title)
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsLogoutfield)
       disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.red.color)
+    case .licenses:
+      disclosureIndicatorTableViewCell.setTitle(L10n.navTitleLicenses)
     default:
       break
     }
@@ -137,6 +136,8 @@ extension SettingsPresenterImpl {
       logoutButtonWasPressed()
     case .help:
       transitionToHelp()
+    case .licenses:
+      transitionToLicenses()
     default:
       break
     }
@@ -149,8 +150,8 @@ extension SettingsPresenterImpl {
   func biometricIDSwitchValueChanged(_ value: Bool, type: SwitchType) {
     switch type {
     case .notifications:
-      ApplicationCoordinatorHelper.isNotificationsEnabled = !ApplicationCoordinatorHelper.isNotificationsEnabled
-      if ApplicationCoordinatorHelper.isNotificationsEnabled {
+      UserDefaultsHelper.isNotificationsEnabled = !UserDefaultsHelper.isNotificationsEnabled
+      if UserDefaultsHelper.isNotificationsEnabled {
         notificationRegistrator.register()
       } else {
         notificationRegistrator.unregister()
@@ -185,11 +186,29 @@ extension SettingsPresenterImpl {
                                                  options: nil)?.first as! PublicKeyPopover
     publicKeyView.initData()
     
-    let popoverHeight: CGFloat = 214
+    let popoverHeight: CGFloat = 440
     let popover = CustomPopoverViewController(height: popoverHeight, view: publicKeyView)
     publicKeyView.popoverDelegate = popover
     
     view?.setPublicKeyPopover(popover)
+  }
+}
+
+// MARK: -  Private
+
+extension SettingsPresenterImpl {
+  
+  private func getSignerForAccountsData() -> (title: String, attribute: NSMutableAttributedString) {
+    let positionOfNumberInTitle = 11
+    let title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
+                                                  with: String(UserDefaultsHelper.numberOfSignerAccounts))
+    let titleAttribute = NSMutableAttributedString(string: title)
+    titleAttribute.addAttributes([.foregroundColor: Asset.Colors.main.color,
+                                  .font: UIFont.boldSystemFont(ofSize: 20)],
+                                 range: NSRange(location: positionOfNumberInTitle,
+                                                length: 1))
+    
+    return (title, titleAttribute)
   }
 }
 
@@ -246,5 +265,11 @@ extension SettingsPresenterImpl {
     
     let settingsViewController = view as! SettingsViewController
     settingsViewController.navigationController?.pushViewController(helpViewController, animated: true)
+  }
+  
+  func transitionToLicenses() {
+    let acknowListViewController = AcknowListViewController()
+    let settingsViewController = view as! SettingsViewController
+    settingsViewController.navigationController?.pushViewController(acknowListViewController, animated: true)
   }
 }

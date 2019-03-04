@@ -67,8 +67,8 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
       switch result {
       case .success(let signedAccounts):
         self.view?.setProgressAnimation(isDisplay: false)
-        if signedAccounts.count > 0 {
-          ApplicationCoordinatorHelper.setAccountStatus(.created)
+        if signedAccounts.count > 0 {          
+          UserDefaultsHelper.accountStatus = .created
           self.transitionToHomeScreen()
         } else {
           self.transitionToRecheckScreen()
@@ -94,7 +94,7 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
     view?.setQRCode(from: publicKey)
     registerForRemoteNotifications()
     
-    ApplicationCoordinatorHelper.setAccountStatus(.waitingToBecomeSinger)
+    UserDefaultsHelper.accountStatus = .waitingToBecomeSinger
   }
   
   func nextButtonWasPressed() {

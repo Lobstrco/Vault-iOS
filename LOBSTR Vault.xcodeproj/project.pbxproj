@@ -62,6 +62,7 @@
 		84CFB07C21D7B02E0020073C /* ApplicationInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CFB07B21D7B02E0020073C /* ApplicationInfo.swift */; };
 		9206BCE52211920F00EEF0D1 /* PublicKeyPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9206BCE42211920F00EEF0D1 /* PublicKeyPopover.swift */; };
 		9206BCE72211927E00EEF0D1 /* PublicKeyPopover.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9206BCE62211927E00EEF0D1 /* PublicKeyPopover.xib */; };
+		921E1F532229453400A740C4 /* UtilityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921E1F522229453400A740C4 /* UtilityHelper.swift */; };
 		9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AB21BE86B50070A526 /* Storyboards.swift */; };
 		9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */; };
 		9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */; };
@@ -76,6 +77,7 @@
 		922A3636220329FC00371B35 /* NotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922A3635220329FC00371B35 /* NotificationsService.swift */; };
 		922A363822032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922A363722032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift */; };
 		922A363A2204721600371B35 /* ApplicationCoordinatorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922A36392204721600371B35 /* ApplicationCoordinatorHelper.swift */; };
+		922C560722267CE50059E875 /* Pods-LOBSTR Vault-acknowledgements.plist in Resources */ = {isa = PBXBuildFile; fileRef = 922C560622267CE40059E875 /* Pods-LOBSTR Vault-acknowledgements.plist */; };
 		922C641321CB8E7100EDD409 /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641221CB8E7100EDD409 /* HomePresenter.swift */; };
 		922C641621CBA4D200EDD409 /* TransactionListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641521CBA4D200EDD409 /* TransactionListPresenter.swift */; };
 		922C641921CBA7C300EDD409 /* TransactionListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */; };
@@ -135,6 +137,8 @@
 		927BBBCC221AC6CF002C457A /* ConnectionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */; };
 		9287681C221C2CEE00014D23 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9287681B221C2CEE00014D23 /* NotificationManager.swift */; };
 		9287BDA8220CC45200F419B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9287BDA7220CC45200F419B8 /* Assets.xcassets */; };
+		9292F85422247EDC00954BE1 /* OperationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9292F85322247EDC00954BE1 /* OperationTableViewCell.xib */; };
+		9292F8562224858300954BE1 /* OperationDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9292F8552224858300954BE1 /* OperationDetailsTableViewCell.xib */; };
 		92960A6322135CB80055E4AD /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92960A6222135CB80055E4AD /* AsyncOperation.swift */; };
 		92960A66221366480055E4AD /* GettingMnemonicOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92960A65221366480055E4AD /* GettingMnemonicOperation.swift */; };
 		92960A6822136ADE0055E4AD /* SignTransactionOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92960A6722136ADE0055E4AD /* SignTransactionOperation.swift */; };
@@ -175,6 +179,7 @@
 		92DED2B1220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */; };
 		92E48FCA21E4D517006281E4 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E48FC921E4D517006281E4 /* Errors.swift */; };
 		92E48FCD21E4EE38006281E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 92E48FCC21E4EE38006281E4 /* Localizable.strings */; };
+		92ECA6982224182C004E8416 /* UserDefaultsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92ECA6972224182C004E8416 /* UserDefaultsHelper.swift */; };
 		A3F5F6A151BBA6DC6871C53E /* Pods_LOBSTR_VaultTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */; };
 /* End PBXBuildFile section */
 
@@ -243,6 +248,7 @@
 		84CFB07B21D7B02E0020073C /* ApplicationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationInfo.swift; sourceTree = "<group>"; };
 		9206BCE42211920F00EEF0D1 /* PublicKeyPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeyPopover.swift; sourceTree = "<group>"; };
 		9206BCE62211927E00EEF0D1 /* PublicKeyPopover.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PublicKeyPopover.xib; sourceTree = "<group>"; };
+		921E1F522229453400A740C4 /* UtilityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityHelper.swift; sourceTree = "<group>"; };
 		9221B7AB21BE86B50070A526 /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardCreation.swift; sourceTree = "<group>"; };
 		9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicRecovery.storyboard; sourceTree = "<group>"; };
@@ -260,6 +266,7 @@
 		922A3635220329FC00371B35 /* NotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsService.swift; sourceTree = "<group>"; };
 		922A363722032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDeviceForRemoteNotificationsRequest.swift; sourceTree = "<group>"; };
 		922A36392204721600371B35 /* ApplicationCoordinatorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationCoordinatorHelper.swift; sourceTree = "<group>"; };
+		922C560622267CE40059E875 /* Pods-LOBSTR Vault-acknowledgements.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Pods-LOBSTR Vault-acknowledgements.plist"; path = "Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault-acknowledgements.plist"; sourceTree = SOURCE_ROOT; };
 		922C641221CB8E7100EDD409 /* HomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
 		922C641521CBA4D200EDD409 /* TransactionListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListPresenter.swift; sourceTree = "<group>"; };
 		922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionListTableViewCell.swift; sourceTree = "<group>"; };
@@ -319,6 +326,8 @@
 		927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHelper.swift; sourceTree = "<group>"; };
 		9287681B221C2CEE00014D23 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		9287BDA7220CC45200F419B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		9292F85322247EDC00954BE1 /* OperationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OperationTableViewCell.xib; sourceTree = "<group>"; };
+		9292F8552224858300954BE1 /* OperationDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OperationDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		92960A6222135CB80055E4AD /* AsyncOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncOperation.swift; sourceTree = "<group>"; };
 		92960A65221366480055E4AD /* GettingMnemonicOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GettingMnemonicOperation.swift; sourceTree = "<group>"; };
 		92960A6722136ADE0055E4AD /* SignTransactionOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignTransactionOperation.swift; sourceTree = "<group>"; };
@@ -363,6 +372,7 @@
 		92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKHUDSuccessViewCustom.swift; sourceTree = "<group>"; };
 		92E48FC921E4D517006281E4 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		92E48FCC21E4EE38006281E4 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		92ECA6972224182C004E8416 /* UserDefaultsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsHelper.swift; sourceTree = "<group>"; };
 		A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LOBSTR_Vault.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5F14E4ADD030093E6C95C68 /* Pods-LOBSTR VaultTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.debug.xcconfig"; sourceTree = "<group>"; };
 		E2FEF80546C9EBC9190AF12C /* Pods-LOBSTR VaultTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -751,7 +761,6 @@
 				9277AB9F21CA598200379971 /* TabBar */,
 				9277ABA421CA5A7800379971 /* Home */,
 				9277ABA921CA5B1400379971 /* Transactions */,
-				925CCADC21DE49B500E75602 /* Operations */,
 				845CDCA021C92DF300791C94 /* Pin */,
 				9277EDA821D53EFD0043F3E8 /* Settings */,
 			);
@@ -847,9 +856,18 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		922C560522267CB80059E875 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				922C560622267CE40059E875 /* Pods-LOBSTR Vault-acknowledgements.plist */,
+			);
+			path = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		922C641421CBA48E00EDD409 /* Presenters */ = {
 			isa = PBXGroup;
 			children = (
+				925CCADA21DCF7F900E75602 /* OperationPresenter.swift */,
 				922C641521CBA4D200EDD409 /* TransactionListPresenter.swift */,
 				922C641C21CBB5C400EDD409 /* TransactionDetailsPresenter.swift */,
 				92C8C22E21F9C8F1003E4F5A /* TransactionStatusPresenter.swift */,
@@ -860,9 +878,9 @@
 		922C641721CBA7AC00EDD409 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				9292F85222247E4200954BE1 /* Operations */,
 				92C8C23721FB12EA003E4F5A /* ImportXDR */,
 				922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */,
-				9277EDA121D50BEC0043F3E8 /* OperationTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -979,40 +997,6 @@
 			path = Presenters;
 			sourceTree = "<group>";
 		};
-		925CCADC21DE49B500E75602 /* Operations */ = {
-			isa = PBXGroup;
-			children = (
-				925CCADF21DE4AAD00E75602 /* Views */,
-				925CCADE21DE49C400E75602 /* Controllers */,
-				925CCADD21DE49BC00E75602 /* Presenters */,
-			);
-			path = Operations;
-			sourceTree = "<group>";
-		};
-		925CCADD21DE49BC00E75602 /* Presenters */ = {
-			isa = PBXGroup;
-			children = (
-				925CCADA21DCF7F900E75602 /* OperationPresenter.swift */,
-			);
-			path = Presenters;
-			sourceTree = "<group>";
-		};
-		925CCADE21DE49C400E75602 /* Controllers */ = {
-			isa = PBXGroup;
-			children = (
-				925CCACC21DCAC9C00E75602 /* OperationViewController.swift */,
-			);
-			path = Controllers;
-			sourceTree = "<group>";
-		};
-		925CCADF21DE4AAD00E75602 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				925CCACE21DCAD5A00E75602 /* OperationDetailsTableViewCell.swift */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
 		9277AB8221C8E53800379971 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
@@ -1097,6 +1081,7 @@
 		9277ABAB21CA5B4100379971 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				925CCACC21DCAC9C00E75602 /* OperationViewController.swift */,
 				9277ABAC21CA5B5700379971 /* TransactionListViewController.swift */,
 				922C641A21CBB56B00EDD409 /* TransactionDetailsViewController.swift */,
 				925CCAE021DE4CE200E75602 /* TransactionStatusViewController.swift */,
@@ -1154,6 +1139,17 @@
 				9277EDAA21D53F1F0043F3E8 /* SettingsViewController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		9292F85222247E4200954BE1 /* Operations */ = {
+			isa = PBXGroup;
+			children = (
+				925CCACE21DCAD5A00E75602 /* OperationDetailsTableViewCell.swift */,
+				9277EDA121D50BEC0043F3E8 /* OperationTableViewCell.swift */,
+				9292F85322247EDC00954BE1 /* OperationTableViewCell.xib */,
+				9292F8552224858300954BE1 /* OperationDetailsTableViewCell.xib */,
+			);
+			path = Operations;
 			sourceTree = "<group>";
 		};
 		92960A642213654F0055E4AD /* Operations */ = {
@@ -1309,6 +1305,7 @@
 		92D3769021BAA95B00504713 /* LOBSTR Vault */ = {
 			isa = PBXGroup;
 			children = (
+				922C560522267CB80059E875 /* Supporting Files */,
 				849AD89521F0BA2E00FB9B36 /* LOBSTR Vault.entitlements */,
 				92C4156B21EDD44800960170 /* Constants */,
 				9221B7B021BE87370070A526 /* Classes */,
@@ -1381,6 +1378,8 @@
 				92C8C23A21FB148D003E4F5A /* ProgressHUD.swift */,
 				922A36392204721600371B35 /* ApplicationCoordinatorHelper.swift */,
 				927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */,
+				92ECA6972224182C004E8416 /* UserDefaultsHelper.swift */,
+				921E1F522229453400A740C4 /* UtilityHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1509,6 +1508,7 @@
 				92C8C24821FB3707003E4F5A /* SignerDetails.storyboard in Resources */,
 				8425547521E8BFF500350E06 /* BackUpAccount.storyboard in Resources */,
 				9277ABA321CA59BE00379971 /* TabBar.storyboard in Resources */,
+				9292F8562224858300954BE1 /* OperationDetailsTableViewCell.xib in Resources */,
 				9206BCE72211927E00EEF0D1 /* PublicKeyPopover.xib in Resources */,
 				924770CE2210385100924672 /* Help.storyboard in Resources */,
 				92C8C23421F9F20A003E4F5A /* success.json in Resources */,
@@ -1521,12 +1521,14 @@
 				92D3769C21BAA95B00504713 /* LaunchScreen.storyboard in Resources */,
 				845CDCB421C931F400791C94 /* Pin.storyboard in Resources */,
 				9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */,
+				9292F85422247EDC00954BE1 /* OperationTableViewCell.xib in Resources */,
 				92E48FCD21E4EE38006281E4 /* Localizable.strings in Resources */,
 				9251D5DC220650CA00B91AF6 /* GoogleService-Info.plist in Resources */,
 				9221B7C621BE8A520070A526 /* MnemonicSuggestionsViewCell.xib in Resources */,
 				92C111E721F0CC5C0083886F /* StartMenu.storyboard in Resources */,
 				9287BDA8220CC45200F419B8 /* Assets.xcassets in Resources */,
 				9277EDAD21D53F3B0043F3E8 /* Settings.storyboard in Resources */,
+				922C560722267CE50059E875 /* Pods-LOBSTR Vault-acknowledgements.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1549,6 +1551,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AcknowList/AcknowList.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
 				"${BUILT_PRODUCTS_DIR}/PKHUD/PKHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
@@ -1560,6 +1563,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AcknowList.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PKHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
@@ -1726,6 +1730,7 @@
 				9277EDA221D50BEC0043F3E8 /* OperationTableViewCell.swift in Sources */,
 				9277AB9321C9018400379971 /* APIRequest.swift in Sources */,
 				84CFB07321D7A19A0020073C /* DisclosureIndicatorTableViewCell.swift in Sources */,
+				921E1F532229453400A740C4 /* UtilityHelper.swift in Sources */,
 				84835ABA21D651B50039F1C5 /* UITableView+Dequeue.swift in Sources */,
 				92960A6A221439EB0055E4AD /* SubmitTransactionToHorizonOperation.swift in Sources */,
 				922C641921CBA7C300EDD409 /* TransactionListTableViewCell.swift in Sources */,
@@ -1742,6 +1747,7 @@
 				92686ECC2215828D001198EE /* Broadcasts.swift in Sources */,
 				84835AC221D65C1C0039F1C5 /* SettingsPresenterImpl.swift in Sources */,
 				92C8C22921F72BA1003E4F5A /* SubmitSignedTransactionRequest.swift in Sources */,
+				92ECA6982224182C004E8416 /* UserDefaultsHelper.swift in Sources */,
 				845CDCB221C930B900791C94 /* Shakeable.swift in Sources */,
 				9232EC7821C11C2700F8EBD4 /* MnemonicCollectionViewCell.swift in Sources */,
 				92D94EEF21F639990092F4BB /* CustomPopoverViewController.swift in Sources */,

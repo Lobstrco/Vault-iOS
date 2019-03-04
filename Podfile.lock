@@ -1,4 +1,5 @@
 PODS:
+  - AcknowList (1.8)
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
   - Fabric (1.9.0)
@@ -69,6 +70,7 @@ PODS:
   - SwiftGen (6.0.2)
 
 DEPENDENCIES:
+  - AcknowList
   - Crashlytics (~> 3.12.0)
   - Fabric (~> 1.9.0)
   - Firebase/Core
@@ -80,6 +82,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - AcknowList
     - Crashlytics
     - Fabric
     - Firebase
@@ -98,6 +101,7 @@ SPEC REPOS:
     - SwiftGen
 
 SPEC CHECKSUMS:
+  AcknowList: 5b8820004d019d0a8d6a091ea2392dcb54bd3ad2
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
   Firebase: 8bb9268bff82374f2cbaaabb143e725743c316ae
@@ -115,6 +119,6 @@ SPEC CHECKSUMS:
   stellar-ios-mac-sdk: b0c589f5d5a7776edffcf4ebbe4e12d988030e7e
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
 
-PODFILE CHECKSUM: 1c7d218a6cf1d4101529ce0d5f813e51d0da5853
+PODFILE CHECKSUM: 50b31ccd951f8d684dccf4c0c93491059ccdfbc0
 
 COCOAPODS: 1.5.3

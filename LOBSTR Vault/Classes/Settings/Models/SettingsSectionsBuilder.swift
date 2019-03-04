@@ -13,7 +13,7 @@ struct SettingsSectionsBuilderImpl: SettingsSectionsBuilder {
     let security = SettingsSection(type: .security,
                                    rows: securityRows)
     
-    let about = SettingsSection(type: .about, rows: [.help, .notifications, .version,  .logout, .copyright])
+    let about = SettingsSection(type: .about, rows: [.help, .notifications, .licenses, .version,  .logout, .copyright])
     return [wallet, security, about]
   }
 }

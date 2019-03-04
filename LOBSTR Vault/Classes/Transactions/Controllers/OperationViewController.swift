@@ -13,6 +13,9 @@ class OperationViewController: UIViewController, StoryboardCreation {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    tableView.register(UINib(nibName: "OperationDetailsTableViewCell", bundle: nil),
+                       forCellReuseIdentifier: "OperationDetailsTableViewCell")
+    
     presenter.operationViewDidLoad()
     configureTableView()
     
@@ -61,8 +64,12 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "OperationDetailsTableViewCell", for: indexPath) as! OperationDetailsTableViewCell
     presenter.configure(cell, forRow: indexPath.item)
-    
+    cell.selectionStyle = .none
     return cell
+  }
+  
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 50
   }
   
 }

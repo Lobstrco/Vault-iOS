@@ -7,6 +7,11 @@ class TransactionListViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var importButton: UIButton!
+  @IBOutlet var emptyStateLabel: UILabel!
+  
+  var emptyState: UILabel {
+    get { return emptyStateLabel }
+  }
   
   lazy var refreshControl: UIRefreshControl = {
     let refreshControl = UIRefreshControl()
@@ -17,7 +22,6 @@ class TransactionListViewController: UIViewController {
   }()
   
   let progressHUD = ProgressHUD()
-  var emptyStateLabel: UILabel?
   
   // MARK: - Lifecycle
   
@@ -51,6 +55,7 @@ class TransactionListViewController: UIViewController {
   
   private func setStaticStrings() {
     navigationItem.title = L10n.navTitleTransactions
+    emptyStateLabel.text = L10n.textEmptyStateTransactions
   }
   
   private func setAppearance() {
@@ -64,26 +69,7 @@ class TransactionListViewController: UIViewController {
     tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
   }
   
-  private func setEmptyStateLabel() {
-    emptyStateLabel = UILabel()
-    
-    guard let emptyStateLabel = emptyStateLabel else {
-      return
-    }
-    
-    view.addSubview(emptyStateLabel)
-    
-    emptyStateLabel.text = L10n.textEmptyStateTransactions
-    emptyStateLabel.translatesAutoresizingMaskIntoConstraints = false
-    emptyStateLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-    emptyStateLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
-  }
-  
-  func removeEmptyStateLabel() {
-    emptyStateLabel?.removeFromSuperview()
-  }
-  
-  func setHUDSuccessViewAfterRemoveOperation() {
+  internal func setHUDSuccessViewAfterRemoveOperation() {
     HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.textDeclinedTransaction), delay: 1.5)
   }
 }
@@ -97,9 +83,7 @@ extension TransactionListViewController: TransactionListView {
     tableView.deleteRows(at: [IndexPath.init(row: index, section: 0)], with: .right)
     tableView.endUpdates()
     
-    if isEmpty {
-      setEmptyStateLabel()
-    }
+    emptyState.isHidden = !isEmpty
   }
   
   func setTransactionList(isEmpty: Bool) {
@@ -107,13 +91,13 @@ extension TransactionListViewController: TransactionListView {
     tableView.dataSource = self
     tableView.reloadData()
     
-    isEmpty ? setEmptyStateLabel(): removeEmptyStateLabel()
+    emptyState.isHidden = !isEmpty
   }
   
   func reloadTransactionList(isEmpty: Bool) {
     tableView.reloadData()
     
-    isEmpty ? setEmptyStateLabel(): removeEmptyStateLabel()
+    emptyState.isHidden = !isEmpty
   }
   
   func setProgressAnimation(isEnabled: Bool) {
@@ -144,26 +128,8 @@ extension TransactionListViewController: UITableViewDelegate, UITableViewDataSou
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = self.tableView.dequeueReusableCell(withIdentifier: "TransactionListTableViewCell") as! TransactionListTableViewCell
-    presenter.configure(cell, forRow: indexPath.item)
+    presenter.configure(cell, forRow: indexPath.item)        
     
-    let borderView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 32, height: 81))
-    borderView.backgroundColor = Asset.Colors.white.color
-    borderView.clipsToBounds = true
-    borderView.layer.cornerRadius = 6
-    borderView.layer.borderWidth = 1
-    borderView.layer.borderColor = Asset.Colors.cellBorder.color.cgColor
-    
-    borderView.layer.addBorder(edge: .left, color: Asset.Colors.main.color, thickness: 5)
-    
-    cell.content.layer.shadowColor = UIColor.black.cgColor
-    cell.content.layer.shadowOffset = CGSize(width: 0, height: 2)
-    cell.content.layer.shadowOpacity = 0.1
-    cell.content.layer.shadowRadius = 2
-    
-    cell.content.addSubview(borderView)
-    cell.content.sendSubviewToBack(borderView)
-    
-    cell.selectionStyle = UITableViewCell.SelectionStyle.none
     return cell
   }
   

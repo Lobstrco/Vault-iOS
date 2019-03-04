@@ -45,7 +45,7 @@ struct TransactionHelper {
   
   static func getNamesAndValuesOfProperties(from operation: stellarsdk.Operation) -> [(String, String)] {
     
-    var data: [(String, String)] = []
+    var data: [(name: String, value: String)] = []
     
     let operationMirror = Mirror(reflecting: operation)
     for (name, value) in operationMirror.children {
@@ -56,19 +56,35 @@ struct TransactionHelper {
       
       switch valueType {
       case is KeyPair.Type:
-        valueParam = (value as! KeyPair).accountId
+        valueParam = (value as? KeyPair)?.accountId
+      case is KeyPair?.Type:
+        valueParam = (value as? KeyPair)?.accountId
       case is stellarsdk.Asset.Type:
-        valueParam = (value as! stellarsdk.Asset).code ?? "XLM"
+        valueParam = (value as? stellarsdk.Asset)?.code ?? "XLM"
       case is Decimal.Type:
-        valueParam = (value as! Decimal).description
+        valueParam = (value as? Decimal)?.description
       case is UInt32?.Type:
         valueParam = (value as? UInt32)?.description
+      case is UInt64.Type:
+        valueParam = (value as? UInt64)?.description
+      case is Price.Type:
+        if let price = value as? Price {
+          valueParam = String(format: "%.6f", Double(price.d) / Double(price.n))
+        }
+      case is Decimal?.Type:
+        valueParam = (value as? Decimal)?.description
+      case is String.Type:
+        valueParam = value
+      case is String?.Type:
+        valueParam = value
+      case is Bool.Type:
+        valueParam = (value as? Bool)?.description
       default:
         continue
       }
       
-      if let ss = valueParam as? String {
-        data.append((name, ss))
+      if let param = valueParam as? String {
+        data.append((name, param))
       }
     }
     

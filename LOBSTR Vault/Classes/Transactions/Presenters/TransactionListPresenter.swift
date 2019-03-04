@@ -21,7 +21,7 @@ protocol TransactionListPresenter {
 }
 
 protocol TransactionListCellView {
-  func set(date: String?, operationType: String?)
+  func set(date: String?, operationType: String?, isValid: Bool)
 }
 
 class TransactionListPresenterImpl {
@@ -73,6 +73,7 @@ class TransactionListPresenterImpl {
     guard ConnectionHelper.isConnectedToNetwork() else {
       return
     }
+    
     transactionService.getPendingTransactionList() { result in
       switch result {
       case .success(let transactions):
@@ -102,7 +103,7 @@ extension TransactionListPresenterImpl: ImportXDROutput {
     }
     
     let importXDRView = Bundle.main.loadNibNamed("ImportXDR", owner: view, options: nil)?.first as! ImportXDR
-    let popoverHeight: CGFloat = 550
+    let popoverHeight: CGFloat = 500
     let popover = CustomPopoverViewController(height: popoverHeight, view: importXDRView)
     
     importXDRView.popoverDelegate = popover
@@ -113,57 +114,17 @@ extension TransactionListPresenterImpl: ImportXDROutput {
   }
   
   func submitTransaction(with xdr: String) {
-    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+    guard let _ = try? TransactionEnvelopeXDR(xdr: xdr) else {
       importXDRInput?.setError(error: "Invalid XDR")
       return
     }
     
-    importXDRInput?.setProgressAnimation(isEnable: true)
+    importXDRInput?.closePopup()
     
-    let gettingMnemonic = GettingMnemonicOperation()
-    let signTransaction = SignTransactionOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
-    let submitTransactionToHorizon = SubmitTransactionToHorizonOperation()
-    let submitTransactionToVaultServer = SubmitTransactionToVaultServerOperation(transactionHash: nil)
+    var transaction = Transaction()
+    transaction.xdr = xdr
     
-    submitTransactionToVaultServer.addDependency(submitTransactionToHorizon)
-    submitTransactionToHorizon.addDependency(signTransaction)
-    signTransaction.addDependency(gettingMnemonic)
-    
-    OperationQueue().addOperations([gettingMnemonic,
-                                    signTransaction,
-                                    submitTransactionToHorizon,
-                                    submitTransactionToVaultServer],
-                                   waitUntilFinished: false)
-    
-    submitTransactionToHorizon.completionBlock = {
-      DispatchQueue.main.async {
-        self.importXDRInput?.setProgressAnimation(isEnable: false)
-        self.importXDRInput?.closePopup()
-        
-        if let infoError = submitTransactionToVaultServer.outputError as? ErrorDisplayable {
-          self.view?.setErrorAlert(for: infoError)
-          return
-        }
-        
-        guard let resultCode = submitTransactionToHorizon.horizonResultCode else {
-          return
-        }
-        
-        guard let xdr = signTransaction.xdrEnvelope else {
-          return
-        }
-        
-        self.transitionToTransactionStatus(with: resultCode, xdr: xdr)
-      }
-    }
-    
-    submitTransactionToVaultServer.completionBlock = {
-      DispatchQueue.main.async {
-        if let _ = submitTransactionToVaultServer.outputError {
-          // check errors from vault server and send to crashlytics
-        }
-      }
-    }
+    transitionToTransactionDetailsScreenFromImport(transaction: transaction)
   }
 }
 
@@ -211,11 +172,12 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
       operationDate = TransactionHelper.getValidatedDate(from: transactionDate)
     }
     
-    cell.set(date: operationDate, operationType: operationType)
+    let isValid = transactionList[row].sequenceOutdatedAt == nil ? true : false    
+    cell.set(date: operationDate, operationType: operationType, isValid: isValid)
   }
   
   func transactionWasSelected(with index: Int) {
-    transitionToTransactionDetailsScreen(by: index)
+    transitionToTransactionDetailsScreenFromList(by: index)
   }
   
   func pullToRefreshWasActivated() {
@@ -226,12 +188,24 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
 // MARK: - Transitions
 
 extension TransactionListPresenterImpl {
-  private func transitionToTransactionDetailsScreen(by index: Int) {
+  private func transitionToTransactionDetailsScreenFromList(by index: Int) {
     let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
     
-    transactionDetailsViewController.presenter = TransactionDetailsPresenterImpl(view: transactionDetailsViewController)
-    transactionDetailsViewController.presenter.setTransactionData(transactionList[index], withIndex: index)
+    transactionDetailsViewController.presenter = TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
+                                                                                 transaction: transactionList[index],
+                                                                                 type: .standard)
+    transactionDetailsViewController.presenter.transactionListIndex = index
     
+    let transactionListViewController = view as! TransactionListViewController
+    transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
+  }
+  
+  private func transitionToTransactionDetailsScreenFromImport(transaction: Transaction) {
+    let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
+    
+    transactionDetailsViewController.presenter = TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
+                                                                                 transaction: transaction,
+                                                                                 type: .imported)
     let transactionListViewController = view as! TransactionListViewController
     transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
   }

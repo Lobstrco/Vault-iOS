@@ -10,10 +10,12 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
   @IBOutlet var mnemonicDescriptionLabel: UILabel!
   @IBOutlet var copyDescriptionLabel: UILabel!
   @IBOutlet var confirmDescriptionLabel: UILabel!
-  
   @IBOutlet var nextButton: UIButton!
+  @IBOutlet weak var heightConstraint: NSLayoutConstraint!
   
   var presenter: MnemonicGenerationPresenter!
+  
+  private let heightOfCollectionViewFor12Words: CGFloat = 140
   
   // MARK: - Lifecycle
   
@@ -21,8 +23,6 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
     super.viewDidLoad()
     
     setAppearance()
-    setStaticStrings()
-    
     presenter.mnemonicGenerationViewDidLoad()
   }
   
@@ -32,11 +32,6 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
   
   override func viewWillDisappear(_ animated: Bool) {
     tabBarController?.tabBar.isHidden = false
-  }
-  
-  // TEMP
-  override func viewDidLayoutSubviews() {
-    AppearanceHelper.setDashBorders(for: collectionView, with: Asset.Colors.gray.color.cgColor)
   }
   
   // MARK: - IBAction
@@ -64,9 +59,19 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
     AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)
   }
   
+  private func setCollectionViewAppearance() {
+    heightConstraint.constant = presenter.numberOfMnemonicWords == 12 ?
+      heightOfCollectionViewFor12Words : heightOfCollectionViewFor12Words * 2
+    
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+      AppearanceHelper.setDashBorders(for: self.collectionView, with: Asset.Colors.gray.color.cgColor)
+    }
+  }
+  
   private func setStaticStrings() {
     mnemonicDescriptionLabel.text = L10n.textMnemonicDescription
-    copyDescriptionLabel.text = L10n.textCopyDescription
+    copyDescriptionLabel.text = L10n.textCopyDescription.replacingOccurrences(of: "[number]",
+                                                                              with: String(presenter.numberOfMnemonicWords))
     confirmDescriptionLabel.text = L10n.textConfirmDescription
     navigationItem.title = L10n.navTitleMnemonicGeneration
   }
@@ -79,6 +84,9 @@ extension MnemonicGenerationViewController: MnemonicGenerationView {
   func setMnemonicList(mnemonicList: [String]) {
     collectionView.dataSource = self
     collectionView.delegate = self
+    
+    setCollectionViewAppearance()
+    setStaticStrings()
   }
   
   func copyToClipboard(mnemonic: String) {

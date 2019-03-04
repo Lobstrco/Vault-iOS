@@ -13,6 +13,7 @@ protocol HomeView: class {
 protocol HomePresenter {
   func homeViewDidLoad()
   func copyKeyButtonWasPressed()
+  func copySignerKeyButtonWasPressed()
   func updateSignerDetails()
 }
 
@@ -23,6 +24,7 @@ class HomePresenterImpl: HomePresenter {
   private let vaultStorage: VaultStorage
   
   private var publicKey: String?
+  private var signerForKey: String?
   
   init(view: HomeView,
        transactionService: TransactionService = TransactionService(),
@@ -63,6 +65,13 @@ class HomePresenterImpl: HomePresenter {
     }
   }
   
+  func copySignerKeyButtonWasPressed() {
+    if let signerForKey = signerForKey {
+      UIPasteboard.general.string = signerForKey
+      view?.setCopyHUD()
+    }
+  }
+  
   func updateSignerDetails() {
     displaySignerDetails()
   }
@@ -99,8 +108,13 @@ class HomePresenterImpl: HomePresenter {
     transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let signedAccounts):
-        self.view?.setSignerDetails(signedAccounts)
         self.view?.setProgressAnimationForSignerDetails(isEnabled: false)
+        self.view?.setSignerDetails(signedAccounts)
+        UserDefaultsHelper.numberOfSignerAccounts = signedAccounts.count
+        
+        if signedAccounts.count == 1 {
+          self.signerForKey = signedAccounts.first?.address
+        }
       case .failure(let error):
         print("error: \(error)")
         self.view?.setProgressAnimationForSignerDetails(isEnabled: false)
