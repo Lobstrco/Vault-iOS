@@ -214,6 +214,7 @@
                         <outlet property="titleOfsignerForLabel" destination="7jL-77-T7v" id="uEv-0x-hr1"/>
                         <outlet property="transactionListButton" destination="ooe-4g-8hg" id="ix0-pm-w6T"/>
                         <outlet property="transactionNumberLabel" destination="5jv-Vp-ouC" id="oa2-WB-Kr0"/>
+                        <outlet property="transactionNumberView" destination="9y2-pl-xlj" id="ZVs-3I-GKh"/>
                         <outlet property="transactionsToSignLabel" destination="oFH-77-3bt" id="VxE-BV-wSY"/>
                     </connections>
                 </viewController>

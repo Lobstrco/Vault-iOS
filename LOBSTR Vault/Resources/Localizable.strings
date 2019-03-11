@@ -28,7 +28,7 @@
 // Navigation titles
 "nav_title_restore_account" = "Recover Account";
 "nav_title_mnemonic_generation" = "Recovery Phrase";
-"nav_title_mnemonic_verification" = "Enter Recovery Phrase";
+"nav_title_mnemonic_verification" = "Verify Recovery Phrase";
 
 "nav_title_transactions" = "Transactions";
 "nav_title_operation_details" = "Operation Details";
@@ -54,7 +54,7 @@
 // Backup screen
 "text_backup_title" = "Backup Your Account";
 "text_backup_description" = "You will be shown a 12 word recovery phrase. It will allow you to recover access to your account in case your phone is lost or stolen.";
-"button_title_understand" = "I understand";
+"button_title_understand" = "I Understand";
 
 // Mnemonic generation screen
 "text_mnemonic_description" = "Recovery phrase can help you to recover access to your account in case your phone is lost or stolen.";
@@ -62,27 +62,28 @@
 "text_confirm_description" = "You will need to confirm recovery phrase on the next screen";
 
 // Restore Account screen
-"text_restore_info" = "Enter the 12 or 24 word recovery phrase you were given when you created your Vault account";
+"text_restore_info" = "Enter the 12 or 24 word recovery phrase you were given when you created your Vault account.";
 "text_restore_placeholder" = "Mnemonic Code...";
 
 // Mnemonic verification screen
-"text_mnemonic_verification_description" = "Tap the words in the correct order";
+"text_mnemonic_verification_description" = "Tap the words in the correct order.";
 "text_mnemonic_verifivation_incorrect_order" = "Wrong order. Please try again.";
 
 // Biometric ID screen
 "text_protect_your_wallet" = "Protect your account";
 "text_protect_your_wallet_description" = "Use Biometric login instead of your PIN to access your account.";
 "text_turn_on_description" = "You can do it later in Settings";
-"button_title_turn_on_fingerprint" = "Enable Fingerprint";
+"button_title_turn_on_fingerprint" = "Enable Touch ID";
 "button_title_turn_on_faceid" = "Enable Face ID";
 "button_title_skip_for_now" = "I will do this later";
+"button_title_turn_on" = "Turn On";
 
 // Public Key screen
 "text_public_key_title" = "Your Vault Public Key";
-"text_public_key_description" = "This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)";
+"text_public_key_description" = "This key will be set as a signer for your Stellar account. To protect your LOBSTR account, copy and paste the key to LOBSTR (Settings->Multisig->Enable).";
 
 // Re-check screen
-"text_recheck_info" = "LOBSTR Vault is not a signer for any Stellar account now. Press “Re-Check” button after adding Vault signer in your wallet";
+"text_recheck_info" = "LOBSTR Vault is not a signer for any Stellar account now. Press “Re-Check” button after adding Vault signer in your wallet.";
 "button_title_recheck" = "Re-Check";
 
 // Signer Check screen
@@ -126,20 +127,22 @@
 "text_settings_logoutfield" = "Log Out";
 "text_settings_copyright" = "©2019. All rights reserved"; // change current year
 "text_settings_public_key_title" = "Vault Public Key";
-"text_settings_signers_field" = "Signer for [number] accounts";
+"text_settings_signers_field" = "Signer for [number] account";
 "button_title_show" = "Show";
+"text_settings_display_mnemonic_title" = "Enter your PIN to view your Recovery Phrase";
+"text_settings_display_pin_changed" = "PIN changed";
 
 // Change Passcode screen
 "text_change_passcode_enter_old" = "Enter PIN";
 "text_change_passcode_enter_new" = "Create PIN";
 "text_change_passcode_confirm_new" = "Confirm PIN";
-"text_change_passcode_error" = "PIN’s do not match";
+"text_change_passcode_error" = "PINs do not match";
 "text_change_the_same_passcode" = "You can not use old PIN";
 
 // Transaction Status screen
 "text_status_success_title" = "Success";
-"text_status_failure_title" = "Failure";
-"text_status_description" = "You need more signatures";
+"text_status_failure_title" = "Transaction Failed";
+"text_status_description" = "You need more signatures to submit the operation";
 "text_status_signed_xdr_title" = "Signed XDR";
 
 // Signed Details screen
@@ -274,11 +277,11 @@ If you want to use your LOBSTR Vault account as a wallet, you would need to crea
 ";
 "help_chapter5_title" = "5. Where is my private key?";
 "help_chapter5_description" = "
-The seed or Recovery Phrase is the single secret piece of data that is used to generate both the public and private key for your account.
+The Recovery Phrase is the single secret piece of data that is used to generate both the public and private key for your account.
 
-LOBSTR Vault uses the Recovery Phrase instead of the private key for your convenience. To have full access to your account, you only need to provide a seed instead of both a public key and a private key.
+LOBSTR Vault uses the Recovery Phrase instead of the private key for your convenience.
 
-A private key is still stored locally and used to encrypt data and sign transactions.
+Your private key is still stored locally and used to encrypt data and sign transactions.
 
 LOBSTR Vault is not a wallet app and does not expose the private key for security reasons.
 
@@ -530,9 +533,13 @@ If you successfully 'Denied' a transaction in LOBSTR Vault, the transaction is r
 "help_third_section_title" = "SIGNING TRANSACTIONS";
 
 // Error messages
+"error_unknown" = "error_unknown";
+"error_unknown_title" = "Unknown Error";
+"error_unknown_message" = "An unknown error has occured. If this issue persists, please contact support.";
+
 "error_biometric_not_available" = "error_biometric_not_available";
 "error_biometric_not_available_title" = "Not available";
-"error_biometric_not_available_message" = "Biometric authentication not available.";
+"error_biometric_not_available_message" = "Biometric ID turned off in device settings";
 
 "error_biometric_pressed_cancel" = "error_biometric_pressed_cancel";
 "error_biometric_pressed_cancel_title" = "Biometric disabled";
@@ -549,6 +556,60 @@ If you successfully 'Denied' a transaction in LOBSTR Vault, the transaction is r
 "error_biometric_not_verified_identity" = "error_biometric_not_verified_identity";
 "error_biometric_not_verified_identity_title" = "Biometric disabled";
 "error_biometric_not_verified_identity_message" = "There was a problem verifying your identity";
+
+
+// Horizon error messages
+"horizon_error_request_failed" = "horizon_error_request_failed";
+"horizon_error_request_failed_title" = "No Network Connection";
+"horizon_error_request_failed_message" = "Your network connection appears to be offline. Please connect to a Wifi or cellular network to complete this operation.";
+
+"horizon_error_bad_request" = "horizon_error_bad_request";
+"horizon_error_bad_request_title" = "Bad Request";
+"horizon_error_bad_request_message" = "There was an error processing this request. If this issue persists, please contact support.";
+
+"horizon_error_invalid_response" = "horizon_error_invalid_response";
+"horizon_error_invalid_response_title" = "Invalid Response";
+"horizon_error_invalid_response_message" = "The server returned an invalid and unprocessable response. Please contact support for assistance.";
+
+"horizon_error_unauthorized" = "horizon_error_unauthorized";
+"horizon_error_unauthorized_title" = "Unauthorized";
+"horizon_error_unauthorized_message" = "The requested action is unauthorized for this account.";
+
+"horizon_error_forbidden" = "horizon_error_forbidden";
+"horizon_error_forbidden_title" = "Forbidden";
+"horizon_error_forbidden_message" = "The requested resource is forbidden.";
+
+"horizon_error_not_found" = "horizon_error_not_found";
+"horizon_error_not_found_title" = "Not Found";
+"horizon_error_not_found_message" = "The requested information cannot be retrieved because it wasn't found.";
+
+"horizon_error_not_acceptable" = "horizon_error_not_acceptable";
+"horizon_error_not_acceptable_title" = "Not Acceptable";
+"horizon_error_not_acceptable_message" = "The requested action is not acceptable.";
+
+"horizon_error_before_history" = "horizon_error_before_history";
+"horizon_error_before_history_title" = "Account Error";
+"horizon_error_before_history_message" = "Horizon is unable to provide the required information, it is outside of the recorded history range.";
+
+"horizon_error_rate_limit" = "horizon_error_rate_limit";
+"horizon_error_rate_limit_title" = "Rate Limit";
+"horizon_error_rate_limit_message" = "Rate limit reached. Please try again in a few minutes.";
+
+"horizon_error_internal_server" = "horizon_error_internal_server";
+"horizon_error_internal_server_title" = "Internal Server Error";
+"horizon_error_internal_server_message" = "There was an internal server error. Please try again, or contact support for assistance.";
+
+"horizon_error_not_implemented" = "horizon_error_not_implemented";
+"horizon_error_not_implemented_title" = "Not Implemented";
+"horizon_error_not_implemented_message" = "This feature has not been implemented.";
+
+"horizon_error_stale_history" = "horizon_error_stale_history";
+"horizon_error_stale_history_title" = "Stale Data";
+"horizon_error_stale_history_message" = "Could not fetch account history from Horizon, the requested data is out of date.";
+
+"horizon_error_stream" = "horizon_error_stream";
+"horizon_error_stream_title" = "Steam Error";
+"horizon_error_stream_message" = "There was an error receiving Horizon stream data.";
 
 
 "INVALID_TRANSACTION_TITLE" = "Invalid Transaction";

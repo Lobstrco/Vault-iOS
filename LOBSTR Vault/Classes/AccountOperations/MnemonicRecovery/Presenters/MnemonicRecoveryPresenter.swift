@@ -1,7 +1,7 @@
 import Foundation
 
 protocol MnemonicRecoveryView: class {
-  func displayRecoveryButton(isHidden: Bool)
+  func setRecoveryButtonStatus(isEnabled: Bool)
   func setHighlightTextView(isEnabled: Bool)
   func displaySuggestionList(suggestionList: [String])
   func displayPickedWordFromSuggestionList(updatedText: String)
@@ -29,7 +29,7 @@ class MnemonicRecoveryPresenterImpl {
   
   init(view: MnemonicRecoveryView, mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
     self.view = view
-    self.view?.displayRecoveryButton(isHidden: true)
+    self.view?.setRecoveryButtonStatus(isEnabled: false)
     self.mnemonicManager = mnemonicManager
   }
   
@@ -90,7 +90,7 @@ class MnemonicRecoveryPresenterImpl {
     
     for word in phrases {
       if !MnemonicHelper.mnemonicWordIsExist(word) {
-        view?.displayRecoveryButton(isHidden: true)
+        view?.setRecoveryButtonStatus(isEnabled: false)
         view?.setHighlightTextView(isEnabled: true)
         return
       } else {
@@ -100,11 +100,11 @@ class MnemonicRecoveryPresenterImpl {
     
     guard phrases.count == possibleWordsNumberInMnemonic.twelveWords ||
       phrases.count == possibleWordsNumberInMnemonic.twentyFourWords else {
-      view?.displayRecoveryButton(isHidden: true)
+      view?.setRecoveryButtonStatus(isEnabled: false)
       return
     }
     
-    view?.displayRecoveryButton(isHidden: false)
+    view?.setRecoveryButtonStatus(isEnabled: true)
   }
 }
 

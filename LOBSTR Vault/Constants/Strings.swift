@@ -51,11 +51,13 @@ internal enum L10n {
   internal static let buttonTitleSubmit = L10n.tr("Localizable", "button_title_submit")
   /// By registering you agree to our Terms of Service and Privacy Policy.
   internal static let buttonTitleTerms = L10n.tr("Localizable", "button_title_terms")
+  /// Turn On
+  internal static let buttonTitleTurnOn = L10n.tr("Localizable", "button_title_turn_on")
   /// Enable Face ID
   internal static let buttonTitleTurnOnFaceid = L10n.tr("Localizable", "button_title_turn_on_faceid")
-  /// Enable Fingerprint
+  /// Enable Touch ID
   internal static let buttonTitleTurnOnFingerprint = L10n.tr("Localizable", "button_title_turn_on_fingerprint")
-  /// I understand
+  /// I Understand
   internal static let buttonTitleUnderstand = L10n.tr("Localizable", "button_title_understand")
   /// View Transactions List
   internal static let buttonTitleViewTransactionsList = L10n.tr("Localizable", "button_title_view_transactions_list")
@@ -65,7 +67,7 @@ internal enum L10n {
   internal static let cancelAlertMnemonicTitle = L10n.tr("Localizable", "cancel_alert_mnemonic_title")
   /// error_biometric_not_available
   internal static let errorBiometricNotAvailable = L10n.tr("Localizable", "error_biometric_not_available")
-  /// Biometric authentication not available.
+  /// Biometric ID turned off in device settings
   internal static let errorBiometricNotAvailableMessage = L10n.tr("Localizable", "error_biometric_not_available_message")
   /// Not available
   internal static let errorBiometricNotAvailableTitle = L10n.tr("Localizable", "error_biometric_not_available_title")
@@ -93,6 +95,12 @@ internal enum L10n {
   internal static let errorBiometricPressedPasswordMessage = L10n.tr("Localizable", "error_biometric_pressed_password_message")
   /// Biometric disabled
   internal static let errorBiometricPressedPasswordTitle = L10n.tr("Localizable", "error_biometric_pressed_password_title")
+  /// error_unknown
+  internal static let errorUnknown = L10n.tr("Localizable", "error_unknown")
+  /// An unknown error has occured. If this issue persists, please contact support.
+  internal static let errorUnknownMessage = L10n.tr("Localizable", "error_unknown_message")
+  /// Unknown Error
+  internal static let errorUnknownTitle = L10n.tr("Localizable", "error_unknown_title")
   /// \nIn order to change the PIN of your LOBSTR Vault account, perform the following steps:\n\n1. Select the 'Settings' screen in the main navigation\n2. Select the 'Change PIN' option in the 'Security' section\n3. Enter your current PIN\n4. Enter your new desired PIN\n5. Confirm your new desired PIN\n\n\nIf you can't remember your PIN or your biometric authentication does not match, you will need to go through the recovery process in order to access your account.\n\nThere is currently no ability to request a PIN reset in LOBSTR Vault app.\n\nBefore you log out from your LOBSTR Vault account, make sure you have secured your Recovery Phrase. You will not be able to recover your account or sign in without your Recovery Phrase - your account will be lost.\n\nRefer to the 'How To' section for instructions on the account recovery process.\n
   internal static let helpChapter10Description = L10n.tr("Localizable", "help_chapter10_description")
   /// 10. Change or Reset my PIN
@@ -129,7 +137,7 @@ internal enum L10n {
   internal static let helpChapter4Description = L10n.tr("Localizable", "help_chapter4_description")
   /// 4. Where can I find my public key?
   internal static let helpChapter4Title = L10n.tr("Localizable", "help_chapter4_title")
-  /// \nThe seed or Recovery Phrase is the single secret piece of data that is used to generate both the public and private key for your account.\n\nLOBSTR Vault uses the Recovery Phrase instead of the private key for your convenience. To have full access to your account, you only need to provide a seed instead of both a public key and a private key.\n\nA private key is still stored locally and used to encrypt data and sign transactions.\n\nLOBSTR Vault is not a wallet app and does not expose the private key for security reasons.\n\nIf you need the private key of your LOBSTR Vault account, you would need to derive it from your 12-word Recovery Phrase using third party tools.\n
+  /// \nThe Recovery Phrase is the single secret piece of data that is used to generate both the public and private key for your account.\n\nLOBSTR Vault uses the Recovery Phrase instead of the private key for your convenience.\n\nYour private key is still stored locally and used to encrypt data and sign transactions.\n\nLOBSTR Vault is not a wallet app and does not expose the private key for security reasons.\n\nIf you need the private key of your LOBSTR Vault account, you would need to derive it from your 12-word Recovery Phrase using third party tools.\n
   internal static let helpChapter5Description = L10n.tr("Localizable", "help_chapter5_description")
   /// 5. Where is my private key?
   internal static let helpChapter5Title = L10n.tr("Localizable", "help_chapter5_title")
@@ -155,6 +163,84 @@ internal enum L10n {
   internal static let helpSecondSectionTitle = L10n.tr("Localizable", "help_second_section_title")
   /// SIGNING TRANSACTIONS
   internal static let helpThirdSectionTitle = L10n.tr("Localizable", "help_third_section_title")
+  /// horizon_error_bad_request
+  internal static let horizonErrorBadRequest = L10n.tr("Localizable", "horizon_error_bad_request")
+  /// There was an error processing this request. If this issue persists, please contact support.
+  internal static let horizonErrorBadRequestMessage = L10n.tr("Localizable", "horizon_error_bad_request_message")
+  /// Bad Request
+  internal static let horizonErrorBadRequestTitle = L10n.tr("Localizable", "horizon_error_bad_request_title")
+  /// horizon_error_before_history
+  internal static let horizonErrorBeforeHistory = L10n.tr("Localizable", "horizon_error_before_history")
+  /// Horizon is unable to provide the required information, it is outside of the recorded history range.
+  internal static let horizonErrorBeforeHistoryMessage = L10n.tr("Localizable", "horizon_error_before_history_message")
+  /// Account Error
+  internal static let horizonErrorBeforeHistoryTitle = L10n.tr("Localizable", "horizon_error_before_history_title")
+  /// horizon_error_forbidden
+  internal static let horizonErrorForbidden = L10n.tr("Localizable", "horizon_error_forbidden")
+  /// The requested resource is forbidden.
+  internal static let horizonErrorForbiddenMessage = L10n.tr("Localizable", "horizon_error_forbidden_message")
+  /// Forbidden
+  internal static let horizonErrorForbiddenTitle = L10n.tr("Localizable", "horizon_error_forbidden_title")
+  /// horizon_error_internal_server
+  internal static let horizonErrorInternalServer = L10n.tr("Localizable", "horizon_error_internal_server")
+  /// There was an internal server error. Please try again, or contact support for assistance.
+  internal static let horizonErrorInternalServerMessage = L10n.tr("Localizable", "horizon_error_internal_server_message")
+  /// Internal Server Error
+  internal static let horizonErrorInternalServerTitle = L10n.tr("Localizable", "horizon_error_internal_server_title")
+  /// horizon_error_invalid_response
+  internal static let horizonErrorInvalidResponse = L10n.tr("Localizable", "horizon_error_invalid_response")
+  /// The server returned an invalid and unprocessable response. Please contact support for assistance.
+  internal static let horizonErrorInvalidResponseMessage = L10n.tr("Localizable", "horizon_error_invalid_response_message")
+  /// Invalid Response
+  internal static let horizonErrorInvalidResponseTitle = L10n.tr("Localizable", "horizon_error_invalid_response_title")
+  /// horizon_error_not_acceptable
+  internal static let horizonErrorNotAcceptable = L10n.tr("Localizable", "horizon_error_not_acceptable")
+  /// The requested action is not acceptable.
+  internal static let horizonErrorNotAcceptableMessage = L10n.tr("Localizable", "horizon_error_not_acceptable_message")
+  /// Not Acceptable
+  internal static let horizonErrorNotAcceptableTitle = L10n.tr("Localizable", "horizon_error_not_acceptable_title")
+  /// horizon_error_not_found
+  internal static let horizonErrorNotFound = L10n.tr("Localizable", "horizon_error_not_found")
+  /// The requested information cannot be retrieved because it wasn't found.
+  internal static let horizonErrorNotFoundMessage = L10n.tr("Localizable", "horizon_error_not_found_message")
+  /// Not Found
+  internal static let horizonErrorNotFoundTitle = L10n.tr("Localizable", "horizon_error_not_found_title")
+  /// horizon_error_not_implemented
+  internal static let horizonErrorNotImplemented = L10n.tr("Localizable", "horizon_error_not_implemented")
+  /// This feature has not been implemented.
+  internal static let horizonErrorNotImplementedMessage = L10n.tr("Localizable", "horizon_error_not_implemented_message")
+  /// Not Implemented
+  internal static let horizonErrorNotImplementedTitle = L10n.tr("Localizable", "horizon_error_not_implemented_title")
+  /// horizon_error_rate_limit
+  internal static let horizonErrorRateLimit = L10n.tr("Localizable", "horizon_error_rate_limit")
+  /// Rate limit reached. Please try again in a few minutes.
+  internal static let horizonErrorRateLimitMessage = L10n.tr("Localizable", "horizon_error_rate_limit_message")
+  /// Rate Limit
+  internal static let horizonErrorRateLimitTitle = L10n.tr("Localizable", "horizon_error_rate_limit_title")
+  /// horizon_error_request_failed
+  internal static let horizonErrorRequestFailed = L10n.tr("Localizable", "horizon_error_request_failed")
+  /// Your network connection appears to be offline. Please connect to a Wifi or cellular network to complete this operation.
+  internal static let horizonErrorRequestFailedMessage = L10n.tr("Localizable", "horizon_error_request_failed_message")
+  /// No Network Connection
+  internal static let horizonErrorRequestFailedTitle = L10n.tr("Localizable", "horizon_error_request_failed_title")
+  /// horizon_error_stale_history
+  internal static let horizonErrorStaleHistory = L10n.tr("Localizable", "horizon_error_stale_history")
+  /// Could not fetch account history from Horizon, the requested data is out of date.
+  internal static let horizonErrorStaleHistoryMessage = L10n.tr("Localizable", "horizon_error_stale_history_message")
+  /// Stale Data
+  internal static let horizonErrorStaleHistoryTitle = L10n.tr("Localizable", "horizon_error_stale_history_title")
+  /// horizon_error_stream
+  internal static let horizonErrorStream = L10n.tr("Localizable", "horizon_error_stream")
+  /// There was an error receiving Horizon stream data.
+  internal static let horizonErrorStreamMessage = L10n.tr("Localizable", "horizon_error_stream_message")
+  /// Steam Error
+  internal static let horizonErrorStreamTitle = L10n.tr("Localizable", "horizon_error_stream_title")
+  /// horizon_error_unauthorized
+  internal static let horizonErrorUnauthorized = L10n.tr("Localizable", "horizon_error_unauthorized")
+  /// The requested action is unauthorized for this account.
+  internal static let horizonErrorUnauthorizedMessage = L10n.tr("Localizable", "horizon_error_unauthorized_message")
+  /// Unauthorized
+  internal static let horizonErrorUnauthorizedTitle = L10n.tr("Localizable", "horizon_error_unauthorized_title")
   /// You are not connected to the Internet
   internal static let internetConnectionErrorDescription = L10n.tr("Localizable", "internet_connection_error_description")
   /// Network Error
@@ -183,7 +269,7 @@ internal enum L10n {
   internal static let navTitleLicenses = L10n.tr("Localizable", "nav_title_licenses")
   /// Recovery Phrase
   internal static let navTitleMnemonicGeneration = L10n.tr("Localizable", "nav_title_mnemonic_generation")
-  /// Enter Recovery Phrase
+  /// Verify Recovery Phrase
   internal static let navTitleMnemonicVerification = L10n.tr("Localizable", "nav_title_mnemonic_verification")
   /// Operation Details
   internal static let navTitleOperationDetails = L10n.tr("Localizable", "nav_title_operation_details")
@@ -221,7 +307,7 @@ internal enum L10n {
   internal static let textChangePasscodeEnterNew = L10n.tr("Localizable", "text_change_passcode_enter_new")
   /// Enter PIN
   internal static let textChangePasscodeEnterOld = L10n.tr("Localizable", "text_change_passcode_enter_old")
-  /// PIN’s do not match
+  /// PINs do not match
   internal static let textChangePasscodeError = L10n.tr("Localizable", "text_change_passcode_error")
   /// You can not use old PIN
   internal static let textChangeTheSamePasscode = L10n.tr("Localizable", "text_change_the_same_passcode")
@@ -245,7 +331,7 @@ internal enum L10n {
   internal static let textLogoutInfo = L10n.tr("Localizable", "text_logout_info")
   /// Recovery phrase can help you to recover access to your account in case your phone is lost or stolen.
   internal static let textMnemonicDescription = L10n.tr("Localizable", "text_mnemonic_description")
-  /// Tap the words in the correct order
+  /// Tap the words in the correct order.
   internal static let textMnemonicVerificationDescription = L10n.tr("Localizable", "text_mnemonic_verification_description")
   /// Wrong order. Please try again.
   internal static let textMnemonicVerifivationIncorrectOrder = L10n.tr("Localizable", "text_mnemonic_verifivation_incorrect_order")
@@ -253,13 +339,13 @@ internal enum L10n {
   internal static let textProtectYourWallet = L10n.tr("Localizable", "text_protect_your_wallet")
   /// Use Biometric login instead of your PIN to access your account.
   internal static let textProtectYourWalletDescription = L10n.tr("Localizable", "text_protect_your_wallet_description")
-  /// This key will be used to sign transactions. To protect your LOBSTR account, copy and paste the code to LOBSTR (Settings→Multisig→Enable)
+  /// This key will be set as a signer for your Stellar account. To protect your LOBSTR account, copy and paste the key to LOBSTR (Settings->Multisig->Enable).
   internal static let textPublicKeyDescription = L10n.tr("Localizable", "text_public_key_description")
   /// Your Vault Public Key
   internal static let textPublicKeyTitle = L10n.tr("Localizable", "text_public_key_title")
-  /// LOBSTR Vault is not a signer for any Stellar account now. Press “Re-Check” button after adding Vault signer in your wallet
+  /// LOBSTR Vault is not a signer for any Stellar account now. Press “Re-Check” button after adding Vault signer in your wallet.
   internal static let textRecheckInfo = L10n.tr("Localizable", "text_recheck_info")
-  /// Enter the 12 or 24 word recovery phrase you were given when you created your Vault account
+  /// Enter the 12 or 24 word recovery phrase you were given when you created your Vault account.
   internal static let textRestoreInfo = L10n.tr("Localizable", "text_restore_info")
   /// Mnemonic Code...
   internal static let textRestorePlaceholder = L10n.tr("Localizable", "text_restore_placeholder")
@@ -273,6 +359,10 @@ internal enum L10n {
   internal static let textSettingsChangePinField = L10n.tr("Localizable", "text_settings_change_pin_field")
   /// ©2019. All rights reserved
   internal static let textSettingsCopyright = L10n.tr("Localizable", "text_settings_copyright")
+  /// Enter your PIN to view your Recovery Phrase
+  internal static let textSettingsDisplayMnemonicTitle = L10n.tr("Localizable", "text_settings_display_mnemonic_title")
+  /// PIN changed
+  internal static let textSettingsDisplayPinChanged = L10n.tr("Localizable", "text_settings_display_pin_changed")
   /// Help
   internal static let textSettingsHelpField = L10n.tr("Localizable", "text_settings_help_field")
   /// Log Out
@@ -289,7 +379,7 @@ internal enum L10n {
   internal static let textSettingsSecuritySection = L10n.tr("Localizable", "text_settings_security_section")
   /// Signer for 5 accounts
   internal static let textSettingsSignerForField = L10n.tr("Localizable", "text_settings_signer_for_field")
-  /// Signer for [number] accounts
+  /// Signer for [number] account
   internal static let textSettingsSignersField = L10n.tr("Localizable", "text_settings_signers_field")
   /// Fingerprint Login
   internal static let textSettingsTouchIdField = L10n.tr("Localizable", "text_settings_touch_id_field")
@@ -299,9 +389,9 @@ internal enum L10n {
   internal static let textSignerCheckInformation = L10n.tr("Localizable", "text_signer_check_information")
   /// Signer For
   internal static let textSignerFor = L10n.tr("Localizable", "text_signer_for")
-  /// You need more signatures
+  /// You need more signatures to submit the operation
   internal static let textStatusDescription = L10n.tr("Localizable", "text_status_description")
-  /// Failure
+  /// Transaction Failed
   internal static let textStatusFailureTitle = L10n.tr("Localizable", "text_status_failure_title")
   /// Signed XDR
   internal static let textStatusSignedXdrTitle = L10n.tr("Localizable", "text_status_signed_xdr_title")

@@ -1,9 +1,12 @@
 import UIKit
 
+import UserNotifications
+import FirebaseMessaging
+
 class ApplicationCoordinator {
   private let window: UIWindow?
   
-  let notificationRegistrator = NotificationManager()
+  let notificationManager = NotificationManager()
   let accountStatus: AccountStatus
   
   init(window: UIWindow?) {
@@ -11,24 +14,27 @@ class ApplicationCoordinator {
     accountStatus = UserDefaultsHelper.accountStatus
   }
   
-  func start() {    
+  func start(appDelegate: AppDelegate) {
+    Messaging.messaging().delegate = appDelegate
+    UNUserNotificationCenter.current().delegate = appDelegate
+
     if UserDefaultsHelper.isNotificationsEnabled {
-      notificationRegistrator.register()
+      notificationManager.sendFCMTokenToServer()
     }
     
     openStartScreen()
   }
   
   func didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) {
-    notificationRegistrator.setAPNSToken(deviceToken: deviceToken)
+    notificationManager.setAPNSToken(deviceToken: deviceToken)
   }
   
   func sendFCMTokenToServer() {
-    notificationRegistrator.sendFCMTokenToServer()
+    notificationManager.sendFCMTokenToServer()
   }
   
   func postNotification(accordingTo userInfo: [AnyHashable : Any]) {
-    notificationRegistrator.postNotification(accordingTo: userInfo)
+    notificationManager.postNotification(accordingTo: userInfo)
   }
   
   private func openStartScreen() {

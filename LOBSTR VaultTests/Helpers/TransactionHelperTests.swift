@@ -121,16 +121,41 @@ class TransactionHelperTests: XCTestCase {
   // MARK: -  Manage Offer operations
   
   func testNamesAndVaulesFromManageOfferOperationShouldBeReceived() throws {
-    let expectedNamesAndValues = [("selling", "XLM"), ("buying", "KIN"), ("amount", "0.0004413"), ("price", "0.000294"), ("offerId", "0")]
+    let expectedNamesAndValues = [("selling", "XLM"), ("buying", "KIN"), ("amount", "10000"), ("price", "0.000087"), ("offerId", "0")]
     
     let manageOfferOperation =
       try ManageOfferOperation(selling: Asset.init(type: AssetType.ASSET_TYPE_NATIVE)!,
                                buying: Asset.init(type: AssetType.ASSET_TYPE_CREDIT_ALPHANUM4,
                                                 code: "KIN",
                                                 issuer: KeyPair(accountId: "GBDEVU63Y6NTHJQQZIKVTC23NWLQVP3WJ2RI2OTSJTNYOIGICST6DUXR"))!,
-                               amount: 0.0004413,
-                               price: Price(numerator: 667101597, denominator: 196328),
+                               amount: 10000,
+                               price: Price(numerator: 7, denominator: 80000),
                                offerId: 0)
+    
+    let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: manageOfferOperation)
+    
+    if expectedNamesAndValues.count != namesAndValues.count {
+      XCTFail("Number of expected values don't equal with a number of actual values")
+      return
+    }
+    
+    for (index, expectedItem) in expectedNamesAndValues.enumerated() {
+      assertStringPairsEqual(actual: namesAndValues[index], expected: expectedItem)
+    }
+  }
+  
+  
+  func testNamesAndVaulesFromManageOfferOperationShouldBeReceived2() throws {
+    let expectedNamesAndValues = [("selling", "KIN"), ("buying", "XLM"), ("amount", "20000"), ("price", "0.000078"), ("offerId", "0")]
+    
+    let manageOfferOperation =
+      try ManageOfferOperation(selling: Asset.init(type: AssetType.ASSET_TYPE_CREDIT_ALPHANUM4,
+                                                   code: "KIN",
+                                                   issuer: KeyPair(accountId: "GBDEVU63Y6NTHJQQZIKVTC23NWLQVP3WJ2RI2OTSJTNYOIGICST6DUXR"))!,
+                               buying: Asset.init(type: AssetType.ASSET_TYPE_NATIVE)!,
+                               amount: 20000,
+                               price: Price(numerator: 781, denominator: 10000000),
+                               offerId: 0)        
     
     let namesAndValues = TransactionHelper.getNamesAndValuesOfProperties(from: manageOfferOperation)
     

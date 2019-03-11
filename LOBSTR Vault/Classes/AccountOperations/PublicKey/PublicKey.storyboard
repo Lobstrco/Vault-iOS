@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="qXp-PZ-AyI">
-    <device id="retina5_9" orientation="portrait">
+    <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
@@ -16,36 +16,36 @@
             <objects>
                 <viewController storyboardIdentifier="PublicKeyViewController" id="qXp-PZ-AyI" customClass="PublicKeyViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hNz-7p-ax6">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6Uc-dg-rdl">
-                                <rect key="frame" x="20" y="54" width="335" height="21"/>
+                                <rect key="frame" x="20" y="30" width="335" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="N3B-5v-SsT">
-                                <rect key="frame" x="18" y="85" width="339" height="18"/>
+                                <rect key="frame" x="18" y="61" width="339" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" name="Colors/DarkIndigo"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="tdP-qn-3JB">
-                                <rect key="frame" x="87.666666666666686" y="133" width="200" height="200"/>
+                                <rect key="frame" x="87.5" y="109" width="200" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="5IM-G8-96i"/>
                                     <constraint firstAttribute="height" constant="200" id="jS1-Uk-iix"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tdr-sS-l5m">
-                                <rect key="frame" x="16" y="363" width="343" height="18"/>
+                                <rect key="frame" x="16" y="339" width="343" height="18"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" name="Colors/GrayOpacity70"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K59-sU-SZB">
-                                <rect key="frame" x="152.66666666666666" y="398" width="70" height="22"/>
+                                <rect key="frame" x="152.5" y="374" width="70" height="22"/>
                                 <color key="tintColor" name="Colors/DarkIndigo"/>
                                 <inset key="imageEdgeInsets" minX="-10" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <state key="normal" title="Button" image="Icons/Other/icCopy">
@@ -56,7 +56,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1t6-eF-GNU">
-                                <rect key="frame" x="16" y="708" width="343" height="48"/>
+                                <rect key="frame" x="16" y="597" width="343" height="48"/>
                                 <color key="backgroundColor" name="Colors/Main"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="zvZ-1d-fyB"/>
@@ -94,7 +94,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="M50-Ss-vIf"/>
                     </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="GZU-ry-luX"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="HZd-ys-ISk">
+                        <barButtonItem key="rightBarButtonItem" title="Log Out" id="YoR-YJ-wEP">
+                            <connections>
+                                <action selector="logoutButtonAction:" destination="qXp-PZ-AyI" id="kvV-RG-p65"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="copyButton" destination="K59-sU-SZB" id="6nE-8Y-urF"/>
                         <outlet property="nextButton" destination="1t6-eF-GNU" id="YBs-Q4-MUj"/>

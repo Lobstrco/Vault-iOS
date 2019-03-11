@@ -12,7 +12,6 @@ class SubmitTransactionToVaultServerOperation: AsyncOperation {
   
   init(transactionHash: String?) {
     super.init()
-    
     self.transactionHash = transactionHash
   }
   

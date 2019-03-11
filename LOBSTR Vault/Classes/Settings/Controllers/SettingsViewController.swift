@@ -1,7 +1,9 @@
 import UIKit
+import PKHUD
 
 protocol SettingsView: class {
   func setSettings()
+  func setDisablePushNotificationAlert()
   func setErrorAlert(for error: Error)
   func setLogoutAlert()
   func setPublicKeyPopover(_ popover: CustomPopoverViewController)
@@ -32,6 +34,12 @@ class SettingsViewController: UIViewController,
   
   func setAppearance() {
     navigationItem.title = L10n.navTitleSettings
+  }
+  
+  func showHUDOfSuccessOfChangingPin() {
+    PKHUD.sharedHUD.contentView = PKHUDSuccessViewCustom(title: nil, subtitle: L10n.textSettingsDisplayPinChanged)
+    PKHUD.sharedHUD.show()
+    PKHUD.sharedHUD.hide(afterDelay: 1.0)
   }
   
   // MARK: - UITableViewDelegate
@@ -165,6 +173,22 @@ extension SettingsViewController: SettingsView {
   
   func setErrorAlert(for error: Error) {
     UIAlertController.defaultAlert(for: error, presentingViewController: self)
+  }
+  
+  func setDisablePushNotificationAlert() {
+    let alert = UIAlertController(title: "Enable Notifications",
+                                  message: "Please allow notifications in your iOS system settings for LOBSTR Vault.",
+                                  preferredStyle: .alert)
+    let settingsAction = UIAlertAction(title: "Settings",
+                                       style: .default) { _ in
+                                        let url = URL(string: UIApplication.openSettingsURLString)
+                                        UIApplication.shared.open(url!, options: [:], completionHandler: nil)
+    }
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+    alert.addAction(settingsAction)
+    alert.addAction(cancelAction)
+    
+    present(alert, animated: true, completion: nil)
   }
   
   func setLogoutAlert() {

@@ -12,6 +12,7 @@ class HomeViewController: UIViewController, StoryboardCreation {
   
   @IBOutlet weak var infoContainerView: UIView!
   @IBOutlet weak var signerDetailsView: UIView!
+  @IBOutlet weak var transactionNumberView: UIView!
   
   @IBOutlet weak var transactionListButton: UIButton!
   @IBOutlet weak var copyKeyButton: UIButton!
@@ -119,12 +120,19 @@ extension HomeViewController: HomeView {
     transactionNumberLabel.text = String(number)
   }
   
+  func setTransactionNumber(_ number: String) {
+    transactionNumberLabel.text = number
+  }
+  
   func setProgressAnimationForTransactionNumber(isEnabled: Bool) {
-    if isEnabled {
-      transactionNumberLabel.text = ""
-      transactionNumberProgressHUD.display(onView: transactionNumberLabel)
-    } else {
-      transactionNumberProgressHUD.remove()
+    DispatchQueue.main.async {
+      if isEnabled {
+        self.transactionNumberLabel.isHidden = true
+        self.transactionNumberProgressHUD.display(onView: self.transactionNumberView)
+      } else {
+        self.transactionNumberProgressHUD.remove()
+        self.transactionNumberLabel.isHidden = false
+      }
     }
   }
   

@@ -21,7 +21,8 @@ class TransactionListViewController: UIViewController {
     return refreshControl
   }()
   
-  let progressHUD = ProgressHUD()
+  let progressHUD = ProgressHUD()  
+  var isPullingRefresh = false
   
   // MARK: - Lifecycle
   
@@ -50,6 +51,7 @@ class TransactionListViewController: UIViewController {
   // MARK: - Private
   
   @objc private func pullToRefresh(_ refreshControl: UIRefreshControl) {
+    isPullingRefresh = true
     presenter.pullToRefreshWasActivated()
   }
   
@@ -61,7 +63,7 @@ class TransactionListViewController: UIViewController {
   private func setAppearance() {
     configureTableView()
     importButton.layer.cornerRadius = 56 / 2
-    refreshControl.tintColor = Asset.Colors.main.color
+    refreshControl.tintColor = Asset.Colors.main.color    
   }
   
   private func configureTableView() {
@@ -102,9 +104,12 @@ extension TransactionListViewController: TransactionListView {
   
   func setProgressAnimation(isEnabled: Bool) {
     if isEnabled {
-      progressHUD.display(onView: view)
+      if !isPullingRefresh {
+        progressHUD.display(onView: view)
+      }
     } else {
       refreshControl.endRefreshing()
+      isPullingRefresh = false
       progressHUD.remove()
     }
   }

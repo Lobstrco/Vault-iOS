@@ -39,6 +39,10 @@ class PublicKeyViewController: UIViewController, StoryboardCreation {
     HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.animationCopy), delay: 1.0)
   }
   
+  @IBAction func logoutButtonAction(_ sender: Any) {
+    presenter.logoutButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setStaticStrings() {
@@ -69,5 +73,16 @@ extension PublicKeyViewController: PublicKeyView {
   
   func setQRCode(from publicKey: String) {
     qrCodeImageView.image = UtilityHelper.generateQRCode(from: publicKey)
+  }
+  
+  func setLogoutAlert() {
+    let alert = UIAlertController(title: L10n.logoutAlertTitle, message: L10n.logoutAlertMessage, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleLogout, style: .destructive, handler: { _ in
+      self.presenter.logoutOperationWasConfirmed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    self.present(alert, animated: true, completion: nil)
   }
 }

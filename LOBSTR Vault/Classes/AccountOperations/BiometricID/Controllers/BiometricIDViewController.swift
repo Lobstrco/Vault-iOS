@@ -59,7 +59,7 @@ extension BiometricIDViewController: BiometricIDView {
       case .touch:
       AppearanceHelper.set(turnOnButton, with: L10n.buttonTitleTurnOnFingerprint)
     case .none:
-      AppearanceHelper.set(turnOnButton, with: "Turn On")
+      AppearanceHelper.set(turnOnButton, with: L10n.buttonTitleTurnOn)
     }
   }
 }

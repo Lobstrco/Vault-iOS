@@ -50,16 +50,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="wKS-SO-CRa">
-                                                    <rect key="frame" x="16" y="8" width="343" height="27.5"/>
+                                                    <rect key="frame" x="14" y="8" width="345" height="27.5"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Public Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BU1-3L-Ir5">
-                                                            <rect key="frame" x="0.0" y="0.0" width="79.5" height="27.5"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vault Public Key" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="BU1-3L-Ir5">
+                                                            <rect key="frame" x="0.0" y="0.0" width="122.5" height="27.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" verticalHuggingPriority="251" text="Show" textAlignment="right" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kaM-fA-qoD">
-                                                            <rect key="frame" x="87.5" y="0.0" width="255.5" height="27.5"/>
+                                                            <rect key="frame" x="130.5" y="0.0" width="214.5" height="27.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                             <color key="textColor" name="Colors/Main"/>
                                                             <nil key="highlightedColor"/>
@@ -69,7 +69,7 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="trailing" secondItem="wKS-SO-CRa" secondAttribute="trailing" constant="16" id="Fyd-tO-qUc"/>
-                                                <constraint firstItem="wKS-SO-CRa" firstAttribute="leading" secondItem="eBr-Py-3H1" secondAttribute="leading" constant="16" id="Qbe-Vq-Nln"/>
+                                                <constraint firstItem="wKS-SO-CRa" firstAttribute="leading" secondItem="eBr-Py-3H1" secondAttribute="leading" constant="14" id="Qbe-Vq-Nln"/>
                                                 <constraint firstItem="wKS-SO-CRa" firstAttribute="top" secondItem="eBr-Py-3H1" secondAttribute="top" constant="8" id="XOB-h2-jAq"/>
                                                 <constraint firstAttribute="bottom" secondItem="wKS-SO-CRa" secondAttribute="bottom" constant="8" id="YTl-oR-Rvo"/>
                                             </constraints>
@@ -127,16 +127,16 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="s0H-um-d9y">
-                                                    <rect key="frame" x="16" y="8" width="343" height="27.5"/>
+                                                    <rect key="frame" x="14" y="8" width="345" height="27.5"/>
                                                     <subviews>
                                                         <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" horizontalHuggingPriority="252" verticalHuggingPriority="251" horizontalCompressionResistancePriority="749" insetsLayoutMarginsFromSafeArea="NO" text="Biometric ID" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XRN-4d-9d2">
-                                                            <rect key="frame" x="0.0" y="0.0" width="274" height="27.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="276" height="27.5"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mwE-Vh-gVG">
-                                                            <rect key="frame" x="294" y="0.0" width="51" height="27.5"/>
+                                                            <rect key="frame" x="296" y="0.0" width="51" height="27.5"/>
                                                             <color key="onTintColor" name="Colors/Main"/>
                                                             <connections>
                                                                 <action selector="biometricIDSwitchAction:" destination="8dl-dX-JBI" eventType="valueChanged" id="Y5p-yJ-HNB"/>
@@ -149,7 +149,7 @@
                                                 <constraint firstItem="s0H-um-d9y" firstAttribute="top" secondItem="Sfy-90-Umc" secondAttribute="top" constant="8" id="9C6-Yp-mDZ"/>
                                                 <constraint firstAttribute="trailing" secondItem="s0H-um-d9y" secondAttribute="trailing" constant="16" id="b7y-AU-3MI"/>
                                                 <constraint firstAttribute="bottom" secondItem="s0H-um-d9y" secondAttribute="bottom" constant="8" id="bvU-Ee-8p5"/>
-                                                <constraint firstItem="s0H-um-d9y" firstAttribute="leading" secondItem="Sfy-90-Umc" secondAttribute="leading" constant="16" id="oeY-Y5-s2k"/>
+                                                <constraint firstItem="s0H-um-d9y" firstAttribute="leading" secondItem="Sfy-90-Umc" secondAttribute="leading" constant="14" id="oeY-Y5-s2k"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>

@@ -221,6 +221,16 @@ extension PinPresenterImpl {
   
   func transitionToSettings() {
     let pinViewController = view as! PinViewController
+    let viewControllers = pinViewController.navigationController?.viewControllers    
+    if let viewControllers = viewControllers {
+      for controller in viewControllers {
+        if let settingsViewController = controller as? SettingsViewController {
+          settingsViewController.showHUDOfSuccessOfChangingPin()
+          break
+        }
+      }
+    }
+    
     pinViewController.navigationController?.popToRootViewController(animated: true)
   }
 }

@@ -7,6 +7,7 @@ class RecheckViewController: UIViewController, StoryboardCreation {
   
   @IBOutlet weak var recheckButton: UIButton!
   @IBOutlet weak var recheckInfoLabel: UILabel!
+  @IBOutlet weak var publicKeyLabel: UILabel!
   
   var presenter: RecheckPresenter!  
   
@@ -59,5 +60,9 @@ extension RecheckViewController: RecheckView {
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
     self.present(alert, animated: true, completion: nil)
+  }
+  
+  func setPublicKey(_ publicKey: String) {
+    publicKeyLabel.text = publicKey
   }
 }

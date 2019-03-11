@@ -11,11 +11,12 @@ final class APIRequestLoader<T: APIRequest> {
     self.jwtManager = jwtManager
   }
   
-  func loadAPIRequest(requestData: T.RequestDataType?, withJwtToken: Bool = true,
+  func loadAPIRequest(requestData: T.RequestDataType?,
                       completion: @escaping (NetworkingResult<T.ResponseDataType>) -> Void) {
     do {
-      let urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwtManager.getJWT())
-//      print("JWT: \(jwtManager.getJWT())")
+      let jwt = jwtManager.getJWT()      
+      let urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwt)
+      
       urlSession.dataTask(with: urlRequest) { data, response, error in
         
         if let error = error {

@@ -186,7 +186,7 @@ class TransactionDetailsPresenterImpl {
       DispatchQueue.main.async {
         self.view?.setProgressAnimation(isEnable: false)
         
-        if let infoError = submitTransactionToHorizon.outputError as? ErrorDisplayable {
+        if let infoError = submitTransactionToHorizon.outputError as? ErrorDisplayable {          
           self.view?.setErrorAlert(for: infoError)
           return
         }
@@ -252,11 +252,35 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func confirmButtonWasPressed() {
-    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
-      return
+    switch transactionType {
+    case .imported:
+      guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+        return
+      }
+      submitTransaction(transactionEnvelopeXDR)
+    case .standard:
+      guard let hash = transaction.hash else {
+        return
+      }
+      updateTransactionAndSend(by: hash)
     }
-    
-    submitTransaction(transactionEnvelopeXDR)
+  }
+  
+  private func updateTransactionAndSend(by hash: String) {
+    let apiLoader = APIRequestLoader<TransactionRequest>(apiRequest: TransactionRequest())
+    let transactionRequestParameters = TransactionRequestParameters(hash: hash)
+    apiLoader.loadAPIRequest(requestData: transactionRequestParameters) { result in
+      switch result {
+      case .success(let transaction):
+        guard let xdr = transaction.xdr,
+          let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+          return
+        }
+        self.submitTransaction(transactionEnvelopeXDR)
+      case .failure(let serverRequestError):
+        self.view?.setErrorAlert(for: serverRequestError)
+      }
+    }
   }
   
   func denyOperationWasConfirmed() {

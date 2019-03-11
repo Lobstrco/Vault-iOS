@@ -18,7 +18,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 extension AppDelegate: MessagingDelegate {
   func messaging(_: Messaging, didReceiveRegistrationToken fcmToken: String) {
-//    print("FLOW FCM TOKEN: \(fcmToken)")
-    applicationCoordinator.sendFCMTokenToServer()
-  }  
+//    print("fcmToken: \(fcmToken)")
+  }
+  
 }

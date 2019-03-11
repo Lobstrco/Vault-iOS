@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a2c-BA-Dig">
-                                <rect key="frame" x="30" y="258.5" width="315" height="150"/>
+                                <rect key="frame" x="30" y="243.5" width="315" height="180"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icons/Other/icAlert" translatesAutoresizingMaskIntoConstraints="NO" id="LJ4-js-KdZ">
                                         <rect key="frame" x="131.5" y="0.0" width="52" height="52"/>
@@ -35,16 +35,25 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GjU-XW-jQW">
+                                        <rect key="frame" x="10" y="97.5" width="295" height="0.0"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <color key="textColor" name="Colors/GrayOpacity70"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstItem="J99-yo-zbJ" firstAttribute="top" secondItem="LJ4-js-KdZ" secondAttribute="bottom" constant="10" id="ChS-fR-2uv"/>
                                     <constraint firstItem="LJ4-js-KdZ" firstAttribute="centerX" secondItem="a2c-BA-Dig" secondAttribute="centerX" id="Hkn-vy-i4f"/>
                                     <constraint firstItem="J99-yo-zbJ" firstAttribute="centerX" secondItem="a2c-BA-Dig" secondAttribute="centerX" id="Ixl-3s-2jM"/>
-                                    <constraint firstAttribute="height" constant="150" id="MtN-pb-Qn6"/>
+                                    <constraint firstAttribute="height" constant="180" id="MtN-pb-Qn6"/>
+                                    <constraint firstItem="GjU-XW-jQW" firstAttribute="top" secondItem="J99-yo-zbJ" secondAttribute="bottom" constant="15" id="Sd0-sR-Rp4"/>
                                     <constraint firstItem="J99-yo-zbJ" firstAttribute="leading" secondItem="a2c-BA-Dig" secondAttribute="leading" constant="5" id="X6Y-gt-2vV"/>
                                     <constraint firstAttribute="trailing" secondItem="J99-yo-zbJ" secondAttribute="trailing" constant="5" id="YCs-do-rm0"/>
                                     <constraint firstItem="LJ4-js-KdZ" firstAttribute="top" secondItem="a2c-BA-Dig" secondAttribute="top" id="cOz-Lf-IME"/>
+                                    <constraint firstItem="GjU-XW-jQW" firstAttribute="leading" secondItem="a2c-BA-Dig" secondAttribute="leading" constant="10" id="hoc-pl-xlC"/>
+                                    <constraint firstAttribute="trailing" secondItem="GjU-XW-jQW" secondAttribute="trailing" constant="10" id="yeD-gD-Aih"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gh6-EL-WQI">
@@ -73,13 +82,14 @@
                         <viewLayoutGuide key="safeArea" id="q3e-O4-efS"/>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="eYg-FR-1dw">
-                        <barButtonItem key="rightBarButtonItem" title="Logout" id="7Wj-1S-IYt">
+                        <barButtonItem key="rightBarButtonItem" title="Log Out" id="7Wj-1S-IYt">
                             <connections>
                                 <action selector="logoutButtonAction:" destination="EmD-cw-bGO" id="eeP-6h-Zlb"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="publicKeyLabel" destination="GjU-XW-jQW" id="jUk-pz-guK"/>
                         <outlet property="recheckButton" destination="Gh6-EL-WQI" id="UjT-ls-SHU"/>
                         <outlet property="recheckInfoLabel" destination="J99-yo-zbJ" id="cpJ-YW-Umw"/>
                     </connections>
@@ -91,6 +101,9 @@
     </scenes>
     <resources>
         <image name="Icons/Other/icAlert" width="52" height="52"/>
+        <namedColor name="Colors/GrayOpacity70">
+            <color red="0.0" green="0.0" blue="0.0" alpha="0.69999998807907104" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="Colors/Main">
             <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

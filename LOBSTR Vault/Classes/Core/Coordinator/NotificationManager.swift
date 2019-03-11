@@ -4,42 +4,35 @@ import UIKit
 import FirebaseMessaging
 
 class NotificationManager {
-
+  
   var isRegisteredForRemoteNotifications: Bool {
     return UIApplication.shared.isRegisteredForRemoteNotifications
   }
   
-  init() {
-    let appDelegate = UIApplication.shared.delegate as? AppDelegate
-    
-    Messaging.messaging().delegate = appDelegate
-    UNUserNotificationCenter.current().delegate = appDelegate
-  }
-  
-  func register() {
+  func requestAuthorization(completionHandler: @escaping (Bool) -> Void) {
     UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
-      guard granted else {
-//        print("FLOW: REGISTER DENIED")
-        UserDefaultsHelper.isNotificationsEnabled = false
-        return
-      }
-//      print("FLOW: REGISTER")
-      DispatchQueue.main.async {
-        UserDefaultsHelper.isNotificationsEnabled = true
-        UIApplication.shared.registerForRemoteNotifications()
-      }      
+      completionHandler(granted)
     }
   }
   
+  func register() {
+    UIApplication.shared.registerForRemoteNotifications()
+    sendFCMTokenToServer()
+  }
+  
   func unregister() {
-//    print("FLOW: UNREGISTER")
     UIApplication.shared.unregisterForRemoteNotifications()
+    
+    guard let fcmToken = Messaging.messaging().fcmToken else {
+      print("Couldn't unregister device")
+      return
+    }
+   
+    NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
   }
   
   func setAPNSToken(deviceToken: Data) {
-    let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
-    let messagingAPNSTokenType: MessagingAPNSTokenType = .prod
-    Messaging.messaging().setAPNSToken(deviceToken, type: messagingAPNSTokenType)
+    Messaging.messaging().apnsToken = deviceToken
   }
   
   func sendFCMTokenToServer() {

@@ -11,6 +11,7 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   
   @IBOutlet var errorLabel: UILabel!
   @IBOutlet var descriptionLabel: UILabel!
+  @IBOutlet var clearButton: UILabel!
   
   var presenter: MnemonicVerificationPresenter!
   
@@ -31,6 +32,12 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   // TEMP
   override func viewDidLayoutSubviews() {
     AppearanceHelper.setDashBorders(for: containerForVerification, with: Asset.Colors.gray.color.cgColor)
+  }
+  
+  // MARK: - IBAction
+  
+  @IBAction func clearButtondAction() {
+    presenter.clearButtonWasPressed()
   }
   
   // MARK: - Private
@@ -148,5 +155,11 @@ extension MnemonicVerificationViewController: UICollectionViewDelegate, UICollec
   
   func collectionView(_ collectionView: UICollectionView, shouldDeselectItemAt indexPath: IndexPath) -> Bool {
     return false
+  }
+  
+  func deselectShuffledCollectionView() {
+    for index in 0...presenter.countOfShuffledMnemonicList {
+      shuffledCollectionView.deselectItem(at: IndexPath(item: index, section: 0), animated: true)
+    }
   }
 }

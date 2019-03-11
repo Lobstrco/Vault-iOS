@@ -10,7 +10,7 @@ class MnemonicCollectionViewCell: UICollectionViewCell, MnemonicCellView {
     self.titleLabel.text = title
   }
   
-  override var isSelected: Bool{
+  override var isSelected: Bool {
     didSet{
       setAppearance()
     }

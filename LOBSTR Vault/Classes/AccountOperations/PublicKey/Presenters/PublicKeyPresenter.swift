@@ -5,12 +5,15 @@ protocol PublicKeyPresenter {
   func publicKeyViewDidLoad()
   func nextButtonWasPressed()
   func copyKeyButtonWasPressed()
+  func logoutButtonWasPressed()
+  func logoutOperationWasConfirmed()
 }
 
 protocol PublicKeyView: class {
   func setPublicKey(_ publicKey: String)
   func setProgressAnimation(isDisplay: Bool)
   func setQRCode(from publicKey: String)
+  func setLogoutAlert()
 }
 
 class PublicKeyPresenterImpl: PublicKeyPresenter {
@@ -19,7 +22,7 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
   private let mnemonicManager: MnemonicManager
   private let vaultStorage: VaultStorage
   private let transactionService: TransactionService
-  private let notificationRegistrator: NotificationManager
+  private let notificationManager: NotificationManager
   
   private var publicKey: String?
   
@@ -36,7 +39,7 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
     self.mnemonicManager = mnemonicManager
     self.vaultStorage = vaultStorage
     self.transactionService = transactionService
-    self.notificationRegistrator = notificationRegistrator
+    self.notificationManager = notificationRegistrator
   }
   
   // MARK: - Private
@@ -81,7 +84,10 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
   }
   
   private func registerForRemoteNotifications() {
-    notificationRegistrator.register()
+    notificationManager.requestAuthorization() { isGranted in
+      UserDefaultsHelper.isNotificationsEnabled = isGranted
+      self.notificationManager.sendFCMTokenToServer()
+    }
   }
   
   // MARK: - PublicKeyPresenter
@@ -103,6 +109,14 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
   
   func copyKeyButtonWasPressed() {
     UIPasteboard.general.string = publicKey
+  }
+  
+  func logoutButtonWasPressed() {
+    view?.setLogoutAlert()
+  }
+  
+  func logoutOperationWasConfirmed() {
+    ApplicationCoordinatorHelper.logout()
   }
 }
 

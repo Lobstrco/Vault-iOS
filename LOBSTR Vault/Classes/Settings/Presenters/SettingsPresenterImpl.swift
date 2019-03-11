@@ -15,7 +15,7 @@ class SettingsPresenterImpl: SettingsPresenter {
   
   private let navigationController: UINavigationController
   
-  private let notificationRegistrator: NotificationManager
+  private let notificationManager: NotificationManager
   
   // MARK: - Init
   
@@ -23,14 +23,14 @@ class SettingsPresenterImpl: SettingsPresenter {
        navigationController: UINavigationController,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl(),
-       notificationRegistrator: NotificationManager = NotificationManager(),
+       notificationManager: NotificationManager = NotificationManager(),
        settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl()) {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
     self.biometricAuthManager = biometricAuthManager
     self.settingsSectionsBuilder = settingsSectionsBuilder
-    self.notificationRegistrator = notificationRegistrator
+    self.notificationManager = notificationManager
   }
 }
 
@@ -150,14 +150,28 @@ extension SettingsPresenterImpl {
   func biometricIDSwitchValueChanged(_ value: Bool, type: SwitchType) {
     switch type {
     case .notifications:
-      UserDefaultsHelper.isNotificationsEnabled = !UserDefaultsHelper.isNotificationsEnabled
-      if UserDefaultsHelper.isNotificationsEnabled {
-        notificationRegistrator.register()
-      } else {
-        notificationRegistrator.unregister()
+      
+      notificationManager.requestAuthorization() { isGranted in
+        guard isGranted else {
+          DispatchQueue.main.async {
+            self.view?.setDisablePushNotificationAlert()
+            self.view?.setSettings()
+          }
+          return
+        }
+        
+        DispatchQueue.main.async {
+          UserDefaultsHelper.isNotificationsEnabled = value
+          if UserDefaultsHelper.isNotificationsEnabled {
+            self.notificationManager.register()
+          } else {
+            self.notificationManager.unregister()
+          }
+          
+          self.view?.setSettings()
+        }        
       }
       
-      view?.setSettings()
     case .biometricID:
       biometricAuthManager.isBiometricAuthEnabled = value
       
@@ -200,7 +214,7 @@ extension SettingsPresenterImpl {
   
   private func getSignerForAccountsData() -> (title: String, attribute: NSMutableAttributedString) {
     let positionOfNumberInTitle = 11
-    let title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
+    var title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
                                                   with: String(UserDefaultsHelper.numberOfSignerAccounts))
     let titleAttribute = NSMutableAttributedString(string: title)
     titleAttribute.addAttributes([.foregroundColor: Asset.Colors.main.color,
@@ -208,7 +222,26 @@ extension SettingsPresenterImpl {
                                  range: NSRange(location: positionOfNumberInTitle,
                                                 length: 1))
     
+    if UserDefaultsHelper.numberOfSignerAccounts > 1 {
+      title.append("s")
+    }
+    
     return (title, titleAttribute)
+  }
+  
+  private func addDescriptionLabel(to pinViewController: UIViewController) {
+    let titleLabel = UILabel()
+    titleLabel.text = L10n.textSettingsDisplayMnemonicTitle
+    titleLabel.numberOfLines = 3
+    titleLabel.textColor = Asset.Colors.grayOpacity70.color
+    titleLabel.font = UIFont.systemFont(ofSize: 15)
+    titleLabel.textAlignment = .center
+    
+    pinViewController.view.addSubview(titleLabel)
+    titleLabel.translatesAutoresizingMaskIntoConstraints = false
+    titleLabel.topAnchor.constraint(equalTo: pinViewController.view.topAnchor, constant: 100).isActive = true
+    titleLabel.widthAnchor.constraint(equalToConstant: 315).isActive = true
+    titleLabel.centerXAnchor.constraint(equalTo: pinViewController.view.centerXAnchor).isActive = true
   }
 }
 
@@ -247,6 +280,8 @@ extension SettingsPresenterImpl {
     let pinViewController = PinViewController.createFromStoryboard()
     
     pinViewController.mode = .enterPinForMnemonicPhrase
+    addDescriptionLabel(to: pinViewController)
+    
     pinViewController.completion = {
       pinViewController.dismiss(animated: true, completion: nil)
       let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
@@ -271,5 +306,5 @@ extension SettingsPresenterImpl {
     let acknowListViewController = AcknowListViewController()
     let settingsViewController = view as! SettingsViewController
     settingsViewController.navigationController?.pushViewController(acknowListViewController, animated: true)
-  }
+  }     
 }

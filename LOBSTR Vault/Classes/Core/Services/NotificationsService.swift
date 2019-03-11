@@ -9,14 +9,14 @@ struct NotificationsService {
     apiLoader.loadAPIRequest(requestData: data) { result in
       switch result {
       case .success(_):
-        print("SUCCESS REGISTER DEVICE")
+        break
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:
-          print("NEED UPDATE TOKEN")
           self.registerDeviceForNotifications(with: registrationID)          
         default:
-          print("FAILURE REGISTER DEVICE")
+          // need to create crashlytics event
+          break
         }
       }
     }
@@ -29,9 +29,10 @@ struct NotificationsService {
     apiLoader.loadAPIRequest(requestData: data) { result in
       switch result {
       case .success(_):
-        print("SUCCESS UNREGISTER DEVICE")
+        break
       case .failure(let serverRequestError):
-        print("FAILURE UNREGISTER DEVICE with error: \(serverRequestError)")
+        // need to create crashlytics event
+        break
       }
     }
   }

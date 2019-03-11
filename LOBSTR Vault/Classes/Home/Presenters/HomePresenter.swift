@@ -3,6 +3,7 @@ import stellarsdk
 
 protocol HomeView: class {
   func setTransactionNumber(_ number: Int)
+  func setTransactionNumber(_ number: String)
   func setPublicKey(_ publicKey: String)
   func setSignerDetails(_ signedAccounts: [SignedAccounts])
   func setProgressAnimationForTransactionNumber(isEnabled: Bool)
@@ -26,6 +27,8 @@ class HomePresenterImpl: HomePresenter {
   private var publicKey: String?
   private var signerForKey: String?
   
+  fileprivate var transactionNumberStatus: TaskStatus = .ready
+  
   init(view: HomeView,
        transactionService: TransactionService = TransactionService(),
        vaultStorage: VaultStorage = VaultStorage()) {
@@ -33,8 +36,7 @@ class HomePresenterImpl: HomePresenter {
     self.transactionService = transactionService
     self.vaultStorage = vaultStorage
     
-    NotificationCenter.default.addObserver(self, selector: #selector(onDidChangeTransactionList(_:)), name: .didChangeTransactionList, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(onDidRemoveTransaction(_:)), name: .didRemoveTransaction, object: nil)
+    addObservers()
   }
   
   @objc func onDidRemoveTransaction(_ notification: Notification) {
@@ -53,8 +55,10 @@ class HomePresenterImpl: HomePresenter {
     }
     
     if ConnectionHelper.checkConnection(viewController) {
-      displayTransactionNumber()
-      displayPublicKey()
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        self.displayTransactionNumber()
+        self.displayPublicKey()
+      }
     }
   }    
   
@@ -76,6 +80,35 @@ class HomePresenterImpl: HomePresenter {
     displaySignerDetails()
   }
   
+  // MARK: - Private
+  
+  private func addObservers() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidChangeTransactionList(_:)),
+                                           name: .didChangeTransactionList,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidRemoveTransaction(_:)),
+                                           name: .didRemoveTransaction,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidChangeTransactionList(_:)),
+                                           name: UIApplication.didBecomeActiveNotification,
+                                           object: nil)
+  }
+  
+  private func setStatus(_ status: TaskStatus) {
+    transactionNumberStatus = status
+    
+    if status == .loading {
+      view?.setProgressAnimationForTransactionNumber(isEnabled: true)
+    } else {
+      view?.setProgressAnimationForTransactionNumber(isEnabled: false)
+    }
+  }
+  
   // MARK: - HomeView
   
   func displayPublicKey() {
@@ -85,19 +118,24 @@ class HomePresenterImpl: HomePresenter {
   }
   
   func displayTransactionNumber() {
-    view?.setProgressAnimationForTransactionNumber(isEnabled: true)
+    guard transactionNumberStatus == .ready else {
+      return
+    }
+    
+    setStatus(.loading)
     transactionService.getNumberOfTransactions() { result in
       switch result {
       case .success(let numberOfTransactions):
         self.view?.setTransactionNumber(numberOfTransactions)
-        self.view?.setProgressAnimationForTransactionNumber(isEnabled: false)
+        self.setStatus(.ready)
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:
+          self.setStatus(.ready)
           self.displayTransactionNumber()
         default:
-          self.view?.setProgressAnimationForTransactionNumber(isEnabled: false)
-          print("Error:: \(serverRequestError)")
+          self.setStatus(.ready)
+          self.view?.setTransactionNumber("-")
         }
       }
     }
@@ -115,8 +153,7 @@ class HomePresenterImpl: HomePresenter {
         if signedAccounts.count == 1 {
           self.signerForKey = signedAccounts.first?.address
         }
-      case .failure(let error):
-        print("error: \(error)")
+      case .failure(_):        
         self.view?.setProgressAnimationForSignerDetails(isEnabled: false)
       }
     }

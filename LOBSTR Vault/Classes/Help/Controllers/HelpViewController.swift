@@ -10,9 +10,9 @@ class HelpViewController: UIViewController, StoryboardCreation {
   var sectionData: [[[String : Any]]] = []
   
   fileprivate let heigthOfHiddenRow: CGFloat = 60
-  fileprivate let heigthOfVisibleRow: [[CGFloat]] = [[780, 1755, 1230, 780, 450, 830],
-                                                     [1100, 1200, 870, 600],
-                                                     [1140, 610, 1000, 590]]
+  fileprivate let heigthOfVisibleRow: [[CGFloat]] = [[780, 1755, 1230, 780, 410, 820],
+                                                     [1090, 1200, 870, 600],
+                                                     [1140, 610, 1000, 580]]
   
   // MARK: - Lifecycle
   
@@ -70,6 +70,7 @@ extension HelpViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    print("FLOW reload \(indexPath.item)")
     let cell = tableView.dequeueReusableCell(withIdentifier: "HelpTableViewCell") as! HelpTableViewCell
     let data = sectionData[indexPath.section][indexPath.item]["data"] as! [String]
     
@@ -89,7 +90,7 @@ extension HelpViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
+    print("FLOW select \(indexPath.item)")
     let isOpen = sectionData[indexPath.section][indexPath.item]["isOpen"] as! Bool
     sectionData[indexPath.section][indexPath.item]["isOpen"] = !isOpen
     tableView.reloadRows(at: [indexPath], with: .automatic)

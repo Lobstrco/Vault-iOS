@@ -7,6 +7,7 @@ protocol MnemonicVerificationView: class {
   func setRightBarButton(isEnabled: Bool)
   func setErrorLabel(isHidden: Bool)
   func setDashBordersColor(isError: Bool)
+  func deselectShuffledCollectionView()
 }
 
 protocol MnemonicVerificationPresenter {
@@ -22,6 +23,7 @@ protocol MnemonicVerificationPresenter {
   func configure(cellForVerification: MnemonicCellView, forRow row: Int)
   func nextButtonWasPressed()
   func getIndexPathFromShuffledMnemonicList(by index: Int) -> IndexPath
+  func clearButtonWasPressed()
 }
 
 class MnemonicVerificationPresenterImpl {
@@ -48,6 +50,11 @@ class MnemonicVerificationPresenterImpl {
     
     shuffledMnemonicList = generatedMnemonicList.shuffled()
     view?.setShuffledMnemonicList()
+  }
+  
+  func clearWordsForVerification() {
+    mnemonicListForVerification.removeAll()
+    view?.updateCollectionViewForVerification()
   }
   
   func moveShuffledWordToListForVerification(by indexPath: IndexPath) {
@@ -147,5 +154,11 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   
   func nextButtonWasPressed() {
     transitionToPinScreen()
+  }
+  
+  func clearButtonWasPressed() {
+    view?.deselectShuffledCollectionView()
+    clearWordsForVerification()    
+    validateVerificationList()
   }
 }

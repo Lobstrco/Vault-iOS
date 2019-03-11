@@ -1,6 +1,12 @@
 import Foundation
 import stellarsdk
 
+enum TaskStatus {
+  case ready
+  case loading
+  case failure
+}
+
 protocol TransactionListView: class {
   func setTransactionList(isEmpty: Bool)
   func reloadTransactionList(isEmpty: Bool)
@@ -30,8 +36,8 @@ class TransactionListPresenterImpl {
   fileprivate var transactionList: [Transaction] = []
   fileprivate let crashlyticsService: CrashlyticsService
   fileprivate let transactionService: TransactionService
-  
-  var importXDRInput: ImportXDRInput?
+  fileprivate var importXDRInput: ImportXDRInput?
+  fileprivate var transactionListStatus: TaskStatus = .ready
   
   init(view: TransactionListView,
        crashlyticsService: CrashlyticsService = CrashlyticsService(),
@@ -41,12 +47,10 @@ class TransactionListPresenterImpl {
     self.crashlyticsService = crashlyticsService
     self.transactionService = transactionService
     
-    NotificationCenter.default.addObserver(self, selector: #selector(onDidRemoveTransaction(_:)), name: .didRemoveTransaction, object: nil)
-    NotificationCenter.default.addObserver(self, selector: #selector(onDidChangeTransactionList(_:)), name: .didChangeTransactionList, object: nil)
+    addObservers()
   }
   
   @objc func onDidChangeTransactionList(_ notification: Notification) {
-    view?.setProgressAnimation(isEnabled: true)
     displayPendingTransactions()
   }
   
@@ -62,6 +66,33 @@ class TransactionListPresenterImpl {
   
   // MARK: - Private
   
+  private func addObservers() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidRemoveTransaction(_:)),
+                                           name: .didRemoveTransaction,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidChangeTransactionList(_:)),
+                                           name: .didChangeTransactionList,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidChangeTransactionList(_:)),
+                                           name: UIApplication.didBecomeActiveNotification,
+                                           object: nil)
+  }
+  
+  private func setStatus(_ status: TaskStatus) {
+    transactionListStatus = status
+    
+    if status == .loading {
+      view?.setProgressAnimation(isEnabled: true)
+    } else {
+      view?.setProgressAnimation(isEnabled: false)
+    }
+  }
+  
   private func getOperationType(from operationNames: [String]) -> String {
     guard !operationNames.isEmpty else { return "none" }
     let operationType = operationNames.count == 1 ? operationNames.first! : "\(operationNames.count) operations"
@@ -70,9 +101,15 @@ class TransactionListPresenterImpl {
   }
   
   private func displayPendingTransactions(isFirstTime: Bool = false) {
+    guard transactionListStatus == .ready else {      
+      return
+    }
+    
     guard ConnectionHelper.isConnectedToNetwork() else {
       return
     }
+    
+    setStatus(.loading)
     
     transactionService.getPendingTransactionList() { result in
       switch result {
@@ -83,9 +120,9 @@ class TransactionListPresenterImpl {
         } else {
           self.view?.reloadTransactionList(isEmpty: self.transactionList.isEmpty)
         }
-        self.view?.setProgressAnimation(isEnabled: false)
+        self.setStatus(.ready)
       case .failure(let error):
-        self.view?.setProgressAnimation(isEnabled: false)
+        self.setStatus(.ready)
         self.crashlyticsService.recordCustomException(error)
         self.view?.setErrorAlert(for: error)
       }
@@ -147,7 +184,6 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
     }
     
     if ConnectionHelper.checkConnection(viewController) {
-      view?.setProgressAnimation(isEnabled: true)
       displayPendingTransactions(isFirstTime: true)
     }
   }

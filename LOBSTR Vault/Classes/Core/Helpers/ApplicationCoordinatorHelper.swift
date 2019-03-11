@@ -30,7 +30,7 @@ struct ApplicationCoordinatorHelper {
     }
     
     UserDefaultsHelper.accountStatus = .notCreated
-    UserDefaultsHelper.isNotificationsEnabled = false
+    UserDefaultsHelper.isNotificationsEnabled = false    
     ApplicationCoordinatorHelper.clearKeychain()
     
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate

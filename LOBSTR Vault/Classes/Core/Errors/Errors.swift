@@ -1,3 +1,5 @@
+import stellarsdk
+
 public protocol ErrorDisplayable: Error {
   typealias ErrorDisplayData = (titleKey: String, messageKey: String)
   var errorKey: String { get }
@@ -20,7 +22,7 @@ struct VaultError: Error, ErrorDisplayable {
     if let keyableError = error as? ErrorDisplayable {
       errorKey = keyableError.errorKey
     } else {
-      errorKey = "UNKNOWN_ERROR"
+      errorKey = L10n.errorUnknown
     }
   }
 }
@@ -85,6 +87,27 @@ extension VaultError {
       case .authenticationFailed: return L10n.errorBiometricNotVerifiedIdentity
       case .undefined: return L10n.errorBiometricNotConfigured
       }
+    }
+  }
+}
+
+extension HorizonRequestError: ErrorDisplayable {
+  public var errorKey: String {
+    switch self {
+    case HorizonRequestError.requestFailed(_): return L10n.horizonErrorRequestFailed
+    case HorizonRequestError.badRequest(_, _): return L10n.horizonErrorBadRequest
+    case HorizonRequestError.emptyResponse: return L10n.horizonErrorInvalidResponse
+    case HorizonRequestError.parsingResponseFailed(_): return L10n.horizonErrorInvalidResponse
+    case HorizonRequestError.unauthorized(_): return L10n.horizonErrorUnauthorized
+    case HorizonRequestError.forbidden(_, _): return L10n.horizonErrorForbidden
+    case HorizonRequestError.notFound(_, _): return L10n.horizonErrorNotFound
+    case HorizonRequestError.notAcceptable(_, _): return L10n.horizonErrorNotAcceptable
+    case HorizonRequestError.beforeHistory(_, _): return L10n.horizonErrorBeforeHistory
+    case HorizonRequestError.rateLimitExceeded(_, _): return L10n.horizonErrorRateLimit
+    case HorizonRequestError.internalServerError(_, _): return L10n.horizonErrorInternalServer
+    case HorizonRequestError.notImplemented(_, _): return L10n.horizonErrorNotImplemented
+    case HorizonRequestError.staleHistory(_, _): return L10n.horizonErrorStaleHistory
+    case HorizonRequestError.errorOnStreamReceive(_): return L10n.horizonErrorStream
     }
   }
 }

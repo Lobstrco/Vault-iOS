@@ -63,8 +63,14 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
 
 extension MnemonicRecoveryViewController: MnemonicRecoveryView {
   
-  func displayRecoveryButton(isHidden: Bool) {
-    nextButton.isHidden = isHidden
+  func setRecoveryButtonStatus(isEnabled: Bool) {
+    var backgorundColor = Asset.Colors.main.color
+    if !isEnabled {
+      backgorundColor = Asset.Colors.disabled.color
+    }
+    
+    nextButton.backgroundColor = backgorundColor
+    nextButton.isEnabled = isEnabled
   }
   
   func displaySuggestionList(suggestionList: [String]) {

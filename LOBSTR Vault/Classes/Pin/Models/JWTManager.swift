@@ -32,7 +32,7 @@ struct JWTManagerImpl: JWTManager {
     return vaultStorage.removeJWTFromKeychain()
   }
   
-  func getJWT() -> String? {
+  func getJWT() -> String? {    
     return vaultStorage.getJWTFromKeychain()
   }
   

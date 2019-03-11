@@ -179,6 +179,7 @@
 		92DED2B1220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */; };
 		92E48FCA21E4D517006281E4 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E48FC921E4D517006281E4 /* Errors.swift */; };
 		92E48FCD21E4EE38006281E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 92E48FCC21E4EE38006281E4 /* Localizable.strings */; };
+		92E91954222FD695006421F1 /* TransactionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E91953222FD695006421F1 /* TransactionRequest.swift */; };
 		92ECA6982224182C004E8416 /* UserDefaultsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92ECA6972224182C004E8416 /* UserDefaultsHelper.swift */; };
 		A3F5F6A151BBA6DC6871C53E /* Pods_LOBSTR_VaultTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3EAD3CB51C9072AD81742E3B /* Pods_LOBSTR_VaultTests.framework */; };
 /* End PBXBuildFile section */
@@ -372,6 +373,7 @@
 		92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKHUDSuccessViewCustom.swift; sourceTree = "<group>"; };
 		92E48FC921E4D517006281E4 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		92E48FCC21E4EE38006281E4 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		92E91953222FD695006421F1 /* TransactionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionRequest.swift; sourceTree = "<group>"; };
 		92ECA6972224182C004E8416 /* UserDefaultsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsHelper.swift; sourceTree = "<group>"; };
 		A01C52A9C6472830E8944154 /* Pods_LOBSTR_Vault.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_LOBSTR_Vault.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D5F14E4ADD030093E6C95C68 /* Pods-LOBSTR VaultTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-LOBSTR VaultTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -1199,6 +1201,7 @@
 				92C8C22721F72BA1003E4F5A /* SubmitSignedTransactionRequest.swift */,
 				92C4156321E8C56800960170 /* CancelTransactionRequest.swift */,
 				92CA735C2212F03D00506998 /* MarkTransactionAsSubmittedRequest.swift */,
+				92E91953222FD695006421F1 /* TransactionRequest.swift */,
 			);
 			path = Transactions;
 			sourceTree = "<group>";
@@ -1783,6 +1786,7 @@
 				922A363822032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift in Sources */,
 				92E48FCA21E4D517006281E4 /* Errors.swift in Sources */,
 				92C4155C21E5E1B500960170 /* CrashlyticsService.swift in Sources */,
+				92E91954222FD695006421F1 /* TransactionRequest.swift in Sources */,
 				922A363A2204721600371B35 /* ApplicationCoordinatorHelper.swift in Sources */,
 				92960A6C22145A6C0055E4AD /* SubmitTransactionToVaultServerOperation.swift in Sources */,
 				92C8C23921FB1427003E4F5A /* CALayer+Borders.swift in Sources */,

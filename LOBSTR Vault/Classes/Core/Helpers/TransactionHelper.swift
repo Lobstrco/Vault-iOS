@@ -44,7 +44,6 @@ struct TransactionHelper {
   }
   
   static func getNamesAndValuesOfProperties(from operation: stellarsdk.Operation) -> [(String, String)] {
-    
     var data: [(name: String, value: String)] = []
     
     let operationMirror = Mirror(reflecting: operation)
@@ -68,9 +67,18 @@ struct TransactionHelper {
       case is UInt64.Type:
         valueParam = (value as? UInt64)?.description
       case is Price.Type:
-        if let price = value as? Price {
-          valueParam = String(format: "%.6f", Double(price.d) / Double(price.n))
+        guard let manageOfferOperation = operation as? ManageOfferOperation else {
+          break
+        }        
+        guard let price = value as? Price else {
+          break
         }
+        
+        var priceValue = Double(price.n) / Double(price.d)
+        if manageOfferOperation.selling.type == AssetType.ASSET_TYPE_NATIVE {
+          priceValue = 1 / priceValue
+        }
+        valueParam = String(format: "%.6f", priceValue)
       case is Decimal?.Type:
         valueParam = (value as? Decimal)?.description
       case is String.Type:
@@ -79,6 +87,9 @@ struct TransactionHelper {
         valueParam = value
       case is Bool.Type:
         valueParam = (value as? Bool)?.description
+//      case is SignerKeyXDR?.Type:
+//        let signerKeyXDR = value as? SignerKeyXDR
+//        let xdr = signerKeyXDR!.xdrEncoded
       default:
         continue
       }

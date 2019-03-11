@@ -10,19 +10,33 @@ protocol RecheckPresenter {
 protocol RecheckView: class {
   func setProgressAnimation(isDisplay: Bool)
   func setLogoutAlert()
+  func setPublicKey(_ publicKey: String)
 }
 
 class RecheckPresenterImpl {
   
   fileprivate weak var view: RecheckView?
   private let transactionService: TransactionService
+  private let vaultStorage: VaultStorage
   
-  init(view: RecheckView, transactionService: TransactionService = TransactionService()) {
+  init(view: RecheckView,
+       transactionService: TransactionService = TransactionService(),
+       vaultStorage: VaultStorage = VaultStorage()) {
     self.view = view
     self.transactionService = transactionService
+    self.vaultStorage = vaultStorage
+    
+    setPublicKey()
   }
   
-  func getSignerDetails() {
+  // MARK: - Private
+  
+  private func setPublicKey() {
+    guard let publicKey = vaultStorage.getPublicKeyFromKeychain() else { return }
+    view?.setPublicKey(publicKey)
+  }
+  
+  private func getSignerDetails() {
     view?.setProgressAnimation(isDisplay: true)
     transactionService.getSignedAccounts() { result in
       switch result {
@@ -41,7 +55,7 @@ class RecheckPresenterImpl {
     }
   }
   
-  func transitionToHomeScreen() {
+  private func transitionToHomeScreen() {
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
       else { return }
     

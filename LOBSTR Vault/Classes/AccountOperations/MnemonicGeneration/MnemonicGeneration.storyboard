@@ -269,20 +269,45 @@
                                 <color key="textColor" name="Colors/Red"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Bn-hm-wpY">
+                                <rect key="frame" x="317" y="283" width="40" height="28"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="o3t-E6-M7E"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
+                                <state key="normal" title="Clear">
+                                    <color key="titleColor" name="Colors/Main"/>
+                                </state>
+                                <connections>
+                                    <action selector="clearButtondAction" destination="ZIx-aq-O7k" eventType="touchUpInside" id="kFO-OQ-xwS"/>
+                                </connections>
+                            </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icons/Other/delete" translatesAutoresizingMaskIntoConstraints="NO" id="mBl-jP-93c">
+                                <rect key="frame" x="295" y="288" width="18" height="18"/>
+                                <color key="tintColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="18" id="6fe-CO-yfD"/>
+                                    <constraint firstAttribute="width" constant="18" id="gg0-iH-Kch"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="RPD-Bw-zj1" secondAttribute="trailing" constant="18" id="48J-1U-Dxb"/>
                             <constraint firstItem="a2Q-RD-1Uq" firstAttribute="leading" secondItem="sUy-Ik-glk" secondAttribute="leading" constant="18" id="4e1-jH-q2G"/>
+                            <constraint firstItem="4Bn-hm-wpY" firstAttribute="leading" secondItem="mBl-jP-93c" secondAttribute="trailing" constant="4" id="8AX-ut-rzY"/>
                             <constraint firstItem="AQ1-vA-Azs" firstAttribute="leading" secondItem="sUy-Ik-glk" secondAttribute="leading" constant="18" id="CZP-8f-JhP"/>
+                            <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="4Bn-hm-wpY" secondAttribute="trailing" constant="18" id="GiR-6X-UGl"/>
                             <constraint firstItem="a2Q-RD-1Uq" firstAttribute="top" secondItem="RPD-Bw-zj1" secondAttribute="bottom" constant="20" id="KNp-Qf-Evv"/>
                             <constraint firstItem="RPD-Bw-zj1" firstAttribute="top" secondItem="sUy-Ik-glk" secondAttribute="top" constant="20" id="OP9-Ff-lpZ"/>
                             <constraint firstItem="AQ1-vA-Azs" firstAttribute="top" secondItem="dEV-dA-fVn" secondAttribute="bottom" constant="16" id="Q0W-aD-4ex"/>
+                            <constraint firstItem="mBl-jP-93c" firstAttribute="top" secondItem="a2Q-RD-1Uq" secondAttribute="bottom" constant="10" id="RUS-ra-jHR"/>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="a2Q-RD-1Uq" secondAttribute="trailing" constant="18" id="YYo-oV-gpV"/>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="AQ1-vA-Azs" secondAttribute="trailing" constant="18" id="adH-ch-TL4"/>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="bottom" secondItem="AQ1-vA-Azs" secondAttribute="bottom" constant="17" id="lzM-q8-wbR"/>
                             <constraint firstItem="RPD-Bw-zj1" firstAttribute="leading" secondItem="sUy-Ik-glk" secondAttribute="leading" constant="18" id="mbp-2S-6Fn"/>
                             <constraint firstItem="dEV-dA-fVn" firstAttribute="centerX" secondItem="LI4-fw-sCb" secondAttribute="centerX" id="uKR-Hh-BpE"/>
+                            <constraint firstItem="4Bn-hm-wpY" firstAttribute="top" secondItem="a2Q-RD-1Uq" secondAttribute="bottom" constant="5" id="yWx-Om-pyl"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sUy-Ik-glk"/>
                     </view>
@@ -300,6 +325,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Icons/Other/delete" width="23" height="18"/>
         <image name="Icons/Other/icCopy" width="16" height="18"/>
         <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <namedColor name="Colors/Background">

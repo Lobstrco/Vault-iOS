@@ -43,6 +43,7 @@ extension BiometricIDPresenterImpl {
         self?.transitionToPublicKey()
       case .failure(let error):
         guard let error = error as? VaultError.BiometricError  else { return }
+        guard error == VaultError.BiometricError.notAvailable else { return }
         self?.view?.setErrorAlert(for: error)
       }
     }
