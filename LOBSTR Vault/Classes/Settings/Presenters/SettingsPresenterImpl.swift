@@ -151,7 +151,7 @@ extension SettingsPresenterImpl {
     switch type {
     case .notifications:
       
-      notificationManager.requestAuthorization() { isGranted in
+      notificationManager.requestAuthorization() { isGranted in        
         guard isGranted else {
           DispatchQueue.main.async {
             self.view?.setDisablePushNotificationAlert()

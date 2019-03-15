@@ -57,7 +57,7 @@ class PublicKeyPopover: UIView {
   
   private func setQRCode() {
     if let key = publicKey {
-      qrCodeImageView.image = UtilityHelper.generateQRCode(from: key)
+      qrCodeImageView.image = UtilityHelper.generateQRCode(from: key)      
     }
   }
 }

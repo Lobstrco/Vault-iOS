@@ -43,6 +43,10 @@ class PublicKeyViewController: UIViewController, StoryboardCreation {
     presenter.logoutButtonWasPressed()
   }
   
+  @IBAction func helpButtonAction(_ sender: Any) {
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setStaticStrings() {

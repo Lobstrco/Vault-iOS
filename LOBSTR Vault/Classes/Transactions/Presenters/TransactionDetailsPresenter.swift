@@ -175,12 +175,9 @@ class TransactionDetailsPresenterImpl {
       
     operationQueue.addOperations([gettingMnemonic,
                                     signTransaction,
-                                    submitTransactionToHorizon],
-                                   waitUntilFinished: false)
-    
-    if transactionType == .standard {
-      operationQueue.addOperation(submitTransactionToVaultServer)
-    }
+                                    submitTransactionToHorizon,
+                                    submitTransactionToVaultServer],
+                                   waitUntilFinished: false)    
     
     submitTransactionToHorizon.completionBlock = {
       DispatchQueue.main.async {

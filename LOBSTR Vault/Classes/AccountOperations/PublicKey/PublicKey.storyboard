@@ -95,9 +95,9 @@
                         <viewLayoutGuide key="safeArea" id="M50-Ss-vIf"/>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="HZd-ys-ISk">
-                        <barButtonItem key="rightBarButtonItem" title="Log Out" id="YoR-YJ-wEP">
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="YoR-YJ-wEP">
                             <connections>
-                                <action selector="logoutButtonAction:" destination="qXp-PZ-AyI" id="kvV-RG-p65"/>
+                                <action selector="helpButtonAction:" destination="qXp-PZ-AyI" id="pda-e7-xNz"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -117,6 +117,7 @@
     </scenes>
     <resources>
         <image name="Icons/Other/icCopy" width="16" height="18"/>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <namedColor name="Colors/DarkIndigo">
             <color red="0.027450980392156862" green="0.10980392156862745" blue="0.20000000000000001" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

@@ -121,6 +121,11 @@ extension MnemonicGenerationViewController: MnemonicGenerationView {
     navigationItem.hidesBackButton = false
     navigationItem.leftBarButtonItem = nil
   }
+  
+  func setHelpButton(isEnabled: Bool) {
+    navigationItem.rightBarButtonItem?.image = isEnabled ? Asset.Icons.Other.icQuestionSign.image : UIImage()
+    navigationItem.rightBarButtonItem?.isEnabled = isEnabled
+  }
 }
 
 

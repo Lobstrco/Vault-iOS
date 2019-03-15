@@ -129,12 +129,11 @@ class HomePresenterImpl: HomePresenter {
         self.view?.setTransactionNumber(numberOfTransactions)
         self.setStatus(.ready)
       case .failure(let serverRequestError):
+        self.setStatus(.ready)
         switch serverRequestError {
-        case ServerRequestError.needRepeatRequest:
-          self.setStatus(.ready)
+        case ServerRequestError.needRepeatRequest:          
           self.displayTransactionNumber()
         default:
-          self.setStatus(.ready)
           self.view?.setTransactionNumber("-")
         }
       }

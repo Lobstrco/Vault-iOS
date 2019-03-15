@@ -6,4 +6,6 @@ protocol PinPresenter: class {
   func digitButtonWasPressed(with digit: Int)
   func removeButtonWasPressed()
   func helpButtonWasPressed()
+  func ignoreSimplePin()
+  func changeSimplePin()
 }

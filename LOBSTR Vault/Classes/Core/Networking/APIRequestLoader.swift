@@ -14,7 +14,8 @@ final class APIRequestLoader<T: APIRequest> {
   func loadAPIRequest(requestData: T.RequestDataType?,
                       completion: @escaping (NetworkingResult<T.ResponseDataType>) -> Void) {
     do {
-      let jwt = jwtManager.getJWT()      
+      let jwt = jwtManager.getJWT()
+//      print("JWT: \(jwt)")
       let urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwt)
       
       urlSession.dataTask(with: urlRequest) { data, response, error in

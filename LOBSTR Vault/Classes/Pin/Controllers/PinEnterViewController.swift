@@ -66,6 +66,10 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
 // MARK: - PinView
 
 extension PinEnterViewController: PinView {
+  func setSimplePinAlert() {
+    
+  }
+  
   func setCancelBarButtonItem() {
   }
   

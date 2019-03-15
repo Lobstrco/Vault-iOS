@@ -38,6 +38,10 @@ class BackUpAccountViewController: UIViewController, StoryboardCreation, BackUpA
     presenter.understandButtonWasPressed()
   }
   
+  @IBAction func helpButtonAction(_ sender: Any) {
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setAppearance() {

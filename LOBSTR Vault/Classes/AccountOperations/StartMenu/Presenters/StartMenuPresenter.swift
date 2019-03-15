@@ -6,6 +6,7 @@ protocol StartMenuPresenter {
   func createNewAccountButtonWasPressed()
   func restoreAccountButtonWasPressed()
   func termsButtonWasPressed()
+  func helpButtonWasPressed()
 }
 
 protocol StartMenuView: class {
@@ -64,5 +65,12 @@ extension StartMenuPresenterImpl: StartMenuPresenter {
       else { return }
     
     view?.openPrivacyPolicy(by: privacyPolicyURL)    
+  }
+  
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let startMenuViewController = view as! StartMenuViewController
+    startMenuViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }

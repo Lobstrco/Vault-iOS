@@ -4,6 +4,7 @@ import UIKit
 protocol BackUpAccountPresenter {
   func backUpAccountViewDidLoad()
   func understandButtonWasPressed()
+  func helpButtonWasPressed()
 }
 
 class BackUpAccountPresenterImpl: BackUpAccountPresenter {
@@ -24,6 +25,13 @@ class BackUpAccountPresenterImpl: BackUpAccountPresenter {
   
   func understandButtonWasPressed() {
     transitionToMnemenicGeneration()
+  }
+  
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let backupViewController = view as! BackUpAccountViewController
+    backupViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }
 

@@ -11,6 +11,7 @@ protocol PinView: class {
   func hideBackButton()
   func show(error: String)
   func executeCompletion()
+  func setSimplePinAlert()
 }
 
 class PinViewController: UIViewController, StoryboardCreation {
@@ -48,7 +49,6 @@ class PinViewController: UIViewController, StoryboardCreation {
     pinDotView.clearPinDots()
     
     setAppearance()
-    setStaticStrings()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -71,8 +71,19 @@ class PinViewController: UIViewController, StoryboardCreation {
     numberPadView.setupAppearance(with: Asset.Colors.black.color)
   }
   
-  private func setStaticStrings() {
+  func setSimplePinAlert() {
+    let alert = UIAlertController(title: L10n.textPasscodeSimpleTitle,
+                                  message: L10n.textPasscodeSimpleMessage,
+                                  preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.textPasscodeSimpleIgnoreButton, style: .destructive, handler: { _ in
+      self.presenter.ignoreSimplePin()
+    }))
     
+    alert.addAction(UIAlertAction(title: L10n.textPasscodeSimpleChangeButton, style: .default, handler: { _ in
+      self.presenter.changeSimplePin()
+    }))
+    
+    present(alert, animated: true, completion: nil)
   }
 }
 

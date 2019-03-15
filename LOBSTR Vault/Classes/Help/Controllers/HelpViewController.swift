@@ -9,10 +9,7 @@ class HelpViewController: UIViewController, StoryboardCreation {
   var sectionNames: [String] = []
   var sectionData: [[[String : Any]]] = []
   
-  fileprivate let heigthOfHiddenRow: CGFloat = 60
-  fileprivate let heigthOfVisibleRow: [[CGFloat]] = [[780, 1755, 1230, 780, 410, 820],
-                                                     [1090, 1200, 870, 600],
-                                                     [1140, 610, 1000, 580]]
+  fileprivate let heigthOfHiddenRow: CGFloat = 65
   
   // MARK: - Lifecycle
   
@@ -20,7 +17,7 @@ class HelpViewController: UIViewController, StoryboardCreation {
     super.viewDidLoad()
     
     setStaticStrings()
-    
+        
     tableView.delegate = self
     tableView.dataSource = self
     tableView.tableFooterView = UIView()
@@ -40,23 +37,37 @@ class HelpViewController: UIViewController, StoryboardCreation {
 extension HelpViewController {
   
   private func setStaticStrings() {
-    sectionNames = [L10n.helpFirstSectionTitle, L10n.helpSecondSectionTitle, L10n.helpThirdSectionTitle]
+    sectionNames = [L10n.helpFirstSectionTitle,
+                    L10n.helpSecondSectionTitle,
+                    L10n.helpThirdSectionTitle,
+                    L10n.helpFourthSectionTitle]
+    
     sectionData = [[["isOpen": false, "data": [L10n.helpChapter1Title, L10n.helpChapter1Description]],
                     ["isOpen": false, "data": [L10n.helpChapter2Title, L10n.helpChapter2Description]],
                     ["isOpen": false, "data": [L10n.helpChapter3Title, L10n.helpChapter3Description]],
                     ["isOpen": false, "data": [L10n.helpChapter4Title, L10n.helpChapter4Description]],
                     ["isOpen": false, "data": [L10n.helpChapter5Title, L10n.helpChapter5Description]],
-                    ["isOpen": false, "data": [L10n.helpChapter6Title, L10n.helpChapter6Description]]
-                  ],
-                  [["isOpen": false, "data": [L10n.helpChapter7Title, L10n.helpChapter7Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter6Title, L10n.helpChapter6Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter7Title, L10n.helpChapter7Description]],
                     ["isOpen": false, "data": [L10n.helpChapter8Title, L10n.helpChapter8Description]],
+                  ],
+                  [
                     ["isOpen": false, "data": [L10n.helpChapter9Title, L10n.helpChapter9Description]],
                     ["isOpen": false, "data": [L10n.helpChapter10Title, L10n.helpChapter10Description]],
-                  ],
-                  [["isOpen": false, "data": [L10n.helpChapter11Title, L10n.helpChapter11Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter11Title, L10n.helpChapter11Description]],
                     ["isOpen": false, "data": [L10n.helpChapter12Title, L10n.helpChapter12Description]],
+                  ],
+                  [
                     ["isOpen": false, "data": [L10n.helpChapter13Title, L10n.helpChapter13Description]],
-                    ["isOpen": false, "data": [L10n.helpChapter14Title, L10n.helpChapter14Description]]
+                    ["isOpen": false, "data": [L10n.helpChapter14Title, L10n.helpChapter14Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter15Title, L10n.helpChapter15Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter16Title, L10n.helpChapter16Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter17Title, L10n.helpChapter17Description]],
+                  ],
+                  [
+                    ["isOpen": false, "data": [L10n.helpChapter18Title, L10n.helpChapter18Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter19Title, L10n.helpChapter19Description]],
+                    ["isOpen": false, "data": [L10n.helpChapter20Title, L10n.helpChapter20Description]],
                   ]]
   }
 }
@@ -66,11 +77,10 @@ extension HelpViewController {
 extension HelpViewController: UITableViewDelegate, UITableViewDataSource {
   
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return heigthOfVisibleRow[section].count
+    return sectionData[section].count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    print("FLOW reload \(indexPath.item)")
     let cell = tableView.dequeueReusableCell(withIdentifier: "HelpTableViewCell") as! HelpTableViewCell
     let data = sectionData[indexPath.section][indexPath.item]["data"] as! [String]
     
@@ -81,19 +91,27 @@ extension HelpViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func numberOfSections(in tableView: UITableView) -> Int {
-    return heigthOfVisibleRow.count
+    return sectionData.count
   }
   
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     let isOpen = sectionData[indexPath.section][indexPath.item]["isOpen"] as! Bool
-    return isOpen ? heigthOfVisibleRow[indexPath.section][indexPath.item] : heigthOfHiddenRow
+    return isOpen ? UITableView.automaticDimension : heigthOfHiddenRow
   }
   
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    print("FLOW select \(indexPath.item)")
     let isOpen = sectionData[indexPath.section][indexPath.item]["isOpen"] as! Bool
     sectionData[indexPath.section][indexPath.item]["isOpen"] = !isOpen
     tableView.reloadRows(at: [indexPath], with: .automatic)
+    
+    scrollTableToBottomWhenLastItemSelected(indexPath: indexPath)
+  }
+  
+  private func scrollTableToBottomWhenLastItemSelected(indexPath: IndexPath) {
+    if indexPath.section + 1 == sectionData.count,
+      indexPath.item + 1 == sectionData.last?.count {
+      self.tableView.scrollToRow(at: indexPath, at: .bottom, animated: true)
+    }
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

@@ -70,6 +70,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="uNg-cS-0xy"/>
                     </view>
+                    <navigationItem key="navigationItem" id="UEz-zq-Ljw">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="Icons/Other/icQuestionSign" id="qrq-It-jYj">
+                            <connections>
+                                <action selector="helpButtonAction:" destination="fQH-78-uqU" id="1Qz-mu-iLF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="backupDescriptionlabel" destination="niO-En-QZv" id="9yf-le-lLS"/>
                         <outlet property="backupTitleLabel" destination="1mE-bk-iZY" id="5Ja-c4-V5n"/>
@@ -83,6 +90,7 @@
     </scenes>
     <resources>
         <image name="Icons/Other/icKey" width="49" height="48"/>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <namedColor name="Colors/Black">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

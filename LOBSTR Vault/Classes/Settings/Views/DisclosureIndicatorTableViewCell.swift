@@ -6,18 +6,19 @@ protocol DisclosureIndicatorTableViewCellView {
   func setAttribute(_ attribute: NSMutableAttributedString)
 }
 
-class DisclosureIndicatorTableViewCell: UITableViewCell,
-  DisclosureIndicatorTableViewCellView {
+class DisclosureIndicatorTableViewCell: UITableViewCell, DisclosureIndicatorTableViewCellView {
+  
+  @IBOutlet var titleLabel: UILabel!
   
   func setTitle(_ title: String) {
-    textLabel?.text = title    
+    titleLabel?.text = title
   }
   
   func setTextColor(_ color: UIColor) {
-    textLabel?.textColor = color
+    titleLabel?.textColor = color
   }
   
   func setAttribute(_ attribute: NSMutableAttributedString) {
-    textLabel?.attributedText = attribute
+    titleLabel?.attributedText = attribute
   }
 }

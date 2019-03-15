@@ -12,6 +12,7 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   @IBOutlet var errorLabel: UILabel!
   @IBOutlet var descriptionLabel: UILabel!
   @IBOutlet var clearButton: UILabel!
+  @IBOutlet var nextButton: UIButton!
   
   var presenter: MnemonicVerificationPresenter!
   
@@ -23,13 +24,11 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
     сollectionViewForVerification.dataSource = self
     сollectionViewForVerification.delegate = self
     
-    setAppearance()
     setStaticStrings()
     
     presenter.mnemonicVerificationViewDidLoad()
   }
   
-  // TEMP
   override func viewDidLayoutSubviews() {
     AppearanceHelper.setDashBorders(for: containerForVerification, with: Asset.Colors.gray.color.cgColor)
   }
@@ -40,24 +39,15 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
     presenter.clearButtonWasPressed()
   }
   
-  // MARK: - Private
-  
-  private func setAppearance() {
-    setNextButton()
-  }
-  
-  private func setNextButton() {
-    let rightBarButtonItem = UIBarButtonItem.init(title: L10n.buttonTitleNext,
-                                                  style: .plain,
-                                                  target: self,
-                                                  action: #selector(nextButtonAction(_:)))
-    
-    self.navigationItem.rightBarButtonItem = rightBarButtonItem
-  }
-  
-  @objc private func nextButtonAction(_ sender : UIButton) {
+  @IBAction func nextButtonAction() {
     presenter.nextButtonWasPressed()
   }
+  
+  @IBAction func helpButtonAcion() {
+    presenter.helpButtonWasPressed()
+  }
+  
+  // MARK: - Private
   
   private func setStaticStrings() {
     descriptionLabel.text = L10n.textMnemonicVerificationDescription
@@ -79,10 +69,6 @@ extension MnemonicVerificationViewController: MnemonicVerificationView {
     сollectionViewForVerification.reloadData()
   }
   
-  func setRightBarButton(isEnabled: Bool) {
-    navigationItem.rightBarButtonItem?.isEnabled = isEnabled
-  }
-  
   func setErrorLabel(isHidden: Bool) {
     errorLabel.isHidden = isHidden
   }
@@ -90,6 +76,16 @@ extension MnemonicVerificationViewController: MnemonicVerificationView {
   func setDashBordersColor(isError: Bool) {
     let bordersColor = isError ? Asset.Colors.red.color.cgColor : Asset.Colors.gray.color.cgColor
     AppearanceHelper.changeDashBorderColor(for: containerForVerification, with: bordersColor)
+  }
+  
+  func setNextButtonStatus(isEnabled: Bool) {
+    var backgorundColor = Asset.Colors.main.color
+    if !isEnabled {
+      backgorundColor = Asset.Colors.disabled.color
+    }
+    
+    nextButton.backgroundColor = backgorundColor
+    nextButton.isEnabled = isEnabled
   }
 }
 

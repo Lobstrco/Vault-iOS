@@ -12,6 +12,12 @@ class PinPresenterImpl: PinPresenter {
   private let pinManager: PinManager
   private var biometricAuthManager: BiometricAuthManager
   
+  private let simplePins = ["123456", "121212", "101010", "112233", "200000", "696969",
+                            "131313", "654321", "222111", "111222", "121111", "111112",
+                            "011111", "111110", "010000", "000111", "111000", "000001",
+                            "100000", "000000", "111111", "222222", "333333", "444444",
+                            "555555", "666666", "777777", "888888", "999999"]
+  
   // MARK: - Init
   
   init(view: PinView,
@@ -85,7 +91,11 @@ class PinPresenterImpl: PinPresenter {
     if pin.count == pinLength {
       switch mode {
       case .createPinFirstStep:
-        transitionToCreatePinSecondStep(with: .createPinSecondStep(pin))
+        if isSimple(currentPin: pin) {
+          self.view?.setSimplePinAlert()
+        } else {
+          transitionToCreatePinSecondStep(with: .createPinSecondStep(pin))
+        }
       case .createPinSecondStep(let pinFromFirstStep):
         if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
           transitionToBiometricID()
@@ -99,7 +109,11 @@ class PinPresenterImpl: PinPresenter {
       case .changePin:
         validateChangedPin()
       case .createNewPinFirstStep:
-        validateCreatedNewPin()
+        if isSimple(currentPin: pin) {
+          self.view?.setSimplePinAlert()
+        } else {
+          validateCreatedNewPin()
+        }
       case .createNewPinSecondStep(let pinFromFirstStep):
         if pinManager.validate(pinFromFirstStep, pin), pinManager.store(pin) {
           transitionToSettings()
@@ -127,7 +141,36 @@ class PinPresenterImpl: PinPresenter {
     pinViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
   
+  func ignoreSimplePin() {
+    switch mode {
+    case .createPinFirstStep:
+      transitionToCreatePinSecondStep(with: .createPinSecondStep(pin))
+      break
+    case .createNewPinFirstStep:
+      validateCreatedNewPin()
+      break
+    default:
+      break
+    }
+  }
+  
+  func changeSimplePin() {
+    resetPin()
+  }
+  
   // MARK: - Private
+  
+  private func isSimple(currentPin: String) -> Bool {
+    var isSimple = false
+    for pin in simplePins {
+      if currentPin == pin {
+        isSimple = true
+        break
+      }
+    }
+    
+    return isSimple
+  }
   
   private func resetPin() {
     pin.removeAll()

@@ -41,11 +41,15 @@ class StartMenuViewController: UIViewController, StoryboardCreation {
     presenter.termsButtonWasPressed()
   }
   
+  @IBAction func helpButtonAction(_ sender: Any) {
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Public
   
   // MARK: - Private
   private func setNavigationController() {
-    navigationController?.setNavigationBarHidden(true, animated: true)
+//    navigationController?.setNavigationBarHidden(true, animated: true)
   }
   
   private func setAppearance() {

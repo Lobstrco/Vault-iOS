@@ -18,12 +18,9 @@ class ApplicationCoordinator {
     Messaging.messaging().delegate = appDelegate
     UNUserNotificationCenter.current().delegate = appDelegate
 
-    if UserDefaultsHelper.isNotificationsEnabled {
-      notificationManager.sendFCMTokenToServer()
-    }
-    
     openStartScreen()
   }
+  
   
   func didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) {
     notificationManager.setAPNSToken(deviceToken: deviceToken)
@@ -35,18 +32,6 @@ class ApplicationCoordinator {
   
   func postNotification(accordingTo userInfo: [AnyHashable : Any]) {
     notificationManager.postNotification(accordingTo: userInfo)
-  }
-  
-  private func openStartScreen() {
-    switch accountStatus {
-    case .notCreated:
-      ApplicationCoordinatorHelper.clearKeychain()
-      showMenuScreen()
-    case .waitingToBecomeSinger:
-      showPublicKeyScreen()
-    case .created:
-      showPinScreen()
-    }
   }
   
   func showHomeScreen() {
@@ -71,5 +56,17 @@ class ApplicationCoordinator {
     let navigationController = UINavigationController(rootViewController: publicKeyViewController)
     AppearanceHelper.setNavigationApperance(navigationController)
     window?.rootViewController = navigationController
+  }
+  
+  private func openStartScreen() {
+    switch accountStatus {
+    case .notCreated:
+      ApplicationCoordinatorHelper.clearKeychain()
+      showMenuScreen()
+    case .waitingToBecomeSinger:
+      showPublicKeyScreen()
+    case .created:
+      showPinScreen()
+    }
   }
 }

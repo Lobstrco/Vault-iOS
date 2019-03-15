@@ -18,7 +18,25 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 
 extension AppDelegate: MessagingDelegate {
   func messaging(_: Messaging, didReceiveRegistrationToken fcmToken: String) {
-//    print("fcmToken: \(fcmToken)")
+    checkNotificationAvailability()
   }
   
+  private func checkNotificationAvailability() {
+    let accountStatus = UserDefaultsHelper.accountStatus
+    let notificationManager = NotificationManager()
+    
+    guard accountStatus != .notCreated else {
+      return
+    }
+    
+    notificationManager.requestAuthorization() { isGranted in
+      if !isGranted {
+        UserDefaultsHelper.isNotificationsEnabled = false
+      }
+      
+      if UserDefaultsHelper.isNotificationsEnabled {
+        notificationManager.sendFCMTokenToServer()
+      }
+    }
+  }
 }

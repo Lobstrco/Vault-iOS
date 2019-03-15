@@ -382,7 +382,13 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="EEc-XA-U8o"/>
                     </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="t4c-gB-Ma2"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="t4c-gB-Ma2">
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="5Dz-wX-Ic3">
+                            <connections>
+                                <action selector="helpButtonAcion" destination="xP1-Rd-kaX" id="VU1-oL-hqp"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="XDRContainerView" destination="JPR-fb-X5g" id="dWy-rt-qXC"/>
                         <outlet property="animationContainer" destination="p8Y-xA-iXG" id="5JR-rA-FkJ"/>
@@ -401,6 +407,7 @@
     <resources>
         <image name="Icons/Other/icCopy" width="16" height="18"/>
         <image name="Icons/Other/icPlus" width="19" height="20"/>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <image name="Icons/Tabbar/arrowsOut" width="24" height="22"/>
         <namedColor name="Colors/Background">
             <color red="0.95294117647058818" green="0.95294117647058818" blue="0.98431372549019602" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

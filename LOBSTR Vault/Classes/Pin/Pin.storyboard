@@ -159,13 +159,6 @@
                             <constraint firstItem="IAE-x9-CKx" firstAttribute="top" secondItem="xWk-OQ-VZa" secondAttribute="bottom" constant="30" id="zgy-J9-xxh"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="yx6-hZ-JAQ">
-                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="zjx-um-RpK">
-                            <connections>
-                                <action selector="helpButtonAction:" destination="Kep-Vh-mzI" id="J1P-aM-P3p"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
                     <connections>
                         <outlet property="errorLabel" destination="nEm-Gn-CWc" id="TP8-XP-D4m"/>
                         <outlet property="numberPadView" destination="xWk-OQ-VZa" id="LLy-Eh-AO2"/>
@@ -178,7 +171,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
         <image name="Other/logo" width="136" height="29"/>
         <namedColor name="Colors/Main">
             <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

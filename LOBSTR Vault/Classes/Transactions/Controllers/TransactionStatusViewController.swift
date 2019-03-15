@@ -48,6 +48,10 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
     HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.animationCopy), delay: 1.0)
   }
   
+  @IBAction func helpButtonAcion() {
+    presenter.helpButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setAppearance() {

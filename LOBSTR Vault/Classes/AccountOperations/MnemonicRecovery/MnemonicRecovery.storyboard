@@ -74,7 +74,7 @@
                         <viewLayoutGuide key="safeArea" id="s2L-cY-ZcR"/>
                     </view>
                     <navigationItem key="navigationItem" id="VeS-1m-QMR">
-                        <barButtonItem key="rightBarButtonItem" title="Item" image="Icons/Other/icQuestionSign" id="lI1-Ck-zuJ">
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="lI1-Ck-zuJ">
                             <connections>
                                 <action selector="helpButtonAction:" destination="jMx-Df-eZn" id="xxH-ry-e3Y"/>
                             </connections>

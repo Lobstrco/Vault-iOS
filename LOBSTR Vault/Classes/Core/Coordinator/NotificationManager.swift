@@ -5,10 +5,6 @@ import FirebaseMessaging
 
 class NotificationManager {
   
-  var isRegisteredForRemoteNotifications: Bool {
-    return UIApplication.shared.isRegisteredForRemoteNotifications
-  }
-  
   func requestAuthorization(completionHandler: @escaping (Bool) -> Void) {
     UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
       completionHandler(granted)
@@ -16,7 +12,6 @@ class NotificationManager {
   }
   
   func register() {
-    UIApplication.shared.registerForRemoteNotifications()
     sendFCMTokenToServer()
   }
   
@@ -36,13 +31,15 @@ class NotificationManager {
   }
   
   func sendFCMTokenToServer() {
-    guard let fcmToken = Messaging.messaging().fcmToken else { return }
+    guard let fcmToken = Messaging.messaging().fcmToken else {
+      return
+    }
     NotificationsService().registerDeviceForNotifications(with: fcmToken)
   }
   
   func postNotification(accordingTo userInfo: [AnyHashable : Any]) {
     let eventType =  userInfo["event_type"] as? String
-    if eventType == "added_new_transaction" {
+    if eventType == "added_new_transaction" || eventType == "transaction_submitted" {
       NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
     }
   }

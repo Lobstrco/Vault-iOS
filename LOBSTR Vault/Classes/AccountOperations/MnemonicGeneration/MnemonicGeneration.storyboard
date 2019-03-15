@@ -161,7 +161,7 @@
             </objects>
             <point key="canvasLocation" x="2809" y="-1362"/>
         </scene>
-        <!--Mnemonic Verification View Controller-->
+        <!--Title-->
         <scene sceneID="1Iw-zJ-Esh">
             <objects>
                 <viewController storyboardIdentifier="MnemonicVerificationViewController" id="ZIx-aq-O7k" customClass="MnemonicVerificationViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
@@ -225,7 +225,7 @@
                                 </constraints>
                             </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="AQ1-vA-Azs">
-                                <rect key="frame" x="18" y="500" width="339" height="150"/>
+                                <rect key="frame" x="18" y="421" width="339" height="150"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="150" id="Shg-w4-mfj"/>
@@ -264,7 +264,7 @@
                                 </cells>
                             </collectionView>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dEV-dA-fVn">
-                                <rect key="frame" x="171" y="468" width="33" height="16"/>
+                                <rect key="frame" x="171" y="389" width="33" height="16"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                 <color key="textColor" name="Colors/Red"/>
                                 <nil key="highlightedColor"/>
@@ -290,6 +290,19 @@
                                     <constraint firstAttribute="width" constant="18" id="gg0-iH-Kch"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A2A-G9-bTF">
+                                <rect key="frame" x="16" y="596" width="343" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="X7t-1Q-ReF"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Next">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="nextButtonAction" destination="ZIx-aq-O7k" eventType="touchUpInside" id="T6N-Tk-Ieb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -298,23 +311,34 @@
                             <constraint firstItem="4Bn-hm-wpY" firstAttribute="leading" secondItem="mBl-jP-93c" secondAttribute="trailing" constant="4" id="8AX-ut-rzY"/>
                             <constraint firstItem="AQ1-vA-Azs" firstAttribute="leading" secondItem="sUy-Ik-glk" secondAttribute="leading" constant="18" id="CZP-8f-JhP"/>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="4Bn-hm-wpY" secondAttribute="trailing" constant="18" id="GiR-6X-UGl"/>
+                            <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="A2A-G9-bTF" secondAttribute="trailing" constant="16" id="I3k-vg-y36"/>
                             <constraint firstItem="a2Q-RD-1Uq" firstAttribute="top" secondItem="RPD-Bw-zj1" secondAttribute="bottom" constant="20" id="KNp-Qf-Evv"/>
                             <constraint firstItem="RPD-Bw-zj1" firstAttribute="top" secondItem="sUy-Ik-glk" secondAttribute="top" constant="20" id="OP9-Ff-lpZ"/>
                             <constraint firstItem="AQ1-vA-Azs" firstAttribute="top" secondItem="dEV-dA-fVn" secondAttribute="bottom" constant="16" id="Q0W-aD-4ex"/>
+                            <constraint firstItem="A2A-G9-bTF" firstAttribute="leading" secondItem="sUy-Ik-glk" secondAttribute="leading" constant="16" id="Q1M-rU-nIk"/>
                             <constraint firstItem="mBl-jP-93c" firstAttribute="top" secondItem="a2Q-RD-1Uq" secondAttribute="bottom" constant="10" id="RUS-ra-jHR"/>
+                            <constraint firstItem="sUy-Ik-glk" firstAttribute="bottom" secondItem="A2A-G9-bTF" secondAttribute="bottom" constant="23" id="VNh-aJ-TEE"/>
+                            <constraint firstItem="A2A-G9-bTF" firstAttribute="top" secondItem="AQ1-vA-Azs" secondAttribute="bottom" constant="25" id="WO7-Kt-gWL"/>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="a2Q-RD-1Uq" secondAttribute="trailing" constant="18" id="YYo-oV-gpV"/>
                             <constraint firstItem="sUy-Ik-glk" firstAttribute="trailing" secondItem="AQ1-vA-Azs" secondAttribute="trailing" constant="18" id="adH-ch-TL4"/>
-                            <constraint firstItem="sUy-Ik-glk" firstAttribute="bottom" secondItem="AQ1-vA-Azs" secondAttribute="bottom" constant="17" id="lzM-q8-wbR"/>
                             <constraint firstItem="RPD-Bw-zj1" firstAttribute="leading" secondItem="sUy-Ik-glk" secondAttribute="leading" constant="18" id="mbp-2S-6Fn"/>
                             <constraint firstItem="dEV-dA-fVn" firstAttribute="centerX" secondItem="LI4-fw-sCb" secondAttribute="centerX" id="uKR-Hh-BpE"/>
                             <constraint firstItem="4Bn-hm-wpY" firstAttribute="top" secondItem="a2Q-RD-1Uq" secondAttribute="bottom" constant="5" id="yWx-Om-pyl"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="sUy-Ik-glk"/>
                     </view>
+                    <navigationItem key="navigationItem" title="Title" id="7ti-tK-c6s">
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="0x0-su-xxl">
+                            <connections>
+                                <action selector="helpButtonAcion" destination="ZIx-aq-O7k" id="GMP-IN-KVA"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="containerForVerification" destination="a2Q-RD-1Uq" id="mPW-rU-mHH"/>
                         <outlet property="descriptionLabel" destination="RPD-Bw-zj1" id="Hba-9G-ss6"/>
                         <outlet property="errorLabel" destination="dEV-dA-fVn" id="LGz-H8-X7x"/>
+                        <outlet property="nextButton" destination="A2A-G9-bTF" id="EyW-ZS-cvV"/>
                         <outlet property="shuffledCollectionView" destination="AQ1-vA-Azs" id="vf0-V0-w6R"/>
                         <outlet property="сollectionViewForVerification" destination="2tE-yP-9Zl" id="iKr-J0-x5t"/>
                     </connections>

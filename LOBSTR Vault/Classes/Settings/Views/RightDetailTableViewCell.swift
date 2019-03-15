@@ -5,8 +5,12 @@ protocol RightDetailTableViewCellView {
 }
 
 class RightDetailTableViewCell: UITableViewCell, RightDetailTableViewCellView {
+  
+  @IBOutlet var titleLabel: UILabel!
+  @IBOutlet var detailLabel: UILabel!
+  
   func setTitle(_ title: String, detail: String) {
-    textLabel?.text = title
-    detailTextLabel?.text = detail
+    titleLabel?.text = title
+    detailLabel?.text = detail
   }
 }

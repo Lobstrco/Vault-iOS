@@ -4,10 +4,11 @@ import UIKit
 protocol MnemonicVerificationView: class {
   func setShuffledMnemonicList()
   func updateCollectionViewForVerification()
-  func setRightBarButton(isEnabled: Bool)
+//  func setRightBarButton(isEnabled: Bool)
   func setErrorLabel(isHidden: Bool)
   func setDashBordersColor(isError: Bool)
   func deselectShuffledCollectionView()
+  func setNextButtonStatus(isEnabled: Bool)
 }
 
 protocol MnemonicVerificationPresenter {
@@ -24,6 +25,7 @@ protocol MnemonicVerificationPresenter {
   func nextButtonWasPressed()
   func getIndexPathFromShuffledMnemonicList(by index: Int) -> IndexPath
   func clearButtonWasPressed()
+  func helpButtonWasPressed()
 }
 
 class MnemonicVerificationPresenterImpl {
@@ -69,16 +71,16 @@ class MnemonicVerificationPresenterImpl {
   
   func validateVerificationList() {
     guard mnemonicListForVerification.count == numberWordsInMnemonic else {
-      view?.setRightBarButton(isEnabled: false)
+      view?.setNextButtonStatus(isEnabled: false)
       view?.setErrorLabel(isHidden: true)
       view?.setDashBordersColor(isError: false)
       return
     }
     
     if mnemonicListForVerification == generatedMnemonicList {
-      view?.setRightBarButton(isEnabled: true)
+      view?.setNextButtonStatus(isEnabled: true)
     } else {
-      view?.setRightBarButton(isEnabled: false)
+      view?.setNextButtonStatus(isEnabled: false)
       view?.setErrorLabel(isHidden: false)
       view?.setDashBordersColor(isError: true)
     }
@@ -124,8 +126,8 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   }
   
   func mnemonicVerificationViewDidLoad() {
-    initShuffledMnemonicList()
-    view?.setRightBarButton(isEnabled: false)
+    initShuffledMnemonicList()    
+    view?.setNextButtonStatus(isEnabled: false)
   }
   
   func setGeneratedMnemonicList(generatedList: [String]) {
@@ -160,5 +162,12 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
     view?.deselectShuffledCollectionView()
     clearWordsForVerification()    
     validateVerificationList()
+  }
+  
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let mnemonicVerificationViewController = view as! MnemonicVerificationViewController
+    mnemonicVerificationViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }

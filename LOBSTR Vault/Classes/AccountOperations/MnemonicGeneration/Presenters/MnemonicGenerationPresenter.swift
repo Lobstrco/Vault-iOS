@@ -12,6 +12,7 @@ protocol MnemonicGenerationView: class {
   func setNavigationItem()
   func setCancelAlert()
   func setBackButton(isEnabled: Bool)
+  func setHelpButton(isEnabled: Bool)
 }
 
 protocol MnemonicCellView {
@@ -48,9 +49,9 @@ class MnemonicGenerationPresenterImpl {
     self.mnemonicManager = mnemonicManager
   }
   
-  // MARK: - Public Methods
+  // MARK: - Private
   
-  func transitionToMnemonicVerificationScreen() {
+  private func transitionToMnemonicVerificationScreen() {
     let mnemonicVerificationViewController = MnemonicVerificationViewController.createFromStoryboard()
     
     mnemonicVerificationViewController.presenter = MnemonicVerificationPresenterImpl(view: mnemonicVerificationViewController)
@@ -61,13 +62,13 @@ class MnemonicGenerationPresenterImpl {
                                                                               animated: true)
   }
   
-  func generateMnemonicList() {
+  private func generateMnemonicList() {
     let mnemonicData = MnemonicHelper.getWordMnemonic()
     mnemonicList = mnemonicData.separatedWords
     MnemonicHelper.encryptAndStoreInKeychain(mnemonic: mnemonicData.mnemonic)
-//    store(mnemonic: mnemonicData.mnemonic)
     view?.setMnemonicList(mnemonicList: mnemonicList)
   }
+  
 }
 
 // MARK: - MnemonicGenerationPresenter
@@ -80,6 +81,7 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   
   func mnemonicGenerationViewDidLoad() {
     view?.setNextButton(isHidden: mnemonicMode == .showMnemonic)
+    view?.setHelpButton(isEnabled: mnemonicMode == .generationMnemonic)
     
     switch mnemonicMode {
     case .generationMnemonic:

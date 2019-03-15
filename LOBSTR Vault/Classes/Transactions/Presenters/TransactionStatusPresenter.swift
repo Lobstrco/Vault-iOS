@@ -14,6 +14,7 @@ protocol TransactionStatusPresenter {
   func transactionStatusViewDidLoad()
   func copyXDRButtonWasPressed(xdr: String)
   func doneButtonWasPressed()
+  func helpButtonWasPressed()
 }
 
 protocol TransactionStatusView: class {
@@ -65,6 +66,13 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   func doneButtonWasPressed() {
     let transactionStatusViewController = view as! TransactionStatusViewController
     transactionStatusViewController.navigationController?.popToRootViewController(animated: true)
+  }
+  
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let transactionStatusViewController = view as! TransactionStatusViewController
+    transactionStatusViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }
 

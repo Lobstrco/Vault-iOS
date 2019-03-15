@@ -7,6 +7,7 @@ protocol PublicKeyPresenter {
   func copyKeyButtonWasPressed()
   func logoutButtonWasPressed()
   func logoutOperationWasConfirmed()
+  func helpButtonWasPressed()
 }
 
 protocol PublicKeyView: class {
@@ -117,6 +118,13 @@ class PublicKeyPresenterImpl: PublicKeyPresenter {
   
   func logoutOperationWasConfirmed() {
     ApplicationCoordinatorHelper.logout()
+  }
+  
+  func helpButtonWasPressed() {
+    let helpViewController = HelpViewController.createFromStoryboard()
+    
+    let publicKeyViewController = view as! PublicKeyViewController
+    publicKeyViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
 }
 
