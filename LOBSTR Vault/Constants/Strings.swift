@@ -61,6 +61,8 @@ internal enum L10n {
   internal static let buttonTitleUnderstand = L10n.tr("Localizable", "button_title_understand")
   /// View Transactions List
   internal static let buttonTitleViewTransactionsList = L10n.tr("Localizable", "button_title_view_transactions_list")
+  /// Yes
+  internal static let buttonTitleYes = L10n.tr("Localizable", "button_title_yes")
   /// This action will cancel account creation. Shown recovery phrase will be deleted
   internal static let cancelAlertMnemonicMessage = L10n.tr("Localizable", "cancel_alert_mnemonic_message")
   /// Are you sure?
@@ -339,6 +341,8 @@ internal enum L10n {
   internal static let textChangeTheSamePasscode = L10n.tr("Localizable", "text_change_the_same_passcode")
   /// You will need to confirm recovery phrase on the next screen
   internal static let textConfirmDescription = L10n.tr("Localizable", "text_confirm_description")
+  /// Want to confirm the operation?
+  internal static let textConfirmDialogDescription = L10n.tr("Localizable", "text_confirm_dialog_description")
   /// Copied
   internal static let textCopiedKeySnack = L10n.tr("Localizable", "text_copied_key_snack")
   /// Write down these [number] words and keep them secure. Don’t email them or screenshot them.
@@ -405,10 +409,14 @@ internal enum L10n {
   internal static let textSettingsMnemonicField = L10n.tr("Localizable", "text_settings_mnemonic_field")
   /// Notifications
   internal static let textSettingsNotificationsField = L10n.tr("Localizable", "text_settings_notifications_field")
+  /// Prompt for Transaction Decisions
+  internal static let textSettingsPromtDecisionsField = L10n.tr("Localizable", "text_settings_promt_decisions_field")
   /// Vault Public key
   internal static let textSettingsPublicKeyField = L10n.tr("Localizable", "text_settings_public_key_field")
   /// Vault Public Key
   internal static let textSettingsPublicKeyTitle = L10n.tr("Localizable", "text_settings_public_key_title")
+  /// Rate Us
+  internal static let textSettingsRateUsField = L10n.tr("Localizable", "text_settings_rate_us_field")
   /// SECURITY
   internal static let textSettingsSecuritySection = L10n.tr("Localizable", "text_settings_security_section")
   /// Signer for 5 accounts

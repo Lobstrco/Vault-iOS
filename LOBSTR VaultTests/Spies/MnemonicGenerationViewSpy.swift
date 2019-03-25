@@ -26,5 +26,9 @@ class MnemonicGenerationViewSpy: MnemonicGenerationView {
   func setBackButton(isEnabled: Bool) {
     
   }
+  
+  func setHelpButton(isEnabled: Bool) {
+    
+  }
 }
 

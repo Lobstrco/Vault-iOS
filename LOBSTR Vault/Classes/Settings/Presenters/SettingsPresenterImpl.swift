@@ -68,17 +68,20 @@ extension SettingsPresenterImpl {
 // MARK: - SettingsCellConfigurator
 
 extension SettingsPresenterImpl {
-  func configure(biometricIDCell: BiometricIDTableViewCell, type: SwitchType) {
-    biometricIDCell.switchType = type
-    biometricIDCell.delegate = self
+  func configure(switchCell: SwitchTableViewCell, type: SwitchType) {
+    switchCell.switchType = type
+    switchCell.delegate = self
     
     switch type {
     case .biometricID:
-      biometricIDCell.setTitle(Device.biometricType.name)
-      biometricIDCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
+      switchCell.setTitle(Device.biometricType.name)
+      switchCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
     case .notifications:
-      biometricIDCell.setTitle(L10n.textSettingsNotificationsField)
-      biometricIDCell.setSwitch(UserDefaultsHelper.isNotificationsEnabled)
+      switchCell.setTitle(L10n.textSettingsNotificationsField)
+      switchCell.setSwitch(UserDefaultsHelper.isNotificationsEnabled)
+    case .promptTransactionDecisions:
+      switchCell.setTitle(L10n.textSettingsPromtDecisionsField)
+      switchCell.setSwitch(UserDefaultsHelper.isPromtTransactionDecisionsEnabled)
     }
   }
   
@@ -111,6 +114,8 @@ extension SettingsPresenterImpl {
       disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.red.color)
     case .licenses:
       disclosureIndicatorTableViewCell.setTitle(L10n.navTitleLicenses)
+    case .rateUs:
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsRateUsField)
     default:
       break
     }
@@ -138,6 +143,8 @@ extension SettingsPresenterImpl {
       transitionToHelp()
     case .licenses:
       transitionToLicenses()
+    case .rateUs:
+      transitionToMarket()
     default:
       break
     }
@@ -147,7 +154,7 @@ extension SettingsPresenterImpl {
 // MARK: - BiometricIDTableViewCellDelegate
 
 extension SettingsPresenterImpl {
-  func biometricIDSwitchValueChanged(_ value: Bool, type: SwitchType) {
+  func switchValueChanged(_ value: Bool, type: SwitchType) {
     switch type {
     case .notifications:
       
@@ -189,6 +196,8 @@ extension SettingsPresenterImpl {
           self?.view?.setSettings()
         }
       }
+    case .promptTransactionDecisions:
+      UserDefaultsHelper.isPromtTransactionDecisionsEnabled = value
     }
   }
 }
@@ -306,5 +315,11 @@ extension SettingsPresenterImpl {
     let acknowListViewController = AcknowListViewController()
     let settingsViewController = view as! SettingsViewController
     settingsViewController.navigationController?.pushViewController(acknowListViewController, animated: true)
-  }     
+  }
+  
+  func transitionToMarket() {
+    let appleID = "1452248529"
+    let appStoreLink = "https://itunes.apple.com/app/id\(appleID)?action=write-review"
+    UIApplication.shared.open(URL(string: appStoreLink)!, options: [:], completionHandler: nil)
+  }
 }

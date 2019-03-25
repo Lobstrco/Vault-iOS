@@ -75,8 +75,19 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setConfirmationAlert() {
+    let alert = UIAlertController(title: L10n.textDenyDialogTitle, message: L10n.textConfirmDialogDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleYes, style: .destructive, handler: { _ in
+      self.presenter.confirmOperationWasConfirmed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    self.present(alert, animated: true, completion: nil)
+  }
+  
+  func setDenyingAlert() {
     let alert = UIAlertController(title: L10n.textDenyDialogTitle, message: L10n.textDenyDialogDescription, preferredStyle: .alert)
-    alert.addAction(UIAlertAction(title: L10n.buttonTitleConfirm, style: .destructive, handler: { _ in
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleYes, style: .destructive, handler: { _ in
       self.presenter.denyOperationWasConfirmed()
     }))
     

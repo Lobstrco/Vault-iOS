@@ -13,7 +13,7 @@
 		8425547021E8BD0200350E06 /* BackUpAccountPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425546F21E8BD0200350E06 /* BackUpAccountPresenter.swift */; };
 		8425547321E8BE8800350E06 /* BackUpAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425547221E8BE8800350E06 /* BackUpAccountViewController.swift */; };
 		8425547521E8BFF500350E06 /* BackUpAccount.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8425547421E8BFF500350E06 /* BackUpAccount.storyboard */; };
-		844639CF21DCE73700719011 /* BiometricIDTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844639CE21DCE73700719011 /* BiometricIDTableViewCell.swift */; };
+		844639CF21DCE73700719011 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844639CE21DCE73700719011 /* SwitchTableViewCell.swift */; };
 		844C580D21CA4FB7008B44B2 /* PinPresenterImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C580C21CA4FB7008B44B2 /* PinPresenterImpl.swift */; };
 		844C580F21CA5D13008B44B2 /* PinPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C580E21CA5D13008B44B2 /* PinPresenterTests.swift */; };
 		844C581121CA5F69008B44B2 /* PinViewSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844C581021CA5F69008B44B2 /* PinViewSpy.swift */; };
@@ -63,6 +63,7 @@
 		9206BCE52211920F00EEF0D1 /* PublicKeyPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9206BCE42211920F00EEF0D1 /* PublicKeyPopover.swift */; };
 		9206BCE72211927E00EEF0D1 /* PublicKeyPopover.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9206BCE62211927E00EEF0D1 /* PublicKeyPopover.xib */; };
 		921E1F532229453400A740C4 /* UtilityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921E1F522229453400A740C4 /* UtilityHelper.swift */; };
+		921EFBFA2248E73800D08192 /* TransactionImportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 921EFBF92248E73800D08192 /* TransactionImportViewController.swift */; };
 		9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AB21BE86B50070A526 /* Storyboards.swift */; };
 		9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */; };
 		9221B7B821BE87F60070A526 /* MnemonicRecovery.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */; };
@@ -174,8 +175,6 @@
 		92D94EEA21F613460092F4BB /* HomeHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D94EE921F613460092F4BB /* HomeHelper.swift */; };
 		92D94EED21F61D100092F4BB /* SignedAccounts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D94EEC21F61D100092F4BB /* SignedAccounts.swift */; };
 		92D94EEF21F639990092F4BB /* CustomPopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D94EEE21F639990092F4BB /* CustomPopoverViewController.swift */; };
-		92D94EF121F63AC80092F4BB /* ImportXDR.xib in Resources */ = {isa = PBXBuildFile; fileRef = 92D94EF021F63AC80092F4BB /* ImportXDR.xib */; };
-		92D94EF321F63B0B0092F4BB /* ImportXDR.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D94EF221F63B0B0092F4BB /* ImportXDR.swift */; };
 		92DED2B1220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */; };
 		92E48FCA21E4D517006281E4 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E48FC921E4D517006281E4 /* Errors.swift */; };
 		92E48FCD21E4EE38006281E4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 92E48FCC21E4EE38006281E4 /* Localizable.strings */; };
@@ -202,7 +201,7 @@
 		8425546F21E8BD0200350E06 /* BackUpAccountPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackUpAccountPresenter.swift; sourceTree = "<group>"; };
 		8425547221E8BE8800350E06 /* BackUpAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackUpAccountViewController.swift; sourceTree = "<group>"; };
 		8425547421E8BFF500350E06 /* BackUpAccount.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BackUpAccount.storyboard; sourceTree = "<group>"; };
-		844639CE21DCE73700719011 /* BiometricIDTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BiometricIDTableViewCell.swift; sourceTree = "<group>"; };
+		844639CE21DCE73700719011 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
 		844C580C21CA4FB7008B44B2 /* PinPresenterImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPresenterImpl.swift; sourceTree = "<group>"; };
 		844C580E21CA5D13008B44B2 /* PinPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinPresenterTests.swift; sourceTree = "<group>"; };
 		844C581021CA5F69008B44B2 /* PinViewSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinViewSpy.swift; sourceTree = "<group>"; };
@@ -250,6 +249,7 @@
 		9206BCE42211920F00EEF0D1 /* PublicKeyPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeyPopover.swift; sourceTree = "<group>"; };
 		9206BCE62211927E00EEF0D1 /* PublicKeyPopover.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PublicKeyPopover.xib; sourceTree = "<group>"; };
 		921E1F522229453400A740C4 /* UtilityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityHelper.swift; sourceTree = "<group>"; };
+		921EFBF92248E73800D08192 /* TransactionImportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionImportViewController.swift; sourceTree = "<group>"; };
 		9221B7AB21BE86B50070A526 /* Storyboards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storyboards.swift; sourceTree = "<group>"; };
 		9221B7AE21BE86DC0070A526 /* StoryboardCreation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryboardCreation.swift; sourceTree = "<group>"; };
 		9221B7B721BE87F60070A526 /* MnemonicRecovery.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MnemonicRecovery.storyboard; sourceTree = "<group>"; };
@@ -368,8 +368,6 @@
 		92D94EE921F613460092F4BB /* HomeHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeHelper.swift; sourceTree = "<group>"; };
 		92D94EEC21F61D100092F4BB /* SignedAccounts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignedAccounts.swift; sourceTree = "<group>"; };
 		92D94EEE21F639990092F4BB /* CustomPopoverViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPopoverViewController.swift; sourceTree = "<group>"; };
-		92D94EF021F63AC80092F4BB /* ImportXDR.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImportXDR.xib; sourceTree = "<group>"; };
-		92D94EF221F63B0B0092F4BB /* ImportXDR.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportXDR.swift; sourceTree = "<group>"; };
 		92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PKHUDSuccessViewCustom.swift; sourceTree = "<group>"; };
 		92E48FC921E4D517006281E4 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		92E48FCC21E4EE38006281E4 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -541,7 +539,7 @@
 				84CFB07221D7A19A0020073C /* DisclosureIndicatorTableViewCell.swift */,
 				84CFB07421D7A1C40020073C /* RightDetailTableViewCell.swift */,
 				84835ABE21D652370039F1C5 /* PublicKeyTableViewCell.swift */,
-				844639CE21DCE73700719011 /* BiometricIDTableViewCell.swift */,
+				844639CE21DCE73700719011 /* SwitchTableViewCell.swift */,
 				92C8C23C21FB2B7C003E4F5A /* CopyrightTableViewCell.swift */,
 			);
 			path = Views;
@@ -881,7 +879,6 @@
 			isa = PBXGroup;
 			children = (
 				9292F85222247E4200954BE1 /* Operations */,
-				92C8C23721FB12EA003E4F5A /* ImportXDR */,
 				922C641821CBA7C300EDD409 /* TransactionListTableViewCell.swift */,
 			);
 			path = Views;
@@ -1087,6 +1084,7 @@
 				9277ABAC21CA5B5700379971 /* TransactionListViewController.swift */,
 				922C641A21CBB56B00EDD409 /* TransactionDetailsViewController.swift */,
 				925CCAE021DE4CE200E75602 /* TransactionStatusViewController.swift */,
+				921EFBF92248E73800D08192 /* TransactionImportViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1239,15 +1237,6 @@
 				92C8C23221F9F20A003E4F5A /* success.json */,
 			);
 			path = Animations;
-			sourceTree = "<group>";
-		};
-		92C8C23721FB12EA003E4F5A /* ImportXDR */ = {
-			isa = PBXGroup;
-			children = (
-				92D94EF021F63AC80092F4BB /* ImportXDR.xib */,
-				92D94EF221F63B0B0092F4BB /* ImportXDR.swift */,
-			);
-			path = ImportXDR;
 			sourceTree = "<group>";
 		};
 		92C8C23E21FB32F2003E4F5A /* SignerDetails */ = {
@@ -1516,7 +1505,6 @@
 				924770CE2210385100924672 /* Help.storyboard in Resources */,
 				92C8C23421F9F20A003E4F5A /* success.json in Resources */,
 				84CD21DA21ECA388000C89EC /* PublicKey.storyboard in Resources */,
-				92D94EF121F63AC80092F4BB /* ImportXDR.xib in Resources */,
 				9232EC7A21C11D1D00F8EBD4 /* MnemonicGeneration.storyboard in Resources */,
 				925CCAD721DCB0F600E75602 /* Transactions.storyboard in Resources */,
 				845CDCAE21C9309B00791C94 /* NumberPadView.xib in Resources */,
@@ -1691,7 +1679,6 @@
 				845CDCA521C92E6300791C94 /* PinViewController.swift in Sources */,
 				84BBE7FF21CE32C90074CCC3 /* JWTManager.swift in Sources */,
 				8486F68A21CBA8660099F1F2 /* Device.swift in Sources */,
-				92D94EF321F63B0B0092F4BB /* ImportXDR.swift in Sources */,
 				92DED2B1220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift in Sources */,
 				92C8C23121F9E78F003E4F5A /* HorizonErrorMessage.swift in Sources */,
 				92D94EED21F61D100092F4BB /* SignedAccounts.swift in Sources */,
@@ -1715,6 +1702,7 @@
 				925CCAD921DCD37500E75602 /* OperationType+Description.swift in Sources */,
 				925CCACF21DCAD5A00E75602 /* OperationDetailsTableViewCell.swift in Sources */,
 				924770D022103ACA00924672 /* HelpViewController.swift in Sources */,
+				921EFBFA2248E73800D08192 /* TransactionImportViewController.swift in Sources */,
 				9277AB8A21C8E8A700379971 /* NetworkingResult.swift in Sources */,
 				924770D322103BEA00924672 /* HelpTableViewCell.swift in Sources */,
 				84835ABC21D651E60039F1C5 /* ReusableView.swift in Sources */,
@@ -1762,7 +1750,7 @@
 				9277ABAD21CA5B5700379971 /* TransactionListViewController.swift in Sources */,
 				92BD385621C7AFF500E974E0 /* StartMenuViewController.swift in Sources */,
 				9206BCE52211920F00EEF0D1 /* PublicKeyPopover.swift in Sources */,
-				844639CF21DCE73700719011 /* BiometricIDTableViewCell.swift in Sources */,
+				844639CF21DCE73700719011 /* SwitchTableViewCell.swift in Sources */,
 				9244A3DC21FF10A8007FF360 /* UITextView+Placeholder.swift in Sources */,
 				84CFB07C21D7B02E0020073C /* ApplicationInfo.swift in Sources */,
 				9277ABB821CA770D00379971 /* Transaction.swift in Sources */,

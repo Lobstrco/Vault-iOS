@@ -40,5 +40,7 @@ public enum SettingsRow {
   case logout
   case copyright
   case licenses
+  case promptTransactionDecisions
+  case rateUs
 }
 

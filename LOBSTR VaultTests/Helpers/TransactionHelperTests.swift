@@ -145,7 +145,7 @@ class TransactionHelperTests: XCTestCase {
   }
   
   
-  func testNamesAndVaulesFromManageOfferOperationShouldBeReceived2() throws {
+  func testNamesAndVaulesFromManageOfferOperationWithBuyingXLMShouldBeReceived() throws {
     let expectedNamesAndValues = [("selling", "KIN"), ("buying", "XLM"), ("amount", "20000"), ("price", "0.000078"), ("offerId", "0")]
     
     let manageOfferOperation =
@@ -217,17 +217,10 @@ class TransactionHelperTests: XCTestCase {
     let xdr = "AAAAAI3bxgX6nVnz8W2Cdz36gkTYisON4e5IX5/V0BhdsePAAAAAyAFIyE8AAAAJAAAAAAAAAAAAAAACAAAAAAAAAAEAAAAAq4beUlPpxLFRF2ciNPPNUlULKae/kplLgE8MTCTMwVAAAAAAAAAAANCdwwAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAEAAAAUAAAAAQAAAAUAAAABAAAABQAAAAEAAAAFAAAAAAAAAAAAAAAAAAAAAV2x48AAAABAvQgSWvqVkVRfzVlFgCEq1BHlij1nWhLjghq9IwRV3S/ruJxzJkle3esf9AE2INQatFqCHtJYzE/4uelK6CxeCw=="
     let expectedOperationNames = ["Payment", "Set Options"]
     
-    let operationNames = try TransactionHelper.getListOfOperationNames(from: xdr)
+    let transactionXDR = try! TransactionXDR(xdr: xdr)
+    let operationNames = try TransactionHelper.getListOfOperationNames(from: transactionXDR)
     
     XCTAssertEqual(expectedOperationNames, operationNames, "Expected to receive list of operation names")
-  }
-  
-  func testExceptionShouldBeReceviedWhileGettingListOfOperationNames() {
-    let xdr = "wrong xdr"
-    
-    XCTAssertThrowsError(try TransactionHelper.getListOfOperationNames(from: xdr)) { error in
-      XCTAssertEqual(error as? VaultError.TransactionError, VaultError.TransactionError.invalidTransaction)
-    }
   }
   
   func testOperationShouldBeReceviedByIndexFromXDR() throws {

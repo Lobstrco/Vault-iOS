@@ -10,6 +10,7 @@ protocol TransactionDetailsPresenter {
   func confirmButtonWasPressed()
   func denyButtonWasPressed()
   func denyOperationWasConfirmed()
+  func confirmOperationWasConfirmed()
   func configure(_ cell: OperationTableViewCell, forRow row: Int)
   func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int)
 }
@@ -17,6 +18,7 @@ protocol TransactionDetailsPresenter {
 protocol TransactionDetailsView: class {
   func setTableViewData()
   func setConfirmationAlert()
+  func setDenyingAlert()
   func setErrorAlert(for error: Error)
   func setProgressAnimation(isEnable: Bool)
   func registerTableViewCell(with cellName: String)
@@ -77,7 +79,7 @@ class TransactionDetailsPresenterImpl {
     guard let transactionXDR = transaction.xdr else {
       fatalError()
     }
-    
+
     self.xdr = transactionXDR
   }
   
@@ -85,7 +87,10 @@ class TransactionDetailsPresenterImpl {
   
   private func setOperationList() {
     do {
-      operations = try TransactionHelper.getListOfOperationNames(from: xdr)
+      guard let transactionXDR = try? TransactionXDR(xdr: xdr) else {
+        throw VaultError.TransactionError.invalidTransaction
+      }
+      operations = try TransactionHelper.getListOfOperationNames(from: transactionXDR)
     } catch {
       crashlyticsService?.recordCustomException(error)
       view?.setErrorAlert(for: error)
@@ -209,6 +214,23 @@ class TransactionDetailsPresenterImpl {
       }
     }
   }
+  
+  private func updateTransactionAndSend(by hash: String) {
+    let apiLoader = APIRequestLoader<TransactionRequest>(apiRequest: TransactionRequest())
+    let transactionRequestParameters = TransactionRequestParameters(hash: hash)
+    apiLoader.loadAPIRequest(requestData: transactionRequestParameters) { result in
+      switch result {
+      case .success(let transaction):
+        guard let xdr = transaction.xdr,
+          let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+            return
+        }
+        self.submitTransaction(transactionEnvelopeXDR)
+      case .failure(let serverRequestError):
+        self.view?.setErrorAlert(for: serverRequestError)
+      }
+    }
+  }
 }
 
 // MARK: - TransactionDetailsPresenter
@@ -236,10 +258,6 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
     }
   }
   
-  func denyButtonWasPressed() {
-    view?.setConfirmationAlert()
-  }
-  
   func configure(_ cell: OperationTableViewCell, forRow row: Int) {
     cell.setOperationTitle(operations[row])
   }
@@ -249,6 +267,31 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func confirmButtonWasPressed() {
+    if UserDefaultsHelper.isPromtTransactionDecisionsEnabled {
+      view?.setConfirmationAlert()
+    } else {
+      confirmOperationWasConfirmed()
+    }
+  }
+  
+  func denyButtonWasPressed() {
+    if UserDefaultsHelper.isPromtTransactionDecisionsEnabled {
+      view?.setDenyingAlert()
+    } else {
+      denyOperationWasConfirmed()
+    }
+  }
+  
+  func denyOperationWasConfirmed() {
+    switch transactionType {
+    case .imported:
+      openTransactionListScreen()
+    case .standard:
+      cancelTransaction()
+    }
+  }
+  
+  func confirmOperationWasConfirmed() {
     switch transactionType {
     case .imported:
       guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
@@ -260,32 +303,6 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
         return
       }
       updateTransactionAndSend(by: hash)
-    }
-  }
-  
-  private func updateTransactionAndSend(by hash: String) {
-    let apiLoader = APIRequestLoader<TransactionRequest>(apiRequest: TransactionRequest())
-    let transactionRequestParameters = TransactionRequestParameters(hash: hash)
-    apiLoader.loadAPIRequest(requestData: transactionRequestParameters) { result in
-      switch result {
-      case .success(let transaction):
-        guard let xdr = transaction.xdr,
-          let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
-          return
-        }
-        self.submitTransaction(transactionEnvelopeXDR)
-      case .failure(let serverRequestError):
-        self.view?.setErrorAlert(for: serverRequestError)
-      }
-    }
-  }
-  
-  func denyOperationWasConfirmed() {
-    switch transactionType {
-    case .imported:
-      openTransactionListScreen()
-    case .standard:
-      cancelTransaction()
     }
   }
 }

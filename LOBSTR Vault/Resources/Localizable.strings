@@ -1,5 +1,6 @@
 // Button titles
 "button_title_ok" = "OK";
+"button_title_yes" = "Yes";
 "button_title_deny" = "Deny";
 "button_title_back" = "Back";
 "button_title_cancel" = "Cancel";
@@ -109,6 +110,7 @@
 // Transaction details screen
 "text_deny_dialog_title" = "Are you sure?";
 "text_deny_dialog_description" = "Want to deny the operation?";
+"text_confirm_dialog_description" = "Want to confirm the operation?";
 "text_transaction_invalid_error" = "Transaction can not be confirmed, it’s sequence number is invalid.";
 "text_transaction_invalid_label" = "Invalid";
 
@@ -118,9 +120,11 @@
 "text_settings_about_section" = "OTHER";
 "text_settings_public_key_field" = "Vault Public key";
 "text_settings_notifications_field" = "Notifications";
+"text_settings_promt_decisions_field" = "Prompt for Transaction Decisions";
 "text_settings_signer_for_field" = "Signer for 5 accounts";
 "text_settings_mnemonic_field" = "Recovery Phrase";
 "text_settings_change_pin_field" = "Change PIN";
+"text_settings_rate_us_field" = "Rate Us";
 "text_settings_touch_id_field" = "Fingerprint Login";
 "text_settings_version_field" = "Version";
 "text_settings_help_field" = "Help";

@@ -5,10 +5,16 @@ struct UserDefaultsHelper {
   private static let signerAccountsKey = "numberOfSignerAccounts"
   private static let accountCreatedKey = "isAccountCreated"
   private static let pushNotificationKey = "isPushNotificationsEnabled"
+  private static let promtForTransactionDecisionsKey = "isPromtTransactionDecisionsEnabled"
   
   static var isNotificationsEnabled: Bool {
     get { return UserDefaults.standard.bool(forKey: pushNotificationKey) }
     set { UserDefaults.standard.set(newValue, forKey: pushNotificationKey) }
+  }
+  
+  static var isPromtTransactionDecisionsEnabled: Bool {
+    get { return UserDefaults.standard.bool(forKey: promtForTransactionDecisionsKey) }
+    set { UserDefaults.standard.set(newValue, forKey: promtForTransactionDecisionsKey) }
   }
   
   static var numberOfSignerAccounts: Int {

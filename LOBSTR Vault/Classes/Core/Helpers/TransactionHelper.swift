@@ -3,12 +3,7 @@ import stellarsdk
 
 struct TransactionHelper {
   
-  static func getListOfOperationNames(from xdr: String) throws -> [String] {
-    
-    guard let transactionXDR = try? TransactionXDR(xdr: xdr) else {
-      throw VaultError.TransactionError.invalidTransaction
-    }
-  
+  static func getListOfOperationNames(from transactionXDR: TransactionXDR) throws -> [String] {
     var operationNames: [String] = []
     
     for operation in transactionXDR.operations {

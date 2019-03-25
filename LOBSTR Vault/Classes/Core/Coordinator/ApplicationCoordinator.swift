@@ -61,12 +61,18 @@ class ApplicationCoordinator {
   private func openStartScreen() {
     switch accountStatus {
     case .notCreated:
+      enablePromtForTransactionDecisions()
       ApplicationCoordinatorHelper.clearKeychain()
       showMenuScreen()
     case .waitingToBecomeSinger:
+      enablePromtForTransactionDecisions()
       showPublicKeyScreen()
     case .created:
       showPinScreen()
     }
+  }
+  
+  private func enablePromtForTransactionDecisions() {
+    UserDefaultsHelper.isPromtTransactionDecisionsEnabled = true
   }
 }

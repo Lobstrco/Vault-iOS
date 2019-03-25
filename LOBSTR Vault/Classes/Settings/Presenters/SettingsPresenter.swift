@@ -5,7 +5,7 @@ typealias SettingsPresenter =
   SettingsDataSource &
   SettingsCellConfigurator &
   SettingsDelegate &
-  BiometricIDTableViewCellDelegate &
+  SwitchTableViewCellDelegate &
   SettingsLogout
 
 protocol SettingsLifecycle {
@@ -25,7 +25,7 @@ protocol SettingsDelegate {
 }
 
 protocol SettingsCellConfigurator {
-  func configure(biometricIDCell: BiometricIDTableViewCell, type: SwitchType)
+  func configure(switchCell: SwitchTableViewCell, type: SwitchType)
   func configure(rightDetailCell: RightDetailTableViewCell,
                  row: SettingsRow)
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,

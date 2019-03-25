@@ -11,7 +11,7 @@ class MnemonicVerificationViewController: UIViewController, StoryboardCreation {
   
   @IBOutlet var errorLabel: UILabel!
   @IBOutlet var descriptionLabel: UILabel!
-  @IBOutlet var clearButton: UILabel!
+  @IBOutlet var clearButton: UIButton!
   @IBOutlet var nextButton: UIButton!
   
   var presenter: MnemonicVerificationPresenter!
@@ -86,6 +86,10 @@ extension MnemonicVerificationViewController: MnemonicVerificationView {
     
     nextButton.backgroundColor = backgorundColor
     nextButton.isEnabled = isEnabled
+  }
+  
+  func setClearButtonStatus(isEnabled: Bool) {
+    clearButton.isHidden = !isEnabled
   }
 }
 

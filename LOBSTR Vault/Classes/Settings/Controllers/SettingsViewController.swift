@@ -93,9 +93,8 @@ class SettingsViewController: UIViewController,
     case .notifications:
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
-          as BiometricIDTableViewCell
-      presenter.configure(biometricIDCell: cell, type: .notifications)
-      
+          as SwitchTableViewCell
+      presenter.configure(switchCell: cell, type: .notifications)
       return cell
     case .mnemonicCode:
       let cell =
@@ -107,8 +106,8 @@ class SettingsViewController: UIViewController,
     case .biometricId:
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
-          as BiometricIDTableViewCell
-      presenter.configure(biometricIDCell: cell, type: .biometricID)
+          as SwitchTableViewCell
+      presenter.configure(switchCell: cell, type: .biometricID)
       
       return cell
     case .changePin:
@@ -124,6 +123,12 @@ class SettingsViewController: UIViewController,
           as RightDetailTableViewCell
       
       presenter.configure(rightDetailCell: cell, row: row)
+      return cell
+    case .promptTransactionDecisions:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as SwitchTableViewCell
+      presenter.configure(switchCell: cell, type: .promptTransactionDecisions)
       return cell
     case .help:
       let cell =
@@ -151,6 +156,13 @@ class SettingsViewController: UIViewController,
         tableView.dequeueReusableCell(forIndexPath: indexPath)
           as CopyrightTableViewCell
       cell.setStaticString()
+      return cell
+    case .rateUs:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
       return cell
     }  
   }

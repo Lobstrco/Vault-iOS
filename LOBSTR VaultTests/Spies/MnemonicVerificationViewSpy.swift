@@ -40,4 +40,12 @@ class MnemonicVerificationViewSpy: MnemonicVerificationView {
     
   }
   
+  func deselectShuffledCollectionView() {
+    
+  }
+  
+  func setNextButtonStatus(isEnabled: Bool) {
+    
+  }
+  
 }

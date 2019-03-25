@@ -27,7 +27,7 @@ protocol TransactionListPresenter {
 }
 
 protocol TransactionListCellView {
-  func set(date: String?, operationType: String?, isValid: Bool)
+  func set(date: String?, operationType: String?, sourceAccount: String, isValid: Bool)
 }
 
 class TransactionListPresenterImpl {
@@ -36,7 +36,6 @@ class TransactionListPresenterImpl {
   fileprivate var transactionList: [Transaction] = []
   fileprivate let crashlyticsService: CrashlyticsService
   fileprivate let transactionService: TransactionService
-  fileprivate var importXDRInput: ImportXDRInput?
   fileprivate var transactionListStatus: TaskStatus = .ready
   
   init(view: TransactionListView,
@@ -130,37 +129,13 @@ class TransactionListPresenterImpl {
   }
 }
 
-// MARK: - ImportXDROutput
+// MARK: - TransactionImportDelegate
 
-extension TransactionListPresenterImpl: ImportXDROutput {
-  
-  private func displayImportXDRPopover() {
-    guard ConnectionHelper.isConnectedToNetwork() else {
-      return
-    }
-    
-    let importXDRView = Bundle.main.loadNibNamed("ImportXDR", owner: view, options: nil)?.first as! ImportXDR
-    let popoverHeight: CGFloat = 500
-    let popover = CustomPopoverViewController(height: popoverHeight, view: importXDRView)
-    
-    importXDRView.popoverDelegate = popover
-    importXDRView.output = self
-    importXDRInput = importXDRView
-    
-    view?.setImportXDRPopover(popover)
-  }
+extension TransactionListPresenterImpl: TransactionImportDelegate {
   
   func submitTransaction(with xdr: String) {
-    guard let _ = try? TransactionEnvelopeXDR(xdr: xdr) else {
-      importXDRInput?.setError(error: "Invalid XDR")
-      return
-    }
-    
-    importXDRInput?.closePopup()
-    
     var transaction = Transaction()
     transaction.xdr = xdr
-    
     transitionToTransactionDetailsScreenFromImport(transaction: transaction)
   }
 }
@@ -174,7 +149,7 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
   }
   
   func importXDRButtonWasPressed() {
-    displayImportXDRPopover()
+    transitionToTransactionImport()
   }
   
   func transactionListViewDidLoad() {
@@ -190,10 +165,16 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
   
   func configure(_ cell: TransactionListCellView, forRow row: Int) {
     guard let xdr = transactionList[row].xdr else { return }
+    var sourceAccount = "undefined"
     
     var operationNames: [String] = []
     do {
-      operationNames = try TransactionHelper.getListOfOperationNames(from: xdr)
+      guard let transactionXDR = try? TransactionXDR(xdr: xdr) else {
+        throw VaultError.TransactionError.invalidTransaction
+      }
+      
+      operationNames = try TransactionHelper.getListOfOperationNames(from: transactionXDR)
+      sourceAccount = transactionXDR.sourceAccount.accountId
     } catch {
       crashlyticsService.recordCustomException(error)
       view?.setErrorAlert(for: error)
@@ -209,7 +190,10 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
     }
     
     let isValid = transactionList[row].sequenceOutdatedAt == nil ? true : false    
-    cell.set(date: operationDate, operationType: operationType, isValid: isValid)
+    cell.set(date: operationDate,
+             operationType: operationType,
+             sourceAccount: sourceAccount,
+             isValid: isValid)
   }
   
   func transactionWasSelected(with index: Int) {
@@ -224,6 +208,15 @@ extension TransactionListPresenterImpl: TransactionListPresenter{
 // MARK: - Transitions
 
 extension TransactionListPresenterImpl {
+  
+  private func transitionToTransactionImport() {
+    let transactionImportViewController = TransactionImportViewController.createFromStoryboard()
+    transactionImportViewController.delegate = self
+    
+    let transactionListViewController = view as! TransactionListViewController
+    transactionListViewController.navigationController?.present(transactionImportViewController, animated: true, completion: nil)
+  }
+  
   private func transitionToTransactionDetailsScreenFromList(by index: Int) {
     let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
     

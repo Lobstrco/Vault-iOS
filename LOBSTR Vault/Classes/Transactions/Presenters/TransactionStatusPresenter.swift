@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import stellarsdk
+import StoreKit
 
 enum TransactionStatus: String {
   case success = "success"
@@ -27,9 +28,10 @@ protocol TransactionStatusView: class {
 
 class TransactionStatusPresenterImpl {
   
-  fileprivate var view: TransactionStatusView
-  fileprivate var resultCode: TransactionResultCode
-  fileprivate var xdr: String
+  private var view: TransactionStatusView
+  private var resultCode: TransactionResultCode
+  private var xdr: String
+  private var transactionStatus: TransactionStatus = .failure
   
   required init(view: TransactionStatusView,
        resultCode: TransactionResultCode,
@@ -47,7 +49,7 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   func transactionStatusViewDidLoad() {
     displayErrorMessage()
     
-    let transactionStatus = getTransactionStatus(by: resultCode)
+    transactionStatus = getTransactionStatus(by: resultCode)
     
     let statusTitle = transactionStatus == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
     view.setAnimation(with: transactionStatus)
@@ -66,6 +68,7 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   func doneButtonWasPressed() {
     let transactionStatusViewController = view as! TransactionStatusViewController
     transactionStatusViewController.navigationController?.popToRootViewController(animated: true)
+    requestReview()
   }
   
   func helpButtonWasPressed() {
@@ -104,6 +107,12 @@ extension TransactionStatusPresenterImpl {
       return "Sequence number does not match source account"
     default:
       return "Transaction was failed"
+    }
+  }
+  
+  private func requestReview() {
+    if transactionStatus == .success {
+      SKStoreReviewController.requestReview()
     }
   }
 }

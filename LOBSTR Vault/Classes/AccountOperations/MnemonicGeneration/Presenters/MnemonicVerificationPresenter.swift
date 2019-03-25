@@ -4,7 +4,7 @@ import UIKit
 protocol MnemonicVerificationView: class {
   func setShuffledMnemonicList()
   func updateCollectionViewForVerification()
-//  func setRightBarButton(isEnabled: Bool)
+  func setClearButtonStatus(isEnabled: Bool)
   func setErrorLabel(isHidden: Bool)
   func setDashBordersColor(isError: Bool)
   func deselectShuffledCollectionView()
@@ -70,6 +70,8 @@ class MnemonicVerificationPresenterImpl {
   }
   
   func validateVerificationList() {
+    view?.setClearButtonStatus(isEnabled: mnemonicListForVerification.count > 0)
+    
     guard mnemonicListForVerification.count == numberWordsInMnemonic else {
       view?.setNextButtonStatus(isEnabled: false)
       view?.setErrorLabel(isHidden: true)

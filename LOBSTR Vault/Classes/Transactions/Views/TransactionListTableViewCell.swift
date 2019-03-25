@@ -3,6 +3,7 @@ import UIKit
 class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   
   @IBOutlet var dateLabel: UILabel!
+  @IBOutlet var sourceAccountLabel: UILabel!
   @IBOutlet var operationTypeLabel: UILabel!
   @IBOutlet var statusLabel: UILabel!
   @IBOutlet weak var content: UIView!
@@ -26,9 +27,10 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
     borderView.removeFromSuperview()
   }
   
-  func set(date: String?, operationType: String?, isValid: Bool) {
+  func set(date: String?, operationType: String?, sourceAccount: String, isValid: Bool) {
     dateLabel.text = date
     operationTypeLabel.text = operationType
+    sourceAccountLabel.text = sourceAccount
     setValidationAppearance(isValid)
     setStatusLabel(isValid)
   }

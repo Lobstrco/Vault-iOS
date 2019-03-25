@@ -2,6 +2,9 @@ import Foundation
 @testable import LOBSTR_Vault
 
 class MnemonicRecoveryViewSpy: MnemonicRecoveryView {
+  func setRecoveryButtonStatus(isEnabled: Bool) {
+    
+  }  
   
   var displaySuggestionListWasCalled = false
   var updatedTextAfterPickingSuggestionWord = ""

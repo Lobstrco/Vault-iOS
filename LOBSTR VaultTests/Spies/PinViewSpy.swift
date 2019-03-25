@@ -2,6 +2,10 @@
 import Foundation
 
 class PinViewSpy: PinView {
+  func setSimplePinAlert() {
+    
+  }
+  
   func setCancelBarButtonItem() {
     
   }
