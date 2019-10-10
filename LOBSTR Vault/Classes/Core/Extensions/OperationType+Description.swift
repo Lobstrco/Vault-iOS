@@ -15,20 +15,22 @@ extension OperationType {
         return "Bump Sequence"
       case .changeTrust:
         return "Change Trust"
-      case .createPassiveOffer:
-        return "Create Passive Offer"
       case .inflation:
         return "Inflation"
       case .manageData:
         return "Manage Data"
-      case .manageOffer:
-        return "Manage Offer"
       case .pathPayment:
         return "Path Payment"
       case .payment:
         return "Payment"
       case .setOptions:
         return "Set Options"
+      case .createPassiveSellOffer:
+        return "Create Passive Sell Offer"
+      case .manageBuyOffer:
+        return "Buy Offer"
+      case .manageSellOffer:
+        return "Sell Offer"
       }
     }
   }

@@ -55,7 +55,7 @@ final class APIRequestLoader<T: APIRequest> {
                       AuthenticationService().updateToken() { result in
                         switch result {
                         case .success(_):
-                          completion(.failure(.needRepeatRequest()))
+                          completion(.failure(.needRepeatRequest))
                         case .failure(_):
                           completion(.failure(.unauthorized(message: detail)))
                         }

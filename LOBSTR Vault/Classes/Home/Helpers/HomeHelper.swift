@@ -5,7 +5,7 @@ struct HomeHelper {
   
   static func createSignerDetailsViewForMultipleAddresses(in parentView: UIView,
                                                           for numberOfAccounts: String,
-                                                          bottomAnchor: NSLayoutYAxisAnchor) {
+                                                          bottomAnchor: NSLayoutYAxisAnchor) -> UILabel {
     let numberOfAccountsLabel = UILabel()
     numberOfAccountsLabel.text = numberOfAccounts
     numberOfAccountsLabel.textColor = Asset.Colors.main.color
@@ -25,6 +25,8 @@ struct HomeHelper {
     accountsTitleLabel.translatesAutoresizingMaskIntoConstraints = false
     accountsTitleLabel.centerXAnchor.constraint(equalTo: parentView.centerXAnchor).isActive = true
     accountsTitleLabel.topAnchor.constraint(equalTo: numberOfAccountsLabel.bottomAnchor, constant: 5).isActive = true
+    
+    return numberOfAccountsLabel
   }
   
   static func createSignerDetailsViewForSingleAddress(in parentView: UIView,
@@ -48,7 +50,8 @@ struct HomeHelper {
     copyButton.setTitle("Copy Key", for: .normal)
     copyButton.backgroundColor = Asset.Colors.main.color
     copyButton.layer.cornerRadius = 5
-    copyButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+//    copyButton.titleLabel?.font = UIFont.systemFont(ofSize: 13)
+    copyButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 13)
     
     parentView.addSubview(copyButton)
     copyButton.translatesAutoresizingMaskIntoConstraints = false

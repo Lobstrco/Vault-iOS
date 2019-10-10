@@ -19,6 +19,8 @@ internal enum L10n {
   internal static let buttonTitleBack = L10n.tr("Localizable", "button_title_back")
   /// Cancel
   internal static let buttonTitleCancel = L10n.tr("Localizable", "button_title_cancel")
+  /// Clear
+  internal static let buttonTitleClear = L10n.tr("Localizable", "button_title_clear")
   /// Confirm
   internal static let buttonTitleConfirm = L10n.tr("Localizable", "button_title_confirm")
   /// Copy Key
@@ -107,7 +109,7 @@ internal enum L10n {
   internal static let helpChapter10Description = L10n.tr("Localizable", "help_chapter10_description")
   /// 10. Add a signer in LOBSTR app
   internal static let helpChapter10Title = L10n.tr("Localizable", "help_chapter10_title")
-  /// \nIf you have multisig enabled for your Stellar account and try to make a transaction, you may be provided with a Transaction XDR by your wallet or signer service.\n\nIt is likely that you need additional signatures for this transaction to occur on your account.\n\nIf you are using LOBSTR Vault paired with LOBSTR wallet or StellarTerm, transaction 'sign' requests should appear automatically in LOBSTR Vault in most cases - there is no need to import Transaction XDRs.\n\nLOBSTR Vault parses the XDR and shows you the operations in a human-readable format.\nAlways verify the contents of transaction before adding a signature.\n\n\nIf you are using other service and need to add and sign a Transaction XDR in LOBSTR Vault app, follow the steps below:\n\n1. Select the 'Transactions' screen in the main navigation.\n2. Tap the '+' floating button.\n3. Paste your Transaction XDR into the input field of 'Add Transaction XDR' form.\n4. Tap the 'Next' button.\n5. Review the details of the transaction and tap the ‘Confirm’ button.\n\nIf the 'Success' screen is displayed - your transaction should be successfully signed.\n\nYou may be provided with another Transaction XDR if you need more signatures on this transaction.\n\n\nIf the 'Add Transaction XDR' form displays errors or the 'Submit' button is disabled:\n\n- Make sure you've copied the Transaction XDR correctly - there should be no spaces before and after the XDR string.\n- Make sure you are using the correct XDR - a transaction is considered invalid if it includes signatures that aren't needed to authorize the transaction.\n
+  /// \nIf you have multisig enabled for your Stellar account and try to make a transaction, you may be provided with a Transaction XDR by your wallet or signer service.\n\nIt is likely that you need additional signatures for this transaction to occur on your account.\n\nIf you are using LOBSTR Vault paired with LOBSTR wallet, StellarTerm or Stellarport, transaction 'sign' requests should appear automatically in LOBSTR Vault in most cases - there is no need to import Transaction XDRs.\n\nLOBSTR Vault parses the XDR and shows you the operations in a human-readable format.\nAlways verify the contents of transaction before adding a signature.\n\n\nIf you are using other service and need to add and sign a Transaction XDR in LOBSTR Vault app, follow the steps below:\n\n1. Select the 'Transactions' screen in the main navigation.\n2. Tap the '+' floating button.\n3. Paste your Transaction XDR into the input field of 'Add Transaction XDR' form.\n4. Tap the 'Next' button.\n5. Review the details of the transaction and tap the ‘Confirm’ button.\n\nIf the 'Success' screen is displayed - your transaction should be successfully signed.\n\nYou may be provided with another Transaction XDR if you need more signatures on this transaction.\n\n\nIf the 'Add Transaction XDR' form displays errors or the 'Submit' button is disabled:\n\n- Make sure you've copied the Transaction XDR correctly - there should be no spaces before and after the XDR string.\n- Make sure you are using the correct XDR - a transaction is considered invalid if it includes signatures that aren't needed to authorize the transaction.\n
   internal static let helpChapter11Description = L10n.tr("Localizable", "help_chapter11_description")
   /// 11. Add a Transaction XDR manually
   internal static let helpChapter11Title = L10n.tr("Localizable", "help_chapter11_title")
@@ -119,7 +121,7 @@ internal enum L10n {
   internal static let helpChapter13Description = L10n.tr("Localizable", "help_chapter13_description")
   /// 13. Which transactions can I sign?
   internal static let helpChapter13Title = L10n.tr("Localizable", "help_chapter13_title")
-  /// \nIf the main Stellar account has multiple signers, you may see a message that more signatures are needed for the transaction to occur at the 'Success' screen.\n\nIn most cases, this means that other signers for the main account should provide their signatures by 'Confirming' the transaction.\n\nSuch transaction will not occur on the Stellar Network until it is signed by all signers including the main account.\n\nIf you are using LOBSTR Vault paired with LOBSTR wallet or StellarTerm, all signers will be notified of the transaction 'sign' requests automatically.\n\n\nIn case you need more signatures, the 'Success' screen will also display a Transaction XDR.\n\nYou may treat this string as the desired transaction signed using the secret key of your LOBSTR Vault account.\n\nYou can copy a Transaction XDR and provide it to other signers if there are issues with transaction not appearing in LOBSTR Vault automatically.\n
+  /// \nIf the main Stellar account has multiple signers, you may see a message that more signatures are needed for the transaction to occur at the 'Success' screen.\n\nIn most cases, this means that other signers for the main account should provide their signatures by 'Confirming' the transaction.\n\nSuch transaction will not occur on the Stellar Network until it is signed by all signers including the main account.\n\nIf you are using LOBSTR Vault paired with LOBSTR wallet, StellarTerm or Stellarport, all signers will be notified of the transaction 'sign' requests automatically.\n\n\nIn case you need more signatures, the 'Success' screen will also display a Transaction XDR.\n\nYou may treat this string as the desired transaction signed using the secret key of your LOBSTR Vault account.\n\nYou can copy a Transaction XDR and provide it to other signers if there are issues with transaction not appearing in LOBSTR Vault automatically.\n
   internal static let helpChapter14Description = L10n.tr("Localizable", "help_chapter14_description")
   /// 14. Transaction requires more signatures
   internal static let helpChapter14Title = L10n.tr("Localizable", "help_chapter14_title")
@@ -135,7 +137,7 @@ internal enum L10n {
   internal static let helpChapter17Description = L10n.tr("Localizable", "help_chapter17_description")
   /// 17. I accidentally confirmed a transaction
   internal static let helpChapter17Title = L10n.tr("Localizable", "help_chapter17_title")
-  /// \nAt the moment LOBSTR Vault signer app fully integrates and operates with LOBSTR wallet and StellarTerm open source client.\n\nLOBSTR wallet also supports StellarGuard multisig provider.\n\nLOBSTR Vault can be easily integrated with other service operating on Stellar to bring advanced multisignature capabilities and increase security of your account.\n\nWe are working on increasing support for LOBSTR Vault across many applications.\n
+  /// \nAt the moment LOBSTR Vault signer app fully integrates and operates with LOBSTR wallet, StellarTerm open source client and Stellarport wallet.\n\nLOBSTR wallet also supports StellarGuard multisig provider.\n\nLOBSTR Vault can be easily integrated with other service operating on Stellar to bring advanced multisignature capabilities and increase the security of your account.\n\nWe are working on increasing support for LOBSTR Vault across many applications.\n
   internal static let helpChapter18Description = L10n.tr("Localizable", "help_chapter18_description")
   /// 18. Supported wallets and services
   internal static let helpChapter18Title = L10n.tr("Localizable", "help_chapter18_title")
@@ -143,7 +145,7 @@ internal enum L10n {
   internal static let helpChapter19Description = L10n.tr("Localizable", "help_chapter19_description")
   /// 19. Integrate LOBSTR Vault support
   internal static let helpChapter19Title = L10n.tr("Localizable", "help_chapter19_title")
-  /// \nDeveloped by the creators of LOBSTR - Simple & Secure Stellar Wallet, LOBSTR Vault is the transaction signer app for your mobile device with the local key storage.\n\nLOBSTR Vault uses multisignature technology of the Stellar Network and allows you to create a local signer account and verify transactions from multiple accounts on the Stellar Network.\n\nYour secret key is fully encrypted, securely stored in the local storage and never touches our servers.\n\nThe app uses the secret key to sign transactions on-device - you make the final decision to 'Confirm' or 'Deny' the transaction.\n\nQuick and easy to use, LOBSTR Vault is an open source app that fully integrates with LOBSTR wallet and takes the security of your Stellar account to the next level.\n\nLOBSTR Vault can be used to secure other wallets and exchanges operating on the Stellar Network, including StellarTerm.com.\n\nIf you are using LOBSTR wallet, you can find the ‘Multisig’ option under the ‘Settings’ tab.\n\nWith LOBSTR wallet and StellarTerm integration, there is no need to import Transaction XDRs. Your pending outgoing transactions will appear in the signing LOBSTR Vault account automatically in a matter of seconds.\n\nLOBSTR Vault supports push notifications to help you to stay up-to-date with your transaction 'sign' requests.\n\nA custom 6-digit PIN and your biometric authentication help keeping your signer account safe.\n
+  /// \nDeveloped by the creators of LOBSTR - Simple & Secure Stellar Wallet, LOBSTR Vault is the transaction signer app for your mobile device with the local key storage.\n\nLOBSTR Vault uses multisignature technology of the Stellar Network and allows you to create a local signer account and verify transactions from multiple accounts on the Stellar Network.\n\nYour secret key is fully encrypted, securely stored in the local storage and never touches our servers.\n\nThe app uses the secret key to sign transactions on-device - you make the final decision to 'Confirm' or 'Deny' the transaction.\n\nQuick and easy to use, LOBSTR Vault is an open source app that fully integrates with LOBSTR wallet and takes the security of your Stellar account to the next level.\n\nLOBSTR Vault can be used to secure other wallets and exchanges operating on the Stellar Network, including StellarTerm.com and Stellarport.io.\n\nIf you are using LOBSTR wallet, you can find the ‘Multisig’ option under the ‘Settings’ tab.\n\nWith LOBSTR wallet, StellarTerm and Stellarport integration, there is no need to import Transaction XDRs. Your pending outgoing transactions will appear in the signing LOBSTR Vault account automatically in a matter of seconds.\n\nLOBSTR Vault supports push notifications to help you to stay up-to-date with your transaction 'sign' requests.\n\nA custom 6-digit PIN and your biometric authentication help keeping your signer account safe.\n
   internal static let helpChapter1Description = L10n.tr("Localizable", "help_chapter1_description")
   /// 1. Welcome to LOBSTR Vault
   internal static let helpChapter1Title = L10n.tr("Localizable", "help_chapter1_title")
@@ -175,7 +177,7 @@ internal enum L10n {
   internal static let helpChapter7Description = L10n.tr("Localizable", "help_chapter7_description")
   /// 7. Where is my private key?
   internal static let helpChapter7Title = L10n.tr("Localizable", "help_chapter7_title")
-  /// \nXDR, also known as External Data Representation, is a binary serialization data format used extensively in the Stellar Network.\n\nThe ledger, transactions, results, history, and other data on the Stellar Network are encoded using XDR.\n\nTransactions are the basic unit of change in the Stellar Network and are essentially a grouping of operations. Transaсtions can include one or more operations.\n\nIf you have a multisig solution configured on your account, your service or wallet may provide you with Transaction Envelope XDR string.\n\nTransaction Envelope XDR contains the transaction information together with the signature generated using the secret key of your account. If you are using multisig, you will need to add one or more additional signatures for this transaction to be accepted by the network.\n\nThis string should be provided to the owner of signing account and imported to the signing service, like LOBSTR Vault or StellarGuard.\n\nThe good news is that LOBSTR Vault saves you time and manages this process automatically - you won't need to import the Transaction XDR manually.\n\nIf you are using LOBSTR Vault paired with LOBSTR wallet or StellarTerm, your pending outgoing transaction will appear in the connected LOBSTR Vault account in a matter of seconds.\n\nConnected LOBSTR Vault account will show a push notification asking to confirm or deny every new transaction.\n
+  /// \nXDR, also known as External Data Representation, is a binary serialization data format used extensively in the Stellar Network.\n\nThe ledger, transactions, results, history, and other data on the Stellar Network are encoded using XDR.\n\nTransactions are the basic unit of change in the Stellar Network and are essentially a grouping of operations. Transaсtions can include one or more operations.\n\nIf you have a multisig solution configured on your account, your service or wallet may provide you with Transaction Envelope XDR string.\n\nTransaction Envelope XDR contains the transaction information together with the signature generated using the secret key of your account. If you are using multisig, you will need to add one or more additional signatures for this transaction to be accepted by the network.\n\nThis string should be provided to the owner of signing account and imported to the signing service, like LOBSTR Vault or StellarGuard.\n\nThe good news is that LOBSTR Vault saves you time and manages this process automatically - you won't need to import the Transaction XDR manually.\n\nIf you are using LOBSTR Vault paired with LOBSTR wallet, StellarTerm or Stellarport, your pending outgoing transaction will appear in the connected LOBSTR Vault account in a matter of seconds.\n\nConnected LOBSTR Vault account will show a push notification asking to confirm or deny every new transaction.\n
   internal static let helpChapter8Description = L10n.tr("Localizable", "help_chapter8_description")
   /// 8. What is a Transaction XDR?
   internal static let helpChapter8Title = L10n.tr("Localizable", "help_chapter8_title")
@@ -247,9 +249,9 @@ internal enum L10n {
   internal static let horizonErrorRateLimitTitle = L10n.tr("Localizable", "horizon_error_rate_limit_title")
   /// horizon_error_request_failed
   internal static let horizonErrorRequestFailed = L10n.tr("Localizable", "horizon_error_request_failed")
-  /// Your network connection appears to be offline. Please connect to a Wifi or cellular network to complete this operation.
+  /// Transaction was failed. Please, contact to support.
   internal static let horizonErrorRequestFailedMessage = L10n.tr("Localizable", "horizon_error_request_failed_message")
-  /// No Network Connection
+  /// Request failed
   internal static let horizonErrorRequestFailedTitle = L10n.tr("Localizable", "horizon_error_request_failed_title")
   /// horizon_error_stale_history
   internal static let horizonErrorStaleHistory = L10n.tr("Localizable", "horizon_error_stale_history")
@@ -307,7 +309,7 @@ internal enum L10n {
   internal static let navTitleRestoreAccount = L10n.tr("Localizable", "nav_title_restore_account")
   /// Settings
   internal static let navTitleSettings = L10n.tr("Localizable", "nav_title_settings")
-  /// Signed Accounts
+  /// Protected accounts
   internal static let navTitleSettingsSignedAccounts = L10n.tr("Localizable", "nav_title_settings_signed_accounts")
   /// Transaction Details
   internal static let navTitleTransactionDetails = L10n.tr("Localizable", "nav_title_transaction_details")
@@ -339,9 +341,13 @@ internal enum L10n {
   internal static let textChangePasscodeError = L10n.tr("Localizable", "text_change_passcode_error")
   /// You can not use old PIN
   internal static let textChangeTheSamePasscode = L10n.tr("Localizable", "text_change_the_same_passcode")
+  /// Do you want to remove all invalid transactions?
+  internal static let textClearInvalidTransactionsDescription = L10n.tr("Localizable", "text_clear_invalid_transactions_description")
+  /// Are you sure?
+  internal static let textClearInvalidTransactionsTitle = L10n.tr("Localizable", "text_clear_invalid_transactions_title")
   /// You will need to confirm recovery phrase on the next screen
   internal static let textConfirmDescription = L10n.tr("Localizable", "text_confirm_description")
-  /// Want to confirm the operation?
+  /// Want to confirm the transaction?
   internal static let textConfirmDialogDescription = L10n.tr("Localizable", "text_confirm_dialog_description")
   /// Copied
   internal static let textCopiedKeySnack = L10n.tr("Localizable", "text_copied_key_snack")
@@ -349,7 +355,7 @@ internal enum L10n {
   internal static let textCopyDescription = L10n.tr("Localizable", "text_copy_description")
   /// Transaction Declined
   internal static let textDeclinedTransaction = L10n.tr("Localizable", "text_declined_transaction")
-  /// Want to deny the operation?
+  /// Want to deny the transaction?
   internal static let textDenyDialogDescription = L10n.tr("Localizable", "text_deny_dialog_description")
   /// Are you sure?
   internal static let textDenyDialogTitle = L10n.tr("Localizable", "text_deny_dialog_title")
@@ -439,7 +445,7 @@ internal enum L10n {
   internal static let textStatusSignedXdrTitle = L10n.tr("Localizable", "text_status_signed_xdr_title")
   /// Success
   internal static let textStatusSuccessTitle = L10n.tr("Localizable", "text_status_success_title")
-  /// Transaction can not be confirmed, it’s sequence number is invalid.
+  /// Transaction can not be confirmed, its sequence number is invalid.
   internal static let textTransactionInvalidError = L10n.tr("Localizable", "text_transaction_invalid_error")
   /// Invalid
   internal static let textTransactionInvalidLabel = L10n.tr("Localizable", "text_transaction_invalid_label")

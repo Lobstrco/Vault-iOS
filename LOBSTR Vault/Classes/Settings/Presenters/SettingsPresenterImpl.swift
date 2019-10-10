@@ -1,7 +1,7 @@
+import AcknowList
 import Foundation
 import stellarsdk
 import UIKit
-import AcknowList
 
 class SettingsPresenterImpl: SettingsPresenter {
   private weak var view: SettingsView?
@@ -89,7 +89,11 @@ extension SettingsPresenterImpl {
                  row: SettingsRow) {
     switch row {
     case .version:
-      let title = L10n.textSettingsVersionField
+      var title = L10n.textSettingsVersionField
+      if Constants.baseURL.contains("staging") {
+        title += " (staging)"
+      }
+      
       let version = ApplicationInfo.version
       rightDetailCell.setTitle(title, detail: version)
     default:
@@ -103,7 +107,7 @@ extension SettingsPresenterImpl {
     case .signerForAccounts:
       disclosureIndicatorTableViewCell.setAttribute(getSignerForAccountsData().attribute)
       disclosureIndicatorTableViewCell.setTitle(getSignerForAccountsData().title)
-    case .mnemonicCode:      
+    case .mnemonicCode:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsMnemonicField)
     case .changePin:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsChangePinField)
@@ -158,7 +162,7 @@ extension SettingsPresenterImpl {
     switch type {
     case .notifications:
       
-      notificationManager.requestAuthorization() { isGranted in        
+      notificationManager.requestAuthorization { isGranted in
         guard isGranted else {
           DispatchQueue.main.async {
             self.view?.setDisablePushNotificationAlert()
@@ -176,7 +180,7 @@ extension SettingsPresenterImpl {
           }
           
           self.view?.setSettings()
-        }        
+        }
       }
       
     case .biometricID:
@@ -220,11 +224,11 @@ extension SettingsPresenterImpl {
 // MARK: -  Private
 
 extension SettingsPresenterImpl {
-  
-  private func getSignerForAccountsData() -> (title: String, attribute: NSMutableAttributedString) {
+  private func getSignerForAccountsData() -> (title: String,
+                                              attribute: NSMutableAttributedString) {
     let positionOfNumberInTitle = 11
     var title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
-                                                  with: String(UserDefaultsHelper.numberOfSignerAccounts))
+                                                                   with: String(UserDefaultsHelper.numberOfSignerAccounts))
     let titleAttribute = NSMutableAttributedString(string: title)
     titleAttribute.addAttributes([.foregroundColor: Asset.Colors.main.color,
                                   .font: UIFont.boldSystemFont(ofSize: 20)],
@@ -297,7 +301,7 @@ extension SettingsPresenterImpl {
       mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
                                                                                    mnemonicMode: .showMnemonic)
       self.navigationController.pushViewController(mnemonicGenerationViewController,
-                                              animated: true)
+                                                   animated: true)
     }
     
     let pinNavigationController = UINavigationController(rootViewController: pinViewController)

@@ -10,5 +10,5 @@ public enum ServerRequestError: Error {
   case forbidden(message: String) // HTTP Status Code 403
   case notFound(message: String) // HTTP Status Code 404
   
-  case needRepeatRequest() // 
+  case needRepeatRequest //
 }

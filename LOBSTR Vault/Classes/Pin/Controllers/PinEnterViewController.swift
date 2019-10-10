@@ -66,6 +66,11 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
 // MARK: - PinView
 
 extension PinEnterViewController: PinView {
+  
+  func setKeyboardRigthButton(isEnabled: Bool) {
+    numberPadView.rightButtonEnable(isEnabled)
+  }
+  
   func setSimplePinAlert() {
     
   }

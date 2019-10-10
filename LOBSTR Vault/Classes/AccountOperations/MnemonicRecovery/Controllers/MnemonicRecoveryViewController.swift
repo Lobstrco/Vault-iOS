@@ -1,4 +1,5 @@
 import UIKit
+import PKHUD
 
 class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
   
@@ -32,12 +33,14 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
   }
   
   override func viewDidLayoutSubviews() {
-    AppearanceHelper.setDashBorders(for: textView, with: Asset.Colors.gray.color.cgColor)
+    AppearanceHelper.setDashBorders(for: textView,
+                                    with: Asset.Colors.gray.color.cgColor)
   }
   
   // MARK: - IBActions
   
   @IBAction func recoveryButtonAction(_ sender: Any) {
+    view?.endEditing(true)
     presenter.recoveryButtonWasPressed()
   }
   
@@ -49,7 +52,10 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
   
   private func setAppearance() {
     AppearanceHelper.set(nextButton, with: L10n.buttonTitleNext)    
-    textView.textContainerInset = UIEdgeInsets(top: 20, left: 15, bottom: 20, right: 20)
+    textView.textContainerInset = UIEdgeInsets(top: 20,
+                                               left: 15,
+                                               bottom: 20,
+                                               right: 20)
   }
   
   private func setStaticStrings() {
@@ -63,6 +69,12 @@ class MnemonicRecoveryViewController: UIViewController, StoryboardCreation {
 
 extension MnemonicRecoveryViewController: MnemonicRecoveryView {
   
+  func setProgressAnimation(enabled: Bool) {
+    enabled ?
+      HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) :
+      HUD.hide()
+  }
+
   func setRecoveryButtonStatus(isEnabled: Bool) {
     var backgorundColor = Asset.Colors.main.color
     if !isEnabled {

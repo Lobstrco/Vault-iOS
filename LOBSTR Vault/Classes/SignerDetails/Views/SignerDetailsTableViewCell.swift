@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 protocol SignerDetailsTableViewCellDelegate: class {
   func menuButtonDidTap(in cell: SignerDetailsTableViewCell)
@@ -7,6 +8,7 @@ protocol SignerDetailsTableViewCellDelegate: class {
 class SignerDetailsTableViewCell: UITableViewCell {
 
   @IBOutlet weak var publicKeyLabel: UILabel!
+  @IBOutlet var identiconView: IdenticonView!
   
   weak var delegate: SignerDetailsTableViewCellDelegate?
   
@@ -16,6 +18,8 @@ class SignerDetailsTableViewCell: UITableViewCell {
   
   func setPublicKey(_ publicKey: String) {
     publicKeyLabel.text = publicKey
+    
+    identiconView.loadIdenticon(publicAddress: publicKey)
   }
   
   @IBAction func menuButtonAction(_ sender: Any) {

@@ -2,6 +2,10 @@
 import Foundation
 
 class PinViewSpy: PinView {
+  func setKeyboardRigthButton(isEnabled: Bool) {
+    
+  }
+  
   func setSimplePinAlert() {
     
   }

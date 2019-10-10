@@ -1,6 +1,7 @@
 class TransactionService {
   
-  func submitSignedTransaction(xdr: String, completion: @escaping (Result<Bool>) -> Void) {
+  func submitSignedTransaction(xdr: String,
+                               completion: @escaping (Result<Bool>) -> Void) {
     let apiLoader = APIRequestLoader<SubmitSignedTransactionRequest>(apiRequest: SubmitSignedTransactionRequest())
     let submitSignedTransactionRequestParameters = SubmitSignedTransactionRequestParameters(xdr: xdr)
     apiLoader.loadAPIRequest(requestData: submitSignedTransactionRequestParameters) { result in
@@ -13,7 +14,9 @@ class TransactionService {
     }
   }
   
-  func markTransactionAsSubmitted(by hash: String, xdr: String, completion: @escaping (Result<Bool>) -> Void) {
+  func markTransactionAsSubmitted(by hash: String,
+                                  xdr: String,
+                                  completion: @escaping (Result<Bool>) -> Void) {
     let apiLoader = APIRequestLoader<MarkTransactionAsSubmittedRequest>(apiRequest: MarkTransactionAsSubmittedRequest())
     let markTransactionAsSubmittedRequestParameters = MarkTransactionAsSubmittedRequestParameters(xdr: xdr, hash: hash)
     apiLoader.loadAPIRequest(requestData: markTransactionAsSubmittedRequestParameters) { result in
@@ -26,7 +29,8 @@ class TransactionService {
     }
   }
   
-  func cancelTransaction(by transactionHash: String, completion: @escaping (Result<Bool>) -> Void) {
+  func cancelTransaction(by transactionHash: String,
+                         completion: @escaping (Result<Bool>) -> Void) {
     let apiLoader = APIRequestLoader<CancelTransactionRequest>(apiRequest: CancelTransactionRequest())
     let cancelTransactionRequestParameters = CancelTransactionRequestParameters(hash: transactionHash)
     apiLoader.loadAPIRequest(requestData: cancelTransactionRequestParameters) { result in
@@ -39,12 +43,13 @@ class TransactionService {
     }
   }
   
-  func getPendingTransactionList(completion: @escaping (Result<[Transaction]>) -> Void) {
+  func getPendingTransactionList(page: Int, completion: @escaping (Result<PaginationResponse<Transaction>>) -> Void) {
+    let params = PendingTransactionListRequestParameters(page: String(page))
     let apiLoader = APIRequestLoader<PendingTransactionListRequest>(apiRequest: PendingTransactionListRequest())    
-    apiLoader.loadAPIRequest(requestData: nil) { result in
+    apiLoader.loadAPIRequest(requestData: params) { result in
       switch result {
       case .success(let paginationResponse):
-        completion(.success(paginationResponse.results))
+        completion(.success(paginationResponse))
       case .failure(let serverRequestError):
         completion(.failure(serverRequestError))
       }
@@ -64,13 +69,25 @@ class TransactionService {
     }
   }
   
-  func getSignedAccounts(completion: @escaping (Result<[SignedAccounts]>) -> Void) {
+  func getSignedAccounts(completion: @escaping (Result<[SignedAccount]>) -> Void) {
     let apiLoader = APIRequestLoader<SignedAccountsRequest>(apiRequest: SignedAccountsRequest())
     
     apiLoader.loadAPIRequest(requestData: nil) { result in
       switch result {
       case .success(let paginationResponse):
         completion(.success(paginationResponse.results))
+      case .failure(let serverRequestError):
+        completion(.failure(serverRequestError))
+      }
+    }
+  }
+  
+  func cancelOutdatedTransaction(completion: @escaping (Result<Bool>) -> Void) {
+    let apiLoader = APIRequestLoader<CancelOutdatedTransactionsRequest>(apiRequest: CancelOutdatedTransactionsRequest())
+    apiLoader.loadAPIRequest(requestData: nil) { result in
+      switch result {
+      case .success(_):
+        completion(.success(true))
       case .failure(let serverRequestError):
         completion(.failure(serverRequestError))
       }

@@ -20,6 +20,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     FirebaseApp.configure()
     applicationCoordinator.start(appDelegate: self)
     
+    UITabBar.appearance().tintColor = Asset.Colors.main.color
+    
     return true
   }
   
@@ -32,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     print("APNS Error:\n\(error.localizedDescription)")    
   }
   
-  func applicationWillResignActive(_ application: UIApplication) {
+  func applicationDidEnterBackground(_ application: UIApplication) {
     guard let frame = window?.frame else { return }
     multiTaskImageView = UIImageView(frame: frame)
     multiTaskImageView?.image = Asset.Other.bgMultitask.image
@@ -41,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.addSubview(multiTaskImageView)
   }
   
-  func applicationDidBecomeActive(_ application: UIApplication) {
+  func applicationWillEnterForeground(_ application: UIApplication) {
     if multiTaskImageView != nil {
       multiTaskImageView?.removeFromSuperview()
       multiTaskImageView = nil

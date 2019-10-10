@@ -41,6 +41,15 @@ struct TransactionHelper {
   static func getNamesAndValuesOfProperties(from operation: stellarsdk.Operation) -> [(String, String)] {
     var data: [(name: String, value: String)] = []
     
+    if let manageOfferOperation = operation as? ManageOfferOperation {
+      data.append(("selling", manageOfferOperation.selling.code ?? "XLM"))
+      data.append(("buying", manageOfferOperation.buying.code ?? "XLM"))
+      data.append(("amount", manageOfferOperation.amount.description))
+      data.append(("price", TransactionHelper.getPrice(from: manageOfferOperation)))
+      data.append(("offerId", manageOfferOperation.offerId.description))
+      return data
+    }
+    
     let operationMirror = Mirror(reflecting: operation)
     for (name, value) in operationMirror.children {
       guard let name = name else { continue }
@@ -62,18 +71,7 @@ struct TransactionHelper {
       case is UInt64.Type:
         valueParam = (value as? UInt64)?.description
       case is Price.Type:
-        guard let manageOfferOperation = operation as? ManageOfferOperation else {
-          break
-        }        
-        guard let price = value as? Price else {
-          break
-        }
-        
-        var priceValue = Double(price.n) / Double(price.d)
-        if manageOfferOperation.selling.type == AssetType.ASSET_TYPE_NATIVE {
-          priceValue = 1 / priceValue
-        }
-        valueParam = String(format: "%.6f", priceValue)
+        break
       case is Decimal?.Type:
         valueParam = (value as? Decimal)?.description
       case is String.Type:
@@ -82,9 +80,6 @@ struct TransactionHelper {
         valueParam = value
       case is Bool.Type:
         valueParam = (value as? Bool)?.description
-//      case is SignerKeyXDR?.Type:
-//        let signerKeyXDR = value as? SignerKeyXDR
-//        let xdr = signerKeyXDR!.xdrEncoded
       default:
         continue
       }
@@ -95,6 +90,11 @@ struct TransactionHelper {
     }
     
     return data
+  }
+  
+  static func getPrice(from operation: ManageOfferOperation) -> String {
+    let priceValue = Double(operation.price.n) / Double(operation.price.d)
+    return String(format: "%.7f", priceValue)
   }
   
   static func getValidatedDate(from sourceDate: String) -> String {

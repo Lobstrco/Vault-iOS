@@ -1,92 +1,67 @@
-import UIKit
+import Kingfisher
 import PKHUD
+import UIKit
 
 class HomeViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .home
   
-  @IBOutlet weak var transactionNumberLabel: UILabel!
-  @IBOutlet weak var transactionsToSignLabel: UILabel!
-  @IBOutlet weak var titleOfPublicKeyLabel: UILabel!
-  @IBOutlet weak var titleOfsignerForLabel: UILabel!
-  @IBOutlet weak var publicKeyLabel: UILabel!
-  
-  @IBOutlet weak var infoContainerView: UIView!
-  @IBOutlet weak var signerDetailsView: UIView!
-  @IBOutlet weak var transactionNumberView: UIView!
-  
-  @IBOutlet weak var transactionListButton: UIButton!
-  @IBOutlet weak var copyKeyButton: UIButton!
+  @IBOutlet var tableView: UITableView!
   
   var presenter: HomePresenter!
   
-  let signerDetailsProgressHUD = ProgressHUD()
-  let transactionNumberProgressHUD = ProgressHUD(isWhite: true)
+  var isUpdatingTransactionNumber = true
   
-  // MARK: - Lifecycle
-  
+  var sections: [HomeSection] = []
+}
+
+// MARK: - Lifecycle
+
+extension HomeViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
-   
+    
     presenter = HomePresenterImpl(view: self)
     presenter.homeViewDidLoad()
     
     setAppearance()
-    setStaticStrings()
+    setTableView()
   }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     
-    presenter.updateSignerDetails()
+    presenter.homeViewDidAppear()
   }
-
+  
   override var preferredStatusBarStyle: UIStatusBarStyle {
     return .lightContent
   }
-  
-  // MARK: - IBActions
-  
-  @IBAction func copyKeyButtonAction(_ sender: Any) {
-    presenter.copyKeyButtonWasPressed()
+}
+
+// MARK: - Private
+
+extension HomeViewController {
+  private func setTableView() {
+    tableView.registerNib(TransactionsToSignTableViewCell.self)
+    tableView.registerNib(VaultPublicKeyTableViewCell.self)
+    tableView.registerNib(SignersTotalNumberTableViewCell.self)
+    tableView.registerNib(SignerAccountTableViewCell.self)
+    tableView.registerNib(SignersBottomTileTableViewCell.self)
+    
+    tableView.tableFooterView = UIView()
   }
-  
-  @IBAction func transactionListButtonAction(_ sender: Any) {
-    self.tabBarController?.selectedIndex = 1
-  }  
-  
-  // MARK: - Private
   
   private func setAppearance() {
-    AppearanceHelper.set(transactionListButton, with: L10n.buttonTitleViewTransactionsList)
-    AppearanceHelper.set(copyKeyButton, with: L10n.buttonTitleCopyKey)
-    setShadowAndCornersForInfoContainerView()
+    AppearanceHelper.set(navigationController)
   }
   
-  private func setStaticStrings() {
-    transactionsToSignLabel.text = L10n.textTransactionsToSign
-    titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
-    titleOfsignerForLabel.text = L10n.textSignerFor
-  }
-  
-  private func setShadowAndCornersForInfoContainerView() {
-    let containerViewMargin: CGFloat = 16 + 16
-    let borderView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - containerViewMargin, height: infoContainerView.bounds.height))
-    borderView.backgroundColor = Asset.Colors.white.color
-    borderView.clipsToBounds = true
-    borderView.layer.cornerRadius = 8
-    
-    infoContainerView.layer.shadowColor = UIColor.black.cgColor
-    infoContainerView.layer.shadowOffset = CGSize(width: 0, height: 1.0)
-    infoContainerView.layer.shadowOpacity = 0.2
-    infoContainerView.layer.shadowRadius = 4.0
-    
-    infoContainerView.addSubview(borderView)
-    infoContainerView.sendSubviewToBack(borderView)
-  }
-  
-  private func clear(_ subviews: [UIView]) {
-    for view in subviews {
-      view.removeFromSuperview()
+  private func reloadTableViewSections(_ sections: [Int]) {
+    // Workaround to prevent jumpy updting of table view, if use
+    // reloadData() method.
+    UIView.performWithoutAnimation {
+      let location = tableView.contentOffset
+      tableView.reloadSections(IndexSet(sections), with: .none)
+      tableView.contentOffset = location
     }
   }
 }
@@ -94,60 +69,170 @@ class HomeViewController: UIViewController, StoryboardCreation {
 // MARK: - HomeView
 
 extension HomeViewController: HomeView {
-  
-  func setSignerDetails(_ signedAccounts: [SignedAccounts]) {
-    
-    if signedAccounts.count == 1 {
-      guard let address = signedAccounts.first?.address else { return }
-      let copyButton = HomeHelper.createSignerDetailsViewForSingleAddress(in: signerDetailsView,
-                                                                            address: address,
-                                                                            bottomAnchor: titleOfsignerForLabel.bottomAnchor)
-      copyButton.addTarget(self, action: #selector(copySignerKeyButtonAction), for: .touchUpInside)
-    } else {
-      HomeHelper.createSignerDetailsViewForMultipleAddresses(in: signerDetailsView, for: String(signedAccounts.count), bottomAnchor: titleOfsignerForLabel.bottomAnchor)
-    }
-  }
-  
-  @objc func copySignerKeyButtonAction(sender: UIButton!) {
-    presenter.copySignerKeyButtonWasPressed()
-  }
-  
-  func setPublicKey(_ publicKey: String) {
-    publicKeyLabel.text = publicKey
-  }
-  
-  func setTransactionNumber(_ number: Int) {
-    transactionNumberLabel.text = String(number)
+  func setSections(_ sections: [HomeSection]) {
+    self.sections = sections
+    tableView.reloadData()
   }
   
   func setTransactionNumber(_ number: String) {
-    transactionNumberLabel.text = number
+    let numberOfTransactionsSection = HomeSection(type: .transactionsToSign,
+                                                  rows: [.numberOfTransactions(number)])
+    sections[HomeSectionType.transactionsToSign.index] = numberOfTransactionsSection
+    
+    reloadTableViewSections([HomeSectionType.transactionsToSign.index])
+  }
+  
+  func setPublicKey(_ publicKey: String) {
+    let publicKeySection = HomeSection(type: .vaultPublicKey,
+                                       rows: [.publicKey(publicKey)])
+    
+    sections[HomeSectionType.vaultPublicKey.index] = publicKeySection
+    reloadTableViewSections([HomeSectionType.vaultPublicKey.index])
+  }
+  
+  func setSignerDetails(_ signedAccounts: [SignedAccount]) {
+    let numberOfSignersSection = HomeSection(type: .signersTotalNumber,
+                                             rows: [.totalNumber(signedAccounts.count)])
+    let signersSection = HomeSection(type: .listOfSigners,
+                                     rows: signedAccounts.map { .signer($0) })
+    
+    sections[HomeSectionType.signersTotalNumber.index] = numberOfSignersSection
+    sections[HomeSectionType.listOfSigners.index] = signersSection
+    
+    reloadTableViewSections([HomeSectionType.signersTotalNumber.index,
+                             HomeSectionType.listOfSigners.index])
   }
   
   func setProgressAnimationForTransactionNumber(isEnabled: Bool) {
-    DispatchQueue.main.async {
-      if isEnabled {
-        self.transactionNumberLabel.isHidden = true
-        self.transactionNumberProgressHUD.display(onView: self.transactionNumberView)
-      } else {
-        self.transactionNumberProgressHUD.remove()
-        self.transactionNumberLabel.isHidden = false
-      }
-    }
-  }
-  
-  func setProgressAnimationForSignerDetails(isEnabled: Bool) {
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-      isEnabled ? self.signerDetailsProgressHUD.display(onView: self.signerDetailsView) : self.signerDetailsProgressHUD.remove()
-      if isEnabled {
-        self.clear(self.signerDetailsView.subviews)
-      }
-    }
+    isUpdatingTransactionNumber = isEnabled
+    
+    reloadTableViewSections([HomeSectionType.transactionsToSign.index])
   }
   
   func setCopyHUD() {
-    PKHUD.sharedHUD.contentView = PKHUDSuccessViewCustom(title: nil, subtitle: L10n.animationCopy)
+    PKHUD.sharedHUD.contentView = PKHUDSuccessViewCustom(title: nil,
+                                                         subtitle: L10n.animationCopy)
     PKHUD.sharedHUD.show()
     PKHUD.sharedHUD.hide(afterDelay: 1.0)
+  }
+}
+
+// MARK: - UITableViewDataSource
+
+extension HomeViewController: UITableViewDataSource {
+  func numberOfSections(in tableView: UITableView) -> Int {
+    return sections.count
+  }
+  
+  func tableView(_ tableView: UITableView,
+                 numberOfRowsInSection section: Int) -> Int {
+    return sections[section].rows.count
+  }
+  
+  func tableView(_ tableView: UITableView,
+                 cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let section = sections[indexPath.section]
+    let row = section.rows[indexPath.row]
+    
+    switch row {
+    case .numberOfTransactions(let transactionsNumber):
+      let cell: TransactionsToSignTableViewCell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+      
+      if isUpdatingTransactionNumber {
+        cell.transactionNumberLabel.isHidden = true
+        cell.activityIndicator.startAnimating()
+      } else {
+        cell.transactionNumberLabel.isHidden = false
+        cell.activityIndicator.stopAnimating()
+      }
+      
+      cell.transactionNumberLabel.text = transactionsNumber
+      cell.delegate = self
+      return cell
+      
+    case .publicKey(let publicKey):
+      let cell: VaultPublicKeyTableViewCell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+      cell.delegate = self
+      cell.publicKeyLabel.text = publicKey
+      cell.idenctionView.loadIdenticon(publicAddress: publicKey)
+      
+      return cell
+    case .totalNumber(let number):
+      let cell: SignersTotalNumberTableViewCell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+      cell.signerTotalNumberButton.setTitle("\(number)", for: .normal)
+      if number > 1 {
+        cell.accountLabel.text = "accounts"
+      } else {
+        cell.accountLabel.text = "account"
+      }
+      cell.delegate = self
+      return cell
+      
+    case .signer(let signerAccount):
+      let cell: SignerAccountTableViewCell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+      cell.signerPublicAddressLabel.text = signerAccount.address
+      
+      if let address = signerAccount.address {
+        cell.identiconView.loadIdenticon(publicAddress: address)
+      }
+      
+      // Do not show separator for the last cell.
+      let signersSection = sections[HomeSectionType.listOfSigners.index]
+      if indexPath.row == signersSection.rows.count - 1 {
+        cell.separatorView.isHidden = true
+      } else {
+        cell.separatorView.isHidden = false
+      }
+      
+      return cell
+      
+    case .bottom:
+      let cell: SignersBottomTileTableViewCell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+      return cell
+    }
+  }
+}
+
+// MARK: - UITableViewDelegate
+
+extension HomeViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView,
+                 heightForRowAt indexPath: IndexPath) -> CGFloat {
+    let section = sections[indexPath.section]
+    let row = section.rows[indexPath.row]
+    return row.height
+  }
+}
+
+// MARK: - TransactionsToSignTableViewCellDelegate
+
+extension HomeViewController: TransactionsToSignTableViewCellDelegate {
+  func viewTransactionListDidPress() {
+    tabBarController?.selectedIndex = 1
+  }
+}
+
+// MARK: - VaultPublicKeyTableViewCellDelegate
+
+extension HomeViewController: VaultPublicKeyTableViewCellDelegate {
+  func copyButtonDidPress() {
+    presenter.copyKeyButtonWasPressed()
+  }
+}
+
+// MARK: - SignersTotalNumberTableViewCellDelegate
+
+extension HomeViewController: SignersTotalNumberTableViewCellDelegate {
+  func numberOfSignerButtonDidPress() {
+    let signerDetailsTableViewController =
+      SignerDetailsTableViewController.createFromStoryboard()
+    
+    navigationController?.pushViewController(signerDetailsTableViewController,
+                                             animated: true)
   }
 }

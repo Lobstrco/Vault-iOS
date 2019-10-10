@@ -1,6 +1,7 @@
 import Foundation
 
 protocol MnemonicRecoveryView: class {
+  func setProgressAnimation(enabled: Bool)
   func setRecoveryButtonStatus(isEnabled: Bool)
   func setHighlightTextView(isEnabled: Bool)
   func displaySuggestionList(suggestionList: [String])
@@ -132,9 +133,13 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   }
 
   func recoveryButtonWasPressed() {
-    let phrases = MnemonicHelper.getSeparatedWords(from: mnemonic)
-    MnemonicHelper.encryptAndStoreInKeychain(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: phrases))
-    transitionToPinScreen()
+    view?.setProgressAnimation(enabled: true)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      let phrases = MnemonicHelper.getSeparatedWords(from: self.mnemonic)
+      MnemonicHelper.encryptAndStoreInKeychain(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: phrases))
+      self.view?.setProgressAnimation(enabled: false)
+      self.transitionToPinScreen()
+    }
   }
   
   func helpButtonWasPressed() {

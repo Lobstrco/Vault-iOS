@@ -3,70 +3,73 @@ PODS:
   - Crashlytics (3.12.0):
     - Fabric (~> 1.9.0)
   - Fabric (1.9.0)
-  - Firebase/Core (5.15.0):
+  - Firebase/Core (5.20.2):
     - Firebase/CoreOnly
-    - FirebaseAnalytics (= 5.4.0)
-  - Firebase/CoreOnly (5.15.0):
-    - FirebaseCore (= 5.1.10)
-  - Firebase/Messaging (5.15.0):
+    - FirebaseAnalytics (= 5.8.1)
+  - Firebase/CoreOnly (5.20.2):
+    - FirebaseCore (= 5.4.1)
+  - Firebase/Messaging (5.20.2):
     - Firebase/CoreOnly
-    - FirebaseMessaging (= 3.2.2)
-  - FirebaseAnalytics (5.4.0):
-    - FirebaseCore (~> 5.1)
-    - FirebaseInstanceID (~> 3.3)
-    - GoogleAppMeasurement (= 5.4.0)
+    - FirebaseMessaging (= 3.5.0)
+  - FirebaseAnalytics (5.8.1):
+    - FirebaseCore (~> 5.4)
+    - FirebaseInstanceID (~> 3.8)
+    - GoogleAppMeasurement (= 5.8.1)
     - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
     - GoogleUtilities/MethodSwizzler (~> 5.2)
     - GoogleUtilities/Network (~> 5.2)
     - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
-  - FirebaseAnalyticsInterop (1.1.0)
-  - FirebaseCore (5.1.10):
-    - GoogleUtilities/Logger (~> 5.2)
-  - FirebaseInstanceID (3.3.0):
-    - FirebaseCore (~> 5.1)
-    - GoogleUtilities/Environment (~> 5.3)
-    - GoogleUtilities/UserDefaults (~> 5.3)
-  - FirebaseMessaging (3.2.2):
-    - FirebaseAnalyticsInterop (~> 1.1)
-    - FirebaseCore (~> 5.1)
-    - FirebaseInstanceID (~> 3.0)
+  - FirebaseAnalyticsInterop (1.2.0)
+  - FirebaseCore (5.4.1):
     - GoogleUtilities/Environment (~> 5.2)
-    - GoogleUtilities/Reachability (~> 5.2)
+    - GoogleUtilities/Logger (~> 5.2)
+  - FirebaseInstanceID (3.8.1):
+    - FirebaseCore (~> 5.2)
+    - GoogleUtilities/Environment (~> 5.2)
+    - GoogleUtilities/UserDefaults (~> 5.2)
+  - FirebaseMessaging (3.5.0):
+    - FirebaseAnalyticsInterop (~> 1.1)
+    - FirebaseCore (~> 5.2)
+    - FirebaseInstanceID (~> 3.6)
+    - GoogleUtilities/Environment (~> 5.3)
+    - GoogleUtilities/Reachability (~> 5.3)
+    - GoogleUtilities/UserDefaults (~> 5.3)
     - Protobuf (~> 3.1)
-  - GoogleAppMeasurement (5.4.0):
+  - GoogleAppMeasurement (5.8.1):
     - GoogleUtilities/AppDelegateSwizzler (~> 5.2)
     - GoogleUtilities/MethodSwizzler (~> 5.2)
     - GoogleUtilities/Network (~> 5.2)
     - "GoogleUtilities/NSData+zlib (~> 5.2)"
     - nanopb (~> 0.3)
-  - GoogleUtilities/AppDelegateSwizzler (5.3.6):
+  - GoogleUtilities/AppDelegateSwizzler (5.8.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (5.3.6)
-  - GoogleUtilities/Logger (5.3.6):
+  - GoogleUtilities/Environment (5.8.0)
+  - GoogleUtilities/Logger (5.8.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/MethodSwizzler (5.3.6):
+  - GoogleUtilities/MethodSwizzler (5.8.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/Network (5.3.6):
+  - GoogleUtilities/Network (5.8.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (5.3.6)"
-  - GoogleUtilities/Reachability (5.3.6):
+  - "GoogleUtilities/NSData+zlib (5.8.0)"
+  - GoogleUtilities/Reachability (5.8.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (5.3.6):
+  - GoogleUtilities/UserDefaults (5.8.0):
     - GoogleUtilities/Logger
-  - lottie-ios (2.5.2)
+  - Kingfisher (5.7.1)
+  - lottie-ios (2.5.3)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
-  - PKHUD (5.2.0)
-  - Protobuf (3.6.1)
-  - stellar-ios-mac-sdk (1.5.6)
+  - PKHUD (5.2.1)
+  - Protobuf (3.7.0)
+  - stellar-ios-mac-sdk (1.6.6)
   - SwiftGen (6.0.2)
 
 DEPENDENCIES:
@@ -75,9 +78,10 @@ DEPENDENCIES:
   - Fabric (~> 1.9.0)
   - Firebase/Core
   - Firebase/Messaging
+  - Kingfisher (~> 5.0)
   - lottie-ios (~> 2.5.2)
   - PKHUD (~> 5.0)
-  - stellar-ios-mac-sdk (~> 1.5.6)
+  - stellar-ios-mac-sdk (~> 1.6.6)
   - SwiftGen (~> 6.0.2)
 
 SPEC REPOS:
@@ -93,6 +97,7 @@ SPEC REPOS:
     - FirebaseMessaging
     - GoogleAppMeasurement
     - GoogleUtilities
+    - Kingfisher
     - lottie-ios
     - nanopb
     - PKHUD
@@ -104,21 +109,22 @@ SPEC CHECKSUMS:
   AcknowList: 5b8820004d019d0a8d6a091ea2392dcb54bd3ad2
   Crashlytics: 07fb167b1694128c1c9a5a5cc319b0e9c3ca0933
   Fabric: f988e33c97f08930a413e08123064d2e5f68d655
-  Firebase: 8bb9268bff82374f2cbaaabb143e725743c316ae
-  FirebaseAnalytics: c06f9d70577d79074214700a71fd5d39de5550fb
-  FirebaseAnalyticsInterop: e5f21be9af6548372e2f0815834ff909bff395a2
-  FirebaseCore: 35747502d9e8c6ee217385ad04446c7c2aaf9c5c
-  FirebaseInstanceID: e2fa4cb35ef5558c200f7f0ad8a53e212215f93e
-  FirebaseMessaging: b412996f6a09337d232bb3a6676ce4d1f353d024
-  GoogleAppMeasurement: 98b71f5e04142793729a5ef23e5b96651ff4b70f
-  GoogleUtilities: 95996bea7c7d9b8fb811b7507669a4a8762f80c7
-  lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
+  Firebase: 0c8cf33f266410c61ab3e2265cfa412200351d9c
+  FirebaseAnalytics: ece1aa57a4f43c64d53a648b5a5e05151aae947b
+  FirebaseAnalyticsInterop: efbe45c8385ec626e29f9525e5ebd38520dfb6c1
+  FirebaseCore: f1a9a8be1aee4bf71a2fc0f4096df6788bdfda61
+  FirebaseInstanceID: a122b0c258720cf250551bb2bedf48c699f80d90
+  FirebaseMessaging: 4235f949ce1c4e827aeb19705ba5c53f9b85aa10
+  GoogleAppMeasurement: ffe513e90551844a739e7bcbb1d2aca1c28a4338
+  GoogleUtilities: 04fce34bcd5620c1ee76fb79172105c74a4df335
+  Kingfisher: 176d377ad339113c99ad4980cbae687f807e20fe
+  lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
-  PKHUD: dd5357ac65f26115c35c4a68e9b328053326c5fe
-  Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
-  stellar-ios-mac-sdk: b0c589f5d5a7776edffcf4ebbe4e12d988030e7e
+  PKHUD: 4e6162c4c39ac367c6934e9855c6b4762ee16256
+  Protobuf: 7a877b7f3e5964e3fce995e2eb323dbc6831bb5a
+  stellar-ios-mac-sdk: ed1d2a48774d3c703e8743bdde2bd03ac196b2df
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
 
-PODFILE CHECKSUM: 50b31ccd951f8d684dccf4c0c93491059ccdfbc0
+PODFILE CHECKSUM: 9326f2e21ae46534542d3b50d60b464d42551deb
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.6.1

@@ -3,6 +3,10 @@ import UIKit
 @testable import LOBSTR_Vault
 
 class MnemonicVerificationViewSpy: MnemonicVerificationView {
+  func setClearButtonStatus(isEnabled: Bool) {
+    
+  }
+  
   
   var displayShuffledMnemonicListWasCalled = false
   var shuffledCollectionViewWasUpdated = false

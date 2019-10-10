@@ -47,6 +47,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   }
   
   private func configureTableView() {
+    tableView.registerNibForHeaderFooter(SignersHeaderView.self)
     tableView.tableFooterView = UIView()
   }
   
@@ -75,7 +76,8 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setConfirmationAlert() {
-    let alert = UIAlertController(title: L10n.textDenyDialogTitle, message: L10n.textConfirmDialogDescription, preferredStyle: .alert)
+    let alert = UIAlertController(title: L10n.textDenyDialogTitle,
+                                  message: L10n.textConfirmDialogDescription, preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: L10n.buttonTitleYes, style: .destructive, handler: { _ in
       self.presenter.confirmOperationWasConfirmed()
     }))
@@ -86,7 +88,8 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setDenyingAlert() {
-    let alert = UIAlertController(title: L10n.textDenyDialogTitle, message: L10n.textDenyDialogDescription, preferredStyle: .alert)
+    let alert = UIAlertController(title: L10n.textDenyDialogTitle,
+                                  message: L10n.textDenyDialogDescription, preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: L10n.buttonTitleYes, style: .destructive, handler: { _ in
       self.presenter.denyOperationWasConfirmed()
     }))
@@ -101,8 +104,11 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setProgressAnimation(isEnable: Bool) {
-    navigationItem.hidesBackButton = isEnable
-    isEnable ? HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) : HUD.hide()
+    DispatchQueue.main.async {
+      self.navigationItem.hidesBackButton = isEnable
+      isEnable ? HUD.show(.labeledProgress(title: nil,
+                                           subtitle: L10n.animationWaiting)) : HUD.hide()
+    }
   }
   
   func registerTableViewCell(with cellName: String) {
@@ -132,30 +138,64 @@ extension TransactionDetailsViewController: TransactionDetailsView {
 
 extension TransactionDetailsViewController: UITableViewDelegate, UITableViewDataSource {
   
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    guard presenter.numberOfOperation == 1 else {
-      return presenter.numberOfOperation
+  func numberOfSections(in tableView: UITableView) -> Int {
+    // 1st section: operations
+    // 2nd section: accepted/pending signatures
+    return 2
+  }
+  
+  func tableView(_ tableView: UITableView,
+                 numberOfRowsInSection section: Int) -> Int {
+    
+    if section == 0 {
+      guard presenter.numberOfOperation == 1 else {
+        return presenter.numberOfOperation
+      }
+      
+      return presenter.numberOfOperationDetails
+    } else {
+      return presenter.numberOfSigners
+    }
+  }
+  
+  func tableView(_ tableView: UITableView,
+                 viewForHeaderInSection section: Int) -> UIView? {
+    // Header View with number of accepted signatures.
+    if section == 1 {
+      let headerView: SignersHeaderView =
+        tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      
+      let text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfSigners)"
+      headerView.numberOfAcceptedSignaturesLabel.text = text
+      return headerView
     }
     
-    return presenter.numberOfOperationDetails
+    return nil
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard presenter.numberOfOperation == 1 else {
-      let cell = tableView.dequeueReusableCell(withIdentifier: "OperationTableViewCell",
-                                               for: indexPath) as! OperationTableViewCell
-      presenter.configure(cell, forRow: indexPath.item)
+    
+    if indexPath.section == 0 { // Operations
+      guard presenter.numberOfOperation == 1 else {
+        let cell: OperationTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+        presenter.configure(cell, forRow: indexPath.row)
+        return cell
+      }
+      
+      let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      presenter.configure(cell, forRow: indexPath.row)
+      cell.selectionStyle = .none
+      return cell
+    } else { // Signers
+      let cell: SignerTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      presenter.configure(cell, forRow: indexPath.row)
+      cell.selectionStyle = .none
       return cell
     }
-    
-    let cell = tableView.dequeueReusableCell(withIdentifier: "OperationDetailsTableViewCell",
-                                             for: indexPath) as! OperationDetailsTableViewCell
-    presenter.configure(cell, forRow: indexPath.item)
-    cell.selectionStyle = .none
-    return cell
   }
   
-  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+  func tableView(_ tableView: UITableView,
+                 didSelectRowAt indexPath: IndexPath) {
     guard presenter.numberOfOperation != 1 else {
       return
     }
@@ -164,7 +204,17 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
     presenter.operationWasSelected(by: indexPath.item)
   }
   
-  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 50
+  func tableView(_ tableView: UITableView,
+                 heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 50.0
+  }
+  
+  func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    
+    if section == 0 {
+      return CGFloat.zero
+    } else {
+      return 22.0
+    }
   }
 }

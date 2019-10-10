@@ -27,6 +27,8 @@ class NumberPadView: UIView {
     addSubview(contentView)
     contentView.frame = bounds
     contentView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+    
+    rightButtonEnable(false)
   }
 
   // MARK: - IBActions
@@ -61,5 +63,15 @@ class NumberPadView: UIView {
     }
     
     rightButton.tintColor = color
+  }
+  
+  func rightButtonEnable(_ isEnabled: Bool) {
+    if isEnabled {
+      rightButton.alpha = 1
+    } else {
+      rightButton.alpha = 0
+    }
+    
+    rightButton.isEnabled = isEnabled
   }
 }

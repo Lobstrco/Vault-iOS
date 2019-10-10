@@ -6,11 +6,12 @@ protocol SignerDetailsPresenter {
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int)
   func signerDetailsViewDidLoad()
   func copyAlertActionWasPressed(for index: Int)
+  func openExplorerActionWasPressed(for index: Int)
 }
 
 class SignerDetailsPresenterImpl {
   
-  var accounts: [SignedAccounts] = []
+  var accounts: [SignedAccount] = []
   
   private let transactionService: TransactionService
   
@@ -45,6 +46,13 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   func copyAlertActionWasPressed(for index: Int) {
     guard let publicKey = accounts[index].address else { return }
     view?.copy(publicKey)
+  }
+  
+  func openExplorerActionWasPressed(for index: Int) {
+    guard let publicKey = accounts[index].address else { return }
+    
+    let sUrl = "https://stellar.expert/explorer/public/account/\(publicKey)"
+    UIApplication.shared.open(URL(string: sUrl)! as URL, options: .init(), completionHandler: nil)
   }
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int) {

@@ -1,4 +1,5 @@
 import UIKit
+import PKHUD
 
 class BiometricIDViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .biometricID
@@ -61,5 +62,9 @@ extension BiometricIDViewController: BiometricIDView {
     case .none:
       AppearanceHelper.set(turnOnButton, with: L10n.buttonTitleTurnOn)
     }
+  }
+  
+  func setProgressAnimation(isDisplay: Bool) {
+    isDisplay ? HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting)) : HUD.hide()
   }
 }

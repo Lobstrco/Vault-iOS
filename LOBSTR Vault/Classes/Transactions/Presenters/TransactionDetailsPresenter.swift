@@ -4,6 +4,8 @@ import stellarsdk
 protocol TransactionDetailsPresenter {
   var numberOfOperation: Int { get }
   var numberOfOperationDetails: Int { get }
+  var numberOfSigners: Int { get }
+  var numberOfAcceptedSignatures: Int { get }
   var transactionListIndex: Int? { get set }
   func transactionDetailsViewDidLoad()
   func operationWasSelected(by index: Int)
@@ -13,6 +15,7 @@ protocol TransactionDetailsPresenter {
   func confirmOperationWasConfirmed()
   func configure(_ cell: OperationTableViewCell, forRow row: Int)
   func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int)
+  func configure(_ cell: SignerTableViewCell, forRow row: Int)
 }
 
 protocol TransactionDetailsView: class {
@@ -33,6 +36,11 @@ enum TransactionType {
   case standard
 }
 
+enum SignatureStatus {
+  case accepted
+  case pending
+}
+
 class TransactionDetailsPresenterImpl {
   
   fileprivate weak var view: TransactionDetailsView?
@@ -42,11 +50,20 @@ class TransactionDetailsPresenterImpl {
   fileprivate var indexInTransactionList: Int?
   
   fileprivate let transaction: Transaction
-  fileprivate var xdr: String
+  
+  fileprivate lazy var xdr: String = {
+    guard let transactionXDR = transaction.xdr else {
+      fatalError()
+    }
+    return transactionXDR
+  }()
+  
   fileprivate let transactionType: TransactionType
   
   fileprivate var operations: [String] = []
+  fileprivate var signers: [SignerViewData] = []
   fileprivate var operationDetails: [(name: String , value: String)] = []
+  fileprivate let sdk: StellarSDK
   
   var transactionListIndex: Int? {
     get { return indexInTransactionList }
@@ -57,8 +74,18 @@ class TransactionDetailsPresenterImpl {
     return operations.count
   }
   
+  var numberOfSigners: Int {
+    return signers.count
+  }
+  
   var numberOfOperationDetails: Int {
     return operationDetails.count
+  }
+  
+  var numberOfAcceptedSignatures: Int {
+    return signers
+      .filter { $0.status == .accepted }
+      .count
   }
   
   // MARK: - Init
@@ -68,19 +95,15 @@ class TransactionDetailsPresenterImpl {
        type: TransactionType,
        crashlyticsService: CrashlyticsService = CrashlyticsService(),
        transactionService: TransactionService = TransactionService(),
-       mnemonicManager: MnemonicManager = MnemonicManagerImpl()) {
+       mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
+       sdk: StellarSDK = StellarSDK(withHorizonUrl: Constants.horizonURL)) {
     self.view = view
     self.crashlyticsService = crashlyticsService
     self.transactionService = transactionService
     self.mnemonicManager = mnemonicManager
     self.transaction = transaction
     self.transactionType = type
-    
-    guard let transactionXDR = transaction.xdr else {
-      fatalError()
-    }
-
-    self.xdr = transactionXDR
+    self.sdk = sdk
   }
   
   // MARK: - Private
@@ -129,6 +152,8 @@ class TransactionDetailsPresenterImpl {
   private func registerTableViewCell() {
     let cellName = numberOfOperation == 1 ? "OperationDetailsTableViewCell" : "OperationTableViewCell"
     view?.registerTableViewCell(with: cellName)
+    
+    view?.registerTableViewCell(with: SignerTableViewCell.reuseIdentifier)
   }
   
   private func openTransactionListScreen() {
@@ -188,7 +213,7 @@ class TransactionDetailsPresenterImpl {
       DispatchQueue.main.async {
         self.view?.setProgressAnimation(isEnable: false)
         
-        if let infoError = submitTransactionToHorizon.outputError as? ErrorDisplayable {          
+        if let infoError = submitTransactionToHorizon.outputError as? ErrorDisplayable {
           self.view?.setErrorAlert(for: infoError)
           return
         }
@@ -231,6 +256,66 @@ class TransactionDetailsPresenterImpl {
       }
     }
   }
+  
+
+  
+  private func getSignersViewData(signers: [AccountSignerResponse],
+                                  transactionEnvelopeXDR: TransactionEnvelopeXDR) -> [SignerViewData] {
+    
+    guard let hash = try? [UInt8](transactionEnvelopeXDR.tx.hash(network: .public)) else { return [] }
+    
+    var signersViewData: [SignerViewData] = []
+    
+
+    let vaultMarkerKey = "GA2T6GR7VXXXBETTERSAFETHANSORRYXXXPROTECTEDBYLOBSTRVAULT"
+    let filteredSigners = signers.filter { $0.key != vaultMarkerKey }
+    
+    var acceptedSigners: [String] = []
+    var pendingSigners: [String] = []
+    
+    for signer in filteredSigners {
+      
+      guard let key = signer.key,
+        let signerKeyPair = try? KeyPair(accountId: key) else { continue }
+      
+      var signed = false
+      
+      for signature in transactionEnvelopeXDR.signatures {
+        let sign = signature.signature
+        
+        let signatureIsValid = try! signerKeyPair.verify(signature: [UInt8](sign), message: hash)
+        
+        if signatureIsValid {
+          signed = true
+          break
+        }
+      }
+      
+      if signed {
+        acceptedSigners.append(key)
+      } else {
+        pendingSigners.append(key)
+      }
+    }
+    
+    // Accepted signers.
+    signersViewData.append(contentsOf: acceptedSigners.map { signer in
+      let signerViewData = SignerViewData(status: .accepted,
+                                          publicKey: signer)
+      
+      return signerViewData
+    })
+
+    // Pending signers.
+    signersViewData.append(contentsOf: pendingSigners.map { signer in
+      let signerViewData = SignerViewData(status: .pending,
+                                          publicKey: signer)
+      
+      return signerViewData
+    })
+
+    return signersViewData
+  }
 }
 
 // MARK: - TransactionDetailsPresenter
@@ -238,14 +323,41 @@ class TransactionDetailsPresenterImpl {
 extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   
   func transactionDetailsViewDidLoad() {
-    setOperationList()
-    setOperationDetails()
-    setTitle()
-    disableBackButtonIfNecessary()
+    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+        return
+    }
     
-    registerTableViewCell()
-    view?.setTableViewData()
-    view?.setConfirmButtonWithError(isInvalid: transaction.sequenceOutdatedAt != nil)
+    view?.setProgressAnimation(isEnable: true)
+    sdk.accounts.getAccountDetails(accountId: transactionEnvelopeXDR.tx.sourceAccount.accountId) { [weak self] result in
+      
+      
+      guard let self = self else { return }
+      
+      self.view?.setProgressAnimation(isEnable: false)
+      
+      switch result {
+      case .success(let accountDetails):
+        
+        let signersViewData = self.getSignersViewData(signers: accountDetails.signers,
+                                                      transactionEnvelopeXDR: transactionEnvelopeXDR)
+
+        self.signers = signersViewData
+        
+        DispatchQueue.main.async {
+          self.setOperationList()
+          self.setOperationDetails()
+          self.setTitle()
+          self.disableBackButtonIfNecessary()
+          
+          self.registerTableViewCell()
+          self.view?.setTableViewData()
+          self.view?.setConfirmButtonWithError(isInvalid: self.transaction.sequenceOutdatedAt != nil)
+        }
+
+      case .failure(let error):
+        print(error)
+      }
+    }
   }
   
   func operationWasSelected(by index: Int) {
@@ -263,7 +375,11 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func configure(_ cell: OperationDetailsTableViewCell, forRow row: Int) {
-      cell.setData(title: operationDetails[row].name, value: operationDetails[row].value)
+    cell.setData(title: operationDetails[row].name, value: operationDetails[row].value)
+  }
+  
+  func configure(_ cell: SignerTableViewCell, forRow row: Int) {
+    cell.setData(viewData: signers[row])
   }
   
   func confirmButtonWasPressed() {

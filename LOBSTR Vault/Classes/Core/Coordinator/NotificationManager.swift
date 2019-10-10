@@ -1,12 +1,11 @@
-import Foundation
-import UserNotifications
-import UIKit
 import FirebaseMessaging
+import Foundation
+import UIKit
+import UserNotifications
 
 class NotificationManager {
-  
   func requestAuthorization(completionHandler: @escaping (Bool) -> Void) {
-    UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { granted, error in
+    UNUserNotificationCenter.current().requestAuthorization(options: [.badge, .alert, .sound]) { granted, _ in
       completionHandler(granted)
     }
   }
@@ -22,7 +21,7 @@ class NotificationManager {
       print("Couldn't unregister device")
       return
     }
-   
+    
     NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
   }
   
@@ -34,13 +33,34 @@ class NotificationManager {
     guard let fcmToken = Messaging.messaging().fcmToken else {
       return
     }
+    print("FLOW: fcm token: \(fcmToken)")
     NotificationsService().registerDeviceForNotifications(with: fcmToken)
   }
   
-  func postNotification(accordingTo userInfo: [AnyHashable : Any]) {
-    let eventType =  userInfo["event_type"] as? String
-    if eventType == "added_new_transaction" || eventType == "transaction_submitted" {
-      NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+  func postNotification(accordingTo userInfo: [AnyHashable: Any]) {
+    guard let eventType = userInfo["event_type"] as? String else {
+      return
+    }
+    
+    guard let notificationType = NotificationType(rawValue: eventType) else {
+      return
+    }
+    
+    switch notificationType {
+      case .addedNewTransaction, .submitedTransaction, .addedNewSignature:
+        NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+      case .signedNewAccount:
+        NotificationCenter.default.post(name: .didChangeSignerDetails, object: nil)
+      case .removedSigner:
+        NotificationCenter.default.post(name: .didChangeSignerDetails, object: nil)
     }
   }
+}
+
+enum NotificationType: String {
+  case addedNewTransaction = "added_new_transaction"
+  case submitedTransaction = "transaction_submitted"
+  case signedNewAccount = "signed_new_account"
+  case removedSigner = "removed_signer"
+  case addedNewSignature = "added_new_signature"
 }

@@ -88,6 +88,8 @@ class PinPresenterImpl: PinPresenter {
     view?.fillPinDot(at: pin.count)
     pin += String(digit)
     
+    view?.setKeyboardRigthButton(isEnabled: true)
+    
     if pin.count == pinLength {
       switch mode {
       case .createPinFirstStep:
@@ -129,6 +131,10 @@ class PinPresenterImpl: PinPresenter {
   }
   
   func removeButtonWasPressed() {
+    if pin.count == 1 {
+      view?.setKeyboardRigthButton(isEnabled: false)
+    }
+    
     guard pin.count > 0 else { return }
     pin.removeLast()
     view?.clearPinDot(at: pin.count)

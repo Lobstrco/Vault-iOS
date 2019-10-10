@@ -27,8 +27,8 @@ class ProgressHUD {
   }
   
   func remove() {
-    DispatchQueue.main.async {
+//    DispatchQueue.main.async {
       self.view.removeFromSuperview()
-    }
+//    }
   }
 }

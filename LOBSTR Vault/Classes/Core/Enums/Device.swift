@@ -30,6 +30,8 @@ public enum Device {
       return .touch
     case .faceID:
       return .face
+    @unknown default:
+      return .none
     }
   }
 }

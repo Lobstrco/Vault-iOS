@@ -20,8 +20,8 @@ struct SignedAccountsRequest: APIRequest {
     return urlRequest
   }
   
-  func parseResponse(data: Data) throws -> PaginationResponse<SignedAccounts> {
-    return try JSONDecoder().decode(PaginationResponse<SignedAccounts>.self, from: data)
+  func parseResponse(data: Data) throws -> PaginationResponse<SignedAccount> {
+    return try JSONDecoder().decode(PaginationResponse<SignedAccount>.self, from: data)
   }
   
 }

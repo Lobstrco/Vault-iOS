@@ -62,7 +62,8 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "OperationDetailsTableViewCell", for: indexPath) as! OperationDetailsTableViewCell
+    let cell = tableView.dequeueReusableCell(withIdentifier: "OperationDetailsTableViewCell",
+                                             for: indexPath) as! OperationDetailsTableViewCell
     presenter.configure(cell, forRow: indexPath.item)
     cell.selectionStyle = .none
     return cell

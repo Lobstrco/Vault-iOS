@@ -30,7 +30,7 @@ struct NotificationsService {
       switch result {
       case .success(_):
         break
-      case .failure(let serverRequestError):
+      case .failure:
         // need to create crashlytics event
         break
       }

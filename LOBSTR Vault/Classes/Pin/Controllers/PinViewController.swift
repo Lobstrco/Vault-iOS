@@ -12,6 +12,7 @@ protocol PinView: class {
   func show(error: String)
   func executeCompletion()
   func setSimplePinAlert()
+  func setKeyboardRigthButton(isEnabled: Bool)
 }
 
 class PinViewController: UIViewController, StoryboardCreation {
@@ -90,6 +91,10 @@ class PinViewController: UIViewController, StoryboardCreation {
 // MARK: - PinView
 
 extension PinViewController: PinView {
+  
+  func setKeyboardRigthButton(isEnabled: Bool) {
+    numberPadView.rightButtonEnable(isEnabled)
+  }
   
   func setTitle(_ title: String) {
     navigationItem.title = title

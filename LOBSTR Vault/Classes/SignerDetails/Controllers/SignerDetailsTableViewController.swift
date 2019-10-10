@@ -63,18 +63,21 @@ class SignerDetailsTableViewController: UITableViewController, StoryboardCreatio
 // MARK: - UITableView
 
 extension SignerDetailsTableViewController {
-  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(_ tableView: UITableView,
+                          numberOfRowsInSection section: Int) -> Int {
     return presenter.countOfAccounts
   }
   
-  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: "SignerDetailsViewCell", for: indexPath) as! SignerDetailsTableViewCell
+  override func tableView(_ tableView: UITableView,
+                          cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell: SignerDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
     presenter.configure(cell, forRow: indexPath.item)
     cell.delegate = self
     return cell
   }
   
-  override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+  override func tableView(_ tableView: UITableView,
+                          heightForRowAt indexPath: IndexPath) -> CGFloat {
     return 50
   }
 }
@@ -89,13 +92,19 @@ extension SignerDetailsTableViewController: SignerDetailsTableViewCellDelegate {
                                      message: nil,
                                      preferredStyle: .actionSheet)
     
-    let copyAction = UIAlertAction(title: "Copy public key",
+    let copyAction = UIAlertAction(title: "Copy Public Key",
                                    style: .default) { _ in
       self.presenter.copyAlertActionWasPressed(for: indexPath.row)
     }
     
-    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+    let openExplorerAction = UIAlertAction(title: "Open Explorer",
+                                   style: .default) { _ in
+                                    self.presenter.openExplorerActionWasPressed(for: indexPath.row)
+    }
     
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+    moreMenu.addAction(openExplorerAction)
     moreMenu.addAction(copyAction)
     moreMenu.addAction(cancelAction)
     

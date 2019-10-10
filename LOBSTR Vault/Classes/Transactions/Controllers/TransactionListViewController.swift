@@ -7,6 +7,7 @@ class TransactionListViewController: UIViewController {
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var importButton: UIButton!
+  @IBOutlet var clearButton: UIBarButtonItem!
   @IBOutlet var emptyStateLabel: UILabel!
   
   var emptyState: UILabel {
@@ -22,7 +23,10 @@ class TransactionListViewController: UIViewController {
   }()
   
   let progressHUD = ProgressHUD()  
+  
   var isPullingRefresh = false
+  var isThereMoreContent = true
+  var isFirstLoading = true
   
   // MARK: - Lifecycle
   
@@ -30,6 +34,10 @@ class TransactionListViewController: UIViewController {
     super.viewDidLoad()
     
     tableView.addSubview(self.refreshControl)
+    tableView.contentInset = UIEdgeInsets(top: .zero,
+                                          left: .zero,
+                                          bottom: 70.0,
+                                          right: .zero)
     
     presenter = TransactionListPresenterImpl(view: self)
     presenter.transactionListViewDidLoad()
@@ -48,6 +56,22 @@ class TransactionListViewController: UIViewController {
     presenter.importXDRButtonWasPressed()
   }
   
+  @IBAction func clearButtonAction(_ sender: Any) {
+    let alert = UIAlertController(title: L10n.textClearInvalidTransactionsTitle,
+                                  message: L10n.textClearInvalidTransactionsDescription,
+                                  preferredStyle: .alert)
+    
+    let okAction = UIAlertAction(title: L10n.buttonTitleOk,
+                                       style: .default) { _ in
+                                        self.presenter.clearButtonWasPressed()
+    }
+    let cancelAction = UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel)
+    alert.addAction(okAction)
+    alert.addAction(cancelAction)
+    
+    present(alert, animated: true, completion: nil)
+  }
+  
   // MARK: - Private
   
   @objc private func pullToRefresh(_ refreshControl: UIRefreshControl) {
@@ -58,6 +82,7 @@ class TransactionListViewController: UIViewController {
   private func setStaticStrings() {
     navigationItem.title = L10n.navTitleTransactions
     emptyStateLabel.text = L10n.textEmptyStateTransactions
+    clearButton.title = L10n.buttonTitleClear
   }
   
   private func setAppearance() {
@@ -72,7 +97,8 @@ class TransactionListViewController: UIViewController {
   }
   
   internal func setHUDSuccessViewAfterRemoveOperation() {
-    HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.textDeclinedTransaction), delay: 1.5)
+    HUD.flash(.labeledSuccess(title: nil,
+                              subtitle: L10n.textDeclinedTransaction), delay: 1.5)
   }
 }
 
@@ -88,7 +114,8 @@ extension TransactionListViewController: TransactionListView {
     emptyState.isHidden = !isEmpty
   }
   
-  func setTransactionList(isEmpty: Bool) {
+  func setTransactionList(isEmpty: Bool, isThereMoreContent: Bool) {
+    self.isThereMoreContent = isThereMoreContent
     tableView.delegate = self
     tableView.dataSource = self
     tableView.reloadData()
@@ -96,10 +123,15 @@ extension TransactionListViewController: TransactionListView {
     emptyState.isHidden = !isEmpty
   }
   
-  func reloadTransactionList(isEmpty: Bool) {
+  func reloadTransactionList(isEmpty: Bool, isThereMoreContent: Bool) {
+    self.isThereMoreContent = isThereMoreContent
+//    isFirstLoading = true
     tableView.reloadData()
-    
     emptyState.isHidden = !isEmpty
+  }
+  
+  func setFirstLoadingStatus(_ status: Bool) {
+    isFirstLoading = status
   }
   
   func setProgressAnimation(isEnabled: Bool) {
@@ -146,4 +178,13 @@ extension TransactionListViewController: UITableViewDelegate, UITableViewDataSou
     return 88
   }
   
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    if isThereMoreContent, indexPath.row + 1 == presenter.countOfTransactions {
+      guard !isFirstLoading else {
+        isFirstLoading = false
+        return
+      }      
+      presenter.tableViewReachedBottom()
+    }
+  }
 }

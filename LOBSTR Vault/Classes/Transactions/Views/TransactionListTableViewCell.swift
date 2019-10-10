@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   
@@ -6,7 +7,8 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   @IBOutlet var sourceAccountLabel: UILabel!
   @IBOutlet var operationTypeLabel: UILabel!
   @IBOutlet var statusLabel: UILabel!
-  @IBOutlet weak var content: UIView!
+  @IBOutlet var content: UIView!
+  @IBOutlet var identiconView: IdenticonView!
   
   private var borderView: UIView!
   
@@ -27,12 +29,16 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
     borderView.removeFromSuperview()
   }
   
-  func set(date: String?, operationType: String?, sourceAccount: String, isValid: Bool) {
+  func set(date: String?,
+           operationType: String?,
+           sourceAccount: String,
+           isValid: Bool) {
     dateLabel.text = date
     operationTypeLabel.text = operationType
     sourceAccountLabel.text = sourceAccount
     setValidationAppearance(isValid)
     setStatusLabel(isValid)
+    identiconView.loadIdenticon(publicAddress: sourceAccount)
   }
   
   private func setStaticString() {

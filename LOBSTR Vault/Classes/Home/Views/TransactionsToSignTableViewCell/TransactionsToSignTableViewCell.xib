@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="TransactionsToSignTableViewCell" rowHeight="230" id="9m4-bR-d3f" customClass="TransactionsToSignTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="239"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="9m4-bR-d3f" id="sOR-1w-ek6">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="238.5"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xDx-S2-0r9">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="238.5"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4yA-TF-te3">
+                                <rect key="frame" x="207" y="35" width="0.0" height="90"/>
+                                <subviews>
+                                    <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7jP-NY-XGa">
+                                        <rect key="frame" x="0.0" y="0.0" width="0.0" height="90"/>
+                                        <gestureRecognizers/>
+                                        <fontDescription key="fontDescription" type="system" weight="black" pointSize="80"/>
+                                        <color key="textColor" name="Colors/White"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="7jP-NY-XGa" secondAttribute="bottom" id="NL7-zt-vVx"/>
+                                    <constraint firstAttribute="height" constant="90" id="SyJ-rR-gOa"/>
+                                    <constraint firstItem="7jP-NY-XGa" firstAttribute="top" secondItem="4yA-TF-te3" secondAttribute="top" id="d3R-sI-wnV"/>
+                                    <constraint firstAttribute="trailing" secondItem="7jP-NY-XGa" secondAttribute="trailing" id="slc-hZ-Eiu"/>
+                                    <constraint firstItem="7jP-NY-XGa" firstAttribute="leading" secondItem="4yA-TF-te3" secondAttribute="leading" id="wYk-hI-TSq"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Transactions to sign" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bhO-U2-tB8">
+                                <rect key="frame" x="126.5" y="135" width="161.5" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="vIt-AZ-Z61"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                                <color key="textColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JgC-sY-iH7">
+                                <rect key="frame" x="132" y="170" width="150" height="31"/>
+                                <color key="backgroundColor" red="0.2501407987" green="0.12582181140000001" blue="0.52894363379999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="31" id="KEP-f5-gEu"/>
+                                    <constraint firstAttribute="width" constant="150" id="bOl-sC-ccj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <state key="normal" title="view transactions list">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="transactionListButtonAction:" destination="9m4-bR-d3f" eventType="touchUpInside" id="SNx-rr-Ffg"/>
+                                </connections>
+                            </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="r6d-Y6-C3v">
+                                <rect key="frame" x="188.5" y="61.5" width="37" height="37"/>
+                            </activityIndicatorView>
+                        </subviews>
+                        <color key="backgroundColor" name="Colors/Main"/>
+                        <constraints>
+                            <constraint firstItem="JgC-sY-iH7" firstAttribute="top" secondItem="bhO-U2-tB8" secondAttribute="bottom" constant="14" id="3Pd-bE-Btp"/>
+                            <constraint firstItem="4yA-TF-te3" firstAttribute="centerX" secondItem="xDx-S2-0r9" secondAttribute="centerX" id="QVf-ff-2Me"/>
+                            <constraint firstItem="r6d-Y6-C3v" firstAttribute="centerX" secondItem="7jP-NY-XGa" secondAttribute="centerX" id="U0M-Tv-7NK"/>
+                            <constraint firstItem="bhO-U2-tB8" firstAttribute="centerX" secondItem="xDx-S2-0r9" secondAttribute="centerX" id="iFC-vL-lwS"/>
+                            <constraint firstItem="JgC-sY-iH7" firstAttribute="centerX" secondItem="xDx-S2-0r9" secondAttribute="centerX" id="nht-2U-fF1"/>
+                            <constraint firstItem="bhO-U2-tB8" firstAttribute="top" secondItem="4yA-TF-te3" secondAttribute="bottom" constant="10" id="ppW-ug-ULf"/>
+                            <constraint firstItem="r6d-Y6-C3v" firstAttribute="centerY" secondItem="7jP-NY-XGa" secondAttribute="centerY" id="tlh-vo-Sxq"/>
+                            <constraint firstItem="4yA-TF-te3" firstAttribute="top" secondItem="xDx-S2-0r9" secondAttribute="top" constant="35" id="xcB-wZ-EGj"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ZWE-xO-8c1"/>
+                    </view>
+                </subviews>
+                <constraints>
+                    <constraint firstItem="xDx-S2-0r9" firstAttribute="top" secondItem="sOR-1w-ek6" secondAttribute="top" id="3dv-Vj-PFi"/>
+                    <constraint firstAttribute="bottom" secondItem="xDx-S2-0r9" secondAttribute="bottom" id="iOe-OV-yAN"/>
+                    <constraint firstAttribute="trailing" secondItem="xDx-S2-0r9" secondAttribute="trailing" id="lFk-sh-auE"/>
+                    <constraint firstItem="xDx-S2-0r9" firstAttribute="leading" secondItem="sOR-1w-ek6" secondAttribute="leading" id="nqp-QB-Ngo"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="activityIndicator" destination="r6d-Y6-C3v" id="PQm-Pu-85d"/>
+                <outlet property="transactionListButton" destination="JgC-sY-iH7" id="Fro-5G-qVQ"/>
+                <outlet property="transactionNumberLabel" destination="7jP-NY-XGa" id="4Qg-7C-r5h"/>
+                <outlet property="transactionsToSignLabel" destination="bhO-U2-tB8" id="wGD-11-EKo"/>
+            </connections>
+            <point key="canvasLocation" x="-228.98550724637684" y="-82.03125"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
