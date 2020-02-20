@@ -15,7 +15,8 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                               withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
     let userInfo = notification.request.content.userInfo
     applicationCoordinator.postNotification(accordingTo: userInfo)
-    completionHandler([.alert, .sound])
+    applicationCoordinator.setNotificationBadge(accordingTo: userInfo)
+    completionHandler([.alert, .sound, .badge])
   }
 }
 

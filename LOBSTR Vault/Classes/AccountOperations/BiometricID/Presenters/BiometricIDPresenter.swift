@@ -45,7 +45,6 @@ extension BiometricIDPresenterImpl {
       switch result {
       case .success:
         self?.biometricAuthManager.isBiometricAuthEnabled = true
-//        self?.transitionToPublicKey()
         self?.updateToken()
       case .failure(let error):
         guard let error = error as? VaultError.BiometricError  else { return }
@@ -56,7 +55,6 @@ extension BiometricIDPresenterImpl {
   }
   
   func skipButtonWasPressed() {
-//    transitionToPublicKey()
     updateToken()
   }
 }
@@ -65,9 +63,9 @@ extension BiometricIDPresenterImpl {
 
 extension BiometricIDPresenterImpl {
   func transitionToPublicKey() {
-    let publicKeyViewController = PublicKeyViewController.createFromStoryboard()
+    let vaultPublicKeyViewController = VaultPublicKeyViewController.createFromStoryboard()
     
-    navigationController.pushViewController(publicKeyViewController,
+    navigationController.pushViewController(vaultPublicKeyViewController,
                                             animated: true)
   }
   
@@ -87,7 +85,7 @@ extension BiometricIDPresenterImpl {
         self?.transitionToNextScreen()
       case .failure(let error):
         self?.view?.setProgressAnimation(isDisplay: false)
-        print("Couldn't get token. \(error)")
+        Logger.auth.error("Couldn't get token with error: \(error)")
       }
     }
   }
@@ -105,7 +103,7 @@ extension BiometricIDPresenterImpl {
         }
       case .failure(let error):
         self.view?.setProgressAnimation(isDisplay: false)
-        print("error: \(error)")
+        Logger.transactions.error("Couldn't get signed accounts with error: \(error)")
       }
     }
   }

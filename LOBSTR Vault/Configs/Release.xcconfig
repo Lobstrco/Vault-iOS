@@ -1,0 +1,8 @@
+BASE_URL = https:/$()/vault.lobstr.co
+HORIZON_BASE_URL = https:/$()/horizon.stellar.lobstr.co
+APP_NAME = LOBSTR Vault
+APP_BUNDLE_ID = com.ultrastellar.lobstr.vault
+BUILD_TYPE = release
+ENVIRONMENT_TYPE = production
+
+#include "Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault.release.xcconfig"

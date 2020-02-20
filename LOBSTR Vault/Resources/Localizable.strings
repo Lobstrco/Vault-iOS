@@ -125,7 +125,8 @@
 "text_settings_about_section" = "OTHER";
 "text_settings_public_key_field" = "Vault Public key";
 "text_settings_notifications_field" = "Notifications";
-"text_settings_promt_decisions_field" = "Prompt for Transaction Decisions";
+"text_settings_promt_decisions_field" = "Transaction Confirmations";
+"text_settings_spam_protection_field" = "Allow Unsigned Transactions";
 "text_settings_signer_for_field" = "Signer for 5 accounts";
 "text_settings_mnemonic_field" = "Recovery Phrase";
 "text_settings_change_pin_field" = "Change PIN";

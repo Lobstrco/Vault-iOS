@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="R07-jA-whE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="R07-jA-whE">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -14,7 +14,6 @@
             <objects>
                 <navigationController id="R07-jA-whE" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Home" image="Icons/Tabbar/icHomeOut" id="PGW-Pv-NRR"/>
-                    <simulatedTabBarMetrics key="simulatedBottomBarMetrics" translucent="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="oPv-6p-xtQ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -35,7 +34,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZMk-s7-C3b">
+                            <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZMk-s7-C3b">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="aSZ-AN-GGo">
@@ -69,22 +68,34 @@
                                     <outlet property="delegate" destination="uIU-Zc-0cV" id="ePc-xq-njj"/>
                                 </connections>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Aqh-tl-Kya">
+                                <rect key="frame" x="325" y="64" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="30" id="8sK-F5-fdg"/>
+                                    <constraint firstAttribute="height" constant="30" id="QFI-cZ-Kxg"/>
+                                </constraints>
+                                <state key="normal" image="Icons/Other/icRefresh"/>
+                                <connections>
+                                    <action selector="refreshButtonAction:" destination="uIU-Zc-0cV" eventType="touchUpInside" id="gXZ-A5-rmN"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" name="Colors/Main"/>
                         <constraints>
                             <constraint firstItem="ZjQ-E4-J6e" firstAttribute="trailing" secondItem="Ylz-My-vkA" secondAttribute="trailing" id="C8L-Db-26q"/>
+                            <constraint firstItem="Aqh-tl-Kya" firstAttribute="top" secondItem="Ylz-My-vkA" secondAttribute="top" constant="20" id="DjX-Zg-OBv"/>
                             <constraint firstItem="Ylz-My-vkA" firstAttribute="bottom" secondItem="ZjQ-E4-J6e" secondAttribute="bottom" constant="44" id="HOO-TW-2kf"/>
                             <constraint firstItem="ZjQ-E4-J6e" firstAttribute="top" secondItem="9ww-sa-3Y6" secondAttribute="top" id="NFG-dp-EDH"/>
                             <constraint firstItem="ZjQ-E4-J6e" firstAttribute="leading" secondItem="Ylz-My-vkA" secondAttribute="leading" id="cZF-Us-Ytf"/>
                             <constraint firstItem="ZMk-s7-C3b" firstAttribute="top" secondItem="9ww-sa-3Y6" secondAttribute="top" id="hta-om-OSl"/>
+                            <constraint firstItem="Ylz-My-vkA" firstAttribute="trailing" secondItem="Aqh-tl-Kya" secondAttribute="trailing" constant="20" id="rge-Ib-kCx"/>
                             <constraint firstAttribute="trailing" secondItem="ZMk-s7-C3b" secondAttribute="trailing" id="spy-T6-gRX"/>
                             <constraint firstAttribute="bottom" secondItem="ZMk-s7-C3b" secondAttribute="bottom" id="vAq-df-O9p"/>
                             <constraint firstItem="ZMk-s7-C3b" firstAttribute="leading" secondItem="9ww-sa-3Y6" secondAttribute="leading" id="wYJ-DS-1s1"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Ylz-My-vkA"/>
                     </view>
-                    <navigationItem key="navigationItem" id="5nO-7Q-0ZJ"/>
-                    <nil key="simulatedTopBarMetrics"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="5nO-7Q-0ZJ"/>
                     <connections>
                         <outlet property="tableView" destination="ZjQ-E4-J6e" id="Mdn-O7-q7D"/>
                     </connections>
@@ -100,6 +111,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="Icons/Other/icRefresh" width="24" height="20"/>
         <image name="Icons/Tabbar/icHomeOut" width="24" height="23"/>
         <namedColor name="Colors/Main">
             <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

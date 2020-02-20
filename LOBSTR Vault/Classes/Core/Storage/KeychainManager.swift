@@ -14,9 +14,9 @@ final public class KeychainManagerImpl: KeychainManager {
     
     let status = SecItemAdd(parameters as CFDictionary, nil)
     guard status == errSecSuccess else {
-      print(status)
+      Logger.security.debug(status)
       if #available(iOS 11.3, *) {
-        print(SecCopyErrorMessageString(status, nil) ?? "")
+        Logger.security.debug(SecCopyErrorMessageString(status, nil) ?? "")
       }
       return false
     }
@@ -39,9 +39,9 @@ final public class KeychainManagerImpl: KeychainManager {
     let status = SecItemCopyMatching(parameters as CFDictionary, &possibleData)
     
     guard let data = possibleData as? Data, status == errSecSuccess else {
-      print(status)
+      Logger.security.debug(status)
       if #available(iOS 11.3, *) {
-        print(SecCopyErrorMessageString(status, nil) ?? "")
+        Logger.security.debug(SecCopyErrorMessageString(status, nil) ?? "")
       }
       return nil
     }

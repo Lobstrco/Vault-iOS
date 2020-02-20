@@ -6,7 +6,7 @@ public struct HomeSection {
   var rows: [HomeRow]
 }
 
-public enum HomeRow {
+public enum HomeRow {  
   case numberOfTransactions(String)
   case publicKey(String)
   case totalNumber(Int)
@@ -16,7 +16,7 @@ public enum HomeRow {
   var height: CGFloat {
     switch self {
     case .numberOfTransactions: return 230.0
-    case .publicKey: return 260.0
+    case .publicKey: return 240.0
     case .totalNumber: return 60.0
     case .signer: return 80.0
     case .bottom: return 20.0

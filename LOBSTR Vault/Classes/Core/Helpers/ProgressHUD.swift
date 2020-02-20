@@ -1,7 +1,7 @@
 import UIKit
 
 class ProgressHUD {
-  var view: UIView!
+  var view: UIView?
   let isWhite: Bool
   let withBackground: Bool
   
@@ -11,24 +11,31 @@ class ProgressHUD {
   }
   
   func display(onView : UIView) {
-    view = UIView.init(frame: onView.bounds)
+    guard view == nil else { return }
+    
+    let progressView = UIView.init(frame: onView.bounds)
+    progressView.isUserInteractionEnabled = withBackground
+    view = progressView
     if withBackground {
-      view.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.4)
+      progressView.backgroundColor = UIColor.init(red: 0.5, green: 0.5, blue: 0.5, alpha: 0.4)
+      
     }
+    
     let indicator = UIActivityIndicatorView.init(style: .whiteLarge)
     indicator.color = isWhite ? Asset.Colors.white.color : Asset.Colors.main.color
     indicator.startAnimating()
-    indicator.center = view.center
+    indicator.center = progressView.center
     
     DispatchQueue.main.async {
-      self.view.addSubview(indicator)
-      onView.addSubview(self.view)
+      progressView.addSubview(indicator)
+      onView.addSubview(progressView)
     }
   }
   
   func remove() {
-//    DispatchQueue.main.async {
-      self.view.removeFromSuperview()
-//    }
+    DispatchQueue.main.async {
+      self.view?.removeFromSuperview()
+      self.view = nil
+    }
   }
 }

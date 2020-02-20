@@ -25,13 +25,15 @@ struct ApplicationCoordinatorHelper {
   static func logout() {
     if let fcmToken = Messaging.messaging().fcmToken {
       NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
-    } else {
-      print("Couldn't unregister device")
+    } else {      
+      Logger.notifications.error("Failed to unregister device with error")
     }
     
     UserDefaultsHelper.accountStatus = .notCreated
     UserDefaultsHelper.isNotificationsEnabled = false    
     ApplicationCoordinatorHelper.clearKeychain()
+    
+    NotificationManager().setNotificationBadge(badgeNumber: 0)
     
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
       else { return }

@@ -5,6 +5,7 @@ protocol SignerDetailsView: class {
   func setAccountList(isEmpty: Bool)
   func setProgressAnimation()
   func copy(_ publicKey: String)
+  func reloadRow(_ row: Int)
 }
 
 class SignerDetailsTableViewController: UITableViewController, StoryboardCreation {
@@ -38,6 +39,7 @@ class SignerDetailsTableViewController: UITableViewController, StoryboardCreatio
   
   private func setAppearance() {
     navigationItem.title = L10n.navTitleSettingsSignedAccounts
+    navigationController?.setStatusBar(backgroundColor: Asset.Colors.white.color)
   }
   
   private func setEmptyStateLabel() {
@@ -78,14 +80,14 @@ extension SignerDetailsTableViewController {
   
   override func tableView(_ tableView: UITableView,
                           heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 50
+    return 80
   }
 }
 
 // MARK: - SignerDetailsTableViewCellDelegate
 
 extension SignerDetailsTableViewController: SignerDetailsTableViewCellDelegate {
-  func menuButtonDidTap(in cell: SignerDetailsTableViewCell) {
+  func moreDetailsButtonWasPressed(in cell: SignerDetailsTableViewCell) {
     guard let indexPath = tableView.indexPath(for: cell) else { return }
     
     let moreMenu = UIAlertController(title: nil,
@@ -107,6 +109,15 @@ extension SignerDetailsTableViewController: SignerDetailsTableViewCellDelegate {
     moreMenu.addAction(openExplorerAction)
     moreMenu.addAction(copyAction)
     moreMenu.addAction(cancelAction)
+    
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
     
     present(moreMenu, animated: true, completion: nil)
   }
@@ -133,5 +144,10 @@ extension SignerDetailsTableViewController: SignerDetailsView {
     pasteboard.string = publicKey
     HUD.flash(.labeledSuccess(title: nil,
                               subtitle: L10n.animationCopy), delay: 1.0)
+  }
+  
+  func reloadRow(_ row: Int) {
+    let indexPath = IndexPath(row: row, section: 0)
+    tableView.reloadRows(at: [indexPath], with: .automatic)
   }
 }

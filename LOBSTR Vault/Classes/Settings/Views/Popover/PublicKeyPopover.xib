@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -34,10 +32,8 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="823-IQ-nUn">
-                    <rect key="frame" x="30" y="45.5" width="315" height="36"/>
-                    <string key="text">Label
-Label</string>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="823-IQ-nUn">
+                    <rect key="frame" x="30" y="45.5" width="315" height="41"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <color key="textColor" name="Colors/GrayOpacity30"/>
                     <nil key="highlightedColor"/>
@@ -71,7 +67,7 @@ Label</string>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="0J1-5x-mbX" secondAttribute="trailing" constant="16" id="Ig2-MC-5j7"/>
                 <constraint firstItem="0J1-5x-mbX" firstAttribute="top" secondItem="Jm5-yb-w42" secondAttribute="bottom" constant="29.5" id="Kmw-Qr-4uI"/>
                 <constraint firstAttribute="trailing" secondItem="jdZ-vW-9YA" secondAttribute="trailing" constant="16" id="My8-XY-uL6"/>
-                <constraint firstItem="Jm5-yb-w42" firstAttribute="top" secondItem="823-IQ-nUn" secondAttribute="bottom" constant="25" id="O8N-3w-xKD"/>
+                <constraint firstItem="Jm5-yb-w42" firstAttribute="top" secondItem="823-IQ-nUn" secondAttribute="bottom" constant="20" id="O8N-3w-xKD"/>
                 <constraint firstItem="823-IQ-nUn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="30" id="R1X-Cs-cZW"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="823-IQ-nUn" secondAttribute="trailing" constant="30" id="UuQ-C8-eZB"/>
                 <constraint firstItem="jdZ-vW-9YA" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="16" id="VXz-hL-KIR"/>

@@ -10,7 +10,7 @@ enum TransactionStatus: String {
 
 protocol TransactionStatusPresenter {
   init(view: TransactionStatusView,
-       resultCode: TransactionResultCode,
+       transactionResult: (TransactionResultCode, String?),
        xdr: String)
   func transactionStatusViewDidLoad()
   func copyXDRButtonWasPressed(xdr: String)
@@ -29,15 +29,15 @@ protocol TransactionStatusView: class {
 class TransactionStatusPresenterImpl {
   
   private var view: TransactionStatusView
-  private var resultCode: TransactionResultCode
+  private var transactionResult: (code: TransactionResultCode, operationMessageError: String?)
   private var xdr: String
   private var transactionStatus: TransactionStatus = .failure
   
   required init(view: TransactionStatusView,
-       resultCode: TransactionResultCode,
+       transactionResult: (TransactionResultCode, String?),
        xdr: String) {
     self.view = view
-    self.resultCode = resultCode
+    self.transactionResult = transactionResult
     self.xdr = xdr
   }
 }
@@ -49,14 +49,14 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   func transactionStatusViewDidLoad() {
     displayErrorMessage()
     
-    transactionStatus = getTransactionStatus(by: resultCode)
+    transactionStatus = getTransactionStatus(by: transactionResult.code)
     
     let statusTitle = transactionStatus == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
     view.setAnimation(with: transactionStatus)
     view.setStatusTitle(statusTitle)
     view.setFeedback(with: transactionStatus)
     
-    if resultCode == .badAuth {
+    if transactionResult.code == .badAuth {
       view.setXdr(xdr)
     }
   }
@@ -93,20 +93,24 @@ extension TransactionStatusPresenterImpl {
   }
   
   private func displayErrorMessage() {
-    let errorMessage = getErrorMessage(from: resultCode)
+    let errorMessage = getErrorMessage(from: transactionResult)
     view.setErrorMessage(errorMessage)
   }
   
-  private func getErrorMessage(from resultCode: TransactionResultCode) -> String {
-    switch resultCode {
+  private func getErrorMessage(from transactionResult: (code: TransactionResultCode, operationMessageError: String?)) -> String {
+    switch transactionResult.code {
     case .success:
       return ""
     case .badAuth:
-      return "You need more signatures"
+      return "You have successfully signed this transaction. More signatures required to submit this transaction to the network"
     case .badSeq:
       return "Sequence number does not match source account"
     default:
-      return "Transaction was failed"
+      if let error = transactionResult.operationMessageError {
+        return error
+      } else {
+        return "Transaction was failed"
+      }
     }
   }
   

@@ -34,7 +34,7 @@ class PinPresenterImpl: PinPresenter {
   
   func pinViewDidLoad() {
     switch mode {
-    case .enterPin, .enterPinForMnemonicPhrase:
+    case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSinger:
       
       switch mode {
       case .enterPinForMnemonicPhrase:
@@ -54,6 +54,8 @@ class PinPresenterImpl: PinPresenter {
             strongSelf.transitionToHomeScreen()
           case .enterPinForMnemonicPhrase:
             strongSelf.view?.executeCompletion()
+          case .enterPinForWaitingToBecomeSinger:
+            strongSelf.transitionToPublicKeyScreen()
           default:
             break
           }
@@ -73,8 +75,8 @@ class PinPresenterImpl: PinPresenter {
       view?.setTitle(L10n.navTitleChangePasscodeEnterNew)
     case .createNewPinSecondStep(_):
       view?.setTitle(L10n.navTitleChangePasscodeConfirmNew)
-    default:
-      break
+    case .undefined:
+      Logger.pin.error("Undefined pin mode")
     }
   }
   
@@ -106,7 +108,7 @@ class PinPresenterImpl: PinPresenter {
           resetPin()
           shakePin()
         }
-      case .enterPin, .enterPinForMnemonicPhrase:
+      case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSinger:
         validateEnteredPin(mode: mode)
       case .changePin:
         validateChangedPin()
@@ -196,6 +198,8 @@ class PinPresenterImpl: PinPresenter {
         transitionToHomeScreen()
       case .enterPinForMnemonicPhrase:
         view?.executeCompletion()
+      case .enterPinForWaitingToBecomeSinger:
+        transitionToPublicKeyScreen()
       default:
         return
       }
@@ -281,5 +285,14 @@ extension PinPresenterImpl {
     }
     
     pinViewController.navigationController?.popToRootViewController(animated: true)
+  }
+  
+  func transitionToPublicKeyScreen() {
+     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
+         else { return }
+    
+     DispatchQueue.main.async() {
+       appDelegate.applicationCoordinator.showPublicKeyScreen()
+     }
   }
 }

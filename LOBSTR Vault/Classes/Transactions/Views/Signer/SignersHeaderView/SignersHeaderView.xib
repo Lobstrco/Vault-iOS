@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,8 +23,8 @@
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 of 5" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d3K-J2-NvG">
-                            <rect key="frame" x="362.33333333333331" y="14.333333333333336" width="35.666666666666686" height="15.666666666666664"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 of 5" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d3K-J2-NvG">
+                            <rect key="frame" x="363.33333333333331" y="14.333333333333336" width="35.666666666666686" height="15.666666666666664"/>
                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
                             <nil key="highlightedColor"/>
@@ -32,7 +32,7 @@
                     </subviews>
                     <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     <constraints>
-                        <constraint firstItem="fop-AI-Qpn" firstAttribute="trailing" secondItem="d3K-J2-NvG" secondAttribute="trailing" constant="16" id="CF3-nj-N1P"/>
+                        <constraint firstItem="fop-AI-Qpn" firstAttribute="trailing" secondItem="d3K-J2-NvG" secondAttribute="trailing" constant="15" id="CF3-nj-N1P"/>
                         <constraint firstItem="d3K-J2-NvG" firstAttribute="centerY" secondItem="fop-AI-Qpn" secondAttribute="centerY" id="odb-Nx-q2H"/>
                         <constraint firstItem="Ef0-hY-xra" firstAttribute="centerY" secondItem="fop-AI-Qpn" secondAttribute="centerY" id="oxt-Xb-81Q"/>
                         <constraint firstItem="Ef0-hY-xra" firstAttribute="leading" secondItem="fop-AI-Qpn" secondAttribute="leading" constant="16" id="w5N-Yp-jlb"/>

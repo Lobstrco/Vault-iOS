@@ -25,4 +25,10 @@ struct UtilityHelper {
     
     return nil
   }
+  
+  static func openStellarExpert(for publicKey: String) {
+    let sUrl = "https://stellar.expert/explorer/public/account/\(publicKey)"
+    guard let url = URL(string: sUrl) else { return }
+    UIApplication.shared.open(url, options: .init(), completionHandler: nil)
+  }
 }

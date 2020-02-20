@@ -17,10 +17,10 @@ class ApplicationCoordinator {
   func start(appDelegate: AppDelegate) {
     Messaging.messaging().delegate = appDelegate
     UNUserNotificationCenter.current().delegate = appDelegate
-
+    
+    resetNotificationBadgeIfNeeded()
     openStartScreen()
   }
-  
   
   func didRegisterForRemoteNotificationsWithDeviceToken(deviceToken: Data) {
     notificationManager.setAPNSToken(deviceToken: deviceToken)
@@ -32,6 +32,10 @@ class ApplicationCoordinator {
   
   func postNotification(accordingTo userInfo: [AnyHashable : Any]) {
     notificationManager.postNotification(accordingTo: userInfo)
+  }
+  
+  func setNotificationBadge(accordingTo userInfo: [AnyHashable : Any]) {    
+    notificationManager.setNotificationBadge(accordingTo: userInfo)
   }
   
   func showHomeScreen() {
@@ -46,19 +50,25 @@ class ApplicationCoordinator {
     window?.rootViewController = navigationController
   }  
   
-  func showPinScreen() {
+  func showPinScreen(mode: PinMode) {
     let pinViewController = PinEnterViewController.createFromStoryboard()
+    pinViewController.mode = mode
     window?.rootViewController = pinViewController
   }
   
   func showPublicKeyScreen() {
-    let publicKeyViewController = PublicKeyViewController.createFromStoryboard()
-    let navigationController = UINavigationController(rootViewController: publicKeyViewController)
+    let vaultPublicKeyViewController = VaultPublicKeyViewController.createFromStoryboard()
+    let navigationController = UINavigationController(rootViewController: vaultPublicKeyViewController)
     AppearanceHelper.setNavigationApperance(navigationController)
     window?.rootViewController = navigationController
   }
+}
+
+// MARK: - Private
+
+private extension ApplicationCoordinator {
   
-  private func openStartScreen() {
+  func openStartScreen() {
     switch accountStatus {
     case .notCreated:
       enablePromtForTransactionDecisions()
@@ -66,13 +76,19 @@ class ApplicationCoordinator {
       showMenuScreen()
     case .waitingToBecomeSinger:
       enablePromtForTransactionDecisions()
-      showPublicKeyScreen()
+      showPinScreen(mode: .enterPinForWaitingToBecomeSinger)
     case .created:
-      showPinScreen()
+      showPinScreen(mode: .enterPin)
     }
   }
+   
+  func enablePromtForTransactionDecisions() {
+     UserDefaultsHelper.isPromtTransactionDecisionsEnabled = true
+  }
   
-  private func enablePromtForTransactionDecisions() {
-    UserDefaultsHelper.isPromtTransactionDecisionsEnabled = true
+  func resetNotificationBadgeIfNeeded() {
+    if accountStatus != .created {
+      notificationManager.setNotificationBadge(badgeNumber: 0)
+    }
   }
 }

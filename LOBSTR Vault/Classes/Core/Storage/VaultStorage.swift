@@ -15,16 +15,26 @@ private struct KeychainKey {
 }
 
 final public class VaultStorage {
-  private let vaultSecAttrService = "com.ultrastellar.lobstr.vault"
-  
-  private let encryptionPrivateKeyTag = "com.ultrastellar.lobstr.vault.privatekey"
-  private let publicKeyKeychainAccessGroupName = "6ZVXG76XRR.com.ultrastellar.lobstr.vault.publickey"
-  
   public let encryptionAlgorithm: SecKeyAlgorithm = .eciesEncryptionCofactorX963SHA256AESGCM
   public let securityAttributeAccessible: CFString = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
   public let securityAccessControlFlags: SecAccessControlCreateFlags
   
   public let keychain: KeychainManager
+  
+  private var vaultSecAttrService: String {
+    return Environment.buildType == .qa ? "com.ultrastellar.lobstr.qa.vault" :
+                                          "com.ultrastellar.lobstr.vault"
+  }
+  
+  private var encryptionPrivateKeyTag: String {
+    return Environment.buildType == .qa ? "com.ultrastellar.lobstr.vault.qa.privatekey" :
+                                          "com.ultrastellar.lobstr.vault.privatekey"
+  }
+  
+  private var publicKeyKeychainAccessGroupName: String {
+    return Environment.buildType == .qa ? "6ZVXG76XRR.com.ultrastellar.lobstr.vault.qa.publickey" :
+                                          "6ZVXG76XRR.com.ultrastellar.lobstr.vault.publickey"
+  }
   
   init(keychain: KeychainManager = KeychainManagerImpl()) {
     self.keychain = keychain

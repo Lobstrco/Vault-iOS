@@ -1,9 +1,14 @@
 import Foundation
 
 protocol HomePresenter {
-  func homeViewDidLoad()
-  func homeViewDidAppear()
+  var sections: [HomeSection] { get }
+  
+  func homeViewDidLoad()  
   func copyKeyButtonWasPressed()
-  func copySignerKeyButtonWasPressed()
+  
   func updateSignerDetails()
+  func refreshButtonWasPressed()
+  
+  func copySignerPublicKeyActionWasPressed(with index: Int)
+  func explorerSignerAccountActionWasPressed(with index: Int)
 }

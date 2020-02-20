@@ -17,6 +17,8 @@ class SettingsPresenterImpl: SettingsPresenter {
   
   private let notificationManager: NotificationManager
   
+  private var spamProtectionEnabled = false
+  
   // MARK: - Init
   
   init(view: SettingsView,
@@ -39,6 +41,10 @@ class SettingsPresenterImpl: SettingsPresenter {
 extension SettingsPresenterImpl {
   func settingsViewDidLoad() {
     view?.setSettings()
+  }
+  
+  func settingsViewDidAppear() {
+    setSpamProtectionSwitch()
   }
 }
 
@@ -82,6 +88,9 @@ extension SettingsPresenterImpl {
     case .promptTransactionDecisions:
       switchCell.setTitle(L10n.textSettingsPromtDecisionsField)
       switchCell.setSwitch(UserDefaultsHelper.isPromtTransactionDecisionsEnabled)
+    case .spamProtection:
+      switchCell.setTitle(L10n.textSettingsSpamProtectionField)
+      switchCell.setSwitch(!spamProtectionEnabled)
     }
   }
   
@@ -90,7 +99,7 @@ extension SettingsPresenterImpl {
     switch row {
     case .version:
       var title = L10n.textSettingsVersionField
-      if Constants.baseURL.contains("staging") {
+      if Environment.environmentType == .staging {
         title += " (staging)"
       }
       
@@ -202,18 +211,21 @@ extension SettingsPresenterImpl {
       }
     case .promptTransactionDecisions:
       UserDefaultsHelper.isPromtTransactionDecisionsEnabled = value
+    case .spamProtection:
+      spamProtectionEnabled = !value
+      updateSpamProtection()
     }
   }
 }
 
 extension SettingsPresenterImpl {
   func showPublicKeyButtonWasPressed() {
-    let publicKeyView = Bundle.main.loadNibNamed("PublicKeyPopover",
+    let publicKeyView = Bundle.main.loadNibNamed(PublicKeyPopover.nibName,
                                                  owner: view,
                                                  options: nil)?.first as! PublicKeyPopover
     publicKeyView.initData()
     
-    let popoverHeight: CGFloat = 440
+    let popoverHeight: CGFloat = 420
     let popover = CustomPopoverViewController(height: popoverHeight, view: publicKeyView)
     publicKeyView.popoverDelegate = popover
     
@@ -223,8 +235,8 @@ extension SettingsPresenterImpl {
 
 // MARK: -  Private
 
-extension SettingsPresenterImpl {
-  private func getSignerForAccountsData() -> (title: String,
+private extension SettingsPresenterImpl {
+  func getSignerForAccountsData() -> (title: String,
                                               attribute: NSMutableAttributedString) {
     let positionOfNumberInTitle = 11
     var title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
@@ -242,7 +254,7 @@ extension SettingsPresenterImpl {
     return (title, titleAttribute)
   }
   
-  private func addDescriptionLabel(to pinViewController: UIViewController) {
+  func addDescriptionLabel(to pinViewController: UIViewController) {
     let titleLabel = UILabel()
     titleLabel.text = L10n.textSettingsDisplayMnemonicTitle
     titleLabel.numberOfLines = 3
@@ -256,6 +268,34 @@ extension SettingsPresenterImpl {
     titleLabel.widthAnchor.constraint(equalToConstant: 315).isActive = true
     titleLabel.centerXAnchor.constraint(equalTo: pinViewController.view.centerXAnchor).isActive = true
   }
+  
+  func setSpamProtectionSwitch() {
+     let apiLoader = APIRequestLoader<AccountConfigRequest>(apiRequest: AccountConfigRequest())
+     apiLoader.loadAPIRequest(requestData: nil) { result in
+       switch result {
+       case .success(let accountConfig):
+         guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
+         self.spamProtectionEnabled = protectionEnabled
+         self.view?.setReloadSection()
+       case .failure(let error):
+         Logger.security.error("Couldn't get spam protection data with error: \(error)")
+       }
+     }
+   }
+   
+   func updateSpamProtection() {
+     let accountConfigParameters = AccountConfigParameters(spamProtectionEnabled: spamProtectionEnabled)
+     let apiLoader = APIRequestLoader<ChangeAccountConfigRequest>(apiRequest: ChangeAccountConfigRequest())
+       apiLoader.loadAPIRequest(requestData: accountConfigParameters) { result in
+         switch result {
+         case .success(let accountConfig):
+           guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
+           self.spamProtectionEnabled = protectionEnabled
+         case .failure(let error):
+           Logger.security.error("Couldn't get spam protection data with error: \(error)")
+         }
+       }
+   }
 }
 
 // MARK: - Logout
@@ -322,8 +362,6 @@ extension SettingsPresenterImpl {
   }
   
   func transitionToMarket() {
-    let appleID = "1452248529"
-    let appStoreLink = "https://itunes.apple.com/app/id\(appleID)?action=write-review"
-    UIApplication.shared.open(URL(string: appStoreLink)!, options: [:], completionHandler: nil)
+    UIApplication.shared.open(URL(string: Constants.appStoreLinkWithReviewAction)!, options: [:], completionHandler: nil)
   }
 }

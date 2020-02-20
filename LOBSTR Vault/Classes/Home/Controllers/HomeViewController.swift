@@ -8,10 +8,7 @@ class HomeViewController: UIViewController, StoryboardCreation {
   @IBOutlet var tableView: UITableView!
   
   var presenter: HomePresenter!
-  
   var isUpdatingTransactionNumber = true
-  
-  var sections: [HomeSection] = []
 }
 
 // MARK: - Lifecycle
@@ -27,10 +24,19 @@ extension HomeViewController {
     setTableView()
   }
   
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    
-    presenter.homeViewDidAppear()
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController?.setStatusBar(backgroundColor: Asset.Colors.main.color)
+    navigationController?.navigationBar.isHidden = true
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    navigationController?.navigationBar.isHidden = false
+  }
+  
+  @IBAction func refreshButtonAction(_ sender: UIButton) {
+    presenter.refreshButtonWasPressed()
   }
   
   override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -40,8 +46,8 @@ extension HomeViewController {
 
 // MARK: - Private
 
-extension HomeViewController {
-  private func setTableView() {
+private extension HomeViewController {
+  func setTableView() {
     tableView.registerNib(TransactionsToSignTableViewCell.self)
     tableView.registerNib(VaultPublicKeyTableViewCell.self)
     tableView.registerNib(SignersTotalNumberTableViewCell.self)
@@ -51,56 +57,61 @@ extension HomeViewController {
     tableView.tableFooterView = UIView()
   }
   
-  private func setAppearance() {
+  func setAppearance() {
     AppearanceHelper.set(navigationController)
   }
   
-  private func reloadTableViewSections(_ sections: [Int]) {
-    // Workaround to prevent jumpy updting of table view, if use
-    // reloadData() method.
-    UIView.performWithoutAnimation {
-      let location = tableView.contentOffset
-      tableView.reloadSections(IndexSet(sections), with: .none)
-      tableView.contentOffset = location
+  func actionSheetForSignersListWasPressed(with index: Int) {
+    let moreMenu = UIAlertController(title: nil,
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
+    
+    let copyAction = UIAlertAction(title: "Copy Public Key",
+                                   style: .default) { _ in
+                                    self.presenter.copySignerPublicKeyActionWasPressed(with: index)
     }
+    
+    let openExplorerAction = UIAlertAction(title: "Open Explorer",
+                                   style: .default) { _ in
+                                    self.presenter.explorerSignerAccountActionWasPressed(with: index)
+    }
+    
+    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
+        
+    moreMenu.addAction(openExplorerAction)
+    moreMenu.addAction(copyAction)
+    moreMenu.addAction(cancelAction)
+    
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    
+    present(moreMenu, animated: true, completion: nil)
   }
 }
 
 // MARK: - HomeView
 
 extension HomeViewController: HomeView {
-  func setSections(_ sections: [HomeSection]) {
-    self.sections = sections
-    tableView.reloadData()
+  
+  func reloadTableViewSections(_ sections: [Int]) {
+    // Workaround to prevent jumpy updting of table view, if use
+    // reloadData() method.
+    DispatchQueue.main.async {
+      UIView.performWithoutAnimation {
+        self.tableView.reloadSections(IndexSet(sections), with: .none)      
+      }
+    }
   }
   
-  func setTransactionNumber(_ number: String) {
-    let numberOfTransactionsSection = HomeSection(type: .transactionsToSign,
-                                                  rows: [.numberOfTransactions(number)])
-    sections[HomeSectionType.transactionsToSign.index] = numberOfTransactionsSection
-    
-    reloadTableViewSections([HomeSectionType.transactionsToSign.index])
-  }
-  
-  func setPublicKey(_ publicKey: String) {
-    let publicKeySection = HomeSection(type: .vaultPublicKey,
-                                       rows: [.publicKey(publicKey)])
-    
-    sections[HomeSectionType.vaultPublicKey.index] = publicKeySection
-    reloadTableViewSections([HomeSectionType.vaultPublicKey.index])
-  }
-  
-  func setSignerDetails(_ signedAccounts: [SignedAccount]) {
-    let numberOfSignersSection = HomeSection(type: .signersTotalNumber,
-                                             rows: [.totalNumber(signedAccounts.count)])
-    let signersSection = HomeSection(type: .listOfSigners,
-                                     rows: signedAccounts.map { .signer($0) })
-    
-    sections[HomeSectionType.signersTotalNumber.index] = numberOfSignersSection
-    sections[HomeSectionType.listOfSigners.index] = signersSection
-    
-    reloadTableViewSections([HomeSectionType.signersTotalNumber.index,
-                             HomeSectionType.listOfSigners.index])
+  func reloadSignerListRow(_ row: Int) {
+    let indexPath = IndexPath(row: row, section: HomeSectionType.listOfSigners.index)
+    tableView.reloadRows(at: [indexPath], with: .automatic)
   }
   
   func setProgressAnimationForTransactionNumber(isEnabled: Bool) {
@@ -121,17 +132,17 @@ extension HomeViewController: HomeView {
 
 extension HomeViewController: UITableViewDataSource {
   func numberOfSections(in tableView: UITableView) -> Int {
-    return sections.count
+    return presenter.sections.count
   }
   
   func tableView(_ tableView: UITableView,
                  numberOfRowsInSection section: Int) -> Int {
-    return sections[section].rows.count
+    return presenter.sections[section].rows.count
   }
   
   func tableView(_ tableView: UITableView,
                  cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let section = sections[indexPath.section]
+    let section = presenter.sections[indexPath.section]
     let row = section.rows[indexPath.row]
     
     switch row {
@@ -155,7 +166,7 @@ extension HomeViewController: UITableViewDataSource {
       let cell: VaultPublicKeyTableViewCell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
       cell.delegate = self
-      cell.publicKeyLabel.text = publicKey
+      cell.publicKeyLabel.text = publicKey.getTruncatedPublicKey(numberOfCharacters: 14)
       cell.idenctionView.loadIdenticon(publicAddress: publicKey)
       
       return cell
@@ -163,10 +174,10 @@ extension HomeViewController: UITableViewDataSource {
       let cell: SignersTotalNumberTableViewCell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
       cell.signerTotalNumberButton.setTitle("\(number)", for: .normal)
-      if number > 1 {
-        cell.accountLabel.text = "accounts"
-      } else {
+      if number == 1 {
         cell.accountLabel.text = "account"
+      } else {
+        cell.accountLabel.text = "accounts"
       }
       cell.delegate = self
       return cell
@@ -174,14 +185,10 @@ extension HomeViewController: UITableViewDataSource {
     case .signer(let signerAccount):
       let cell: SignerAccountTableViewCell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
-      cell.signerPublicAddressLabel.text = signerAccount.address
-      
-      if let address = signerAccount.address {
-        cell.identiconView.loadIdenticon(publicAddress: address)
-      }
-      
+      cell.set(signerAccount)
+      cell.delegate = self
       // Do not show separator for the last cell.
-      let signersSection = sections[HomeSectionType.listOfSigners.index]
+      let signersSection = presenter.sections[HomeSectionType.listOfSigners.index]
       if indexPath.row == signersSection.rows.count - 1 {
         cell.separatorView.isHidden = true
       } else {
@@ -198,12 +205,26 @@ extension HomeViewController: UITableViewDataSource {
   }
 }
 
+// MARK: - SignerAccountDelegate
+
+extension HomeViewController: SignerAccountDelegate {
+  func moreDetailsButtonWasPressed(in cell: SignerAccountTableViewCell) {
+    guard let indexPath = tableView.indexPath(for: cell) else { return }
+    actionSheetForSignersListWasPressed(with: indexPath.row)
+  }
+  
+  func longTapWasActivated(in cell: SignerAccountTableViewCell) {
+    guard let indexPath = tableView.indexPath(for: cell) else { return }
+    presenter.copySignerPublicKeyActionWasPressed(with: indexPath.row)
+  }
+}
+
 // MARK: - UITableViewDelegate
 
 extension HomeViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView,
                  heightForRowAt indexPath: IndexPath) -> CGFloat {
-    let section = sections[indexPath.section]
+    let section = presenter.sections[indexPath.section]
     let row = section.rows[indexPath.row]
     return row.height
   }

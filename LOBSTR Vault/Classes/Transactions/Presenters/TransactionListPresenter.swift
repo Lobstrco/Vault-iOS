@@ -8,19 +8,15 @@ enum TaskStatus {
 }
 
 protocol TransactionListView: class {
-  func setTransactionList(isEmpty: Bool, isThereMoreContent: Bool)
-  func reloadTransactionList(isEmpty: Bool, isThereMoreContent: Bool)
-  func setProgressAnimation(isEnabled: Bool)
   func setErrorAlert(for error: Error)
   func setImportXDRPopover(_ popover: CustomPopoverViewController)
-  func deleteRow(by index: Int, isEmpty: Bool)
   func setHUDSuccessViewAfterRemoveOperation()
-  func setFirstLoadingStatus(_ status: Bool)
+  func setTransactionList(viewModels: [TransactionListTableViewCell.ViewModel], isResetData: Bool)
+  func updateFederataionAddress(_ address: String, for indexItem: Int)
+  func setProgressAnimation(isEnabled: Bool)
 }
 
 protocol TransactionListPresenter {
-  var countOfTransactions: Int { get }
-  func configure(_ cell: TransactionListCellView, forRow row: Int)
   func transactionWasSelected(with index: Int)
   func transactionListViewDidLoad()
   func importXDRButtonWasPressed()
@@ -30,7 +26,7 @@ protocol TransactionListPresenter {
 }
 
 protocol TransactionListCellView {
-  func set(date: String?, operationType: String?, sourceAccount: String, isValid: Bool)
+  var viewModel: TransactionListTableViewCell.ViewModel? { get set }
 }
 
 class TransactionListPresenterImpl {
@@ -38,118 +34,30 @@ class TransactionListPresenterImpl {
   private var transactionList: [Transaction] = []
   private let crashlyticsService: CrashlyticsService
   private let transactionService: TransactionService
+  private let federationService: FederationService
   private var transactionListStatus: TaskStatus = .ready
   
-  private var pageNumber = 1
+  private var currentPageNumber: Int? = 1
   
   init(view: TransactionListView,
+       federationService: FederationService = FederationService(),
        crashlyticsService: CrashlyticsService = CrashlyticsService(),
        transactionService: TransactionService = TransactionService()) {
     self.view = view
     self.crashlyticsService = crashlyticsService
     self.transactionService = transactionService
-    
+    self.federationService = federationService
     addObservers()
   }
   
   @objc func onDidChangeTransactionList(_ notification: Notification) {
-    displayPendingTransactions(isFirstTime: false, withClearingData: true)
+    displayPendingTransactions(isResetData: true)
   }
   
   @objc func onDidRemoveTransaction(_ notification: Notification) {
-    guard let transactionIndex = notification.userInfo?["transactionIndex"] as? Int else { return }
-    transactionList.remove(at: transactionIndex)
-    let delayBeforeTableRowWillBeDeleted = 1.2
-    DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeTableRowWillBeDeleted) {
-      self.view?.deleteRow(by: transactionIndex, isEmpty: self.transactionList.isEmpty)
+    displayPendingTransactions(isResetData: true)
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
       self.view?.setHUDSuccessViewAfterRemoveOperation()
-    }
-  }
-  
-  // MARK: - Private
-  
-  private func addObservers() {
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidRemoveTransaction(_:)),
-                                           name: .didRemoveTransaction,
-                                           object: nil)
-    
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidChangeTransactionList(_:)),
-                                           name: .didChangeTransactionList,
-                                           object: nil)
-    
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidChangeTransactionList(_:)),
-                                           name: .didChangeSignerDetails,
-                                           object: nil)
-    
-//    NotificationCenter.default.addObserver(self,
-//                                           selector: #selector(onDidChangeTransactionList(_:)),
-//                                           name: UIApplication.didBecomeActiveNotification,
-//                                           object: nil)
-  }
-  
-  private func setStatus(_ status: TaskStatus) {
-    transactionListStatus = status
-    
-    if status == .loading {
-      view?.setProgressAnimation(isEnabled: true)
-    } else {
-      view?.setProgressAnimation(isEnabled: false)
-    }
-  }
-  
-  private func getOperationType(from operationNames: [String]) -> String {
-    guard !operationNames.isEmpty else { return "none" }
-    let operationType = operationNames.count == 1 ? operationNames.first! : "\(operationNames.count) operations"
-    
-    return operationType
-  }
-  
-  private func displayPendingTransactions(isFirstTime: Bool = false, withClearingData: Bool = false) {
-    guard transactionListStatus == .ready else {
-      return
-    }
-    
-    guard ConnectionHelper.isConnectedToNetwork() else {
-      return
-    }
-    
-    setStatus(.loading)
-    
-    if withClearingData {
-      pageNumber = 1
-    }
-    
-    transactionService.getPendingTransactionList(page: pageNumber) { result in
-      switch result {
-      case .success(let response):
-        var isThereMoreContent = false
-        if response.hasNextPage() {
-          self.pageNumber += 1
-          isThereMoreContent = true
-        }
-        
-        if withClearingData {
-          self.transactionList = response.results
-        } else {
-          self.transactionList.append(contentsOf: response.results)
-        }
-        
-        if isFirstTime {
-          self.view?.setTransactionList(isEmpty: self.transactionList.isEmpty,
-                                        isThereMoreContent: isThereMoreContent)
-        } else {
-          self.view?.reloadTransactionList(isEmpty: self.transactionList.isEmpty,
-                                           isThereMoreContent: isThereMoreContent)
-        }
-        self.setStatus(.ready)
-      case .failure(let error):
-        self.setStatus(.ready)
-        self.crashlyticsService.recordCustomException(error)
-        self.view?.setErrorAlert(for: error)
-      }
     }
   }
 }
@@ -167,9 +75,6 @@ extension TransactionListPresenterImpl: TransactionImportDelegate {
 // MARK: - TransactionListPresenter
 
 extension TransactionListPresenterImpl: TransactionListPresenter {
-  var countOfTransactions: Int {
-    return transactionList.count
-  }
   
   func tableViewReachedBottom() {
     displayPendingTransactions()
@@ -196,12 +101,99 @@ extension TransactionListPresenterImpl: TransactionListPresenter {
     }
     
     if ConnectionHelper.checkConnection(viewController) {
-      displayPendingTransactions(isFirstTime: true)
+      displayPendingTransactions()
     }
   }
   
-  func configure(_ cell: TransactionListCellView, forRow row: Int) {
-    guard let xdr = transactionList[row].xdr else { return }
+  func transactionWasSelected(with index: Int) {
+    transitionToTransactionDetailsScreenFromList(by: index)
+  }
+  
+  func pullToRefreshWasActivated() {
+    displayPendingTransactions(isResetData: true)
+  }
+}
+
+// MARK: - Private
+
+private extension TransactionListPresenterImpl {
+  
+  func addObservers() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidRemoveTransaction(_:)),
+                                           name: .didRemoveTransaction,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidChangeTransactionList(_:)),
+                                           name: .didChangeTransactionList,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidChangeTransactionList(_:)),
+                                           name: .didChangeSignerDetails,
+                                           object: nil)
+  }
+  
+  func setStatus(_ status: TaskStatus) {
+    guard status != transactionListStatus else {
+      return
+    }
+    
+    transactionListStatus = status    
+    view?.setProgressAnimation(isEnabled: status == .loading)
+  }
+  
+  func getOperationType(from operationNames: [String]) -> String {
+    guard !operationNames.isEmpty else { return "none" }
+    let operationType = operationNames.count == 1 ? operationNames.first! : "\(operationNames.count) operations"
+    
+    return operationType
+  }
+  
+  func displayPendingTransactions(isResetData: Bool = false) {
+    if isResetData { currentPageNumber = 1 }
+    guard transactionListStatus == .ready, let pageNumber = currentPageNumber, ConnectionHelper.isConnectedToNetwork() else {
+      return
+    }
+    
+    setStatus(.loading)
+    transactionService.getPendingTransactionList(page: pageNumber) { result in
+      switch result {
+      case .success(let response):
+        let newTransactions = response.results
+        self.currentPageNumber = response.hasNextPage() ? pageNumber + 1 : nil
+        
+        let cellViewModels = self.getCellViewModels(transactions: newTransactions, with: self.transactionList.count)
+        if isResetData {
+          self.transactionList = newTransactions
+        } else {
+          self.transactionList.append(contentsOf: newTransactions)
+        }
+        self.view?.setTransactionList(viewModels: cellViewModels, isResetData: isResetData)
+        self.setStatus(.ready)
+      case .failure(let error):
+        self.setStatus(.ready)
+        self.crashlyticsService.recordCustomException(error)
+        self.view?.setErrorAlert(for: error)
+      }
+    }
+  }
+  
+  func getCellViewModels(transactions: [Transaction], with indexOffset: Int) -> [TransactionListTableViewCell.ViewModel] {
+    var cellViewModels = [TransactionListTableViewCell.ViewModel]()
+    
+    for (index, transaction) in transactions.enumerated() {
+      var cell = createCellViewModel(from: transaction)
+      cell.federation = getFederation(by: cell.sourceAccount, with: indexOffset + index)
+      cellViewModels.append(cell)
+    }
+    
+    return cellViewModels
+  }
+  
+  func createCellViewModel(from transaction: Transaction) -> TransactionListTableViewCell.ViewModel {
+    guard let xdr = transaction.xdr else { fatalError() }
     var sourceAccount = "undefined"
     
     var operationNames: [String] = []
@@ -215,30 +207,44 @@ extension TransactionListPresenterImpl: TransactionListPresenter {
     } catch {
       crashlyticsService.recordCustomException(error)
       view?.setErrorAlert(for: error)
-      
-      return
     }
     
     let operationType = getOperationType(from: operationNames)
     
     var operationDate: String = "invalid date"
-    if let transactionDate = transactionList[row].addedAt {
+    if let transactionDate = transaction.addedAt {
       operationDate = TransactionHelper.getValidatedDate(from: transactionDate)
     }
     
-    let isValid = transactionList[row].sequenceOutdatedAt == nil ? true : false
-    cell.set(date: operationDate,
-             operationType: operationType,
-             sourceAccount: sourceAccount,
-             isValid: isValid)
+    let isTransactionValid = transaction.sequenceOutdatedAt == nil ? true : false
+    
+    return TransactionListTableViewCell.ViewModel(date: operationDate,
+                                                  operationType: operationType,
+                                                  sourceAccount: sourceAccount,
+                                                  federation: nil,
+                                                  isTransactionValid: isTransactionValid)
   }
   
-  func transactionWasSelected(with index: Int) {
-    transitionToTransactionDetailsScreenFromList(by: index)
+  func getFederation(by publicKey: String, with cellIndex: Int) -> String? {
+    guard let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first else {
+      tryToLoadFederation(by: publicKey, for: cellIndex)
+      return nil
+    }
+    
+    return account.federation
   }
   
-  func pullToRefreshWasActivated() {
-    displayPendingTransactions(isFirstTime: false, withClearingData: true)
+  func tryToLoadFederation(by publicKey: String, for index: Int) {
+    federationService.getFederation(for: publicKey) { result in
+      switch result {
+      case .success(let account):
+        if let federation = account.federation {
+          self.view?.updateFederataionAddress(federation, for: index)
+        }
+      case .failure(let error):
+        Logger.home.error("Couldn't get federation for \(publicKey) with error: \(error)")
+      }
+    }
   }
 }
 
@@ -260,6 +266,7 @@ extension TransactionListPresenterImpl {
       TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                       transaction: transactionList[index],
                                       type: .standard)
+    Logger.transactionDetails.debug("Transaction: \(transactionList[index])")
     transactionDetailsViewController.presenter.transactionListIndex = index
     
     let transactionListViewController = view as! TransactionListViewController
@@ -274,16 +281,5 @@ extension TransactionListPresenterImpl {
                                                                                  type: .imported)
     let transactionListViewController = view as! TransactionListViewController
     transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
-  }
-  
-  func transitionToTransactionStatus(with resultCode: TransactionResultCode, xdr: String) {
-    let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
-    
-    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,
-                                                                               resultCode: resultCode,
-                                                                               xdr: xdr)
-    
-    let transactionListViewController = view as! TransactionListViewController
-    transactionListViewController.navigationController?.pushViewController(transactionStatusViewController, animated: true)
   }
 }

@@ -7,6 +7,7 @@ protocol SettingsView: class {
   func setErrorAlert(for error: Error)
   func setLogoutAlert()
   func setPublicKeyPopover(_ popover: CustomPopoverViewController)
+  func setReloadSection()
 }
 
 class SettingsViewController: UIViewController,
@@ -28,6 +29,11 @@ class SettingsViewController: UIViewController,
                                       navigationController: navigationController!)
     
     presenter.settingsViewDidLoad()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    presenter.settingsViewDidAppear()
   }
   
   // MARK: - Private
@@ -56,7 +62,7 @@ class SettingsViewController: UIViewController,
     
     switch row {
     case .copyright:
-      return 70
+      return 90
     default:
       return UITableViewCell.defaultHeight
     }
@@ -164,6 +170,10 @@ class SettingsViewController: UIViewController,
       presenter.configure(disclosureIndicatorTableViewCell: cell,
                           row: row)
       return cell
+    case .spamProtection:
+      let cell = tableView.dequeueReusableCell(forIndexPath: indexPath) as SwitchTableViewCell
+      presenter.configure(switchCell: cell, type: .spamProtection)
+      return cell
     }  
   }
   
@@ -178,7 +188,10 @@ class SettingsViewController: UIViewController,
 
 extension SettingsViewController: SettingsView {
   
-
+  func setReloadSection() {
+    tableView.reloadData()
+  }
+  
   func setSettings() {
     tableView.reloadData()
   }

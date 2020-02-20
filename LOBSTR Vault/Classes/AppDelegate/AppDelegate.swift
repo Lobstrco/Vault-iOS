@@ -16,13 +16,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    application.registerForRemoteNotifications()
-    FirebaseApp.configure()
+    application.registerForRemoteNotifications()    
     applicationCoordinator.start(appDelegate: self)
-    
-    UITabBar.appearance().tintColor = Asset.Colors.main.color
+    firebaseSetup()
+    UITabBar.appearance().tintColor = Asset.Colors.main.color    
     
     return true
+  }
+  
+  func firebaseSetup() {
+    var filePath = Bundle.main.path(forResource: "GoogleService-Info", ofType: "plist")
+    if Environment.buildType == .qa {
+      filePath = Bundle.main.path(forResource: "GoogleService-Info-QA", ofType: "plist")
+    }
+        
+    guard let path = filePath, let options = FirebaseOptions(contentsOfFile: path) else {
+      Logger.firebase.error("Couldn't configure firebase")
+      return
+    }
+    FirebaseApp.configure(options: options)
   }
   
   func application(_ application: UIApplication,
@@ -31,7 +43,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func application(_: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-    print("APNS Error:\n\(error.localizedDescription)")    
+    Logger.notifications.error("Failed to register device with error: \(error)")  
   }
   
   func applicationDidEnterBackground(_ application: UIApplication) {
@@ -49,4 +61,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       multiTaskImageView = nil
     }
   }
+  
 }

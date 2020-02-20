@@ -41,9 +41,9 @@ extension VaultStorage: VaultStorageCryptography {
     let status = SecItemCopyMatching(parameters as CFDictionary, &raw)
     
     guard status == errSecSuccess, let privateKey = raw else {
-      print(status)
+      Logger.security.debug(status)
       if #available(iOS 11.3, *) {
-        print(SecCopyErrorMessageString(status, nil) ?? "")
+        Logger.security.debug(SecCopyErrorMessageString(status, nil) ?? "")
       }
       completion(.failure(VaultError.VaultStorageError.keychainDataNotFound))
       return

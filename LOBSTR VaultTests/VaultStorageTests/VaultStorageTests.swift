@@ -261,14 +261,14 @@ class VaultStorageTests: XCTestCase {
 // MARK: - Helpers
 extension VaultStorageTests {
   private func clearKeychain() {
-    let secItemClasses = [kSecClassGenericPassword,
-                          kSecClassInternetPassword,
-                          kSecClassCertificate,
-                          kSecClassKey,
-                          kSecClassIdentity]
-    for secItemClass in secItemClasses {
-      let dictionary = [kSecClass as String: secItemClass]
-      SecItemDelete(dictionary as CFDictionary)
-    }
+//    let secItemClasses = [kSecClassGenericPassword,
+//                          kSecClassInternetPassword,
+//                          kSecClassCertificate,
+//                          kSecClassKey,
+//                          kSecClassIdentity]
+//    for secItemClass in secItemClasses {
+//      let dictionary = [kSecClass as String: secItemClass]
+//      SecItemDelete(dictionary as CFDictionary)
+//    }
   }
 }

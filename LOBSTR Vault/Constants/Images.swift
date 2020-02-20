@@ -43,6 +43,7 @@ internal enum Asset {
       internal static let icAlert = ImageAsset(name: "Icons/Other/icAlert")
       internal static let icClose = ImageAsset(name: "Icons/Other/icClose")
       internal static let icCloseNew = ImageAsset(name: "Icons/Other/icCloseNew")
+      internal static let icCode = ImageAsset(name: "Icons/Other/icCode")
       internal static let icCopy = ImageAsset(name: "Icons/Other/icCopy")
       internal static let icFinger = ImageAsset(name: "Icons/Other/icFinger")
       internal static let icIdenticonPlaceholder = ImageAsset(name: "Icons/Other/icIdenticonPlaceholder")
@@ -50,6 +51,7 @@ internal enum Asset {
       internal static let icMore = ImageAsset(name: "Icons/Other/icMore")
       internal static let icPlus = ImageAsset(name: "Icons/Other/icPlus")
       internal static let icQuestionSign = ImageAsset(name: "Icons/Other/icQuestionSign")
+      internal static let icRefresh = ImageAsset(name: "Icons/Other/icRefresh")
     }
     internal enum Tabbar {
       internal static let arrowsFill = ImageAsset(name: "Icons/Tabbar/arrowsFill")

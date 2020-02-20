@@ -3,8 +3,9 @@ import stellarsdk
 
 class SubmitTransactionToHorizonOperation: AsyncOperation {
   
-  private var outputHorizonResultCode: TransactionResultCode?
+  private var outputHorizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)?
   private var outputXdrEnvelope: String?
+  private var outputTransactionHash: String?
   
   private var inputXdrEnvelope: String?
   
@@ -14,10 +15,11 @@ class SubmitTransactionToHorizonOperation: AsyncOperation {
   }
   
   override func main() {    
-    StellarSDK(withHorizonUrl: Constants.horizonURL).transactions.postTransaction(transactionEnvelope: inputXdrEnvelope!) { (response) -> (Void) in
+    StellarSDK(withHorizonUrl: Environment.horizonBaseURL).transactions.postTransaction(transactionEnvelope: inputXdrEnvelope!) { (response) -> (Void) in
       switch response {
-      case .success(_):
-        self.outputHorizonResultCode = .success
+      case .success(let info):
+        self.outputHorizonResult = (.success, nil)
+        self.outputTransactionHash = info.transactionHash
         self.finished(error: nil)
       case .failure(let error):
         self.tryToResolveFailure(with: error)
@@ -45,7 +47,7 @@ extension SubmitTransactionToHorizonOperation {
   private func tryToResolveFailure(with error: HorizonRequestError) {
     switch error {
     case .badRequest(let message, _):
-      self.outputHorizonResultCode = try! TransactionHelper.getTransactionResultCode(from: message)
+      self.outputHorizonResult = try? TransactionHelper.getTransactionResult(from: message)
       self.finished(error: nil)
     default:
       self.finished(error: error)
@@ -57,6 +59,7 @@ extension SubmitTransactionToHorizonOperation {
 
 extension SubmitTransactionToHorizonOperation: VaultServerTransactionDataBroadcast {
   var xdrEnvelope: String? { return outputXdrEnvelope }
-  var horizonResultCode: TransactionResultCode? { return outputHorizonResultCode }
+  var horizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)? { return outputHorizonResult }
+  var transactionHash: String? { return outputTransactionHash }
   var error: Error? { return outputError }
 }

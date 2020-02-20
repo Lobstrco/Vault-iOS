@@ -42,5 +42,6 @@ public enum SettingsRow {
   case licenses
   case promptTransactionDecisions
   case rateUs
+  case spamProtection
 }
 

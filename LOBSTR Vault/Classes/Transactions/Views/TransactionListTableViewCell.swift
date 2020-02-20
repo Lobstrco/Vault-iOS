@@ -12,6 +12,24 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   
   private var borderView: UIView!
   
+  var viewModel: ViewModel? {
+    didSet {
+      guard let model = viewModel else { return }
+      dateLabel.text = model.date
+      operationTypeLabel.text = model.operationType
+      if let federationName = model.federation {
+        sourceAccountLabel.text = federationName
+      } else {
+        sourceAccountLabel.text = model.sourceAccount.getTruncatedPublicKey(numberOfCharacters: 6)
+      }
+      statusLabel.text = L10n.textTransactionInvalidLabel
+      
+      setValidationAppearance(model.isTransactionValid)
+      setStatusLabel(model.isTransactionValid)
+      identiconView.loadIdenticon(publicAddress: model.sourceAccount)
+    }
+  }
+  
   // MARK: - TransactionListCellView
   
   override func awakeFromNib() {
@@ -21,31 +39,18 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
     content.layer.shadowOffset = CGSize(width: 0, height: 2)
     content.layer.shadowOpacity = 0.1
     content.layer.shadowRadius = 2
-    
-    setStaticString()
   }
   
   override func prepareForReuse() {
     borderView.removeFromSuperview()
   }
+}
+
+// MARK: - Private
+
+private extension TransactionListTableViewCell {
   
-  func set(date: String?,
-           operationType: String?,
-           sourceAccount: String,
-           isValid: Bool) {
-    dateLabel.text = date
-    operationTypeLabel.text = operationType
-    sourceAccountLabel.text = sourceAccount
-    setValidationAppearance(isValid)
-    setStatusLabel(isValid)
-    identiconView.loadIdenticon(publicAddress: sourceAccount)
-  }
-  
-  private func setStaticString() {
-    statusLabel.text = L10n.textTransactionInvalidLabel
-  }
-  
-  private func setValidationAppearance(_ isValid: Bool) {
+  func setValidationAppearance(_ isValid: Bool) {
     borderView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 32, height: 81))
     borderView.backgroundColor = Asset.Colors.white.color
     borderView.clipsToBounds = true
@@ -60,7 +65,19 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
     content.sendSubviewToBack(borderView)
   }
   
-  private func setStatusLabel(_ isValid: Bool) {
+  func setStatusLabel(_ isValid: Bool) {
     statusLabel.isHidden = isValid ? true : false
+  }
+}
+
+// MARK: ViewModel
+
+extension TransactionListTableViewCell {
+  struct ViewModel: Equatable {
+    let date: String
+    let operationType: String
+    let sourceAccount: String
+    var federation: String?
+    let isTransactionValid: Bool
   }
 }

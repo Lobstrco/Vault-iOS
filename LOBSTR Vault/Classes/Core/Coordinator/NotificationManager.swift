@@ -18,7 +18,7 @@ class NotificationManager {
     UIApplication.shared.unregisterForRemoteNotifications()
     
     guard let fcmToken = Messaging.messaging().fcmToken else {
-      print("Couldn't unregister device")
+      Logger.notifications.error("Failed to unregister device")
       return
     }
     
@@ -33,8 +33,21 @@ class NotificationManager {
     guard let fcmToken = Messaging.messaging().fcmToken else {
       return
     }
-    print("FLOW: fcm token: \(fcmToken)")
+    Logger.notifications.debug("FCM Token: \(fcmToken)")
     NotificationsService().registerDeviceForNotifications(with: fcmToken)
+  }
+  
+  func setNotificationBadge(badgeNumber: Int) {
+    UIApplication.shared.applicationIconBadgeNumber = badgeNumber
+  }
+  
+  func setNotificationBadge(accordingTo userInfo: [AnyHashable: Any]) {
+    guard let aps = userInfo["aps"] as? [AnyHashable: Any], let badge = aps["badge"] as? Int else {
+      UIApplication.shared.applicationIconBadgeNumber = 0
+      return
+    }
+    
+    UIApplication.shared.applicationIconBadgeNumber = badge
   }
   
   func postNotification(accordingTo userInfo: [AnyHashable: Any]) {

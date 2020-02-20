@@ -2,12 +2,14 @@ import UIKit
 import Kingfisher
 
 protocol SignerDetailsTableViewCellDelegate: class {
-  func menuButtonDidTap(in cell: SignerDetailsTableViewCell)
+  func moreDetailsButtonWasPressed(in cell: SignerDetailsTableViewCell)
 }
 
 class SignerDetailsTableViewCell: UITableViewCell {
 
   @IBOutlet weak var publicKeyLabel: UILabel!
+  @IBOutlet var signerFederationLabel: UILabel!
+  
   @IBOutlet var identiconView: IdenticonView!
   
   weak var delegate: SignerDetailsTableViewCellDelegate?
@@ -16,14 +18,26 @@ class SignerDetailsTableViewCell: UITableViewCell {
     super.awakeFromNib()
   }
   
-  func setPublicKey(_ publicKey: String) {
-    publicKeyLabel.text = publicKey
+  func set(_ signedAccount: SignedAccount) {
+    if let address = signedAccount.address {
+      identiconView.loadIdenticon(publicAddress: address)
+    }
     
-    identiconView.loadIdenticon(publicAddress: publicKey)
+    publicKeyLabel.text = signedAccount.address?.getTruncatedPublicKey(numberOfCharacters: 10) ?? "unknown address"
+    
+    guard let federation = signedAccount.federation else {
+      signerFederationLabel.isHidden = true
+      return
+    }
+    
+    publicKeyLabel.font = UIFont.systemFont(ofSize: 13)
+    publicKeyLabel.textColor = Asset.Colors.gray.color
+    signerFederationLabel.text = federation
+    signerFederationLabel.isHidden = false
   }
   
   @IBAction func menuButtonAction(_ sender: Any) {
-    delegate?.menuButtonDidTap(in: self)
+    delegate?.moreDetailsButtonWasPressed(in: self)
   }
   
 }

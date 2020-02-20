@@ -415,7 +415,7 @@ internal enum L10n {
   internal static let textSettingsMnemonicField = L10n.tr("Localizable", "text_settings_mnemonic_field")
   /// Notifications
   internal static let textSettingsNotificationsField = L10n.tr("Localizable", "text_settings_notifications_field")
-  /// Prompt for Transaction Decisions
+  /// Transaction Confirmations
   internal static let textSettingsPromtDecisionsField = L10n.tr("Localizable", "text_settings_promt_decisions_field")
   /// Vault Public key
   internal static let textSettingsPublicKeyField = L10n.tr("Localizable", "text_settings_public_key_field")
@@ -429,6 +429,8 @@ internal enum L10n {
   internal static let textSettingsSignerForField = L10n.tr("Localizable", "text_settings_signer_for_field")
   /// Signer for [number] account
   internal static let textSettingsSignersField = L10n.tr("Localizable", "text_settings_signers_field")
+  /// Allow Unsigned Transactions
+  internal static let textSettingsSpamProtectionField = L10n.tr("Localizable", "text_settings_spam_protection_field")
   /// Fingerprint Login
   internal static let textSettingsTouchIdField = L10n.tr("Localizable", "text_settings_touch_id_field")
   /// Version

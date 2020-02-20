@@ -31,6 +31,8 @@ extension OperationType {
         return "Buy Offer"
       case .manageSellOffer:
         return "Sell Offer"
+      case .pathPaymentStrictSend:
+        return "Path Payment Strict Send"
       }
     }
   }

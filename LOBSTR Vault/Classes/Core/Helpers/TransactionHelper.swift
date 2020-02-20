@@ -12,7 +12,15 @@ struct TransactionHelper {
       let operationType = OperationType.init(rawValue: operationTypeValue)
     
       if let type = operationType {
-        operationNames.append(type.description)
+        var name = "unknown"
+        switch type {
+        case .accountCreated:
+          name = "Create Account"
+        default:
+          name = type.description
+        }
+        
+        operationNames.append(name)
       }
     }
     
@@ -94,15 +102,19 @@ struct TransactionHelper {
   
   static func getPrice(from operation: ManageOfferOperation) -> String {
     let priceValue = Double(operation.price.n) / Double(operation.price.d)
-    return String(format: "%.7f", priceValue)
+    let formatter = NumberFormatter()
+    formatter.maximumFractionDigits = 7
+    
+    return formatter.string(from: NSNumber(floatLiteral: priceValue)) ?? "unknown"
   }
   
   static func getValidatedDate(from sourceDate: String) -> String {
     let inputDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZ"
-    let outputDateFormat = "MMM dd, yyyy, HH:mm"
+    let outputDateFormat = "MMM d, yyyy, HH:mm"
     
     let dateFormatterGet = DateFormatter()
     dateFormatterGet.dateFormat = inputDateFormat
+    dateFormatterGet.locale = Locale(identifier: "en_US")
     
     let dateFormatterPrint = DateFormatter()
     dateFormatterPrint.dateFormat = outputDateFormat
@@ -161,7 +173,9 @@ struct TransactionHelper {
     }
   }
   
-  static func getTransactionResultCode(from message: String) throws -> TransactionResultCode {
+  static func getTransactionResult(from message: String) throws ->
+    (resultCode: TransactionResultCode, operaiotnMessageError: String?) {
+      
     guard let errorMessage = try? JSONDecoder().decode(HorizonErrorMessage.self,
                                                        from: message.data(using: String.Encoding.utf8)!) else {
       throw VaultError.TransactionError.invalidTransaction
@@ -171,9 +185,47 @@ struct TransactionHelper {
       throw VaultError.TransactionError.invalidTransaction
     }
     
-    let transactionResultXDR = try TransactionResultXDR(xdr: resultXDR)
+    guard let transactionResultXDR = try? TransactionResultXDR(xdr: resultXDR) else {
+      throw VaultError.TransactionError.invalidTransaction
+    }
+      
+    var operationMessageError: String? = nil
+    if let resultBody = transactionResultXDR.resultBody {
+      operationMessageError = tryToGetOperationErrorMessage(from: resultBody)
+    }
     
-    return transactionResultXDR.code
+    return (transactionResultXDR.code, operationMessageError)
+  }
+  
+  static func tryToGetOperationErrorMessage(from resultBody: TransactionResultBodyXDR) -> String? {
+    switch resultBody {
+    case .success(let operations):
+      guard let operation = operations.first else { break }
+      switch operation {
+      case .payment(_, let paymentResult):
+        switch paymentResult {
+        case .empty(let errorCode):
+          return PaymentResultCode.underfunded.rawValue == errorCode ? "Not enough funds" : nil
+        default: break
+        }
+      case .createAccount(_, let createAccountResult):
+        switch createAccountResult {
+        case .empty(let errorCode):
+          return CreateAccountResultCode.underfunded.rawValue == errorCode ? "Not enough funds" : nil
+        default: break
+        }
+      case .manageBuyOffer(_, let manageOfferResult), .manageSellOffer(_, let manageOfferResult):
+        switch manageOfferResult {
+        case .empty(let errorCode):
+          return ManageOfferResultCode.underfunded.rawValue == errorCode ? "Not enough funds" : nil
+        default: break
+        }
+      default: break
+      }
+    default: break
+    }
+    
+    return nil
   }
 }
 

@@ -2,6 +2,10 @@ import Foundation
 @testable import LOBSTR_Vault
 
 class MnemonicRecoveryViewSpy: MnemonicRecoveryView {
+  func setProgressAnimation(enabled: Bool) {
+    
+  }
+  
   func setRecoveryButtonStatus(isEnabled: Bool) {
     
   }  

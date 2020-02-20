@@ -50,7 +50,7 @@ class RecheckPresenterImpl {
         }
       case .failure(let error):
         self.view?.setProgressAnimation(isDisplay: false)
-        print("error: \(error)")
+        Logger.networking.error("Couldn't get signed accounts with error: \(error)")
       }
     }
   }

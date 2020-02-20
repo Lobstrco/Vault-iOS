@@ -3,6 +3,9 @@ import UIKit
 struct SignerViewData {
   let status: SignatureStatus
   let publicKey: String
+  let weight: Int
+  var federation: String?
+  let isLocalPublicKey: Bool
   
   var statusText: String {
     switch status {

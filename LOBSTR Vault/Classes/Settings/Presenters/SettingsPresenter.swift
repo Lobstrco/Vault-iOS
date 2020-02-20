@@ -10,6 +10,7 @@ typealias SettingsPresenter =
 
 protocol SettingsLifecycle {
   func settingsViewDidLoad()
+  func settingsViewDidAppear()
 }
 
 protocol SettingsDataSource {

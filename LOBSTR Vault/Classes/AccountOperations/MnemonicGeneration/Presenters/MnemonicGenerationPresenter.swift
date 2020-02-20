@@ -100,7 +100,7 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
           self.mnemonicList = MnemonicHelper.getSeparatedWords(from: mnemonic)
           self.view?.setMnemonicList(mnemonicList: self.mnemonicList)
         case .failure(let error):
-          print("error: \(error)")
+          Logger.mnemonic.error("Couldn't get decrypted mnemonic from keychain with error: \(error)")          
         }
       }
     }

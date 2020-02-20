@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Vault Public Key View Controller-->
+        <scene sceneID="pq4-Km-OHb">
+            <objects>
+                <viewController storyboardIdentifier="VaultPublicKeyViewController" interfaceStyle="light" id="6TS-pr-bUa" customClass="VaultPublicKeyViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="EaA-yH-yim">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8ZO-9q-AYO">
+                                <rect key="frame" x="16" y="798" width="382" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="37j-lJ-gij"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Next">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="nextButtonAction:" destination="6TS-pr-bUa" eventType="touchUpInside" id="SRt-bu-Z6j"/>
+                                </connections>
+                            </button>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Asw-X0-u4z">
+                                <rect key="frame" x="0.0" y="44" width="414" height="746"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UsingLobstrWalletTableViewCell" rowHeight="300" id="ULl-QU-eks" customClass="UsingLobstrWalletTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="300"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ULl-QU-eks" id="iZe-lb-vgA">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="300"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Qgi-Sc-Y5F">
+                                                    <rect key="frame" x="16" y="16" width="382" height="268"/>
+                                                    <subviews>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="enY-JB-NUl">
+                                                            <rect key="frame" x="0.0" y="0.0" width="382" height="268"/>
+                                                            <subviews>
+                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="6Av-BS-G3n">
+                                                                    <rect key="frame" x="16" y="83" width="350" height="62"/>
+                                                                    <subviews>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use Vault with LOBSTR on this device" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zk5-K8-RWb">
+                                                                            <rect key="frame" x="38.5" y="0.0" width="273.5" height="18"/>
+                                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                                            <nil key="textColor"/>
+                                                                            <nil key="highlightedColor"/>
+                                                                        </label>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use the button below to open LOBSTR wallet and enable multisig for your Stellar account." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="elg-0b-xgI">
+                                                                            <rect key="frame" x="4.5" y="26" width="341.5" height="36"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                            <color key="textColor" name="Colors/DarkIndigo"/>
+                                                                            <nil key="highlightedColor"/>
+                                                                        </label>
+                                                                    </subviews>
+                                                                </stackView>
+                                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Obj-5c-QtN">
+                                                                    <rect key="frame" x="118.5" y="162" width="145" height="30"/>
+                                                                    <state key="normal" title="Open LOBSTR Wallet">
+                                                                        <color key="titleColor" name="Colors/Main"/>
+                                                                    </state>
+                                                                    <connections>
+                                                                        <action selector="openLobstrAppButtonAction:" destination="ULl-QU-eks" eventType="touchUpInside" id="2gk-zY-rRm"/>
+                                                                    </connections>
+                                                                </button>
+                                                            </subviews>
+                                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="trailing" secondItem="6Av-BS-G3n" secondAttribute="trailing" constant="16" id="0k4-T7-B2J"/>
+                                                                <constraint firstItem="Obj-5c-QtN" firstAttribute="top" secondItem="6Av-BS-G3n" secondAttribute="bottom" constant="17" id="C9f-4T-kWQ"/>
+                                                                <constraint firstItem="6Av-BS-G3n" firstAttribute="centerY" secondItem="enY-JB-NUl" secondAttribute="centerY" constant="-20" id="H9I-l2-nVf"/>
+                                                                <constraint firstItem="6Av-BS-G3n" firstAttribute="leading" secondItem="enY-JB-NUl" secondAttribute="leading" constant="16" id="ME4-Iw-0tA"/>
+                                                                <constraint firstItem="Obj-5c-QtN" firstAttribute="centerX" secondItem="enY-JB-NUl" secondAttribute="centerX" id="lCD-dP-5gW"/>
+                                                            </constraints>
+                                                        </view>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="bottom" secondItem="enY-JB-NUl" secondAttribute="bottom" id="A0j-6u-GM5"/>
+                                                        <constraint firstItem="enY-JB-NUl" firstAttribute="top" secondItem="Qgi-Sc-Y5F" secondAttribute="top" id="aLy-z3-GwN"/>
+                                                        <constraint firstItem="enY-JB-NUl" firstAttribute="leading" secondItem="Qgi-Sc-Y5F" secondAttribute="leading" id="bM6-hp-2Nd"/>
+                                                        <constraint firstAttribute="trailing" secondItem="enY-JB-NUl" secondAttribute="trailing" id="jZA-ZK-bMF"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="Qgi-Sc-Y5F" secondAttribute="trailing" constant="16" id="LIE-Zc-uxh"/>
+                                                <constraint firstItem="Qgi-Sc-Y5F" firstAttribute="top" secondItem="iZe-lb-vgA" secondAttribute="top" constant="16" id="OFJ-Jy-oqy"/>
+                                                <constraint firstItem="Qgi-Sc-Y5F" firstAttribute="leading" secondItem="iZe-lb-vgA" secondAttribute="leading" constant="16" id="Q6z-Yu-lJJ"/>
+                                                <constraint firstAttribute="bottom" secondItem="Qgi-Sc-Y5F" secondAttribute="bottom" constant="16" id="zbF-uz-DIi"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="actionButton" destination="Obj-5c-QtN" id="pdM-oP-ExT"/>
+                                            <outlet property="descriptionLabel" destination="elg-0b-xgI" id="2b7-UT-to9"/>
+                                            <outlet property="infoContainerView" destination="enY-JB-NUl" id="D1Y-jp-rVS"/>
+                                            <outlet property="shadowView" destination="Qgi-Sc-Y5F" id="G54-7V-5FA"/>
+                                            <outlet property="titleLabel" destination="Zk5-K8-RWb" id="2UP-PA-MiC"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="UsingDifferentServiceTableViewCell" rowHeight="307" id="mDz-Go-gw0" customClass="UsingDifferentServiceTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="328" width="414" height="307"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="mDz-Go-gw0" id="fvO-b3-D9U">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="307"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CkV-c6-CTi">
+                                                    <rect key="frame" x="16" y="0.0" width="382" height="291"/>
+                                                    <subviews>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gHy-xX-2WN">
+                                                            <rect key="frame" x="0.0" y="0.0" width="382" height="291"/>
+                                                            <subviews>
+                                                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="SSO-TI-hAe">
+                                                                    <rect key="frame" x="16" y="62.5" width="350" height="106"/>
+                                                                    <subviews>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3JL-4q-7eh">
+                                                                            <rect key="frame" x="64.5" y="0.0" width="221.5" height="36"/>
+                                                                            <string key="text">Using a different service 
+or LOBSTR on another device?</string>
+                                                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                                            <nil key="textColor"/>
+                                                                            <nil key="highlightedColor"/>
+                                                                        </label>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Copy the public key or scan the QR code to add Vault signer in another service." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="asS-qk-ydn">
+                                                                            <rect key="frame" x="10" y="44" width="330.5" height="36"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                            <color key="textColor" name="Colors/DarkIndigo"/>
+                                                                            <nil key="highlightedColor"/>
+                                                                        </label>
+                                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="GD6JLOLPJO4SJRIPW34YQLA3MFXDWJCOFUJQBMBEAODQLQ6ALED3GDFZ" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PVk-cP-XM7">
+                                                                            <rect key="frame" x="0.0" y="88" width="350" height="18"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                            <color key="textColor" name="Colors/DarkIndigo"/>
+                                                                            <nil key="highlightedColor"/>
+                                                                        </label>
+                                                                    </subviews>
+                                                                </stackView>
+                                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="SnO-G5-yrO">
+                                                                    <rect key="frame" x="16" y="193.5" width="350" height="48"/>
+                                                                    <subviews>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Xj-ju-qCs">
+                                                                            <rect key="frame" x="0.0" y="0.0" width="171" height="48"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                                                                            <state key="normal" title="Copy Key" image="Icons/Other/icCopy">
+                                                                                <color key="titleColor" name="Colors/Main"/>
+                                                                            </state>
+                                                                            <state key="selected">
+                                                                                <color key="titleColor" name="Colors/Gray"/>
+                                                                            </state>
+                                                                            <state key="highlighted" image="Icons/Other/icCopy">
+                                                                                <color key="titleColor" name="Colors/Gray"/>
+                                                                            </state>
+                                                                            <connections>
+                                                                                <action selector="copyKeyButtonAction:" destination="mDz-Go-gw0" eventType="touchUpInside" id="it7-eZ-ml1"/>
+                                                                            </connections>
+                                                                        </button>
+                                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aHa-QA-WRD">
+                                                                            <rect key="frame" x="179" y="0.0" width="171" height="48"/>
+                                                                            <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="10" maxY="0.0"/>
+                                                                            <state key="normal" title="Show QR" image="Icons/Other/icCode">
+                                                                                <color key="titleColor" name="Colors/Main"/>
+                                                                            </state>
+                                                                            <state key="selected">
+                                                                                <color key="titleColor" name="Colors/Gray"/>
+                                                                            </state>
+                                                                            <state key="highlighted" image="Icons/Other/icCode">
+                                                                                <color key="titleColor" name="Colors/Gray"/>
+                                                                            </state>
+                                                                            <connections>
+                                                                                <action selector="showQRCodeButtonAction:" destination="mDz-Go-gw0" eventType="touchUpInside" id="jja-lM-R8C"/>
+                                                                            </connections>
+                                                                        </button>
+                                                                    </subviews>
+                                                                </stackView>
+                                                            </subviews>
+                                                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                                            <constraints>
+                                                                <constraint firstItem="SSO-TI-hAe" firstAttribute="centerY" secondItem="gHy-xX-2WN" secondAttribute="centerY" constant="-30" id="3Ap-r3-e0D"/>
+                                                                <constraint firstItem="SSO-TI-hAe" firstAttribute="leading" secondItem="gHy-xX-2WN" secondAttribute="leading" constant="16" id="GrO-oV-5Hn"/>
+                                                                <constraint firstItem="SnO-G5-yrO" firstAttribute="top" secondItem="SSO-TI-hAe" secondAttribute="bottom" constant="25" id="Jcp-BG-Vi0"/>
+                                                                <constraint firstAttribute="trailing" secondItem="SnO-G5-yrO" secondAttribute="trailing" constant="16" id="jVl-WK-hbO"/>
+                                                                <constraint firstItem="SnO-G5-yrO" firstAttribute="leading" secondItem="gHy-xX-2WN" secondAttribute="leading" constant="16" id="kfe-fK-F4J"/>
+                                                                <constraint firstAttribute="trailing" secondItem="SSO-TI-hAe" secondAttribute="trailing" constant="16" id="mHa-rh-X7I"/>
+                                                            </constraints>
+                                                        </view>
+                                                    </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <constraints>
+                                                        <constraint firstItem="gHy-xX-2WN" firstAttribute="leading" secondItem="CkV-c6-CTi" secondAttribute="leading" id="Hlw-1Z-l73"/>
+                                                        <constraint firstAttribute="trailing" secondItem="gHy-xX-2WN" secondAttribute="trailing" id="K63-sy-s4l"/>
+                                                        <constraint firstAttribute="bottom" secondItem="gHy-xX-2WN" secondAttribute="bottom" id="Uty-aR-Zts"/>
+                                                        <constraint firstItem="gHy-xX-2WN" firstAttribute="top" secondItem="CkV-c6-CTi" secondAttribute="top" id="wI3-SF-iHW"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                            <constraints>
+                                                <constraint firstItem="CkV-c6-CTi" firstAttribute="top" secondItem="fvO-b3-D9U" secondAttribute="top" id="5rJ-Jt-sfK"/>
+                                                <constraint firstAttribute="trailing" secondItem="CkV-c6-CTi" secondAttribute="trailing" constant="16" id="JLB-9u-Bke"/>
+                                                <constraint firstAttribute="bottom" secondItem="CkV-c6-CTi" secondAttribute="bottom" constant="16" id="nk0-24-Juy"/>
+                                                <constraint firstItem="CkV-c6-CTi" firstAttribute="leading" secondItem="fvO-b3-D9U" secondAttribute="leading" constant="16" id="yiD-0g-cRo"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="copyKeyButton" destination="7Xj-ju-qCs" id="JOa-Wt-keM"/>
+                                            <outlet property="descriptionLabel" destination="asS-qk-ydn" id="lm2-xv-6gg"/>
+                                            <outlet property="infoContainerView" destination="gHy-xX-2WN" id="T2B-Dv-SBM"/>
+                                            <outlet property="publicKeyLabel" destination="PVk-cP-XM7" id="sh2-Xr-geo"/>
+                                            <outlet property="shadowView" destination="CkV-c6-CTi" id="Sta-j0-Kfk"/>
+                                            <outlet property="showQRButton" destination="aHa-QA-WRD" id="5Hw-kj-LPG"/>
+                                            <outlet property="titleLabel" destination="3JL-4q-7eh" id="P8h-t0-OJa"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="6TS-pr-bUa" id="EYy-V8-nt1"/>
+                                    <outlet property="delegate" destination="6TS-pr-bUa" id="3Eo-HJ-oHX"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Asw-X0-u4z" firstAttribute="top" secondItem="yaB-v5-z4u" secondAttribute="top" id="FCh-ta-Un3"/>
+                            <constraint firstItem="Asw-X0-u4z" firstAttribute="leading" secondItem="yaB-v5-z4u" secondAttribute="leading" id="HSH-qe-L7P"/>
+                            <constraint firstItem="8ZO-9q-AYO" firstAttribute="leading" secondItem="yaB-v5-z4u" secondAttribute="leading" constant="16" id="Pel-kU-HhO"/>
+                            <constraint firstItem="yaB-v5-z4u" firstAttribute="trailing" secondItem="8ZO-9q-AYO" secondAttribute="trailing" constant="16" id="PfM-4u-Big"/>
+                            <constraint firstItem="8ZO-9q-AYO" firstAttribute="top" secondItem="Asw-X0-u4z" secondAttribute="bottom" constant="8" id="Sqj-c7-cid"/>
+                            <constraint firstItem="8ZO-9q-AYO" firstAttribute="bottom" secondItem="yaB-v5-z4u" secondAttribute="bottom" constant="-16" id="bZo-CZ-ZEd"/>
+                            <constraint firstItem="yaB-v5-z4u" firstAttribute="trailing" secondItem="Asw-X0-u4z" secondAttribute="trailing" id="xSz-Ol-yQc"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="yaB-v5-z4u"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="6qj-wG-OzU">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="Icons/Other/icQuestionSign" id="KRc-hR-U8P">
+                            <connections>
+                                <action selector="helpButtonAction:" destination="6TS-pr-bUa" id="eVQ-RY-Qwa"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="nextButton" destination="8ZO-9q-AYO" id="VDE-2i-ULa"/>
+                        <outlet property="tableView" destination="Asw-X0-u4z" id="00B-RT-oug"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="1VH-ZH-AvO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-133.33333333333334" y="96.428571428571431"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Icons/Other/icCode" width="24" height="24"/>
+        <image name="Icons/Other/icCopy" width="16" height="18"/>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
+        <namedColor name="Colors/DarkIndigo">
+            <color red="0.027450980392156862" green="0.10980392156862745" blue="0.20000000000000001" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Gray">
+            <color red="0.60784313725490191" green="0.60784313725490191" blue="0.60784313725490191" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

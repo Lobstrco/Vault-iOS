@@ -4,24 +4,18 @@ import stellarsdk
 class SubmitTransactionToVaultServerOperation: AsyncOperation {
   
   private var inputXdrEnvelope: String?
-  private var inputHorizonResultCode: TransactionResultCode?
-  
-  private var transactionHash: String?
+  private var inputHorizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)?
+  private var inputTransactionHash: String?
   
   // MARK: - Lifecycle
-  
-  init(transactionHash: String?) {
-    super.init()
-    self.transactionHash = transactionHash
-  }
   
   override func start() {
     getDependencies()
     super.start()
   }
   
-  override func main() {    
-    guard let xdr = inputXdrEnvelope, let horizonResultCode = inputHorizonResultCode else {
+  override func main() {
+    guard let xdr = inputXdrEnvelope, let horizonResultCode = inputHorizonResult?.resultCode else {
       return
     }
 
@@ -46,7 +40,8 @@ extension SubmitTransactionToVaultServerOperation {
       .first as? VaultServerTransactionDataBroadcast {
       
       inputXdrEnvelope = dataProvider.xdrEnvelope
-      inputHorizonResultCode = dataProvider.horizonResultCode
+      inputHorizonResult = dataProvider.horizonResult
+      inputTransactionHash = dataProvider.transactionHash
       outputError = dataProvider.error
     }
   }
@@ -65,7 +60,7 @@ extension SubmitTransactionToVaultServerOperation {
   }
   
   private func submitTransactionAsDone(with xdr: String) {
-    guard let hash = transactionHash else {
+    guard let hash = inputTransactionHash else {
       self.finished(error: nil)
       return
     }

@@ -14,13 +14,16 @@ class SignerDetailsPresenterImpl {
   var accounts: [SignedAccount] = []
   
   private let transactionService: TransactionService
+  private let federationService: FederationService
   
   fileprivate weak var view: SignerDetailsView?
   
   init(view: SignerDetailsView,
-       transactionService: TransactionService = TransactionService()) {
+       transactionService: TransactionService = TransactionService(),
+       federationService: FederationService = FederationService()) {
     self.view = view
     self.transactionService = transactionService
+    self.federationService = federationService
   }    
   
   func displayAccountList() {
@@ -28,10 +31,38 @@ class SignerDetailsPresenterImpl {
     transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let signedAccounts):
-        self.accounts = signedAccounts        
+        self.accounts = signedAccounts
+        self.setFederations(to: &self.accounts)
         self.view?.setAccountList(isEmpty: self.accounts.isEmpty)
       case .failure(let error):
-        print("error: \(error)")
+        Logger.networking.error("Couldn't get signed accounts with error: \(error)")
+      }
+    }
+  }
+}
+
+private extension SignerDetailsPresenterImpl {
+  func setFederations(to accounts: inout [SignedAccount]) {
+    for (index, account) in accounts.enumerated() {
+      guard let publicKey = account.address else { break }
+      if let result = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first {
+        accounts[index].federation = result.federation
+      } else {
+        tryToLoadFederation(by: publicKey, for: index)
+      }
+    }
+  }
+  
+  func tryToLoadFederation(by publicKey: String, for index: Int) {
+    federationService.getFederation(for: publicKey) { result in
+      switch result {
+      case .success(let account):
+        if let federation = account.federation {
+          self.accounts[index] = SignedAccount(address: account.publicKey, federation: federation)
+          self.view?.reloadRow(index)
+        }
+      case .failure(let error):
+        Logger.home.error("Couldn't get federation for \(publicKey) with error: \(error)")
       }
     }
   }
@@ -49,18 +80,16 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   }
   
   func openExplorerActionWasPressed(for index: Int) {
-    guard let publicKey = accounts[index].address else { return }
-    
-    let sUrl = "https://stellar.expert/explorer/public/account/\(publicKey)"
-    UIApplication.shared.open(URL(string: sUrl)! as URL, options: .init(), completionHandler: nil)
+    guard let address = accounts[safe: index]?.address else {
+      Logger.home.error("Couldn't open stellar expert. Signers list is empty")
+      return
+    }
+       
+    UtilityHelper.openStellarExpert(for: address)
   }
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int) {
-    guard let address = accounts[row].address else {
-      return
-    }
-    
-    cell.setPublicKey(address)
+    cell.set(accounts[row])
   }
   
   func signerDetailsViewDidLoad() {

@@ -11,4 +11,5 @@ struct Extras: Decodable {
 
 struct ResultCodes: Decodable {
   let transaction: String?
+  let operations: [String]?
 }

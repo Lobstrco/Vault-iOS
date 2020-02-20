@@ -151,7 +151,7 @@ extension MnemonicGenerationViewController: UICollectionViewDelegate,
   func collectionView(_ collectionView: UICollectionView,
                       layout collectionViewLayout: UICollectionViewLayout,
                       sizeForItemAt indexPath: IndexPath) -> CGSize {
-    return CGSize(width: 80, height: 35)
+    return CGSize(width: UIScreen.main.bounds.width / 4 - 15, height: 35)
   }
   
   func collectionView(_ collectionView: UICollectionView,
