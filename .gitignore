@@ -65,3 +65,4 @@ fastlane/screenshots.DS_Store
 *~
 
 GoogleService-Info.plist
+GoogleService-Info-QA.plist
