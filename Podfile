@@ -6,7 +6,7 @@ target 'LOBSTR Vault' do
   use_frameworks!
 
   # The Soneso open source stellar SDK for iOS & Mac provides APIs to build transactions and connect to Horizon.
-  pod 'stellar-ios-mac-sdk', '~> 1.6.6'
+  pod 'stellar-ios-mac-sdk', '~> 1.7.3'
   
   # SwiftGen is a tool to auto-generate Swift code for resources of your projects, to make them type-safe to use.
   pod 'SwiftGen', '~> 6.0.2'

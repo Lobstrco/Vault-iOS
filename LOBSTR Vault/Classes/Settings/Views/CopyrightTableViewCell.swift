@@ -5,6 +5,7 @@ class CopyrightTableViewCell: UITableViewCell {
   @IBOutlet var copyrightLabel: UILabel!
   
   func setStaticString() {
-    copyrightLabel.text = L10n.textSettingsCopyright    
+    let currentYear = Calendar.current.component(.year, from: Date())
+    copyrightLabel.text = "©\(currentYear). " + L10n.textSettingsCopyright    
   }
 }

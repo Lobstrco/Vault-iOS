@@ -34,7 +34,7 @@ class PinPresenterImpl: PinPresenter {
   
   func pinViewDidLoad() {
     switch mode {
-    case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSinger:
+    case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSigner:
       
       switch mode {
       case .enterPinForMnemonicPhrase:
@@ -54,7 +54,7 @@ class PinPresenterImpl: PinPresenter {
             strongSelf.transitionToHomeScreen()
           case .enterPinForMnemonicPhrase:
             strongSelf.view?.executeCompletion()
-          case .enterPinForWaitingToBecomeSinger:
+          case .enterPinForWaitingToBecomeSigner:
             strongSelf.transitionToPublicKeyScreen()
           default:
             break
@@ -108,7 +108,7 @@ class PinPresenterImpl: PinPresenter {
           resetPin()
           shakePin()
         }
-      case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSinger:
+      case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSigner:
         validateEnteredPin(mode: mode)
       case .changePin:
         validateChangedPin()
@@ -198,7 +198,7 @@ class PinPresenterImpl: PinPresenter {
         transitionToHomeScreen()
       case .enterPinForMnemonicPhrase:
         view?.executeCompletion()
-      case .enterPinForWaitingToBecomeSinger:
+      case .enterPinForWaitingToBecomeSigner:
         transitionToPublicKeyScreen()
       default:
         return

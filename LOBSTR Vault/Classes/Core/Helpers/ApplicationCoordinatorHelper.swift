@@ -4,7 +4,7 @@ import FirebaseMessaging
 
 enum AccountStatus: Int {
   case created = 2
-  case waitingToBecomeSinger = 1
+  case waitingToBecomeSigner = 1
   case notCreated = 0
 }
 

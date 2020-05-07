@@ -52,7 +52,7 @@ class VaultPublicKeyPresenterImpl: VaultPublicKeyPresenter {
     createSections()
     registerForRemoteNotifications()
     
-    UserDefaultsHelper.accountStatus = .waitingToBecomeSinger
+    UserDefaultsHelper.accountStatus = .waitingToBecomeSigner
     
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(onDidChangeSignerDetails(_:)),

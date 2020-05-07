@@ -74,9 +74,9 @@ private extension ApplicationCoordinator {
       enablePromtForTransactionDecisions()
       ApplicationCoordinatorHelper.clearKeychain()
       showMenuScreen()
-    case .waitingToBecomeSinger:
+    case .waitingToBecomeSigner:
       enablePromtForTransactionDecisions()
-      showPinScreen(mode: .enterPinForWaitingToBecomeSinger)
+      showPinScreen(mode: .enterPinForWaitingToBecomeSigner)
     case .created:
       showPinScreen(mode: .enterPin)
     }
