@@ -44,6 +44,9 @@ extension SettingsPresenterImpl {
   }
   
   func settingsViewDidAppear() {
+    guard let viewController = view as? UIViewController else { return }
+    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
+    
     setSpamProtectionSwitch()
   }
 }
@@ -85,12 +88,6 @@ extension SettingsPresenterImpl {
     case .notifications:
       switchCell.setTitle(L10n.textSettingsNotificationsField)
       switchCell.setSwitch(UserDefaultsHelper.isNotificationsEnabled)
-    case .promptTransactionDecisions:
-      switchCell.setTitle(L10n.textSettingsPromtDecisionsField)
-      switchCell.setSwitch(UserDefaultsHelper.isPromtTransactionDecisionsEnabled)
-    case .spamProtection:
-      switchCell.setTitle(L10n.textSettingsSpamProtectionField)
-      switchCell.setSwitch(!spamProtectionEnabled)
     }
   }
   
@@ -112,6 +109,7 @@ extension SettingsPresenterImpl {
   
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,
                  row: SettingsRow) {
+    disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.black.color)
     switch row {
     case .signerForAccounts:
       disclosureIndicatorTableViewCell.setAttribute(getSignerForAccountsData().attribute)
@@ -125,10 +123,23 @@ extension SettingsPresenterImpl {
     case .logout:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsLogoutfield)
       disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.red.color)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .licenses:
       disclosureIndicatorTableViewCell.setTitle(L10n.navTitleLicenses)
     case .rateUs:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsRateUsField)
+    case .buyCard:
+      disclosureIndicatorTableViewCell.setTitle("Learn About the Signer Card")
+    case .support:
+      disclosureIndicatorTableViewCell.setTitle("Contact Support")
+    case .promptTransactionDecisions:
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsPromtDecisionsField)
+      let statusText = UserDefaultsHelper.isPromtTransactionDecisionsEnabled ? "Yes" : "No"
+      disclosureIndicatorTableViewCell.setTextStatus(statusText)
+    case .spamProtection:
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsSpamProtectionField)
+      let statusText = !spamProtectionEnabled ? "Yes" : "No"
+      disclosureIndicatorTableViewCell.setTextStatus(statusText)
     default:
       break
     }
@@ -158,6 +169,14 @@ extension SettingsPresenterImpl {
       transitionToLicenses()
     case .rateUs:
       transitionToMarket()
+    case .buyCard:
+      UtilityHelper.openTangemVaultLanding()
+    case .support:
+      contactSupport()
+    case .promptTransactionDecisions:
+      transitionToTransactionConfirmation()
+    case .spamProtection:
+      transitionToSpamProtection()
     default:
       break
     }
@@ -209,11 +228,6 @@ extension SettingsPresenterImpl {
           self?.view?.setSettings()
         }
       }
-    case .promptTransactionDecisions:
-      UserDefaultsHelper.isPromtTransactionDecisionsEnabled = value
-    case .spamProtection:
-      spamProtectionEnabled = !value
-      updateSpamProtection()
     }
   }
 }
@@ -225,7 +239,7 @@ extension SettingsPresenterImpl {
                                                  options: nil)?.first as! PublicKeyPopover
     publicKeyView.initData()
     
-    let popoverHeight: CGFloat = 420
+    let popoverHeight: CGFloat = UIScreen.main.bounds.height / 2.2
     let popover = CustomPopoverViewController(height: popoverHeight, view: publicKeyView)
     publicKeyView.popoverDelegate = popover
     
@@ -236,6 +250,14 @@ extension SettingsPresenterImpl {
 // MARK: -  Private
 
 private extension SettingsPresenterImpl {
+  
+  func contactSupport() {
+    let bodyEmail = UtilityHelper.createBodyEmail()
+    if let emailUrl = UtilityHelper.createEmailUrl(to: Constants.recipientEmail, subject: Constants.subjectEmail, body: bodyEmail) {
+      UIApplication.shared.open(emailUrl)
+    }
+  }
+    
   func getSignerForAccountsData() -> (title: String,
                                               attribute: NSMutableAttributedString) {
     let positionOfNumberInTitle = 11
@@ -282,20 +304,6 @@ private extension SettingsPresenterImpl {
        }
      }
    }
-   
-   func updateSpamProtection() {
-     let accountConfigParameters = AccountConfigParameters(spamProtectionEnabled: spamProtectionEnabled)
-     let apiLoader = APIRequestLoader<ChangeAccountConfigRequest>(apiRequest: ChangeAccountConfigRequest())
-       apiLoader.loadAPIRequest(requestData: accountConfigParameters) { result in
-         switch result {
-         case .success(let accountConfig):
-           guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
-           self.spamProtectionEnabled = protectionEnabled
-         case .failure(let error):
-           Logger.security.error("Couldn't get spam protection data with error: \(error)")
-         }
-       }
-   }
 }
 
 // MARK: - Logout
@@ -313,6 +321,23 @@ extension SettingsPresenterImpl {
 // MARK: -  Navigation
 
 extension SettingsPresenterImpl {
+  
+  func transitionToTransactionConfirmation() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .promptTransactionDecisions
+    
+    navigationController.pushViewController(transactionConfirmationViewController, animated: true)
+  }
+  
+  func transitionToSpamProtection() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .spamProtection
+    transactionConfirmationViewController.spamProtectionEnabled = spamProtectionEnabled
+    transactionConfirmationViewController.delegate = self
+    
+    navigationController.pushViewController(transactionConfirmationViewController, animated: true)
+  }
+  
   func transitionToChangePin() {
     let pinViewController = PinViewController.createFromStoryboard()
     
@@ -323,9 +348,8 @@ extension SettingsPresenterImpl {
   }
   
   func transitionToSignerDetails() {
-    let signerDetailsTableViewController = SignerDetailsTableViewController.createFromStoryboard()
-    
-    navigationController.pushViewController(signerDetailsTableViewController,
+    let signerDetailsViewController = SignerDetailsViewController.createFromStoryboard()
+    navigationController.pushViewController(signerDetailsViewController,
                                             animated: true)
   }
   
@@ -349,14 +373,14 @@ extension SettingsPresenterImpl {
   }
   
   func transitionToHelp() {
-    let helpViewController = HelpViewController.createFromStoryboard()
-    
     let settingsViewController = view as! SettingsViewController
-    settingsViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    
+    let helpCenter = ZendeskHelper.getHelpCenterController()
+    settingsViewController.navigationController?.pushViewController(helpCenter, animated: true)
   }
   
   func transitionToLicenses() {
-    let acknowListViewController = AcknowListViewController()
+    let acknowListViewController = AcknowListViewController(fileNamed: "Pods-LOBSTR Vault-acknowledgements")
     let settingsViewController = view as! SettingsViewController
     settingsViewController.navigationController?.pushViewController(acknowListViewController, animated: true)
   }
@@ -364,4 +388,23 @@ extension SettingsPresenterImpl {
   func transitionToMarket() {
     UIApplication.shared.open(URL(string: Constants.appStoreLinkWithReviewAction)!, options: [:], completionHandler: nil)
   }
+}
+
+extension SettingsPresenterImpl: SettingsSelectionViewControllerDelegate {
+  func updateSpamProtection(_ value: Bool?) {
+    guard let value = value else { return }
+    spamProtectionEnabled = value
+    let accountConfigParameters = AccountConfigParameters(spamProtectionEnabled: spamProtectionEnabled)
+    let apiLoader = APIRequestLoader<ChangeAccountConfigRequest>(apiRequest: ChangeAccountConfigRequest())
+    apiLoader.loadAPIRequest(requestData: accountConfigParameters) { result in
+      switch result {
+      case .success(let accountConfig):
+        guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
+        self.spamProtectionEnabled = protectionEnabled
+      case .failure(let error):
+        Logger.security.error("Couldn't get spam protection data with error: \(error)")
+      }
+    }
+  }
+  
 }

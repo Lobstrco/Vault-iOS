@@ -14,7 +14,7 @@ class SubmitTransactionToHorizonOperation: AsyncOperation {
     super.start()
   }
   
-  override func main() {    
+  override func main() {
     StellarSDK(withHorizonUrl: Environment.horizonBaseURL).transactions.postTransaction(transactionEnvelope: inputXdrEnvelope!) { (response) -> (Void) in
       switch response {
       case .success(let info):
@@ -23,6 +23,8 @@ class SubmitTransactionToHorizonOperation: AsyncOperation {
         self.finished(error: nil)
       case .failure(let error):
         self.tryToResolveFailure(with: error)
+      case .destinationRequiresMemo(_):
+        self.finished(error: nil)
       }
     }
   }

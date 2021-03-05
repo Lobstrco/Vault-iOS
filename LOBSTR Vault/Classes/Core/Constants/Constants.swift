@@ -16,4 +16,8 @@ struct Constants {
   static let appStoreLinkWithReviewAction = "\(vaultAppStoreLink)?action=write-review"
   
   static let vaultMarkerKey = "GA2T6GR7VXXXBETTERSAFETHANSORRYXXXPROTECTEDBYLOBSTRVAULT"
+  
+  static let recipientEmail = "support@lobstr.co"
+  static let subjectEmail = "LOBSTR Vault feedback, \(ApplicationInfo.version)"
+  
 }

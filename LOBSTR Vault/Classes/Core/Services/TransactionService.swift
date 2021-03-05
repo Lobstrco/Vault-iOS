@@ -93,4 +93,17 @@ class TransactionService {
       }
     }
   }
+  
+  func cancelAllTransaction(completion: @escaping (Result<Bool>) -> Void) {
+    let apiLoader = APIRequestLoader<CancelAllTransactionsRequest>(apiRequest: CancelAllTransactionsRequest())
+    apiLoader.loadAPIRequest(requestData: nil) { result in
+      switch result {
+      case .success:
+        completion(.success(true))
+      case .failure(let serverRequestError):
+        completion(.failure(serverRequestError))
+      }
+    }
+  }
+  
 }

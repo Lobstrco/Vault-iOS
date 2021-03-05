@@ -6,14 +6,28 @@ protocol SettingsSectionsBuilder {
 
 struct SettingsSectionsBuilderImpl: SettingsSectionsBuilder {
   func buildSections() -> [SettingsSection] {
-    let wallet = SettingsSection(type: .account, rows: [.publicKey, .signerForAccounts])
+        
+    var accountRows: [SettingsRow] = [.publicKey, .signerForAccounts, .notifications]
+    var securityRows: [SettingsRow] = []
+    var otherRows: [SettingsRow] = []
     
-    let securityRows: [SettingsRow] = [.mnemonicCode, .changePin, .biometricId, .spamProtection]
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      accountRows.append(.promptTransactionDecisions)
+      securityRows.append(contentsOf: [.mnemonicCode, .changePin, .biometricId, .spamProtection])
+      otherRows.append(contentsOf: [.buyCard, .rateUs, .licenses, .version,  .logout, .copyright])
+    case .createdWithTangem:
+      securityRows.append(.spamProtection)
+      otherRows.append(contentsOf: [.rateUs, .licenses, .version,  .logout, .copyright])
+    default:
+      break
+    }
     
-    let security = SettingsSection(type: .security,
-                                   rows: securityRows)
-    
-    let about = SettingsSection(type: .about, rows: [.help, .notifications, .promptTransactionDecisions, .rateUs, .licenses, .version,  .logout, .copyright])
-    return [wallet, security, about]
+    let account = SettingsSection(type: .account, rows: accountRows)
+    let security = SettingsSection(type: .security, rows: securityRows)
+    let other = SettingsSection(type: .other, rows: otherRows)
+    let help = SettingsSection(type: .help, rows: [.help, .support])
+                
+    return [account, security, help, other]
   }
 }

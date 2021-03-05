@@ -8,8 +8,6 @@ protocol SwitchTableViewCellView {
 enum SwitchType {
   case biometricID
   case notifications
-  case promptTransactionDecisions
-  case spamProtection
 }
 
 protocol SwitchTableViewCellDelegate: class {

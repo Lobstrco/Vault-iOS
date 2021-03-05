@@ -7,6 +7,8 @@ class SubmitTransactionToVaultServerOperation: AsyncOperation {
   private var inputHorizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)?
   private var inputTransactionHash: String?
   
+  private var transactionType: ServerTransactionType
+  
   // MARK: - Lifecycle
   
   override func start() {
@@ -14,8 +16,25 @@ class SubmitTransactionToVaultServerOperation: AsyncOperation {
     super.start()
   }
   
+  init(transactionType: ServerTransactionType) {
+    self.transactionType = transactionType
+    super.init()
+  }
+  
   override func main() {
-    guard let xdr = inputXdrEnvelope, let horizonResultCode = inputHorizonResult?.resultCode else {
+    Logger.operations.debug("SubmitTransactionToVaultServerOperation start")
+    guard let xdr = inputXdrEnvelope else {
+      return
+    }
+    
+    guard transactionType == .transaction else {
+      submitTransactionForAdditionalSigners(with: xdr)
+      finished(error: nil)
+      return
+    }
+    
+    guard let horizonResultCode = inputHorizonResult?.resultCode else {
+      finished(error: VaultError.OperationError.invalidOperation)
       return
     }
 
@@ -25,7 +44,7 @@ class SubmitTransactionToVaultServerOperation: AsyncOperation {
     case .badAuth:
       submitTransactionForAdditionalSigners(with: xdr)
     default:
-      self.finished(error: nil)
+      finished(error: nil)
     }
   }
 }
@@ -35,14 +54,25 @@ class SubmitTransactionToVaultServerOperation: AsyncOperation {
 extension SubmitTransactionToVaultServerOperation {
   
   private func getDependencies() {
-    if let dataProvider = dependencies
-      .filter({ $0 is VaultServerTransactionDataBroadcast })
-      .first as? VaultServerTransactionDataBroadcast {
-      
-      inputXdrEnvelope = dataProvider.xdrEnvelope
-      inputHorizonResult = dataProvider.horizonResult
-      inputTransactionHash = dataProvider.transactionHash
-      outputError = dataProvider.error
+    switch transactionType {
+    case .authChallenge:
+      if let dataProvider = dependencies
+        .filter({ $0 is HorizonTransactionDataBroadcast })
+        .first as? HorizonTransactionDataBroadcast {
+        
+        inputXdrEnvelope = dataProvider.xdrEnvelope
+        outputError = dataProvider.error
+      }
+    case .transaction:
+      if let dataProvider = dependencies
+        .filter({ $0 is VaultServerTransactionDataBroadcast })
+        .first as? VaultServerTransactionDataBroadcast {
+        
+        inputXdrEnvelope = dataProvider.xdrEnvelope
+        inputHorizonResult = dataProvider.horizonResult
+        inputTransactionHash = dataProvider.transactionHash
+        outputError = dataProvider.error
+      }
     }
   }
   
@@ -52,8 +82,10 @@ extension SubmitTransactionToVaultServerOperation {
     apiLoader.loadAPIRequest(requestData: submitSignedTransactionRequestParameters) { result in
       switch result {
       case .success(_):
+        Logger.operations.debug("SubmitTransactionToVaultServerOperation success but need more signatures")
         self.finished(error: nil)
       case .failure(let serverRequestError):
+        Logger.operations.debug("SubmitTransactionToVaultServerOperation failure")
         self.finished(error: serverRequestError)
       }
     }
@@ -70,8 +102,10 @@ extension SubmitTransactionToVaultServerOperation {
     apiLoader.loadAPIRequest(requestData: markTransactionAsSubmittedRequestParameters) { result in
       switch result {
       case .success(_):
+        Logger.operations.debug("SubmitTransactionToVaultServerOperation success")
         self.finished(error: nil)
       case .failure(let serverRequestError):
+        Logger.operations.debug("SubmitTransactionToVaultServerOperation failure")
         self.finished(error: serverRequestError)
       }
     }

@@ -13,7 +13,7 @@ enum Storyboards: String {
   case backUpAccount = "BackUpAccount"
   case publicKey = "PublicKey"
   case signerDetails = "SignerDetails"
-  case recheck = "Recheck"
   case help = "Help"
-  case vaultPublicKey = "VaultPublicKey"
+  case tangem = "Tangem"
+  case authentication = "Authentication"
 }

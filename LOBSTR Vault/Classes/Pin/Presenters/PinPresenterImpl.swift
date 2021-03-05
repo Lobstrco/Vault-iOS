@@ -34,7 +34,7 @@ class PinPresenterImpl: PinPresenter {
   
   func pinViewDidLoad() {
     switch mode {
-    case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSigner:
+    case .enterPin, .enterPinForMnemonicPhrase:
       
       switch mode {
       case .enterPinForMnemonicPhrase:
@@ -44,23 +44,23 @@ class PinPresenterImpl: PinPresenter {
       
       guard biometricAuthManager.isBiometricAuthEnabled else { return }
       
-      biometricAuthManager.authenticateUser { [weak self] result in
-        guard let strongSelf = self else { return }
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        self.biometricAuthManager.authenticateUser { [weak self] result in
+          guard let strongSelf = self else { return }
         
-        switch result {
-        case .success:
-          switch strongSelf.mode {
-          case .enterPin:
-            strongSelf.transitionToHomeScreen()
-          case .enterPinForMnemonicPhrase:
-            strongSelf.view?.executeCompletion()
-          case .enterPinForWaitingToBecomeSigner:
-            strongSelf.transitionToPublicKeyScreen()
-          default:
+          switch result {
+          case .success:
+            switch strongSelf.mode {
+            case .enterPin:
+              strongSelf.view?.transitionToHomeScreen()
+            case .enterPinForMnemonicPhrase:
+              strongSelf.view?.executeCompletion()
+            default:
+              break
+            }
+          case .failure:
             break
           }
-        case .failure:
-          break
         }
       }
     case .createPinFirstStep:
@@ -108,7 +108,7 @@ class PinPresenterImpl: PinPresenter {
           resetPin()
           shakePin()
         }
-      case .enterPin, .enterPinForMnemonicPhrase, .enterPinForWaitingToBecomeSigner:
+      case .enterPin, .enterPinForMnemonicPhrase:
         validateEnteredPin(mode: mode)
       case .changePin:
         validateChangedPin()
@@ -143,10 +143,10 @@ class PinPresenterImpl: PinPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpViewController = HelpViewController.createFromStoryboard()
-    
+    let helpCenter = ZendeskHelper.getHelpCenterController()
+
     let pinViewController = view as! PinViewController
-    pinViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    pinViewController.navigationController?.pushViewController(helpCenter, animated: true)
   }
   
   func ignoreSimplePin() {
@@ -195,11 +195,9 @@ class PinPresenterImpl: PinPresenter {
     if pinManager.validate(storedPin, pin) == true {
       switch mode {
       case .enterPin:
-        transitionToHomeScreen()
+        view?.transitionToHomeScreen()
       case .enterPinForMnemonicPhrase:
         view?.executeCompletion()
-      case .enterPinForWaitingToBecomeSigner:
-        transitionToPublicKeyScreen()
       default:
         return
       }
@@ -237,15 +235,6 @@ class PinPresenterImpl: PinPresenter {
 // MARK: - Navigation
 
 extension PinPresenterImpl {
-  func transitionToHomeScreen() {
-    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-      else { return }
-    
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-      appDelegate.applicationCoordinator.showHomeScreen()
-    }
-  }
-  
   func transitionToCreatePinFirstStep(with mode: PinMode) {
     let pinViewController = PinViewController.createFromStoryboard()
     pinViewController.mode = mode
@@ -274,7 +263,7 @@ extension PinPresenterImpl {
   
   func transitionToSettings() {
     let pinViewController = view as! PinViewController
-    let viewControllers = pinViewController.navigationController?.viewControllers    
+    let viewControllers = pinViewController.navigationController?.viewControllers
     if let viewControllers = viewControllers {
       for controller in viewControllers {
         if let settingsViewController = controller as? SettingsViewController {
@@ -285,14 +274,5 @@ extension PinPresenterImpl {
     }
     
     pinViewController.navigationController?.popToRootViewController(animated: true)
-  }
-  
-  func transitionToPublicKeyScreen() {
-     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
-         else { return }
-    
-     DispatchQueue.main.async() {
-       appDelegate.applicationCoordinator.showPublicKeyScreen()
-     }
   }
 }

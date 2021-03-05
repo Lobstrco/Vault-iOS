@@ -1,5 +1,3 @@
-//
-
 import UIKit
 
 protocol VaultPublicKeyTableViewCellDelegate: class {
@@ -22,7 +20,6 @@ class VaultPublicKeyTableViewCell: UITableViewCell {
     super.awakeFromNib()
     
     titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
-    
     AppearanceHelper.set(copyKeyButton, with: L10n.buttonTitleCopyKey)
     
     infoContainerView.layer.borderWidth = 1

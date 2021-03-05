@@ -5,6 +5,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   static var storyboardType: Storyboards = .transactions
   var presenter: TransactionDetailsPresenter!
+  var afterPushNotification: Bool = false
   
   @IBOutlet weak var tableView: UITableView!
   @IBOutlet weak var confirmButton: UIButton!
@@ -35,6 +36,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   override func viewWillAppear(_ animated: Bool) {
     tabBarController?.tabBar.isHidden = true
+    setAppearanceAfterPushNotification()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
@@ -53,13 +55,25 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   // MARK: - Private
   
+  private func setAppearanceAfterPushNotification() {
+    if afterPushNotification {
+      navigationController?.setStatusBar(backgroundColor: Asset.Colors.white.color)
+      navigationController?.navigationBar.tintColor = Asset.Colors.main.color
+      navigationController?.navigationBar.barTintColor = Asset.Colors.white.color
+      navigationController?.navigationBar.isTranslucent = true
+    }
+  }
+  
   private func setStaticStrings() {
     denyButton.setTitle(L10n.buttonTitleDeny, for: .normal)
   }
   
   private func configureTableView() {
     tableView.registerNibForHeaderFooter(SignersHeaderView.self)
-    tableView.tableFooterView = UIView()
+    
+    tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNonzeroMagnitude))
+    tableView.sectionFooterHeight = CGFloat.leastNormalMagnitude
+    tableView.sectionHeaderHeight = UITableView.automaticDimension
   }
   
   private func setAppearance() {
@@ -82,11 +96,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   func reloadSignerListRow(_ row: Int) {
     let indexPath = IndexPath(row: row, section: TransactionDetailsSectionType.signers.index)
     tableView.reloadRows(at: [indexPath], with: .automatic)
-  }
-  
-  func disableBackButton() {
-    navigationItem.hidesBackButton = true
-  }
+  }  
   
   func setConfirmationAlert() {
     let alert = UIAlertController(title: L10n.textDenyDialogTitle,
@@ -119,8 +129,12 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   func setProgressAnimation(isEnable: Bool) {
     DispatchQueue.main.async {
       self.navigationItem.hidesBackButton = isEnable
-      isEnable ? HUD.show(.labeledProgress(title: nil,
-                                           subtitle: L10n.animationWaiting)) : HUD.hide()
+      if let topVC = UIApplication.getTopViewController() {
+        if !(topVC is PinEnterViewController) {
+          isEnable ? HUD.show(.labeledProgress(title: nil,
+                                               subtitle: L10n.animationWaiting)) : HUD.hide()
+        }
+      }
     }
   }
   
@@ -129,7 +143,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
                        forCellReuseIdentifier: cellName)
   }
   
-  func setConfirmButtonWithError(isInvalid: Bool) {
+  func setConfirmButtonWithError(isInvalid: Bool, withTextError: String?) {
     guard isInvalid else {
       confirmButton.backgroundColor = Asset.Colors.main.color
       return
@@ -137,7 +151,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     
     expiredErrorLabel.isHidden = false
     errorLabelHeightConstraint.constant = 30
-    expiredErrorLabel.text = L10n.textTransactionInvalidError
+    expiredErrorLabel.text = withTextError == nil ? L10n.textTransactionInvalidError : withTextError
     confirmButton.isEnabled = false
     confirmButton.backgroundColor = Asset.Colors.disabled.color
     confirmButton.setTitleColor(Asset.Colors.white.color, for: .normal)
@@ -160,15 +174,6 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
     return presenter.sections[section].rows.count
   }
   
-  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    guard presenter.sections[section].type == .signers else {
-      return nil
-    }
-    let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
-    headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeddedSignatures)"
-    return headerView
-  }
-  
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let section = presenter.sections[indexPath.section]
     let row = section.rows[indexPath.row]
@@ -181,7 +186,7 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
     case .operationDetail(let name, let value):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
       
-      cell.setData(title: name.capitalizingFirstLetter(), value: value)
+      cell.setData(title: name, value: value)
       cell.selectionStyle = .none
       return cell
     case .additionalInformation(let name, let value):
@@ -212,14 +217,14 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
     return presenter.sections[section].type.headerHeight
   }
-}
 
-extension String {
-    func capitalizingFirstLetter() -> String {
-        return prefix(1).capitalized + dropFirst()
+  func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+    guard presenter.sections[section].type == .signers else {
+      return nil
     }
-
-    mutating func capitalizeFirstLetter() {
-        self = self.capitalizingFirstLetter()
-    }
+    
+    let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+    headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
+    return headerView
+  }
 }

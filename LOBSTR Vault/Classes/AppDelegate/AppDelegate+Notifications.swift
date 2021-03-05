@@ -8,6 +8,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
                               withCompletionHandler _: @escaping () -> Void) {
     let userInfo = response.notification.request.content.userInfo
     applicationCoordinator.postNotification(accordingTo: userInfo)
+    applicationCoordinator.showAppropriateScreen(accordingTo: userInfo)
   }
   
   func userNotificationCenter(_ center: UNUserNotificationCenter,

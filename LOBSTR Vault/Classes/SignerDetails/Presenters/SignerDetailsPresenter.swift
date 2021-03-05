@@ -24,6 +24,7 @@ class SignerDetailsPresenterImpl {
     self.view = view
     self.transactionService = transactionService
     self.federationService = federationService
+    addObservers()
   }    
   
   func displayAccountList() {
@@ -39,6 +40,11 @@ class SignerDetailsPresenterImpl {
       }
     }
   }
+  
+  @objc func onDidJWTTokenUpdate(_ notification: Notification) {
+    displayAccountList()
+  }
+  
 }
 
 private extension SignerDetailsPresenterImpl {
@@ -93,13 +99,25 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   }
   
   func signerDetailsViewDidLoad() {
-    guard let viewController = view as? UIViewController else {
-      return
-    }
+    guard let viewController = view as? UIViewController else { return }
+    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     if ConnectionHelper.checkConnection(viewController) {
       displayAccountList()
     }
     
   }
+}
+
+// MARK: - Private
+
+private extension SignerDetailsPresenterImpl {
+  
+  func addObservers() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidJWTTokenUpdate(_:)),
+                                           name: .didJWTTokenUpdate,
+                                           object: nil)
+  }
+  
 }

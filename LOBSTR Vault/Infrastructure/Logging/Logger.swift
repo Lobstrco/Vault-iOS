@@ -23,4 +23,6 @@ enum Logger {
   static let home = log(category: "Home")
   static let pin = log(category: "Pin")
   static let firebase = log(category: "Firebase")
+  static let tangem = log(category: "Tangem")
+  static let operations = log(category: "Operations")
 }

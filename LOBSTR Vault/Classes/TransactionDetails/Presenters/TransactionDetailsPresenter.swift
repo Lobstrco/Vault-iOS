@@ -5,7 +5,7 @@ protocol TransactionDetailsPresenter {
   var sections: [TransactionDetailsSection] { get }
   
   var numberOfAcceptedSignatures: Int { get }
-  var numberOfNeddedSignatures: Int { get }
+  var numberOfNeededSignatures: Int { get }
   var numberOfOperation: Int { get }
   
   func confirmButtonWasPressed()
@@ -22,9 +22,8 @@ protocol TransactionDetailsView: class {
   func setErrorAlert(for error: Error)
   func setProgressAnimation(isEnable: Bool)
   func registerTableViewCell(with cellName: String)
-  func setConfirmButtonWithError(isInvalid: Bool)
-  func setTitle(_ title: String)
-  func disableBackButton()
+  func setConfirmButtonWithError(isInvalid: Bool, withTextError: String?)
+  func setTitle(_ title: String)  
   func openTransactionListScreen()
   func reloadData()
   func reloadSignerListRow(_ row: Int)

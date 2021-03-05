@@ -31,7 +31,6 @@ struct NotificationsService {
       case .success(_):
         break
       case .failure:
-        // need to create crashlytics event
         break
       }
     }

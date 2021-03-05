@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="fQH-78-uqU">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Back Up Account View Controller-->
+        <scene sceneID="JE3-2s-34E">
+            <objects>
+                <viewController storyboardIdentifier="BackUpAccountViewController" id="fQH-78-uqU" customClass="BackUpAccountViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Prb-Yt-2KZ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vsp-La-PH0">
+                                <rect key="frame" x="16" y="596" width="343" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="9UR-bX-XMQ"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="I understand">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="understandButtonAction:" destination="fQH-78-uqU" eventType="touchUpInside" id="gA4-6d-BD8"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="niO-En-QZv">
+                                <rect key="frame" x="18" y="306.5" width="339" height="54"/>
+                                <string key="text">In this step your will be shown a secret mnemonic codes. It will allow you to recover access to your wallet if your phone lost or stolen.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/DarkIndigo"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Backup account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1mE-bk-iZY">
+                                <rect key="frame" x="121.5" y="275.5" width="132" height="21"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                <color key="textColor" name="Colors/Black"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Icons/Other/icKey" translatesAutoresizingMaskIntoConstraints="NO" id="9Fg-Lk-YYW">
+                                <rect key="frame" x="163.5" y="205.5" width="48" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="b48-a4-fzv"/>
+                                    <constraint firstAttribute="width" constant="48" id="dzR-yd-NnI"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" name="Colors/White"/>
+                        <constraints>
+                            <constraint firstItem="niO-En-QZv" firstAttribute="centerY" secondItem="Prb-Yt-2KZ" secondAttribute="centerY" id="8Im-w4-O49"/>
+                            <constraint firstItem="uNg-cS-0xy" firstAttribute="trailing" secondItem="vsp-La-PH0" secondAttribute="trailing" constant="16" id="CcO-6f-pa7"/>
+                            <constraint firstItem="niO-En-QZv" firstAttribute="leading" secondItem="uNg-cS-0xy" secondAttribute="leading" constant="18" id="Jxr-ep-GjS"/>
+                            <constraint firstItem="uNg-cS-0xy" firstAttribute="bottom" secondItem="vsp-La-PH0" secondAttribute="bottom" constant="23" id="KLp-ql-td9"/>
+                            <constraint firstItem="vsp-La-PH0" firstAttribute="leading" secondItem="uNg-cS-0xy" secondAttribute="leading" constant="16" id="Knk-41-Px7"/>
+                            <constraint firstItem="niO-En-QZv" firstAttribute="top" secondItem="1mE-bk-iZY" secondAttribute="bottom" constant="10" id="Ubf-cy-XoX"/>
+                            <constraint firstAttribute="trailing" secondItem="niO-En-QZv" secondAttribute="trailing" constant="18" id="aQr-eq-Xbs"/>
+                            <constraint firstItem="niO-En-QZv" firstAttribute="centerX" secondItem="Prb-Yt-2KZ" secondAttribute="centerX" id="amW-Nb-wrS"/>
+                            <constraint firstItem="9Fg-Lk-YYW" firstAttribute="centerX" secondItem="Prb-Yt-2KZ" secondAttribute="centerX" id="bqQ-dZ-O9J"/>
+                            <constraint firstItem="1mE-bk-iZY" firstAttribute="top" secondItem="9Fg-Lk-YYW" secondAttribute="bottom" constant="22" id="tdo-pY-KkX"/>
+                            <constraint firstItem="1mE-bk-iZY" firstAttribute="centerX" secondItem="Prb-Yt-2KZ" secondAttribute="centerX" id="vid-Md-FHJ"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="uNg-cS-0xy"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="UEz-zq-Ljw">
+                        <barButtonItem key="rightBarButtonItem" title="Item" image="Icons/Other/icQuestionSign" id="qrq-It-jYj">
+                            <connections>
+                                <action selector="helpButtonAction:" destination="fQH-78-uqU" id="1Qz-mu-iLF"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="backupDescriptionlabel" destination="niO-En-QZv" id="9yf-le-lLS"/>
+                        <outlet property="backupTitleLabel" destination="1mE-bk-iZY" id="5Ja-c4-V5n"/>
+                        <outlet property="understandButton" destination="vsp-La-PH0" id="twa-Pw-nTU"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="6Sj-1p-hHG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-39.200000000000003" y="133.5832083958021"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Icons/Other/icKey" width="49" height="48"/>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
+        <namedColor name="Colors/Black">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/DarkIndigo">
+            <color red="0.027450980392156862" green="0.10980392156862745" blue="0.20000000000000001" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>

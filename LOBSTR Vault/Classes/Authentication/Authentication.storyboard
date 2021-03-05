@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Authentication View Controller-->
+        <scene sceneID="GBT-38-UWF">
+            <objects>
+                <viewController storyboardIdentifier="AuthenticationViewController" id="6A9-ap-7b5" customClass="AuthenticationViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="3SF-Ib-kzF">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QdZ-yC-hUg">
+                                <rect key="frame" x="16" y="798" width="382" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="X5H-SA-dCR"/>
+                                </constraints>
+                                <state key="normal" title="Scan signer card">
+                                    <color key="titleColor" name="Colors/White"/>
+                                </state>
+                                <connections>
+                                    <action selector="scanCardButtonAction:" destination="6A9-ap-7b5" eventType="touchUpInside" id="01c-0P-y3o"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7xp-cR-V3v">
+                                <rect key="frame" x="16" y="412" width="382" height="72"/>
+                                <string key="text">Verify your possession of the Signer Card and the signer account. Hold the Signer Card near the back of your device for a few seconds to continue using the app.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/DarkIndigo"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Signer Card verification" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7pd-t8-DEz">
+                                <rect key="frame" x="20" y="380" width="374" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ccf-8o-mit"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="7xp-cR-V3v" firstAttribute="top" secondItem="7pd-t8-DEz" secondAttribute="bottom" constant="8" id="APz-32-2a8"/>
+                            <constraint firstItem="7xp-cR-V3v" firstAttribute="leading" secondItem="3SF-Ib-kzF" secondAttribute="leading" constant="16" id="Dh0-9B-bPY"/>
+                            <constraint firstItem="ccf-8o-mit" firstAttribute="trailing" secondItem="QdZ-yC-hUg" secondAttribute="trailing" constant="16" id="FJ0-Ba-ttS"/>
+                            <constraint firstItem="ccf-8o-mit" firstAttribute="bottom" secondItem="QdZ-yC-hUg" secondAttribute="bottom" constant="16" id="OZH-zF-G89"/>
+                            <constraint firstItem="7xp-cR-V3v" firstAttribute="centerX" secondItem="3SF-Ib-kzF" secondAttribute="centerX" id="S3X-OS-Bhu"/>
+                            <constraint firstItem="QdZ-yC-hUg" firstAttribute="leading" secondItem="ccf-8o-mit" secondAttribute="leading" constant="16" id="cOE-U3-RO6"/>
+                            <constraint firstItem="ccf-8o-mit" firstAttribute="trailing" secondItem="7pd-t8-DEz" secondAttribute="trailing" constant="20" id="d28-hi-Kqr"/>
+                            <constraint firstAttribute="trailing" secondItem="7xp-cR-V3v" secondAttribute="trailing" constant="16" id="qHs-ai-H4p"/>
+                            <constraint firstItem="7pd-t8-DEz" firstAttribute="leading" secondItem="ccf-8o-mit" secondAttribute="leading" constant="20" id="t4u-kd-FDl"/>
+                            <constraint firstItem="7xp-cR-V3v" firstAttribute="centerY" secondItem="3SF-Ib-kzF" secondAttribute="centerY" id="vtN-wK-H8O"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="scanButton" destination="QdZ-yC-hUg" id="nZL-ie-3pJ"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hKU-rV-F3y" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="516" y="44"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="Colors/DarkIndigo">
+            <color red="0.027450980392156862" green="0.10980392156862745" blue="0.20000000000000001" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

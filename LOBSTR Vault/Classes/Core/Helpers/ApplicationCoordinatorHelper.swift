@@ -3,8 +3,8 @@ import UIKit
 import FirebaseMessaging
 
 enum AccountStatus: Int {
-  case created = 2
-  case waitingToBecomeSigner = 1
+  case createdByDefault = 2
+  case createdWithTangem = 1
   case notCreated = 0
 }
 
@@ -26,12 +26,14 @@ struct ApplicationCoordinatorHelper {
     if let fcmToken = Messaging.messaging().fcmToken {
       NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
     } else {      
-      Logger.notifications.error("Failed to unregister device with error")
+      Logger.notifications.error("Failed to unregister device. Couldn't get fcm token")
     }
     
     UserDefaultsHelper.accountStatus = .notCreated
-    UserDefaultsHelper.isNotificationsEnabled = false    
+    UserDefaultsHelper.isNotificationsEnabled = false
+    UserDefaultsHelper.tangemCardId = nil
     ApplicationCoordinatorHelper.clearKeychain()
+    UserDefaultsHelper.badgesCounter = 0
     
     NotificationManager().setNotificationBadge(badgeNumber: 0)
     

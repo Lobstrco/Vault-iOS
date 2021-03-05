@@ -5,27 +5,30 @@ class HomePresenterImpl: HomePresenter {
   
   private weak var view: HomeView?
   private let transactionService: TransactionService
+  private let versionControlService: VersionControlService
   private let federationService: FederationService
   private let vaultStorage: VaultStorage
   
-  private var publicKey: String?
-  private var signedAccounts: [SignedAccount] = []
+  var publicKey: String?
+  var signedAccounts: [SignedAccount] = []
   
   private let notificationManager: NotificationManager
   private let homeSectionsBuilder: HomeSectionsBuilder
   
-  fileprivate var transactionNumberStatus: TaskStatus = .ready
+  private var transactionNumberStatus: TaskStatus = .ready
   
   lazy var sections: [HomeSection] = homeSectionsBuilder.buildSections()
   
   init(view: HomeView,
        transactionService: TransactionService = TransactionService(),
+       versionControlService: VersionControlService = VersionControlService(),
        federationService: FederationService = FederationService(),
        notificationRegistrator: NotificationManager = NotificationManager(),
        vaultStorage: VaultStorage = VaultStorage(),
        homeSectionsBuilder: HomeSectionsBuilder = HomeSectionsBuilderImpl()) {
     self.view = view
     self.transactionService = transactionService
+    self.versionControlService = versionControlService
     self.federationService = federationService
     self.vaultStorage = vaultStorage
     self.notificationManager = notificationRegistrator
@@ -43,23 +46,56 @@ class HomePresenterImpl: HomePresenter {
   }
   
   @objc func onDidChangeSignerDetails(_ notification: Notification) {
+    switch UserDefaultsHelper.accountStatus {
+    case .createdWithTangem:
+      if VersionControlHelper.checkIfAlertViewHasPresented() == nil {
+        VersionControlHelper.checkAppVersion(showAlertImmediately: false) { versions in
+          let compare = versions["min_app_version"]?.compare(VersionControlHelper.currentAppVersion, options: .numeric)
+          if compare == .orderedDescending {
+            VersionControlHelper.showForceUpdate()
+          }
+        }
+      }
+    default:
+      break
+    }
     setTransactionNumber()
     setSignerDetails()
   }
   
+  @objc func onDidJWTTokenUpdate(_ notification: Notification) {
+    setTransactionNumber()
+    setSignerDetails()
+    registerForRemoteNotifications()
+  }
+  
+  @objc func checkControlVersion(_ notification: Notification) {
+    VersionControlHelper.checkAppVersion(showAlertImmediately: true, completion: {_ in })
+  }
+  
   // MARK: - HomePresenter
+  func homeViewDidAppear() {
+    guard let viewController = view as? UIViewController else { return }
+    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
+  }
   
   func homeViewDidLoad() {
-    registerForRemoteNotifications()
-    
-    guard let viewController = view as? UIViewController else {
-      return
+    switch UserDefaultsHelper.accountStatus {
+    case .createdWithTangem:
+      if VersionControlHelper.checkIfAlertViewHasPresented() == nil {
+        VersionControlHelper.checkAppVersion(showAlertImmediately: true, completion: {_ in })
+      }
+    default:
+      break
     }
+
+    setPublicKey()
+    guard let viewController = view as? UIViewController else { return }
+    registerForRemoteNotifications()
     
     if ConnectionHelper.checkConnection(viewController) {
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         self.setTransactionNumber()
-        self.setPublicKey()
         self.setSignerDetails()
       }
     }
@@ -93,87 +129,18 @@ class HomePresenterImpl: HomePresenter {
   }
   
   func refreshButtonWasPressed() {
+    guard let viewController = view as? UIViewController else { return }
+    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
+    
     self.setTransactionNumber()
     self.setPublicKey()
     self.setSignerDetails()
   }
-  
-  // MARK: - Private
-  
-  private func addObservers() {
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidChangeTransactionList(_:)),
-                                           name: .didChangeTransactionList,
-                                           object: nil)
-    
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidRemoveTransaction(_:)),
-                                           name: .didRemoveTransaction,
-                                           object: nil)
-    
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidChangeSignerDetails(_:)),
-                                           name: UIApplication.didBecomeActiveNotification,
-                                           object: nil)
-    
-    NotificationCenter.default.addObserver(self,
-                                           selector: #selector(onDidChangeSignerDetails(_:)),
-                                           name: .didChangeSignerDetails,
-                                           object: nil)
-  }
-  
-  private func setStatus(_ status: TaskStatus) {
-    transactionNumberStatus = status
-    
-    if status == .loading {
-      view?.setProgressAnimationForTransactionNumber(isEnabled: true)
-    } else {
-      view?.setProgressAnimationForTransactionNumber(isEnabled: false)
-    }
-  }
-  
-  private func registerForRemoteNotifications() {
-    notificationManager.requestAuthorization() { isGranted in
-      UserDefaultsHelper.isNotificationsEnabled = isGranted
-      self.notificationManager.sendFCMTokenToServer()
-    }
-  }
-  
-  // MARK: - HomeView
-  
-  func setPublicKey() {
-    guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain()
-    else { return }
-    sections[HomeSectionType.vaultPublicKey.index].rows = [.publicKey(publicKeyFromKeychain)]
-    publicKey = publicKeyFromKeychain
-    
-    view?.reloadTableViewSections([HomeSectionType.vaultPublicKey.index])
-  }
-  
-  func setTransactionNumber() {
-    guard transactionNumberStatus == .ready else {
-      return
-    }
-    
-    setStatus(.loading)
-    transactionService.getNumberOfTransactions() { result in
-      self.setStatus(.ready)
-      switch result {
-      case .success(let numberOfTransactions):
-        self.sections[HomeSectionType.transactionsToSign.index].rows = [.numberOfTransactions(String(numberOfTransactions))]
-        self.view?.reloadTableViewSections([HomeSectionType.transactionsToSign.index])
-        self.notificationManager.setNotificationBadge(badgeNumber: numberOfTransactions)
-      case .failure(let serverRequestError):
-        switch serverRequestError {
-        case ServerRequestError.needRepeatRequest:          
-          self.setTransactionNumber()
-        default:
-          self.sections[HomeSectionType.transactionsToSign.index].rows = [.numberOfTransactions("-")]
-          self.view?.reloadTableViewSections([HomeSectionType.transactionsToSign.index])
-        }
-      }
-    }
-  }
+}
+
+// MARK: - Private
+
+private extension HomePresenterImpl {
   
   func setSignerDetails() {
     transactionService.getSignedAccounts() { result in
@@ -181,12 +148,11 @@ class HomePresenterImpl: HomePresenter {
       case .success(let accounts):
         Logger.home.debug("Signed accounts were loaded with data: \(accounts)")
         self.signedAccounts = self.getAccountsFromCache(accounts)
-        self.sections[HomeSectionType.signersTotalNumber.index].rows = [.totalNumber(self.signedAccounts.count)]
-        self.sections[HomeSectionType.listOfSigners.index].rows = self.signedAccounts.map { .signer($0) }
-        
-        self.view?.reloadTableViewSections([HomeSectionType.signersTotalNumber.index,
-                                            HomeSectionType.listOfSigners.index])
         UserDefaultsHelper.numberOfSignerAccounts = self.signedAccounts.count
+        
+        self.view?.setNumberOfSignedAccount(self.signedAccounts.count)
+        self.view?.setAccountLabel()
+        self.view?.setSignedAccountsList(self.signedAccounts)
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:
@@ -197,7 +163,7 @@ class HomePresenterImpl: HomePresenter {
       }
     }
   }
-  
+    
   func getAccountsFromCache(_ signedAccounts: [SignedAccount]) -> [SignedAccount] {
     var newAccounts : [SignedAccount] = []
     for (index, signedAccount) in signedAccounts.enumerated() {
@@ -217,14 +183,83 @@ class HomePresenterImpl: HomePresenter {
     federationService.getFederation(for: publicKey) { result in
       switch result {
       case .success(let account):
-        if let _ = self.sections[safe: HomeSectionType.listOfSigners.index] {
-          self.sections[HomeSectionType.listOfSigners.index].rows[index] =
-            .signer(SignedAccount(address: account.publicKey, federation: account.federation))
-        }
-        self.view?.reloadSignerListRow(index)
+        self.signedAccounts[index].federation = account.federation
+        self.view?.setSignedAccountsList(self.signedAccounts)
       case .failure(let error):
         Logger.home.error("Couldn't get federation for \(publicKey) with error: \(error)")
       }
     }
   }
+  
+  func setPublicKey() {
+    guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() else { return }
+    publicKey = publicKeyFromKeychain
+    view?.setPublicKey(publicKeyFromKeychain.getTruncatedPublicKey())
+  }
+    
+  func setTransactionNumber() {
+    guard transactionNumberStatus == .ready else {
+      return
+    }
+    
+    setStatus(.loading)
+    transactionService.getNumberOfTransactions() { result in
+      self.setStatus(.ready)
+      switch result {
+      case .success(let numberOfTransactions):
+        self.view?.setTransactionNumber(numberOfTransactions.description)
+        UserDefaultsHelper.badgesCounter = numberOfTransactions
+      case .failure(let serverRequestError):
+        self.view?.setTransactionNumber("-")
+        Logger.home.error("Couldn't get number of transactions with error \(serverRequestError)" )
+      }
+    }
+  }
+  
+  func setStatus(_ status: TaskStatus) {
+    transactionNumberStatus = status
+    
+    if status == .loading {
+      view?.setProgressAnimationForTransactionNumber()
+    }
+  }
+  
+  func registerForRemoteNotifications() {
+    notificationManager.requestAuthorization() { isGranted in
+      UserDefaultsHelper.isNotificationsEnabled = isGranted
+      self.notificationManager.sendFCMTokenToServer()
+    }
+  }
+  
+  func addObservers() {
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(onDidChangeTransactionList(_:)),
+                                          name: .didChangeTransactionList,
+                                          object: nil)
+
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(onDidRemoveTransaction(_:)),
+                                          name: .didRemoveTransaction,
+                                          object: nil)
+
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(onDidChangeSignerDetails(_:)),
+                                          name: UIApplication.didBecomeActiveNotification,
+                                          object: nil)
+
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(onDidChangeSignerDetails(_:)),
+                                          name: .didChangeSignerDetails,
+                                          object: nil)
+
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(onDidJWTTokenUpdate(_:)),
+                                          name: .didJWTTokenUpdate,
+                                          object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(checkControlVersion(_:)),
+                                          name: .didPinScreenClose,
+                                          object: nil)
+   }
 }

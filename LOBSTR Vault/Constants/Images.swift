@@ -25,6 +25,7 @@ internal enum Asset {
     internal static let cellBorder = ColorAsset(name: "Colors/CellBorder")
     internal static let confirm = ColorAsset(name: "Colors/Confirm")
     internal static let darkIndigo = ColorAsset(name: "Colors/DarkIndigo")
+    internal static let `default` = ColorAsset(name: "Colors/Default")
     internal static let disabled = ColorAsset(name: "Colors/Disabled")
     internal static let gray = ColorAsset(name: "Colors/Gray")
     internal static let grayOpacity30 = ColorAsset(name: "Colors/GrayOpacity30")
@@ -33,6 +34,7 @@ internal enum Asset {
     internal static let main = ColorAsset(name: "Colors/Main")
     internal static let pending = ColorAsset(name: "Colors/Pending")
     internal static let pinDotOut = ColorAsset(name: "Colors/PinDotOut")
+    internal static let pink = ColorAsset(name: "Colors/Pink")
     internal static let red = ColorAsset(name: "Colors/Red")
     internal static let white = ColorAsset(name: "Colors/White")
   }
@@ -65,7 +67,20 @@ internal enum Asset {
   internal enum Other {
 
     internal static let bgMultitask = ImageAsset(name: "Other/bg_multitask")
+    internal static let fullLogo = ImageAsset(name: "Other/full_logo")
     internal static let logo = ImageAsset(name: "Other/logo")
+  }
+  internal enum States {
+
+    internal static let cardIcon = ImageAsset(name: "States/cardIcon")
+    internal static let emptyTransactions = ImageAsset(name: "States/emptyTransactions")
+    internal static let handCard = ImageAsset(name: "States/handCard")
+    internal static let signedTransactions = ImageAsset(name: "States/signedTransactions")
+  }
+  internal enum Tangem {
+
+    internal static let tangemCard = ImageAsset(name: "Tangem/tangemCard")
+    internal static let tangemLogo = ImageAsset(name: "Tangem/tangemLogo")
   }
 }
 // swiftlint:enable identifier_name line_length nesting type_body_length type_name

@@ -22,17 +22,31 @@ class SignTransactionOperation: AsyncOperation {
     super.init()
   }
   
-  override func main() {        
+  override func main() {
     guard let keyPair = inputKeyPair, let envelope = transactionEnvelopeXDR else {
       finished(error: VaultError.VaultStorageError.keychainDataNotFound)
       return
     }
     
     do {
-      let transactionHash = try [UInt8](envelope.tx.hash(network: .public))
-      let userSignature = keyPair.signDecorated(transactionHash)
-      envelope.signatures.append(userSignature)
-      outputXdrEncodedEnvelope = envelope.xdrEncoded
+//      let transaction = try! stellarsdk.Transaction(envelopeXdr: envelope.xdrEncoded!)
+//      try! transaction.sign(keyPair: keyPair, network: .public)
+//      let xdrEnvelope = try! transaction.encodedEnvelope()
+//      outputXdrEncodedEnvelope = xdrEnvelope
+      
+//      let transactionHash = try [UInt8](envelope.txHash(network: .public))
+//      let userSignature = keyPair.signDecorated(transactionHash)
+//      envelope.appendSignature(signature: userSignature)
+      
+//      guard var env = TransactionHelper.getTransactionV1Envelope(envelope: envelope) else {
+//        finished(error: VaultError.VaultStorageError.keychainDataNotFound)
+//        return
+//      }
+      
+      var transactionEnvelope = TransactionHelper.tryToTransformTransactionXDRV0ToV1(envelopeXDR: envelope)
+      try TransactionHelper.signTransaction(transactionEnvelopeXDR: &transactionEnvelope, userKeyPair: keyPair)
+      outputXdrEncodedEnvelope = transactionEnvelope.xdrEncoded
+      
       finished(error: nil)
     } catch _ {
       finished(error: VaultError.VaultStorageError.keychainDataNotFound)

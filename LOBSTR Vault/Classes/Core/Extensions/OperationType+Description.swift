@@ -26,13 +26,14 @@ extension OperationType {
       case .setOptions:
         return "Set Options"
       case .createPassiveSellOffer:
-        return "Create Passive Sell Offer"
+        return "Create Passive Offer"
       case .manageBuyOffer:
         return "Buy Offer"
       case .manageSellOffer:
         return "Sell Offer"
       case .pathPaymentStrictSend:
         return "Path Payment Strict Send"
+      default: return "Unknown"
       }
     }
   }

@@ -1,18 +1,24 @@
-import UIKit
 import PKHUD
+import UIKit
 
 class TransactionListViewController: UIViewController {
-
   var presenter: TransactionListPresenter!
   
   @IBOutlet var tableView: UITableView!
   @IBOutlet var importButton: UIButton!
   @IBOutlet var clearButton: UIBarButtonItem!
+  @IBOutlet var emptyStateView: UIView!
   @IBOutlet var emptyStateLabel: UILabel!
   
-  private var emptyState: UILabel {
-    get { return emptyStateLabel }
+  @IBOutlet var activityIndicator: UIActivityIndicatorView! {
+    didSet {
+      activityIndicator.style = .whiteLarge
+      activityIndicator.color = Asset.Colors.main.color
+      activityIndicator.hidesWhenStopped = true
+    }
   }
+  
+  private var emptyState: UIView { return emptyStateView }
   
   private lazy var refreshControl: UIRefreshControl = {
     let refreshControl = UIRefreshControl()
@@ -25,12 +31,19 @@ class TransactionListViewController: UIViewController {
   private let progressHUD = ProgressHUD()
   private var transactionCellViewModels: [TransactionListTableViewCell.ViewModel] = []
   
+  let spinner = UIActivityIndicatorView(style: .whiteLarge)
+  private var lastContentOffset: CGFloat = 0
+  
   // MARK: - Lifecycle
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    if #available(iOS 10.0, *) {
+      tableView.refreshControl = refreshControl
+    } else {
+      tableView.addSubview(refreshControl)
+    }
     
-    tableView.addSubview(self.refreshControl)
     tableView.contentInset = UIEdgeInsets(top: .zero,
                                           left: .zero,
                                           bottom: 70.0,
@@ -42,10 +55,24 @@ class TransactionListViewController: UIViewController {
     setStaticStrings()
     
     presenter.transactionListViewDidLoad()
+    progressHUD.display(onView: view)
   }
   
   override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    if UtilityHelper.jwtTokenExpired() {
+      tableView.refreshControl = nil
+    } else {
+      tableView.refreshControl = refreshControl
+    }
+    navigationController?.setStatusBar(backgroundColor: Asset.Colors.background.color)
+    navigationController?.navigationBar.barTintColor = Asset.Colors.background.color
     tabBarController?.tabBar.isHidden = false
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
+    presenter.transactionListViewDidAppear()
   }
   
   // MARK: - IBActions
@@ -55,25 +82,30 @@ class TransactionListViewController: UIViewController {
   }
   
   @IBAction func clearButtonAction(_ sender: Any) {
-    let alert = UIAlertController(title: L10n.textClearInvalidTransactionsTitle,
-                                  message: L10n.textClearInvalidTransactionsDescription,
+    let alert = UIAlertController(title: L10n.textClearTransactionsTitle,
+                                  message: L10n.textClearTransactionsDescription,
                                   preferredStyle: .alert)
     
-    let okAction = UIAlertAction(title: L10n.buttonTitleOk,
-                                       style: .default) { _ in
-                                        self.presenter.clearButtonWasPressed()
+    let removeInvalidAction = UIAlertAction(title: L10n.buttonTitleRemoveInvalid,
+                                            style: .default) { _ in
+      self.presenter.clearInvalidTransactions()
     }
-    let cancelAction = UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel)
-    alert.addAction(okAction)
-    alert.addAction(cancelAction)
     
+    let removeAllAction = UIAlertAction(title: L10n.buttonTitleRemoveAll,
+                                        style: .default) { _ in
+      self.presenter.clearAllTransactions()
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel)
+    alert.addAction(cancelAction)
+    alert.addAction(removeInvalidAction)
+    alert.addAction(removeAllAction)
     present(alert, animated: true, completion: nil)
   }
   
   // MARK: - Private
   
   @objc private func pullToRefresh() {
-    refreshControl.endRefreshing()
     presenter.pullToRefreshWasActivated()
   }
   
@@ -84,13 +116,19 @@ class TransactionListViewController: UIViewController {
   }
   
   private func setAppearance() {
-    configureTableView()
+    self.navigationItem.rightBarButtonItem = nil
     importButton.layer.cornerRadius = 56 / 2
-    refreshControl.tintColor = Asset.Colors.main.color    
+    refreshControl.tintColor = Asset.Colors.main.color
+    spinner.color = Asset.Colors.main.color
+    spinner.hidesWhenStopped = true
+    
+    configureTableView()
   }
   
   private func configureTableView() {
-    tableView.tableFooterView = UIView()
+    tableView.delegate = self
+    tableView.dataSource = self
+    tableView.tableFooterView = spinner
     tableView.separatorStyle = UITableViewCell.SeparatorStyle.none
   }
 }
@@ -98,9 +136,46 @@ class TransactionListViewController: UIViewController {
 // MARK: - TransactionListView
 
 extension TransactionListViewController: TransactionListView {
+  func setProgressAnimation(isEnabled: Bool, didBecomeActive: Bool) {
+    DispatchQueue.main.async {
+      if didBecomeActive {
+        if !isEnabled {
+          self.activityIndicator.stopAnimating()
+        } else {
+          self.emptyState.isHidden = true
+          self.transactionCellViewModels.removeAll()
+          self.tableView.reloadData()
+          self.activityIndicator.startAnimating()
+        }
+      } else {
+        if !isEnabled {
+          self.progressHUD.remove()
+          self.spinner.stopAnimating()
+        }
+      }
+    }
+  }
   
-  func setProgressAnimation(isEnabled: Bool) {
-    isEnabled ? progressHUD.display(onView: view) : progressHUD.remove()
+  func setProgressAnimationAfterDelete(isEnabled: Bool) {
+    DispatchQueue.main.async {
+      if !isEnabled {
+        self.activityIndicator.stopAnimating()
+      } else {
+        self.transactionCellViewModels.removeAll()
+        self.tableView.reloadData()
+        self.activityIndicator.startAnimating()
+      }
+    }
+  }
+  
+  func setProgressAnimationAfterError() {
+    DispatchQueue.main.async {
+      if self.refreshControl.isRefreshing == true {
+        self.refreshControl.endRefreshing()
+      }
+      self.tableView.reloadData()
+      self.spinner.stopAnimating()
+    }
   }
   
   func setHUDSuccessViewAfterRemoveOperation() {
@@ -123,26 +198,36 @@ extension TransactionListViewController: TransactionListView {
     } else {
       transactionCellViewModels.append(contentsOf: viewModels)
     }
-    
     tableView.reloadData()
-    refreshControl.endRefreshing()
+    if refreshControl.isRefreshing == true {
+      DispatchQueue.main.async {
+        self.refreshControl.endRefreshing()
+      }
+    }
+    spinner.stopAnimating()
     emptyState.isHidden = !viewModels.isEmpty
   }
   
   func setImportXDRPopover(_ popover: CustomPopoverViewController) {
-    present(popover, animated: true, completion: nil)    
+    present(popover, animated: true, completion: nil)
   }
   
   func setErrorAlert(for error: Error) {
-    refreshControl.endRefreshing()
-    UIAlertController.defaultAlert(for: error, presentingViewController: self)
+    DispatchQueue.main.async {
+      self.refreshControl.endRefreshing()
+      self.spinner.stopAnimating()
+      UIAlertController.defaultAlert(for: error, presentingViewController: self)
+    }
+  }
+  
+  func setClearButton(isHidden: Bool) {
+    self.navigationItem.rightBarButtonItem = isHidden ? nil : clearButton
   }
 }
 
 // MARK: - UITableView
 
 extension TransactionListViewController: UITableViewDelegate, UITableViewDataSource {
-  
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return transactionCellViewModels.count
   }
@@ -162,8 +247,12 @@ extension TransactionListViewController: UITableViewDelegate, UITableViewDataSou
     return 88
   }
   
-  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-    if indexPath.row + 1 == transactionCellViewModels.count {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let height = scrollView.frame.size.height
+    let contentYoffset = scrollView.contentOffset.y
+    let distanceFromBottom = scrollView.contentSize.height - contentYoffset
+    if (self.lastContentOffset < scrollView.contentOffset.y), distanceFromBottom < height, !spinner.isAnimating {
+      spinner.startAnimating()
       presenter.tableViewReachedBottom()
     }
   }

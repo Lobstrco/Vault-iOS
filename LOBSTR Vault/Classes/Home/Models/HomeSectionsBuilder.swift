@@ -13,13 +13,13 @@ struct HomeSectionsBuilderImpl: HomeSectionsBuilder {
     let signersTotalNumber = HomeSection(type: .signersTotalNumber,
                                          rows: [.totalNumber(0)])
     let signers = HomeSection(type: .listOfSigners,
-                              rows: [])
+                              rows: [])    
     let bottom = HomeSection(type: .bottom, rows: [.bottom])
     
     return [transactionsToSign,
             vaultPublicKey,
             signersTotalNumber,
-            signers,
+            signers,            
             bottom]
   }
 }

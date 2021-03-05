@@ -1,5 +1,10 @@
 import Foundation
 
+enum ServerTransactionType: String, Codable {
+  case authChallenge = "auth_challenge"
+  case transaction
+}
+
 struct Transaction: Codable {
   var hash: String?
   var xdr: String?
@@ -9,6 +14,7 @@ struct Transaction: Codable {
   var signedAt: String?
   var status: Int?
   var getStatusDisplay: String?
+  var transactionType: ServerTransactionType?
   
   enum CodingKeys: String, CodingKey {
     case hash
@@ -19,5 +25,6 @@ struct Transaction: Codable {
     case sequenceOutdatedAt = "sequence_outdated_at"
     case status
     case getStatusDisplay = "get_status_display"
+    case transactionType = "transaction_type"
   }
 }

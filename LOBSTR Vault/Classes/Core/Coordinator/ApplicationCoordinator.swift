@@ -1,7 +1,7 @@
 import UIKit
-
 import UserNotifications
 import FirebaseMessaging
+import TangemSdk
 
 class ApplicationCoordinator {
   private let window: UIWindow?
@@ -18,6 +18,7 @@ class ApplicationCoordinator {
     Messaging.messaging().delegate = appDelegate
     UNUserNotificationCenter.current().delegate = appDelegate
     
+    Localization.localizationsBundle = Bundle(for: AppDelegate.self)
     resetNotificationBadgeIfNeeded()
     openStartScreen()
   }
@@ -46,7 +47,6 @@ class ApplicationCoordinator {
   func showMenuScreen() {
     let startMenuViewController = StartMenuViewController.createFromStoryboard()
     let navigationController = UINavigationController(rootViewController: startMenuViewController)
-    AppearanceHelper.setNavigationApperance(navigationController)
     window?.rootViewController = navigationController
   }  
   
@@ -56,11 +56,23 @@ class ApplicationCoordinator {
     window?.rootViewController = pinViewController
   }
   
-  func showPublicKeyScreen() {
-    let vaultPublicKeyViewController = VaultPublicKeyViewController.createFromStoryboard()
-    let navigationController = UINavigationController(rootViewController: vaultPublicKeyViewController)
-    AppearanceHelper.setNavigationApperance(navigationController)
-    window?.rootViewController = navigationController
+  func showAppropriateScreen(accordingTo userInfo: [AnyHashable : Any]) {
+    guard let eventType = userInfo["event_type"] as? String, let notificationType = NotificationType(rawValue: eventType) else { return }
+    
+    switch notificationType {
+    case .addedNewTransaction, .addedNewSignature:
+        if let transactionString = userInfo["transaction"] as? String {
+          let data = Data(transactionString.utf8)
+          do {
+            let transaction = try JSONDecoder().decode(Transaction.self, from: data)
+            showTransactionsDetails(by: transaction)
+          } catch {
+            Logger.notifications.error("Failed to receive transaction")
+          }
+        }
+    default:
+      break
+    }
   }
 }
 
@@ -71,14 +83,24 @@ private extension ApplicationCoordinator {
   func openStartScreen() {
     switch accountStatus {
     case .notCreated:
+      Logger.auth.debug("AUTH. NOT CREATED")
       enablePromtForTransactionDecisions()
       ApplicationCoordinatorHelper.clearKeychain()
       showMenuScreen()
-    case .waitingToBecomeSigner:
+    case .createdWithTangem:
+      // for previous version 1.3.2 without tangem support
+      guard let _ = VaultStorage().getEncryptedMnemonicFromKeychain() else {
+        Logger.auth.debug("AUTH. TANGEM")
+        showHomeScreen()
+        return
+      }
+      Logger.auth.debug("AUTH. WAITING TO SIGNER")
       enablePromtForTransactionDecisions()
-      showPinScreen(mode: .enterPinForWaitingToBecomeSigner)
-    case .created:
-      showPinScreen(mode: .enterPin)
+      ApplicationCoordinatorHelper.clearKeychain()
+      showMenuScreen()
+    case .createdByDefault:
+      Logger.auth.debug("AUTH. DEFAULT")
+      showHomeScreen()
     }
   }
    
@@ -87,8 +109,25 @@ private extension ApplicationCoordinator {
   }
   
   func resetNotificationBadgeIfNeeded() {
-    if accountStatus != .created {
+    if accountStatus != .createdByDefault {
       notificationManager.setNotificationBadge(badgeNumber: 0)
+    }
+  }
+  
+  func showTransactionsDetails(by transaction: Transaction) {
+    let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
+    transactionDetailsViewController.afterPushNotification = true
+    
+    transactionDetailsViewController.presenter =
+      TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
+                                      transaction: transaction,
+                                      type: .standard)
+    Logger.transactionDetails.debug("Transaction: \(transaction)")
+    transactionDetailsViewController.presenter.transactionListIndex = 0
+    guard let tabBarViewController = self.window!.rootViewController as? TabBarViewController else { return }
+    let navigationController = tabBarViewController.selectedViewController as? UINavigationController
+    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+      navigationController?.pushViewController(transactionDetailsViewController, animated: true)
     }
   }
 }

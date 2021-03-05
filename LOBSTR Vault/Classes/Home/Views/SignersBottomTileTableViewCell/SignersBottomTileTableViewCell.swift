@@ -1,10 +1,16 @@
-//
-
 import UIKit
+
+protocol SignersBottomTileTableViewCellDelegate: class {
+  func multisigInfoButtonDidPress()
+}
 
 class SignersBottomTileTableViewCell: UITableViewCell {
   @IBOutlet var shadowView: UIView!
   @IBOutlet var infoContainerView: UIView!
+  
+  @IBOutlet var multisigInfoButton: UIButton!
+  
+  weak var delegate: SignersBottomTileTableViewCellDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -19,5 +25,14 @@ class SignersBottomTileTableViewCell: UITableViewCell {
     infoContainerView.layer.cornerRadius = 5
     infoContainerView.layer.borderColor = UIColor.clear.cgColor
     infoContainerView.layer.masksToBounds = true
+        
+    AppearanceHelper.set(multisigInfoButton, with: "Add Account")
+    
+    multisigInfoButton.layer.borderColor = Asset.Colors.main.color.cgColor
+    multisigInfoButton.layer.borderWidth = 1
+  }
+  
+  @IBAction func numberOfSignerButtonAction(_ sender: UIButton) {
+    delegate?.multisigInfoButtonDidPress()
   }
 }

@@ -10,7 +10,7 @@ public enum HomeRow {
   case numberOfTransactions(String)
   case publicKey(String)
   case totalNumber(Int)
-  case signer(SignedAccount)
+  case signer(SignedAccount)  
   case bottom
   
   var height: CGFloat {
@@ -19,7 +19,7 @@ public enum HomeRow {
     case .publicKey: return 240.0
     case .totalNumber: return 60.0
     case .signer: return 80.0
-    case .bottom: return 20.0
+    case .bottom: return 100.0
     }
   }
 }

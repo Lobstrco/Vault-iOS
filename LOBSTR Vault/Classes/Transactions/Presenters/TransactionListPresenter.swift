@@ -13,14 +13,19 @@ protocol TransactionListView: class {
   func setHUDSuccessViewAfterRemoveOperation()
   func setTransactionList(viewModels: [TransactionListTableViewCell.ViewModel], isResetData: Bool)
   func updateFederataionAddress(_ address: String, for indexItem: Int)
-  func setProgressAnimation(isEnabled: Bool)
+  func setProgressAnimation(isEnabled: Bool, didBecomeActive: Bool)
+  func setProgressAnimationAfterDelete(isEnabled: Bool)
+  func setProgressAnimationAfterError()
+  func setClearButton(isHidden: Bool)
 }
 
 protocol TransactionListPresenter {
   func transactionWasSelected(with index: Int)
   func transactionListViewDidLoad()
+  func transactionListViewDidAppear()
   func importXDRButtonWasPressed()
-  func clearButtonWasPressed()
+  func clearAllTransactions()
+  func clearInvalidTransactions()
   func pullToRefreshWasActivated()
   func tableViewReachedBottom()
 }
@@ -53,6 +58,10 @@ class TransactionListPresenterImpl {
   @objc func onDidChangeTransactionList(_ notification: Notification) {
     displayPendingTransactions(isResetData: true)
   }
+ 
+  @objc func onDidChangeTransactionListAfterLeavingBackground(_ notification: Notification) {
+    displayPendingTransactions(isResetData: true, didBecomeActive: true)
+  }
   
   @objc func onDidRemoveTransaction(_ notification: Notification) {
     displayPendingTransactions(isResetData: true)
@@ -60,15 +69,46 @@ class TransactionListPresenterImpl {
       self.view?.setHUDSuccessViewAfterRemoveOperation()
     }
   }
+  
+  @objc func onDidJWTTokenUpdate(_ notification: Notification) {
+    displayPendingTransactions(isResetData: true)
+  }
 }
 
 // MARK: - TransactionImportDelegate
 
 extension TransactionListPresenterImpl: TransactionImportDelegate {
   func submitTransaction(with xdr: String) {
-    var transaction = Transaction()
-    transaction.xdr = xdr
-    transitionToTransactionDetailsScreenFromImport(transaction: transaction)
+    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+      return
+    }
+    
+    transactionService.getSignedAccounts { result in
+      switch result {
+      case .success(let accounts):
+        let accountId = TransactionHelper.getAccountId(signedAccounts: accounts, transactionEnvelopeXDR: transactionEnvelopeXDR)
+        let domain = TransactionHelper.getManageDataOperationDomain(from: xdr)
+        let webAuthenticator = WebAuthenticator(authEndpoint: Environment.horizonBaseURL, network: .public, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId, serverHomeDomain: domain)
+        
+        let result = webAuthenticator.isValidChallenge(transactionEnvelopeXDR: transactionEnvelopeXDR, userAccountId: accountId, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId)
+        switch result {
+        case .success:
+          var transaction = Transaction()
+          transaction.xdr = xdr
+          transaction.transactionType = .authChallenge
+          self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
+        case .failure:
+          var transaction = Transaction()
+          transaction.xdr = xdr
+          self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
+        }
+      case .failure(let error):
+        var transaction = Transaction()
+        transaction.xdr = xdr
+        self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
+        Logger.networking.error("Couldn't get signed accounts with error: \(error)")
+      }
+    }
   }
 }
 
@@ -84,25 +124,49 @@ extension TransactionListPresenterImpl: TransactionListPresenter {
     transitionToTransactionImport()
   }
   
-  func clearButtonWasPressed() {
+  func clearAllTransactions() {
+    view?.setProgressAnimationAfterDelete(isEnabled: true)
+    transactionService.cancelAllTransaction { result in
+      switch result {
+      case .success:
+        self.view?.setClearButton(isHidden: true)
+        self.view?.setProgressAnimationAfterDelete(isEnabled: false)
+        NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+      case .failure(let error):
+        self.view?.setProgressAnimationAfterDelete(isEnabled: false)
+        self.view?.setErrorAlert(for: error)
+      }
+    }
+  }
+  
+  func clearInvalidTransactions() {
+    view?.setProgressAnimationAfterDelete(isEnabled: true)
     transactionService.cancelOutdatedTransaction { result in
       switch result {
       case .success:
+        let isHidden = self.transactionList.isEmpty
+        self.view?.setClearButton(isHidden: isHidden)
+        self.view?.setProgressAnimationAfterDelete(isEnabled: false)
         NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
       case .failure(let error):
+        self.view?.setProgressAnimationAfterDelete(isEnabled: false)
         self.view?.setErrorAlert(for: error)
       }
     }
   }
   
   func transactionListViewDidLoad() {
-    guard let viewController = view as? UIViewController else {
-      return
-    }
+    guard let viewController = view as? UIViewController else { return }
+   //guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     if ConnectionHelper.checkConnection(viewController) {
       displayPendingTransactions()
     }
+  }
+  
+  func transactionListViewDidAppear() {
+//    guard let viewController = view as? UIViewController else { return }
+//    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
   }
   
   func transactionWasSelected(with index: Int) {
@@ -130,18 +194,28 @@ private extension TransactionListPresenterImpl {
                                            object: nil)
     
     NotificationCenter.default.addObserver(self,
+                                          selector: #selector(onDidChangeTransactionListAfterLeavingBackground(_:)),
+                                          name: UIApplication.didBecomeActiveNotification,
+                                          object: nil)
+    
+    NotificationCenter.default.addObserver(self,
                                            selector: #selector(onDidChangeTransactionList(_:)),
                                            name: .didChangeSignerDetails,
                                            object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidJWTTokenUpdate(_:)),
+                                           name: .didJWTTokenUpdate,
+                                           object: nil)
   }
   
-  func setStatus(_ status: TaskStatus) {
+  func setStatus(_ status: TaskStatus , didBecomeActive: Bool = false) {
     guard status != transactionListStatus else {
       return
     }
     
-    transactionListStatus = status    
-    view?.setProgressAnimation(isEnabled: status == .loading)
+    transactionListStatus = status
+    view?.setProgressAnimation(isEnabled: status == .loading, didBecomeActive: didBecomeActive)
   }
   
   func getOperationType(from operationNames: [String]) -> String {
@@ -151,17 +225,24 @@ private extension TransactionListPresenterImpl {
     return operationType
   }
   
-  func displayPendingTransactions(isResetData: Bool = false) {
+  func displayPendingTransactions(isResetData: Bool = false, didBecomeActive: Bool = false) {
+    guard let viewController = view as? UIViewController else { return }
+    guard UtilityHelper.isTokenUpdated(view: viewController) else {
+      self.view?.setProgressAnimationAfterError()
+      return
+    }
     if isResetData { currentPageNumber = 1 }
     guard transactionListStatus == .ready, let pageNumber = currentPageNumber, ConnectionHelper.isConnectedToNetwork() else {
+      view?.setProgressAnimation(isEnabled: false, didBecomeActive: false)
       return
     }
     
-    setStatus(.loading)
+    setStatus(.loading, didBecomeActive: didBecomeActive)
     transactionService.getPendingTransactionList(page: pageNumber) { result in
       switch result {
       case .success(let response):
         let newTransactions = response.results
+        self.view?.setClearButton(isHidden: newTransactions.isEmpty)
         self.currentPageNumber = response.hasNextPage() ? pageNumber + 1 : nil
         
         let cellViewModels = self.getCellViewModels(transactions: newTransactions, with: self.transactionList.count)
@@ -171,9 +252,9 @@ private extension TransactionListPresenterImpl {
           self.transactionList.append(contentsOf: newTransactions)
         }
         self.view?.setTransactionList(viewModels: cellViewModels, isResetData: isResetData)
-        self.setStatus(.ready)
+        self.setStatus(.ready, didBecomeActive: didBecomeActive)
       case .failure(let error):
-        self.setStatus(.ready)
+        self.setStatus(.ready, didBecomeActive: didBecomeActive)
         self.crashlyticsService.recordCustomException(error)
         self.view?.setErrorAlert(for: error)
       }
@@ -198,22 +279,19 @@ private extension TransactionListPresenterImpl {
     
     var operationNames: [String] = []
     do {
-      guard let transactionXDR = try? TransactionXDR(xdr: xdr) else {
-        throw VaultError.TransactionError.invalidTransaction
-      }
-      
-      operationNames = try TransactionHelper.getListOfOperationNames(from: transactionXDR)
-      sourceAccount = transactionXDR.sourceAccount.accountId
+      let envelopeXDR = try TransactionEnvelopeXDR(xdr: xdr)
+      operationNames = try TransactionHelper.getListOfOperationNames(from: envelopeXDR, transactionType: transaction.transactionType)
+      sourceAccount = envelopeXDR.txSourceAccountId
     } catch {
       crashlyticsService.recordCustomException(error)
-      view?.setErrorAlert(for: error)
+      Logger.transactions.error("Couldn't get transaction with error: \(error)")
     }
     
     let operationType = getOperationType(from: operationNames)
     
     var operationDate: String = "invalid date"
     if let transactionDate = transaction.addedAt {
-      operationDate = TransactionHelper.getValidatedDate(from: transactionDate)
+      operationDate = TransactionHelper.getValidatedDateForList(from: transactionDate)
     }
     
     let isTransactionValid = transaction.sequenceOutdatedAt == nil ? true : false

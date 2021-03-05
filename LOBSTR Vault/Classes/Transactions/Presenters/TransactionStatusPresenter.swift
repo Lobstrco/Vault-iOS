@@ -11,7 +11,7 @@ enum TransactionStatus: String {
 protocol TransactionStatusPresenter {
   init(view: TransactionStatusView,
        transactionResult: (TransactionResultCode, String?),
-       xdr: String)
+       xdr: String?, transactionType: ServerTransactionType?)
   func transactionStatusViewDidLoad()
   func copyXDRButtonWasPressed(xdr: String)
   func doneButtonWasPressed()
@@ -30,15 +30,17 @@ class TransactionStatusPresenterImpl {
   
   private var view: TransactionStatusView
   private var transactionResult: (code: TransactionResultCode, operationMessageError: String?)
-  private var xdr: String
+  private var xdr: String?
+  private var transactionType: ServerTransactionType?
   private var transactionStatus: TransactionStatus = .failure
   
   required init(view: TransactionStatusView,
        transactionResult: (TransactionResultCode, String?),
-       xdr: String) {
+       xdr: String?, transactionType: ServerTransactionType?) {
     self.view = view
     self.transactionResult = transactionResult
     self.xdr = xdr
+    self.transactionType = transactionType
   }
 }
 
@@ -56,8 +58,8 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
     view.setStatusTitle(statusTitle)
     view.setFeedback(with: transactionStatus)
     
-    if transactionResult.code == .badAuth {
-      view.setXdr(xdr)
+    if transactionResult.code == .badAuth, let newXdr = xdr {
+      view.setXdr(newXdr)
     }
   }
   
@@ -72,10 +74,10 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpViewController = HelpViewController.createFromStoryboard()
+    let helpCenter = ZendeskHelper.getHelpCenterController()
     
     let transactionStatusViewController = view as! TransactionStatusViewController
-    transactionStatusViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    transactionStatusViewController.navigationController?.pushViewController(helpCenter, animated: true)
   }
 }
 
@@ -102,7 +104,11 @@ extension TransactionStatusPresenterImpl {
     case .success:
       return ""
     case .badAuth:
-      return "You have successfully signed this transaction. More signatures required to submit this transaction to the network"
+      if let _ = self.transactionType {
+        return ""
+      } else {
+        return "You have successfully signed this transaction. More signatures required to submit this transaction to the network"
+      }
     case .badSeq:
       return "Sequence number does not match source account"
     default:

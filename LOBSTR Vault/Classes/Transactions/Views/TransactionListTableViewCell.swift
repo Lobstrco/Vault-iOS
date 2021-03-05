@@ -9,6 +9,9 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   @IBOutlet var statusLabel: UILabel!
   @IBOutlet var content: UIView!
   @IBOutlet var identiconView: IdenticonView!
+  @IBOutlet var dateStackViewRightConstraint: NSLayoutConstraint!
+  @IBOutlet var dateStackViewLeftConstraint: NSLayoutConstraint!
+  
   
   private var borderView: UIView!
   
@@ -20,7 +23,8 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
       if let federationName = model.federation {
         sourceAccountLabel.text = federationName
       } else {
-        sourceAccountLabel.text = model.sourceAccount.getTruncatedPublicKey(numberOfCharacters: 6)
+        let numberOfCharactersForTruncate = TransactionHelper.getNumberOfCharactersForTruncate()
+        sourceAccountLabel.text = model.sourceAccount.getTruncatedPublicKey(numberOfCharacters: numberOfCharactersForTruncate)
       }
       statusLabel.text = L10n.textTransactionInvalidLabel
       
@@ -33,12 +37,7 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   // MARK: - TransactionListCellView
   
   override func awakeFromNib() {
-    selectionStyle = UITableViewCell.SelectionStyle.none
-    
-    content.layer.shadowColor = UIColor.black.cgColor
-    content.layer.shadowOffset = CGSize(width: 0, height: 2)
-    content.layer.shadowOpacity = 0.1
-    content.layer.shadowRadius = 2
+    setupUI()
   }
   
   override func prepareForReuse() {
@@ -49,6 +48,23 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
 // MARK: - Private
 
 private extension TransactionListTableViewCell {
+  func setupUI() {
+    selectionStyle = UITableViewCell.SelectionStyle.none
+    content.layer.shadowColor = UIColor.black.cgColor
+    content.layer.shadowOffset = CGSize(width: 0, height: 2)
+    content.layer.shadowOpacity = 0.1
+    content.layer.shadowRadius = 2
+    dateLabel.textAlignment = .right
+    
+    switch UIDevice().type {
+    case .iPhone5, .iPhone5C, .iPhone5S, .iPhoneSE:
+      dateStackViewLeftConstraint.constant = 3
+      dateStackViewRightConstraint.constant = 13
+    default:
+      dateStackViewLeftConstraint.constant = 5
+      dateStackViewRightConstraint.constant = 16
+    }
+  }
   
   func setValidationAppearance(_ isValid: Bool) {
     borderView = UIView(frame: CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width - 32, height: 81))

@@ -36,6 +36,12 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
     setLogoutAlert()
   }
   
+  @IBAction func needHelpAction(_ sender: Any) {
+    if let emailUrl = UtilityHelper.createEmailUrl(to: Constants.recipientEmail, subject: Constants.subjectEmail, body: "") {
+      UIApplication.shared.open(emailUrl)
+    }
+  }
+  
   // MARK: - Private
   
   private func setupAppearance() {
@@ -66,6 +72,11 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
 // MARK: - PinView
 
 extension PinEnterViewController: PinView {
+  
+  func transitionToHomeScreen() {
+    NotificationCenter.default.post(name: .didPinScreenClose, object: nil)
+    dismiss(animated: false, completion: nil)
+  }
   
   func setKeyboardRigthButton(isEnabled: Bool) {
     numberPadView.rightButtonEnable(isEnabled)

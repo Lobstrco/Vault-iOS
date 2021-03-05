@@ -7,24 +7,19 @@ protocol SignerAccountDelegate {
 
 class SignerAccountTableViewCell: UITableViewCell {
   @IBOutlet var signerPublicAddressLabel: UILabel!
-  @IBOutlet var signerFederationLabel: UILabel!
+  @IBOutlet var signerFederationLabel: UILabel! {
+    didSet {
+      signerFederationLabel.lineBreakMode = .byTruncatingTail
+    }
+  }
   
   @IBOutlet var identiconView: IdenticonView!
   @IBOutlet var separatorView: UIView!
-  
-  @IBOutlet var shadowView: UIView!
-  @IBOutlet var infoContainerView: UIView!
   
   var delegate: SignerAccountDelegate?
   
   override func awakeFromNib() {
     super.awakeFromNib()
-    
-    shadowView.layer.shadowOpacity = 0.2
-    shadowView.layer.shadowOffset = CGSize(width: 0, height: 1)
-    shadowView.layer.shadowRadius = 4
-    shadowView.layer.shadowColor = UIColor.black.cgColor
-    shadowView.layer.masksToBounds = false
     
     let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
     lpgr.minimumPressDuration = 0.5
@@ -46,13 +41,17 @@ class SignerAccountTableViewCell: UITableViewCell {
 
 extension SignerAccountTableViewCell {
   func set(_ signedAccount: SignedAccount) {
+//    var signedAccount = signedAccount
+//    signedAccount.federation = "joejones*lobstr.co"
+//    signedAccount.address = "GCLBYVNZQ2ULXSZKGKSX4O4QKM4QEFDBU6SL7E7BJGNIWNWCCSQWMQER"
+    
     if let address = signedAccount.address {
       identiconView.loadIdenticon(publicAddress: address)
     }
         
     signerPublicAddressLabel.textColor = Asset.Colors.black.color
     signerPublicAddressLabel.font = UIFont.boldSystemFont(ofSize: 13)
-    signerPublicAddressLabel.text = signedAccount.address?.getTruncatedPublicKey(numberOfCharacters: 10) ?? "unknown address"
+    signerPublicAddressLabel.text = signedAccount.address?.getTruncatedPublicKey() ?? "unknown address"
     
     guard let federation = signedAccount.federation else {
       signerFederationLabel.isHidden = true

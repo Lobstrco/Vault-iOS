@@ -37,7 +37,7 @@ class PublicKeyPopover: UIView {
   private func setPublicKey() {
     let vaultStorage = VaultStorage()
     guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() else { return }
-    self.publicKeyLabel.text = publicKeyFromKeychain.getTruncatedPublicKey(numberOfCharacters: 10)
+    self.publicKeyLabel.text = publicKeyFromKeychain.getTruncatedPublicKey()
     self.publicKey = publicKeyFromKeychain
   }
   

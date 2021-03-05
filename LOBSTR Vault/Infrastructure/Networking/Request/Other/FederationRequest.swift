@@ -17,7 +17,7 @@ struct Federation: Codable {
 struct FederationRequest: APIRequest {
   
   func makeRequest(from data: FederationRequestParameters?, jwtToken: String?) throws -> URLRequest {
-    let path = "/federation/"
+    let path = "/api/resolve-federation/"
     let urlString = Constants.baseLobstrURL + path
     var urlComponents = URLComponents(string: urlString)!
     

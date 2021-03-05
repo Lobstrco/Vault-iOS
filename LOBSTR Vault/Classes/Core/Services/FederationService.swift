@@ -15,6 +15,7 @@ struct FederationService {
         switch serverRequestError {
         case .notFound(_):
           _ = self.saveAccountToBD(with: publicKey, federation: nil)
+          completion(.failure(serverRequestError))
         default:
           completion(.failure(serverRequestError))
         }

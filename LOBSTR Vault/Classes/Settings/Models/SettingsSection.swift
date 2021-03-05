@@ -14,7 +14,8 @@ extension SettingsSection: Equatable {
 public enum SettingsSectionType {
   case account
   case security
-  case about
+  case help
+  case other
   
   var title: String {
     switch self {
@@ -22,8 +23,10 @@ public enum SettingsSectionType {
       return L10n.textSettingsAccountSection
     case .security:
       return L10n.textSettingsSecuritySection
-    case .about:
-      return L10n.textSettingsAboutSection
+    case .help:
+      return L10n.textSettingsHelpSection
+    case .other:
+      return L10n.textSettingsOtherSection
     }
   }
 }
@@ -43,5 +46,7 @@ public enum SettingsRow {
   case promptTransactionDecisions
   case rateUs
   case spamProtection
+  case support
+  case buyCard
 }
 

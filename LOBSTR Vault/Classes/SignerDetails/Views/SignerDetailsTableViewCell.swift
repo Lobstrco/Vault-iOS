@@ -8,7 +8,11 @@ protocol SignerDetailsTableViewCellDelegate: class {
 class SignerDetailsTableViewCell: UITableViewCell {
 
   @IBOutlet weak var publicKeyLabel: UILabel!
-  @IBOutlet var signerFederationLabel: UILabel!
+  @IBOutlet var signerFederationLabel: UILabel! {
+    didSet {
+      signerFederationLabel.lineBreakMode = .byTruncatingTail
+    }
+  }
   
   @IBOutlet var identiconView: IdenticonView!
   
@@ -23,7 +27,7 @@ class SignerDetailsTableViewCell: UITableViewCell {
       identiconView.loadIdenticon(publicAddress: address)
     }
     
-    publicKeyLabel.text = signedAccount.address?.getTruncatedPublicKey(numberOfCharacters: 10) ?? "unknown address"
+    publicKeyLabel.text = signedAccount.address?.getTruncatedPublicKey() ?? "unknown address"
     
     guard let federation = signedAccount.federation else {
       signerFederationLabel.isHidden = true

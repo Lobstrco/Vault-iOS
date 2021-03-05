@@ -33,7 +33,7 @@ enum TransactionDetailsSectionType {
     case .operations: return 0
     case .operationDetails: return 0
     case .additionalInformation: return 0
-    case .signers: return 22
+    case .signers: return 40
     }
   }
   

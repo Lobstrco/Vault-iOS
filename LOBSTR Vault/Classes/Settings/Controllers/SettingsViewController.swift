@@ -28,12 +28,19 @@ class SettingsViewController: UIViewController,
     presenter = SettingsPresenterImpl(view: self,
                                       navigationController: navigationController!)
     
-    presenter.settingsViewDidLoad()
+    presenter.settingsViewDidLoad()    
   }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
     presenter.settingsViewDidAppear()
+  }
+  
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    tabBarController?.tabBar.isHidden = false
+    navigationController?.setStatusBar(backgroundColor: Asset.Colors.background.color)
+    navigationController?.navigationBar.barTintColor = Asset.Colors.background.color
   }
   
   // MARK: - Private
@@ -133,8 +140,8 @@ class SettingsViewController: UIViewController,
     case .promptTransactionDecisions:
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
-          as SwitchTableViewCell
-      presenter.configure(switchCell: cell, type: .promptTransactionDecisions)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell, row: row)
       return cell
     case .help:
       let cell =
@@ -170,9 +177,25 @@ class SettingsViewController: UIViewController,
       presenter.configure(disclosureIndicatorTableViewCell: cell,
                           row: row)
       return cell
+    case .support:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
+    case .buyCard:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
     case .spamProtection:
-      let cell = tableView.dequeueReusableCell(forIndexPath: indexPath) as SwitchTableViewCell
-      presenter.configure(switchCell: cell, type: .spamProtection)
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+        as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell, row: row)
       return cell
     }  
   }
@@ -217,8 +240,17 @@ extension SettingsViewController: SettingsView {
   }
   
   func setLogoutAlert() {
-    let alert = UIAlertController(title: L10n.logoutAlertTitle,
-                                  message: L10n.logoutAlertMessage, preferredStyle: .alert)
+    var title = L10n.logoutAlertTitle
+    var message = L10n.logoutAlertMessage
+    
+    if UserDefaultsHelper.accountStatus == .createdWithTangem {
+      title = "Do you want to log out from this account?"
+      message = ""
+    }
+    
+    let alert = UIAlertController(title: title,
+                                  message: message, preferredStyle: .alert)
+    
     alert.addAction(UIAlertAction(title: L10n.buttonTitleLogout, style: .destructive, handler: { _ in
       self.presenter.logoutOperationWasConfirmed()
     }))

@@ -14,7 +14,7 @@ class SignerTableViewCell: UITableViewCell {
     statusLabel.text = viewData.statusText
     statusLabel.textColor = viewData.statusColor
     
-    publicAddressLabel.text = viewData.publicKey.getTruncatedPublicKey(numberOfCharacters: 8)
+    publicAddressLabel.text = viewData.publicKey.getTruncatedPublicKey()
     yourKeyTitleLabel.isHidden = !viewData.isLocalPublicKey
     
     guard let federation = viewData.federation else {

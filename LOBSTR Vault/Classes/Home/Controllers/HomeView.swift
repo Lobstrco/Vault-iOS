@@ -1,8 +1,11 @@
 import Foundation
 
 protocol HomeView: class {
-  func reloadTableViewSections(_ sections: [Int])
-  func reloadSignerListRow(_ row: Int)
-  func setProgressAnimationForTransactionNumber(isEnabled: Bool)
+  func setProgressAnimationForTransactionNumber()
   func setCopyHUD()
+  func setPublicKey(_ publicKey: String)
+  func setTransactionNumber(_ transactionNumber: String)
+  func setSignedAccountsList(_ signedAccounts: [SignedAccount])
+  func setNumberOfSignedAccount(_ number: Int)
+  func setAccountLabel()
 }

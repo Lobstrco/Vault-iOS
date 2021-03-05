@@ -2,8 +2,11 @@ import Foundation
 
 protocol HomePresenter {
   var sections: [HomeSection] { get }
+  var publicKey: String? { get }
+  var signedAccounts: [SignedAccount] { get }
   
-  func homeViewDidLoad()  
+  func homeViewDidLoad()
+  func homeViewDidAppear()
   func copyKeyButtonWasPressed()
   
   func updateSignerDetails()

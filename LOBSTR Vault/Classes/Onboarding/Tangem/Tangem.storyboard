@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17506" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Tangem Start View Controller-->
+        <scene sceneID="EQj-jK-0B5">
+            <objects>
+                <viewController storyboardIdentifier="TangemStartViewController" id="hgS-1z-TyW" customClass="TangemStartViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="eXj-Ba-mYa">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="te3-rn-RSQ">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="170.5"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="States/handCard" translatesAutoresizingMaskIntoConstraints="NO" id="ebj-gP-AnR">
+                                        <rect key="frame" x="0.0" y="20" width="320" height="150.5"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" name="Colors/Pink"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="ebj-gP-AnR" secondAttribute="bottom" id="ITo-27-8ED"/>
+                                    <constraint firstItem="ebj-gP-AnR" firstAttribute="leading" secondItem="te3-rn-RSQ" secondAttribute="leading" id="MnA-gS-Fob"/>
+                                    <constraint firstItem="ebj-gP-AnR" firstAttribute="top" secondItem="te3-rn-RSQ" secondAttribute="top" constant="20" id="Pxb-wX-HRB"/>
+                                    <constraint firstAttribute="trailing" secondItem="ebj-gP-AnR" secondAttribute="trailing" id="wuW-Fw-KTH"/>
+                                </constraints>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dKa-7O-inL">
+                                <rect key="frame" x="16" y="432" width="288" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="5uc-Fa-ENR"/>
+                                </constraints>
+                                <state key="normal" title="Scan Signer Card">
+                                    <color key="titleColor" name="Colors/White"/>
+                                </state>
+                                <connections>
+                                    <action selector="scanButtonAction:" destination="hgS-1z-TyW" eventType="touchUpInside" id="T90-ii-tzV"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5tt-Pl-HVF">
+                                <rect key="frame" x="20" y="376.5" width="280" height="30"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                <state key="normal" title="Learn More">
+                                    <color key="titleColor" name="Colors/Main"/>
+                                </state>
+                                <connections>
+                                    <action selector="learnMoreButtonAction:" destination="hgS-1z-TyW" eventType="touchUpInside" id="bgi-5p-PzO"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Tangem/tangemLogo" translatesAutoresizingMaskIntoConstraints="NO" id="dkE-w2-Quu">
+                                <rect key="frame" x="97.5" y="218.5" width="125" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="szh-db-t6G"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Roz-uQ-0aw">
+                                <rect key="frame" x="16" y="270.5" width="288" height="90"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="90" id="mh0-Nm-2c1"/>
+                                </constraints>
+                                <string key="text">Vault Signer Card maximizes the security of digital assets. To proceed, choose the ‘Scan’ option and hold the Signer Card near the back of your device for a few seconds.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/DarkIndigo"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YDd-bb-KpU">
+                                <rect key="frame" x="16" y="496" width="288" height="48"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="w6J-G5-bbj"/>
+                                </constraints>
+                                <state key="normal" title="Buy Now">
+                                    <color key="titleColor" name="Colors/Main"/>
+                                </state>
+                                <connections>
+                                    <action selector="buyNowButtonAction:" destination="hgS-1z-TyW" eventType="touchUpInside" id="NDM-p8-wPL"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="bT9-Pj-APC"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="5tt-Pl-HVF" firstAttribute="top" secondItem="Roz-uQ-0aw" secondAttribute="bottom" constant="16" id="2YR-mK-1we"/>
+                            <constraint firstItem="bT9-Pj-APC" firstAttribute="trailing" secondItem="dKa-7O-inL" secondAttribute="trailing" constant="16" id="2gA-I1-B8Z"/>
+                            <constraint firstItem="te3-rn-RSQ" firstAttribute="leading" secondItem="bT9-Pj-APC" secondAttribute="leading" id="Ga3-Lh-ocu"/>
+                            <constraint firstItem="dKa-7O-inL" firstAttribute="leading" secondItem="bT9-Pj-APC" secondAttribute="leading" constant="16" id="LLQ-IK-1Xk"/>
+                            <constraint firstItem="dkE-w2-Quu" firstAttribute="centerX" secondItem="eXj-Ba-mYa" secondAttribute="centerX" id="M74-W7-ynZ"/>
+                            <constraint firstItem="Roz-uQ-0aw" firstAttribute="leading" secondItem="bT9-Pj-APC" secondAttribute="leading" constant="16" id="PUs-RH-jxi"/>
+                            <constraint firstItem="YDd-bb-KpU" firstAttribute="leading" secondItem="bT9-Pj-APC" secondAttribute="leading" constant="16" id="TAH-Nf-1md"/>
+                            <constraint firstItem="dkE-w2-Quu" firstAttribute="top" secondItem="te3-rn-RSQ" secondAttribute="bottom" constant="48" id="Vv0-B4-afF"/>
+                            <constraint firstItem="Roz-uQ-0aw" firstAttribute="top" secondItem="dkE-w2-Quu" secondAttribute="bottom" constant="16" id="Wmx-09-SJ9"/>
+                            <constraint firstItem="te3-rn-RSQ" firstAttribute="top" secondItem="bT9-Pj-APC" secondAttribute="top" id="ZOW-nj-T5X"/>
+                            <constraint firstItem="bT9-Pj-APC" firstAttribute="bottom" secondItem="YDd-bb-KpU" secondAttribute="bottom" constant="24" id="apr-4Q-FW1"/>
+                            <constraint firstItem="bT9-Pj-APC" firstAttribute="trailing" secondItem="5tt-Pl-HVF" secondAttribute="trailing" constant="20" id="ceC-ZV-IuB"/>
+                            <constraint firstItem="bT9-Pj-APC" firstAttribute="trailing" secondItem="YDd-bb-KpU" secondAttribute="trailing" constant="16" id="etL-Q5-okc"/>
+                            <constraint firstItem="te3-rn-RSQ" firstAttribute="height" secondItem="eXj-Ba-mYa" secondAttribute="height" multiplier="0.3" id="i6x-mq-NKd"/>
+                            <constraint firstItem="YDd-bb-KpU" firstAttribute="top" secondItem="dKa-7O-inL" secondAttribute="bottom" constant="16" id="iWh-oy-6RE"/>
+                            <constraint firstItem="bT9-Pj-APC" firstAttribute="trailing" secondItem="te3-rn-RSQ" secondAttribute="trailing" id="jXM-Vo-rOZ"/>
+                            <constraint firstItem="bT9-Pj-APC" firstAttribute="trailing" secondItem="Roz-uQ-0aw" secondAttribute="trailing" constant="16" id="o79-Hp-ZJG"/>
+                            <constraint firstItem="5tt-Pl-HVF" firstAttribute="leading" secondItem="bT9-Pj-APC" secondAttribute="leading" constant="20" id="pXX-zv-9Ip"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="3gS-St-kiK">
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="FQe-Wq-oq6">
+                            <connections>
+                                <action selector="helpButtonAcion" destination="hgS-1z-TyW" id="tma-1Y-E0r"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="aboutLabelHeightConstraint" destination="mh0-Nm-2c1" id="hSK-Cr-qKD"/>
+                        <outlet property="buyNowButton" destination="YDd-bb-KpU" id="kyy-Te-v3d"/>
+                        <outlet property="learnMoreButtonTopConstraint" destination="2YR-mK-1we" id="Tci-NM-rRy"/>
+                        <outlet property="scanButton" destination="dKa-7O-inL" id="eId-1b-Emw"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WgS-Cc-k5n" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-251.25" y="45.422535211267608"/>
+        </scene>
+        <!--Tangem Create Wallet View Controller-->
+        <scene sceneID="6ra-03-GJm">
+            <objects>
+                <viewController storyboardIdentifier="TangemCreateWalletViewController" id="k1u-Bk-zeu" customClass="TangemCreateWalletViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hna-2B-I2D">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fK1-eJ-EqC">
+                                <rect key="frame" x="16" y="504" width="288" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="0Fh-J6-knQ"/>
+                                </constraints>
+                                <state key="normal" title="Create Wallet">
+                                    <color key="titleColor" name="Colors/White"/>
+                                </state>
+                                <connections>
+                                    <action selector="createWalletButtonAction:" destination="k1u-Bk-zeu" eventType="touchUpInside" id="KHN-2D-weU"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="njm-WX-Wr2">
+                                <rect key="frame" x="16" y="221.5" width="288" height="125.5"/>
+                                <string key="text">Your Vault Signer Card is not configured yet.
+In order to use the Signer Card, you will need to authorize the creation of a signer Stellar account by scanning the Signer Card. This operation can only be performed once for a single card.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/DarkIndigo"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Create Signer Account" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KKp-sp-xnJ">
+                                <rect key="frame" x="20" y="189.5" width="280" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="ODM-4X-AML"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ODM-4X-AML" firstAttribute="trailing" secondItem="KKp-sp-xnJ" secondAttribute="trailing" constant="20" id="2gr-L2-CqS"/>
+                            <constraint firstItem="KKp-sp-xnJ" firstAttribute="leading" secondItem="ODM-4X-AML" secondAttribute="leading" constant="20" id="JBP-Fu-buI"/>
+                            <constraint firstItem="fK1-eJ-EqC" firstAttribute="leading" secondItem="ODM-4X-AML" secondAttribute="leading" constant="16" id="ScC-YU-zrB"/>
+                            <constraint firstItem="njm-WX-Wr2" firstAttribute="leading" secondItem="hna-2B-I2D" secondAttribute="leading" constant="16" id="VdM-YP-5av"/>
+                            <constraint firstItem="ODM-4X-AML" firstAttribute="bottom" secondItem="fK1-eJ-EqC" secondAttribute="bottom" constant="16" id="cQI-2E-ri6"/>
+                            <constraint firstItem="ODM-4X-AML" firstAttribute="trailing" secondItem="fK1-eJ-EqC" secondAttribute="trailing" constant="16" id="gpC-HT-Rao"/>
+                            <constraint firstItem="njm-WX-Wr2" firstAttribute="centerX" secondItem="hna-2B-I2D" secondAttribute="centerX" id="oKp-1m-N8u"/>
+                            <constraint firstItem="njm-WX-Wr2" firstAttribute="top" secondItem="KKp-sp-xnJ" secondAttribute="bottom" constant="8" id="q1U-7s-XaW"/>
+                            <constraint firstItem="njm-WX-Wr2" firstAttribute="centerY" secondItem="hna-2B-I2D" secondAttribute="centerY" id="tnu-n8-I8v"/>
+                            <constraint firstAttribute="trailing" secondItem="njm-WX-Wr2" secondAttribute="trailing" constant="16" id="xbU-ZR-RIa"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="AZV-bw-6Os">
+                        <barButtonItem key="rightBarButtonItem" image="Icons/Other/icQuestionSign" id="Jql-R6-SUA">
+                            <connections>
+                                <action selector="helpButtonAction:" destination="k1u-Bk-zeu" id="8wD-6c-5uZ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="createButton" destination="fK1-eJ-EqC" id="0Zh-V6-ZTn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L8Y-Cd-Jqz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="516" y="44"/>
+        </scene>
+        <!--Auth View Controller-->
+        <scene sceneID="V8s-ym-fhw">
+            <objects>
+                <viewController storyboardIdentifier="AuthViewController" id="8wo-AT-fMW" customClass="AuthViewController" customModule="LOBSTR_Vault" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="WvU-HH-0AE">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="V82-JE-uW6">
+                                <rect key="frame" x="16" y="504" width="288" height="48"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="48" id="KAA-RW-t5q"/>
+                                </constraints>
+                                <state key="normal" title="Auth">
+                                    <color key="titleColor" name="Colors/White"/>
+                                </state>
+                                <connections>
+                                    <action selector="authButtonAction:" destination="8wo-AT-fMW" eventType="touchUpInside" id="nan-DQ-GGQ"/>
+                                </connections>
+                            </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="bottom" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Tangem/tangemCard" translatesAutoresizingMaskIntoConstraints="NO" id="fym-qn-APz">
+                                <rect key="frame" x="28.5" y="40" width="263" height="200"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="Nsg-vY-kcb"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Signer Card is ready" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="egp-ak-oDb">
+                                <rect key="frame" x="16" y="272" width="288" height="24"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your Signer Card is configured and ready for use. Scan the card to sign in to your account." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V0r-G8-abU">
+                                <rect key="frame" x="16" y="346" width="288" height="54"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/DarkIndigo"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Your card is recognized" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Rd9-le-ReU">
+                                <rect key="frame" x="16" y="304" width="288" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" name="Colors/DarkIndigo"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="hro-Ku-vhI"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hro-Ku-vhI" firstAttribute="trailing" secondItem="Rd9-le-ReU" secondAttribute="trailing" constant="16" id="B6n-Fi-RSJ"/>
+                            <constraint firstItem="hro-Ku-vhI" firstAttribute="trailing" secondItem="V0r-G8-abU" secondAttribute="trailing" constant="16" id="Buv-R9-rzu"/>
+                            <constraint firstItem="V0r-G8-abU" firstAttribute="top" secondItem="Rd9-le-ReU" secondAttribute="bottom" constant="24" id="Gc2-jV-ZZG"/>
+                            <constraint firstItem="hro-Ku-vhI" firstAttribute="bottom" secondItem="V82-JE-uW6" secondAttribute="bottom" constant="16" id="JK0-Jz-55Y"/>
+                            <constraint firstItem="egp-ak-oDb" firstAttribute="top" secondItem="fym-qn-APz" secondAttribute="bottom" constant="32" id="KdE-hY-RmU"/>
+                            <constraint firstItem="hro-Ku-vhI" firstAttribute="trailing" secondItem="egp-ak-oDb" secondAttribute="trailing" constant="16" id="MCL-hc-AkC"/>
+                            <constraint firstItem="egp-ak-oDb" firstAttribute="centerY" secondItem="WvU-HH-0AE" secondAttribute="centerY" id="PAf-1e-NQ8"/>
+                            <constraint firstItem="hro-Ku-vhI" firstAttribute="trailing" secondItem="V82-JE-uW6" secondAttribute="trailing" constant="16" id="b70-J0-czd"/>
+                            <constraint firstItem="Rd9-le-ReU" firstAttribute="leading" secondItem="hro-Ku-vhI" secondAttribute="leading" constant="16" id="cpx-I3-dC0"/>
+                            <constraint firstItem="Rd9-le-ReU" firstAttribute="top" secondItem="egp-ak-oDb" secondAttribute="bottom" constant="8" id="dGb-tz-YGP"/>
+                            <constraint firstItem="fym-qn-APz" firstAttribute="centerX" secondItem="WvU-HH-0AE" secondAttribute="centerX" id="n92-Yk-ySO"/>
+                            <constraint firstItem="egp-ak-oDb" firstAttribute="leading" secondItem="hro-Ku-vhI" secondAttribute="leading" constant="16" id="nSr-k2-06F"/>
+                            <constraint firstItem="V82-JE-uW6" firstAttribute="leading" secondItem="hro-Ku-vhI" secondAttribute="leading" constant="16" id="rDJ-Zv-0fe"/>
+                            <constraint firstItem="V0r-G8-abU" firstAttribute="leading" secondItem="hro-Ku-vhI" secondAttribute="leading" constant="16" id="utY-Bm-4aC"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="publicKeyLabel" destination="Rd9-le-ReU" id="hzT-kf-Ddo"/>
+                        <outlet property="signInButton" destination="V82-JE-uW6" id="AYg-iZ-tCG"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Nil-xs-xhV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1262.3188405797102" y="43.526785714285715"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="Icons/Other/icQuestionSign" width="24" height="24"/>
+        <image name="States/handCard" width="247" height="213"/>
+        <image name="Tangem/tangemCard" width="263" height="170"/>
+        <image name="Tangem/tangemLogo" width="125" height="36"/>
+        <namedColor name="Colors/DarkIndigo">
+            <color red="0.027450980392156862" green="0.10980392156862745" blue="0.20000000000000001" alpha="0.60000002384185791" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Main">
+            <color red="0.34901960784313724" green="0.1803921568627451" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/Pink">
+            <color red="0.90588235294117647" green="0.8666666666666667" blue="0.97254901960784312" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Colors/White">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

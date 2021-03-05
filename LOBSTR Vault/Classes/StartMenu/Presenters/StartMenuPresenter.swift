@@ -1,17 +1,21 @@
 import Foundation
+import UIKit
 
 protocol StartMenuPresenter {
   
   func startMenuViewDidLoad()
+  func checkAppVersion()
   func createNewAccountButtonWasPressed()
   func restoreAccountButtonWasPressed()
+  func signInWithCardButtonWasPressed()
   func termsButtonWasPressed()
+  func privacyButtonWasPressed()
   func helpButtonWasPressed()
 }
 
 protocol StartMenuView: class {
   func setTermsButton()
-  func openPrivacyPolicy(by url: URL)
+  func open(by url: URL)
 }
 
 class StartMenuPresenterImpl {
@@ -41,6 +45,14 @@ class StartMenuPresenterImpl {
     startMenuViewController.navigationController!.pushViewController(mnemonicRecoveryViewController,
                                              animated: true)
   }
+  
+  func transitionToSignInWithSignerCard() {
+    let tangemStartViewController = TangemStartViewController.createFromStoryboard()
+    
+    let startMenuViewController = view as! StartMenuViewController
+    startMenuViewController.navigationController!.pushViewController(tangemStartViewController,
+                                                                     animated: true)
+  }
 }
 
 // MARK: - StartMenuPresenter
@@ -48,7 +60,7 @@ class StartMenuPresenterImpl {
 extension StartMenuPresenterImpl: StartMenuPresenter {
   
   func startMenuViewDidLoad() {
-    view?.setTermsButton()    
+    view?.setTermsButton()
   }
   
   func createNewAccountButtonWasPressed() {
@@ -59,18 +71,41 @@ extension StartMenuPresenterImpl: StartMenuPresenter {
     transitionToMnemonicRecoveryScreen()
   }
   
+  func signInWithCardButtonWasPressed() {
+    transitionToSignInWithSignerCard()
+  }
+  
   func termsButtonWasPressed() {
-    let privacyPolicyUrlString = "https://lobstr.co/privacy/"
-    guard let privacyPolicyURL = URL(string: privacyPolicyUrlString)
-      else { return }
+    let termsUrlString = "https://lobstr.co/terms/"
+    guard let termsURL = URL(string: termsUrlString) else { return }
     
-    view?.openPrivacyPolicy(by: privacyPolicyURL)    
+    view?.open(by: termsURL)
+  }
+  
+  func privacyButtonWasPressed() {
+    let privacyPolicyUrlString = "https://lobstr.co/privacy/"
+    guard let privacyPolicyURL = URL(string: privacyPolicyUrlString) else { return }
+    
+    view?.open(by: privacyPolicyURL)
   }
   
   func helpButtonWasPressed() {
-    let helpViewController = HelpViewController.createFromStoryboard()
-    
     let startMenuViewController = view as! StartMenuViewController
-    startMenuViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    
+    let helpCenter = ZendeskHelper.getHelpCenterController()
+    
+    let navController = UINavigationController(rootViewController: helpCenter)
+    startMenuViewController.present(navController, animated: true, completion: nil)
+  }
+  
+  func checkAppVersion() {
+    if VersionControlHelper.checkIfAlertViewHasPresented() == nil {
+      VersionControlHelper.checkAppVersion(showAlertImmediately: false) { versions in
+        let compare = versions["min_app_version"]?.compare(VersionControlHelper.currentAppVersion, options: .numeric)
+        if compare == .orderedDescending {
+          VersionControlHelper.showForceUpdate()
+        }
+      }
+    }
   }
 }

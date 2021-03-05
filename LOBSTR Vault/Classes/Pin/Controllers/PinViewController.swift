@@ -13,6 +13,7 @@ protocol PinView: class {
   func executeCompletion()
   func setSimplePinAlert()
   func setKeyboardRigthButton(isEnabled: Bool)
+  func transitionToHomeScreen()
 }
 
 class PinViewController: UIViewController, StoryboardCreation {
@@ -91,6 +92,7 @@ class PinViewController: UIViewController, StoryboardCreation {
 // MARK: - PinView
 
 extension PinViewController: PinView {
+  func transitionToHomeScreen() {}
   
   func setKeyboardRigthButton(isEnabled: Bool) {
     numberPadView.rightButtonEnable(isEnabled)

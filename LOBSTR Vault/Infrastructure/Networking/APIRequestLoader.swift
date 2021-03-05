@@ -15,7 +15,10 @@ final class APIRequestLoader<T: APIRequest> {
                       completion: @escaping (NetworkingResult<T.ResponseDataType>) -> Void) {
     do {
       let jwt = jwtManager.getJWT()
-      let urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwt)
+      var urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwt)
+      urlRequest.setValue(UserAgentInfo.getFormattedUserAgent(),
+                          forHTTPHeaderField: "User-Agent")
+      urlRequest.setValue("https://vault.lobstr.co/", forHTTPHeaderField: "Referer")
       Logger.networking.debug("""
                               Request: \(urlRequest.url ?? URL(string: "unknown")!)
                               HttpMethod: \(urlRequest.httpMethod ?? "unknown")
@@ -39,7 +42,7 @@ final class APIRequestLoader<T: APIRequest> {
             if let data = data {
               do {
                 if let errorJSON = try JSONSerialization.jsonObject(with: data) as? [String: String] {
-                  if let detail = errorJSON["error"] {                    
+                  if let detail = errorJSON["error"] {
                     DispatchQueue.main.async {
                       completion(.failure(.badRequest(message: detail)))
                     }
@@ -59,14 +62,7 @@ final class APIRequestLoader<T: APIRequest> {
                 if let errorJSON = try JSONSerialization.jsonObject(with: data) as? [String: String] {
                   if let detail = errorJSON["detail"] {
                     DispatchQueue.main.async {
-                      AuthenticationService().updateToken() { result in
-                        switch result {
-                        case .success(_):
-                          completion(.failure(.needRepeatRequest))
-                        case .failure(_):
-                          completion(.failure(.unauthorized(message: detail)))
-                        }
-                      }
+                      completion(.failure(.unauthorized(message: detail)))
                     }
                     return
                   }
