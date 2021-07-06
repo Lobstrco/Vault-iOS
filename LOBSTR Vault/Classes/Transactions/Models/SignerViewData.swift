@@ -5,6 +5,7 @@ struct SignerViewData {
   let publicKey: String
   let weight: Int
   var federation: String?
+  var nickname: String?
   let isLocalPublicKey: Bool
   
   var statusText: String {

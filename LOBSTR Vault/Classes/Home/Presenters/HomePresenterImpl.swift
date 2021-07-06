@@ -19,6 +19,9 @@ class HomePresenterImpl: HomePresenter {
   
   lazy var sections: [HomeSection] = homeSectionsBuilder.buildSections()
   
+  let storage: SignersStorage = SignersStorageDiskImpl()
+  var storageSigners: [SignedAccount] = []
+    
   init(view: HomeView,
        transactionService: TransactionService = TransactionService(),
        versionControlService: VersionControlService = VersionControlService(),
@@ -33,7 +36,7 @@ class HomePresenterImpl: HomePresenter {
     self.vaultStorage = vaultStorage
     self.notificationManager = notificationRegistrator
     self.homeSectionsBuilder = homeSectionsBuilder
-    
+        
     addObservers()
   }
   
@@ -73,6 +76,10 @@ class HomePresenterImpl: HomePresenter {
     VersionControlHelper.checkAppVersion(showAlertImmediately: true, completion: {_ in })
   }
   
+  @objc func onDidNicknameUpdate(_ notification: Notification) {
+    setSignerDetails()
+  }
+  
   // MARK: - HomePresenter
   func homeViewDidAppear() {
     guard let viewController = view as? UIViewController else { return }
@@ -108,6 +115,22 @@ class HomePresenterImpl: HomePresenter {
     }
   }
   
+  func moreDetailsButtonWasPressed(with index: Int) {
+    guard let address = signedAccounts[safe: index]?.address else {
+      return
+    }
+    
+    if let index = signedAccounts.firstIndex(where: { $0.address == address }) {
+      var isNicknameSet = false
+      if let nickname = signedAccounts[index].nickname, !nickname.isEmpty {
+        isNicknameSet = true
+      } else {
+        isNicknameSet = false
+      }
+      self.view?.actionSheetForSignersListWasPressed(with: index, isNicknameSet: isNicknameSet)
+    }
+  }
+  
   func copySignerPublicKeyActionWasPressed(with index: Int) {
     let publicKey = signedAccounts[safe: index]?.address ?? "uknown public key"
     UIPasteboard.general.string = publicKey
@@ -121,7 +144,24 @@ class HomePresenterImpl: HomePresenter {
       return
     }
     
-    UtilityHelper.openStellarExpert(for: address)
+    UtilityHelper.openStellarExpertForPublicKey(publicKey: address)
+  }
+  
+  func setAccountNicknameActionWasPressed(with text: String?, by index: Int?) {
+    guard let index = index, let address = signedAccounts[safe: index]?.address else {
+      return
+    }
+    
+    if let index = signedAccounts.firstIndex(where: { $0.address == address }), let nickname = text {
+      signedAccounts[index].nickname = nickname
+      storage.save(signers: signedAccounts)
+      NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+      self.view?.setSignedAccountsList(self.signedAccounts)
+    }
+  }
+  
+  func clearAccountNicknameActionWasPressed(by index: Int?) {
+    setAccountNicknameActionWasPressed(with: "", by: index)
   }
   
   func updateSignerDetails() {
@@ -132,6 +172,7 @@ class HomePresenterImpl: HomePresenter {
     guard let viewController = view as? UIViewController else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
+    self.view?.rotateRefreshButton(isRotating: false)
     self.setTransactionNumber()
     self.setPublicKey()
     self.setSignerDetails()
@@ -142,7 +183,12 @@ class HomePresenterImpl: HomePresenter {
 
 private extension HomePresenterImpl {
   
+  func stopRotate() {
+    self.view?.rotateRefreshButton(isRotating: true)
+  }
+  
   func setSignerDetails() {
+    self.storageSigners = storage.retrieveSigners() ?? []
     transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let accounts):
@@ -168,11 +214,16 @@ private extension HomePresenterImpl {
     var newAccounts : [SignedAccount] = []
     for (index, signedAccount) in signedAccounts.enumerated() {
       guard let address = signedAccount.address else { break }
-      if let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: address)).first {
-        newAccounts.append(SignedAccount(address: account.publicKey, federation: account.federation))
+      
+      if let account = storageSigners.first(where: { $0.address == address }) {
+        newAccounts.append(SignedAccount(address: account.address, federation: account.federation, nickname: account.nickname))
       } else {
-        newAccounts.append(SignedAccount(address: address, federation: nil))
-        tryToLoadFederation(by: address, for: index)
+        if let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: address)).first {
+          newAccounts.append(SignedAccount(address: account.publicKey, federation: account.federation, nickname: ""))
+        } else {
+          newAccounts.append(SignedAccount(address: address, federation: nil))
+          tryToLoadFederation(by: address, for: index)
+        }
       }
     }
     
@@ -205,6 +256,7 @@ private extension HomePresenterImpl {
     setStatus(.loading)
     transactionService.getNumberOfTransactions() { result in
       self.setStatus(.ready)
+      self.stopRotate()
       switch result {
       case .success(let numberOfTransactions):
         self.view?.setTransactionNumber(numberOfTransactions.description)
@@ -225,9 +277,11 @@ private extension HomePresenterImpl {
   }
   
   func registerForRemoteNotifications() {
-    notificationManager.requestAuthorization() { isGranted in
-      UserDefaultsHelper.isNotificationsEnabled = isGranted
-      self.notificationManager.sendFCMTokenToServer()
+    if UserDefaultsHelper.isNotificationsEnabled {
+      notificationManager.requestAuthorization() { isGranted in
+        UserDefaultsHelper.isNotificationsEnabled = isGranted
+        self.notificationManager.sendFCMTokenToServer()
+      }
     }
   }
   
@@ -261,5 +315,10 @@ private extension HomePresenterImpl {
                                           selector: #selector(checkControlVersion(_:)),
                                           name: .didPinScreenClose,
                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidNicknameUpdate(_:)),
+                                           name: .didNicknameSet,
+                                           object: nil)
    }
 }

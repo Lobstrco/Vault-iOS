@@ -113,7 +113,6 @@ extension SettingsPresenterImpl {
     switch row {
     case .signerForAccounts:
       disclosureIndicatorTableViewCell.setAttribute(getSignerForAccountsData().attribute)
-      disclosureIndicatorTableViewCell.setTitle(getSignerForAccountsData().title)
     case .mnemonicCode:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsMnemonicField)
     case .changePin:
@@ -259,20 +258,28 @@ private extension SettingsPresenterImpl {
   }
     
   func getSignerForAccountsData() -> (title: String,
-                                              attribute: NSMutableAttributedString) {
+                                      attribute: NSMutableAttributedString)
+  {
     let positionOfNumberInTitle = 11
+    var length = 0
     var title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
                                                                    with: String(UserDefaultsHelper.numberOfSignerAccounts))
-    let titleAttribute = NSMutableAttributedString(string: title)
-    titleAttribute.addAttributes([.foregroundColor: Asset.Colors.main.color,
-                                  .font: UIFont.boldSystemFont(ofSize: 20)],
-                                 range: NSRange(location: positionOfNumberInTitle,
-                                                length: 1))
     
     if UserDefaultsHelper.numberOfSignerAccounts > 1 {
       title.append("s")
     }
     
+    for symbol in title {
+      if symbol.isNumber {
+        length += 1
+      }
+    }
+    
+    let titleAttribute = NSMutableAttributedString(string: title)
+    titleAttribute.addAttributes([.foregroundColor: Asset.Colors.main.color,
+                                  .font: UIFont.boldSystemFont(ofSize: 20)],
+                                 range: NSRange(location: positionOfNumberInTitle,
+                                                length: length))
     return (title, titleAttribute)
   }
   

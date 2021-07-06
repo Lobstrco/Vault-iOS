@@ -3,7 +3,7 @@ import Foundation
 struct SignedAccountsRequest: APIRequest {
   
   func makeRequest(from data: SignedAccountsRequest?, jwtToken: String?) throws -> URLRequest {
-    let path = "/api/signed-accounts/"
+    let path = "/api/signed-accounts/?page_size=all"
     let urlString = Environment.baseURL + path
     let url = URL(string: urlString)!
     

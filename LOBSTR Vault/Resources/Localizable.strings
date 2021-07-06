@@ -25,6 +25,10 @@
 "button_title_done" = "Done";
 "button_title_confirm" = "Confirm";
 "button_title_clear" = "Clear";
+"button_title_copy_xdr" = "Copy Transaction XDR";
+"button_title_copy_signed_xdr" = "Copy Signed XDR";
+"button_title_view_transaction_details" = "View Transaction Details";
+"button_title_open_help_center" = "Open Help Center";
 
 // Animations
 "animation_copy" = "Copied";
@@ -51,7 +55,7 @@
 "nav_title_operation_details" = "Operation Details";
 "nav_title_transaction_details" = "Transaction Details";
 "nav_title_settings" = "Settings";
-"nav_title_settings_signed_accounts" = "Protected accounts";
+"nav_title_settings_signed_accounts" = "Protected Accounts";
 "nav_title_create_passcode" = "Create PIN";
 "nav_title_reenter_passcode" = "Confirm PIN";
 "nav_title_change_passcode_enter_old" = "Enter Old PIN";
@@ -282,3 +286,19 @@
 "button_text_app_update" = "Update";
 "button_text_app_update_skip" = "Skip";
 
+//Nickname Dialog
+"text_set_nickname_title" = "Set Account Nickname";
+"text_change_nickname_title" = "Change Account Nickname";
+"text_nickname_description" = "Choose a short name for protected account";
+"text_nickname_text_view_placeholder" = "Enter account nickname";
+"text_nickname_text_view_descrition" = "Limited to 30 symbols";
+"button_text_nickname_save" = "Save";
+"button_text_nickname_cancel" = "Cancel";
+
+//Action Sheet Dialog
+"button_text_open_explorer" = "Open Network Explorer";
+"button_text_copy" = "Copy Public Key";
+"button_text_cancel" = "Cancel";
+"button_text_set_account_nickname" = "Set Account Nickname";
+"button_text_change_account_nickname" = "Change Account Nickname";
+"button_text_clear_account_nickname" = "Clear Account Nickname";

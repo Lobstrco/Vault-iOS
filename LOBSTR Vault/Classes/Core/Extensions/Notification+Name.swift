@@ -6,4 +6,5 @@ extension Notification.Name {
   static let didChangeSignerDetails = Notification.Name("didChangeSignerDetails")
   static let didJWTTokenUpdate = Notification.Name("didJWTTokenUpdate")
   static let didPinScreenClose = Notification.Name("didPinScreenClose")
+  static let didNicknameSet = Notification.Name("didNicknameSet")
 }

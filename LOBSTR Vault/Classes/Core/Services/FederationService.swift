@@ -24,11 +24,17 @@ struct FederationService {
   }
   
   private func saveAccountToBD(with publicKey: String, federation: String?) -> Account {
-    let account = CoreDataStack.shared.create(Account.fetchBy(publicKey: publicKey))
-    account.federation = federation
-    account.publicKey = publicKey
-    CoreDataStack.shared.saveContext()
-    
-    return account
+    if let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first {
+      account.federation = federation
+      account.publicKey = publicKey
+      CoreDataStack.shared.saveContext()
+      return account
+    } else {
+      let account = CoreDataStack.shared.create(Account.fetchBy(publicKey: publicKey))
+      account.federation = federation
+      account.publicKey = publicKey
+      CoreDataStack.shared.saveContext()
+      return account
+    }
   }
 }

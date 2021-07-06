@@ -29,6 +29,14 @@ extension String {
     return false
   }
   
+  var isShortStellarPublicAddress: Bool {
+    if !isEmpty, let firstLetter = first, firstLetter == "G", self.contains("...") {
+      return true
+    }
+
+    return false
+  }
+  
   func getTruncatedPublicKey(numberOfCharacters: Int = 8) -> String {
      if self.isStellarPublicAddress {
        return "\(self.prefix(numberOfCharacters))...\(self.suffix(numberOfCharacters))"
@@ -36,4 +44,28 @@ extension String {
      
      return self
    }
+  
+  func split(by length: Int) -> [String] {
+    var startIndex = self.startIndex
+    var results = [Substring]()
+    
+    while startIndex < self.endIndex {
+      let endIndex = self.index(startIndex, offsetBy: length, limitedBy: self.endIndex) ?? self.endIndex
+      results.append(self[startIndex..<endIndex])
+      startIndex = endIndex
+    }
+    
+    return results.map { String($0) }
+  }
+}
+
+extension StringProtocol where Self: RangeReplaceableCollection {
+    mutating func insert<S: StringProtocol>(separator: S, every n: Int) {
+        for index in indices.every(n: n).dropFirst().reversed() {
+            insert(contentsOf: separator, at: index)
+        }
+    }
+    func inserting<S: StringProtocol>(separator: S, every n: Int) -> Self {
+        .init(unfoldSubSequences(limitedTo: n).joined(separator: separator))
+    }
 }

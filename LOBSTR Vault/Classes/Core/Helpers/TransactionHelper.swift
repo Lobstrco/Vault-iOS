@@ -3,6 +3,8 @@ import stellarsdk
 
 struct TransactionHelper {
   
+  static let numberOfCharacters = getNumberOfCharactersForTruncatePublicKeyTransactionDetails()
+  
   // tangem auth sep-10 and tangem sign transaction
   static func signTransaction(walletPublicKey: Data, signature: Data, txEnvelope: inout TransactionEnvelopeXDR) {
     let publicKeyData = walletPublicKey.toBytes
@@ -89,6 +91,22 @@ struct TransactionHelper {
           else {
             name = type.description
           }
+        case .revokeSponsorship:
+          let revokeSponsorshipOperation = try? stellarsdk.Operation.fromXDR(operationXDR: operation) as? RevokeSponsorshipOperation
+          switch revokeSponsorshipOperation?.ledgerKey {
+          case .account(_):
+            name = "Revoke Account Sponsorship"
+          case .trustline(_):
+            name = "Revoke Trustline Sponsorship"
+          case .offer(_):
+            name = "Revoke Offer Sponsorship"
+          case .data(_):
+            name = "Revoke Data Sponsorship"
+          case .claimableBalance(_):
+            name = "Revoke Claimable Balance Sponsorship"
+          default:
+            name = type.description
+          }
         default:
           name = type.description
         }
@@ -118,168 +136,378 @@ struct TransactionHelper {
     return operation
   }
   
-  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: String?, created: String?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String)] {
-    var data: [(name: String, value: String)] = []
+  static func getPublicKeys(from operation: stellarsdk.Operation) -> [String] {
+    var publicKeys: [String] = []
     
     switch type(of: operation) {
     case is PaymentOperation.Type:
       let paymentOperation = operation as! PaymentOperation
-      data.append(("Destination", paymentOperation.destinationAccountId.getTruncatedPublicKey()))
-      tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
-      data.append(("Asset", paymentOperation.asset.code ?? "XLM"))
-      data.append(("Amount", paymentOperation.amount.description))
+      publicKeys.append(paymentOperation.destinationAccountId)
       if let issuer = paymentOperation.asset.issuer?.accountId, paymentOperation.asset.code != nil {
-        data.append(("Asset Issuer", issuer.getTruncatedPublicKey()))
+        publicKeys.append(issuer)
       }
-      if let memo = memo, !memo.isEmpty {
-        data.append(("Memo", memo.lowercased()))
+      if let operationSourceAccountId = paymentOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is CreateAccountOperation.Type:
+      let createAccountOperation = operation as! CreateAccountOperation
+    
+      publicKeys.append(createAccountOperation.destination.accountId)
+      
+      if let operationSourceAccountId = createAccountOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is PathPaymentOperation.Type:
+      let pathPaymentOperation = operation as! PathPaymentOperation
+      
+      if let sendIssuer = pathPaymentOperation.sendAsset.issuer?.accountId, pathPaymentOperation.sendAsset.code != nil {
+        publicKeys.append(sendIssuer)
       }
       
+      publicKeys.append(pathPaymentOperation.destinationAccountId)
+      
+      if let destIssuer = pathPaymentOperation.destAsset.issuer?.accountId, pathPaymentOperation.destAsset.code != nil {
+        publicKeys.append(destIssuer)
+      }
+      
+      if let operationSourceAccountId = pathPaymentOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is ManageOfferOperation.Type:
+      let manageOfferOperation = operation as! ManageOfferOperation
+      
+      if let sellIssuer = manageOfferOperation.selling.issuer?.accountId, manageOfferOperation.selling.code != nil {
+        publicKeys.append(sellIssuer)
+      }
+      
+      if let buyIssuer = manageOfferOperation.buying.issuer?.accountId, manageOfferOperation.buying.code != nil {
+        publicKeys.append(buyIssuer)
+      }
+      if let operationSourceAccountId = manageOfferOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is CreatePassiveOfferOperation.Type:
+      let createPassiveOfferOperation = operation as! CreatePassiveOfferOperation
+      if let sellIssuer = createPassiveOfferOperation.selling.issuer?.accountId, createPassiveOfferOperation.selling.code != nil {
+        publicKeys.append(sellIssuer)
+      }
+      if let buyIssuer = createPassiveOfferOperation.buying.issuer?.accountId, createPassiveOfferOperation.buying.code != nil {
+        publicKeys.append(buyIssuer)
+      }
+
+      if let operationSourceAccountId = createPassiveOfferOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is SetOptionsOperation.Type:
+      let setOptionsOperation = operation as! SetOptionsOperation
+      if let x = setOptionsOperation.signer?.xdrEncoded, let s = try? PublicKey(xdr: x).accountId {
+        publicKeys.append(s)
+      }
+      if let operationSourceAccountId = setOptionsOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    // Set Flags / Clear Flags
+    case is AllowTrustOperation.Type:
+      let allowTrustOperation = operation as! AllowTrustOperation
+      publicKeys.append(allowTrustOperation.trustor.accountId)
+      if let operationSourceAccountId = allowTrustOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is ChangeTrustOperation.Type:
+      let changeTrustOperation = operation as! ChangeTrustOperation
+      if let issuer = changeTrustOperation.asset.issuer?.accountId {
+        publicKeys.append(issuer)
+      }
+      if let operationSourceAccountId = changeTrustOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is AccountMergeOperation.Type:
+      let accountMergeOperation = operation as! AccountMergeOperation
+      publicKeys.append(accountMergeOperation.destinationAccountId)
+      if let operationSourceAccountId = accountMergeOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is ManageDataOperation.Type:
+      let manageDataOperation = operation as! ManageDataOperation
+      if let operationSourceAccountId = manageDataOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is BumpSequenceOperation.Type:
+      let bumpSequenceOperation = operation as! BumpSequenceOperation
+      if let operationSourceAccountId = bumpSequenceOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is BeginSponsoringFutureReservesOperation.Type:
+      let beginSponsoringFutureReservesOperation = operation as! BeginSponsoringFutureReservesOperation
+      publicKeys.append(beginSponsoringFutureReservesOperation.sponsoredId)
+    case is EndSponsoringFutureReservesOperation.Type:
+      let endSponsoringFutureReservesOperation = operation as! EndSponsoringFutureReservesOperation
+    case is CreateClaimableBalanceOperation.Type:
+      let createClaimableBalanceOperation = operation as! CreateClaimableBalanceOperation
+      
+      if createClaimableBalanceOperation.claimants.count > 1 {
+        let truncatedClaimantsWithSeparator = getTrancatedClaimantsWithSeparator(claimants: createClaimableBalanceOperation.claimants)
+        publicKeys.append(truncatedClaimantsWithSeparator)
+      } else {
+        if let claimant = createClaimableBalanceOperation.claimants.first {
+          publicKeys.append(claimant.destination)
+        }
+      }
+    case is ClaimClaimableBalanceOperation.Type:
+      let claimClaimableBalanceOperation = operation as! ClaimClaimableBalanceOperation
+    case is RevokeSponsorshipOperation.Type:
+      let revokeSponsorshipOperation = operation as! RevokeSponsorshipOperation
+    default:
+      break
+    }
+    
+    return publicKeys
+  }
+  
+  static func getAssets(from operation: stellarsdk.Operation) -> [stellarsdk.Asset] {
+    var assets: [stellarsdk.Asset] = []
+    
+    switch type(of: operation) {
+    case is PaymentOperation.Type:
+      let paymentOperation = operation as! PaymentOperation
+      assets.append((paymentOperation.asset))
+    case is CreateAccountOperation.Type:
+      break
+    case is PathPaymentOperation.Type:
+      let pathPaymentOperation = operation as! PathPaymentOperation
+      assets.append(pathPaymentOperation.sendAsset)
+      assets.append(pathPaymentOperation.destAsset)
+    case is ManageOfferOperation.Type:
+      let manageOfferOperation = operation as! ManageOfferOperation
+      assets.append(manageOfferOperation.selling)
+      assets.append(manageOfferOperation.buying)
+    case is CreatePassiveOfferOperation.Type:
+      let createPassiveOfferOperation = operation as! CreatePassiveOfferOperation
+      assets.append(createPassiveOfferOperation.selling)
+      assets.append(createPassiveOfferOperation.buying)
+    case is SetOptionsOperation.Type:
+      break
+      // Set Flags / Clear Flags
+    case is AllowTrustOperation.Type:
+      let allowTrustOperation = operation as! AllowTrustOperation
+      let asset = stellarsdk.Asset(type: 0, code: allowTrustOperation.assetCode, issuer: allowTrustOperation.trustor)
+      if let asset = asset {
+        assets.append(asset)
+      }
+    case is ChangeTrustOperation.Type:
+      let changeTrustOperation = operation as! ChangeTrustOperation
+      assets.append(changeTrustOperation.asset)
+    case is AccountMergeOperation.Type:
+      break
+    case is ManageDataOperation.Type:
+      break
+    case is BumpSequenceOperation.Type:
+      break
+    case is BeginSponsoringFutureReservesOperation.Type:
+      break
+    case is EndSponsoringFutureReservesOperation.Type:
+      break
+    case is CreateClaimableBalanceOperation.Type:
+      let createClaimableBalanceOperation = operation as! CreateClaimableBalanceOperation
+      assets.append(createClaimableBalanceOperation.asset)
+    case is ClaimClaimableBalanceOperation.Type:
+      break
+    case is RevokeSponsorshipOperation.Type:
+      break
+    default:
+      break
+    }
+  
+    return assets
+  }
+  
+  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: String?, created: String?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, isAssetCode: Bool)] {
+    var data: [(name: String, value: String, isAssetCode: Bool)] = []
+    
+    switch type(of: operation) {
+    case is PaymentOperation.Type:
+      let paymentOperation = operation as! PaymentOperation
+      data.append(("Destination", paymentOperation.destinationAccountId.getTruncatedPublicKey(), false))
+      tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
+      data.append(("Asset", paymentOperation.asset.code ?? "XLM", true))
+      data.append(("Amount", paymentOperation.amount.description, false))
+      if let issuer = paymentOperation.asset.issuer?.accountId, paymentOperation.asset.code != nil {
+        data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), false))
+      }
+      if let memo = memo, !memo.isEmpty {
+        data.append(("Memo", memo, false))
+      }
       if let operationSourceAccountId = paymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is CreateAccountOperation.Type:
       let createAccountOperation = operation as! CreateAccountOperation
-      data.append(("Destination", createAccountOperation.destination.accountId.getTruncatedPublicKey()))
+      data.append(("Destination", createAccountOperation.destination.accountId.getTruncatedPublicKey(), false))
       tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
-      data.append(("Starting Balance", createAccountOperation.startBalance.description))
+      data.append(("Starting Balance", createAccountOperation.startBalance.description, false))
       if let operationSourceAccountId = createAccountOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is PathPaymentOperation.Type:
       let pathPaymentOperation = operation as! PathPaymentOperation
-      data.append(("Send Asset", pathPaymentOperation.sendAsset.code ?? "XLM"))
+      data.append(("Send Asset", pathPaymentOperation.sendAsset.code ?? "XLM", true))
       if let sendIssuer = pathPaymentOperation.sendAsset.issuer?.accountId, pathPaymentOperation.sendAsset.code != nil {
-        data.append(("Asset Issuer", sendIssuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", sendIssuer.getTruncatedPublicKey(), false))
       }
-      data.append(("Send Amount", pathPaymentOperation.sendMax.description))
-      data.append(("Destination", pathPaymentOperation.destinationAccountId.getTruncatedPublicKey()))
+      data.append(("Send Amount", pathPaymentOperation.sendMax.description, false))
+      data.append(("Destination", pathPaymentOperation.destinationAccountId.getTruncatedPublicKey(), false))
       tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
-      data.append(("Dest Asset", pathPaymentOperation.destAsset.code ?? "XLM"))
+      data.append(("Dest Asset", pathPaymentOperation.destAsset.code ?? "XLM", true))
       if let destIssuer = pathPaymentOperation.destAsset.issuer?.accountId, pathPaymentOperation.destAsset.code != nil {
-        data.append(("Asset Issuer", destIssuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", destIssuer.getTruncatedPublicKey(), false))
       }
-      data.append(("Dest Min", pathPaymentOperation.destAmount.description))
+      data.append(("Dest Min", pathPaymentOperation.destAmount.description, false))
       if let operationSourceAccountId = pathPaymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ManageOfferOperation.Type:
       let manageOfferOperation = operation as! ManageOfferOperation
-      data.append(("Selling", manageOfferOperation.selling.code ?? "XLM"))
+      data.append(("Selling", manageOfferOperation.selling.code ?? "XLM", true))
       if let sellIssuer = manageOfferOperation.selling.issuer?.accountId, manageOfferOperation.selling.code != nil {
-        data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey(), false))
       }
-      data.append(("Buying", manageOfferOperation.buying.code ?? "XLM"))
+      data.append(("Buying", manageOfferOperation.buying.code ?? "XLM", true))
       if let buyIssuer = manageOfferOperation.buying.issuer?.accountId, manageOfferOperation.buying.code != nil {
-        data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey(), false))
       }
       if manageOfferOperation.amount != 0 {
-        data.append(("Amount", manageOfferOperation.amount.description))
+        data.append(("Amount", manageOfferOperation.amount.description, false))
       }
-      data.append(("Price", getPrice(from: manageOfferOperation.price)))
+      data.append(("Price", getPrice(from: manageOfferOperation.price), false))
       if manageOfferOperation.offerId != 0 {
-        data.append(("Offer ID", manageOfferOperation.offerId.description))
+        data.append(("Offer ID", manageOfferOperation.offerId.description, false))
       }
       if let operationSourceAccountId = manageOfferOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is CreatePassiveOfferOperation.Type:
       let createPassiveOfferOperation = operation as! CreatePassiveOfferOperation
-      data.append(("Selling", createPassiveOfferOperation.selling.code ?? "XLM"))
+      data.append(("Selling", createPassiveOfferOperation.selling.code ?? "XLM", true))
       if let sellIssuer = createPassiveOfferOperation.selling.issuer?.accountId, createPassiveOfferOperation.selling.code != nil {
-        data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey(), false))
       }
-      data.append(("Buying", createPassiveOfferOperation.buying.code ?? "XLM"))
+      data.append(("Buying", createPassiveOfferOperation.buying.code ?? "XLM", true))
       if let buyIssuer = createPassiveOfferOperation.buying.issuer?.accountId, createPassiveOfferOperation.buying.code != nil {
-        data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey(), false))
       }
-      data.append(("Amount", createPassiveOfferOperation.amount.description))
-      data.append(("Price", getPrice(from: createPassiveOfferOperation.price)))
+      data.append(("Amount", createPassiveOfferOperation.amount.description, false))
+      data.append(("Price", getPrice(from: createPassiveOfferOperation.price), false))
       if let operationSourceAccountId = createPassiveOfferOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is SetOptionsOperation.Type:
       let setOptionsOperation = operation as! SetOptionsOperation
       if let homeDomain = setOptionsOperation.homeDomain {
-        data.append(("Home Domain", homeDomain))
+        data.append(("Home Domain", homeDomain, false))
       }
       if let masterKeyWeight = setOptionsOperation.masterKeyWeight {
-        data.append(("Master Weight", masterKeyWeight.description))
+        data.append(("Master Weight", masterKeyWeight.description, false))
       }
       if let lowThreshold = setOptionsOperation.lowThreshold {
-        data.append(("Low Threshold", lowThreshold.description))
+        data.append(("Low Threshold", lowThreshold.description, false))
       }
       if let mediumThreshold = setOptionsOperation.mediumThreshold {
-        data.append(("Medium Threshold", mediumThreshold.description))
+        data.append(("Medium Threshold", mediumThreshold.description, false))
       }
       if let highThreshold = setOptionsOperation.highThreshold {
-        data.append(("High threshold", highThreshold.description))
+        data.append(("High Threshold", highThreshold.description, false))
       }
       if let signerWeight = setOptionsOperation.signerWeight {
-        data.append(("Signer Weight", signerWeight.description))
+        data.append(("Signer Weight", signerWeight.description, false))
       }
       if let x = setOptionsOperation.signer?.xdrEncoded, let s = try? PublicKey(xdr: x).accountId {
-        data.append(("Signer Key", s.getTruncatedPublicKey()))
+        data.append(("Signer Key", s.getTruncatedPublicKey(), false))
       }
       if let operationSourceAccountId = setOptionsOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
       // Set Flags / Clear Flags
     case is AllowTrustOperation.Type:
       let allowTrustOperation = operation as! AllowTrustOperation
-      data.append(("Asset", allowTrustOperation.assetCode))
-      data.append(("Trustor", allowTrustOperation.trustor.accountId.getTruncatedPublicKey()))
-      data.append(("Authorize", allowTrustOperation.authorize.description))
+      data.append(("Asset", allowTrustOperation.assetCode, true))
+      data.append(("Trustor", allowTrustOperation.trustor.accountId.getTruncatedPublicKey(), false))
+      data.append(("Authorize", allowTrustOperation.authorize.description, false))
       if let operationSourceAccountId = allowTrustOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ChangeTrustOperation.Type:
       let changeTrustOperation = operation as! ChangeTrustOperation
       if let assetCode = changeTrustOperation.asset.code {
-        data.append(("Asset", assetCode))
+        data.append(("Asset", assetCode, true))
       }
       if let issuer = changeTrustOperation.asset.issuer?.accountId {
-        data.append(("Asset Issuer", issuer.getTruncatedPublicKey()))
+        data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), false))
       }
       if let limit = changeTrustOperation.limit {
-        data.append(("Limit", limit.description))
+        data.append(("Limit", limit.description, false))
       }
       if let operationSourceAccountId = changeTrustOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is AccountMergeOperation.Type:
       let accountMergeOperation = operation as! AccountMergeOperation
-      data.append(("Destination", accountMergeOperation.destinationAccountId.getTruncatedPublicKey()))
+      data.append(("Destination", accountMergeOperation.destinationAccountId.getTruncatedPublicKey(), false))
       tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
       if let operationSourceAccountId = accountMergeOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ManageDataOperation.Type:
       let manageDataOperation = operation as! ManageDataOperation
-      data.append(("Name", manageDataOperation.name))
+      data.append(("Name", manageDataOperation.name, false))
       if let value = manageDataOperation.data {
-        data.append(("Value", value.toUtf8String() ?? "none"))
+        data.append(("Value", value.toUtf8String() ?? "none", false))
       }
       if let operationSourceAccountId = manageDataOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is BumpSequenceOperation.Type:
       let bumpSequenceOperation = operation as! BumpSequenceOperation
-      data.append(("Bump To", bumpSequenceOperation.bumpTo.description))
+      data.append(("Bump To", bumpSequenceOperation.bumpTo.description, false))
       if let operationSourceAccountId = bumpSequenceOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
-        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey()))
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
       tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
+    case is BeginSponsoringFutureReservesOperation.Type:
+      let beginSponsoringFutureReservesOperation = operation as! BeginSponsoringFutureReservesOperation
+      data.append(("Sponsored ID", beginSponsoringFutureReservesOperation.sponsoredId.getTruncatedPublicKey(), false))
+    case is EndSponsoringFutureReservesOperation.Type:
+      let endSponsoringFutureReservesOperation = operation as! EndSponsoringFutureReservesOperation
+    case is CreateClaimableBalanceOperation.Type:
+      let createClaimableBalanceOperation = operation as! CreateClaimableBalanceOperation
+      data.append(("Amount", createClaimableBalanceOperation.amount.description, false))
+      data.append(("Asset", createClaimableBalanceOperation.asset.code ?? "XLM", true))
+      
+      if createClaimableBalanceOperation.claimants.count > 1 {
+        let truncatedClaimantsWithSeparator = getTrancatedClaimantsWithSeparator(claimants: createClaimableBalanceOperation.claimants)
+        data.append(("Claimants", truncatedClaimantsWithSeparator, false))
+      } else {
+        if let claimant = createClaimableBalanceOperation.claimants.first {
+          data.append(("Claimant", claimant.destination.getTruncatedPublicKey(), false))
+        }
+      }
+      
+      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
+    case is ClaimClaimableBalanceOperation.Type:
+      let claimClaimableBalanceOperation = operation as! ClaimClaimableBalanceOperation
+      data.append(("Balance ID", claimClaimableBalanceOperation.balanceId, false))
+      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
+    case is RevokeSponsorshipOperation.Type:
+      let revokeSponsorshipOperation = operation as! RevokeSponsorshipOperation
     default:
       break
     }
@@ -287,18 +515,18 @@ struct TransactionHelper {
     return data
   }
   
-  static func tryToSetDestinationFederation(data: inout [(name: String, value: String)], destinationFederation: String) {
+  static func tryToSetDestinationFederation(data: inout [(name: String, value: String, isAssetCode: Bool)], destinationFederation: String) {
     if !destinationFederation.isEmpty {
-      data.append(("Destination Federation", destinationFederation))
+      data.append(("Destination Federation", destinationFederation, false))
     }
   }
   
-  static func tryToSetOperationFields(data: inout [(name: String, value: String)], transactionSourceAccountId: String, created: String?, isListOperations: Bool = false) {
+  static func tryToSetOperationFields(data: inout [(name: String, value: String, isAssetCode: Bool)], transactionSourceAccountId: String, created: String?, isListOperations: Bool = false) {
     if !isListOperations {
-      data.append(("Transaction Source", transactionSourceAccountId.getTruncatedPublicKey()))
+      data.append(("Transaction Source", transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
     }
     if let created = created, !created.isEmpty {
-      data.append(("Created", created))
+      data.append(("Created", created, false))
     }
   }
   
@@ -311,12 +539,21 @@ struct TransactionHelper {
     return formatter.string(from: NSNumber(floatLiteral: priceValue)) ?? "unknown"
   }
   
-  static func getNumberOfCharactersForTruncate() -> Int {
+  static func getNumberOfCharactersForTruncatePublicKeyTransactionList() -> Int {
     switch UIDevice().type {
     case .iPhone5, .iPhone5C, .iPhone5S, .iPhoneSE:
       return 3
     default:
       return 6
+    }
+  }
+  
+  static func getNumberOfCharactersForTruncatePublicKeyTransactionDetails() -> Int {
+    switch UIDevice().type {
+    case .iPhone5, .iPhone5C, .iPhone5S, .iPhoneSE:
+      return 4
+    default:
+      return 8
     }
   }
   
@@ -466,7 +703,7 @@ struct TransactionHelper {
     return nil
   }
   
-  // account id finding logic for non-funded source account 
+  // account id finding logic for non-funded source account
   static func getAccountId(signedAccounts: [SignedAccount], transactionEnvelopeXDR: TransactionEnvelopeXDR) -> String {
     var accountId = ""
     if signedAccounts.contains(where: { $0.address == transactionEnvelopeXDR.txSourceAccountId }) {
@@ -484,6 +721,16 @@ struct TransactionHelper {
     return accountId
   }
   
+  static func getManageDataOperationAuthEndpointWithPrefix(from xdr: String) -> String {
+    let domain = TransactionHelper.getManageDataOperationAuthEndpoint(from: xdr)
+    let prefix = "https://"
+    if domain.hasPrefix(prefix) {
+      return domain
+    } else {
+      return prefix + domain
+    }
+  }
+  
   static func getManageDataOperationDomain(from xdr: String) -> String {
     let operation = try? TransactionHelper.getOperation(from: xdr)
     var domain = ""
@@ -498,10 +745,59 @@ struct TransactionHelper {
     return getTruncatedDomain(domain: &domain)
   }
   
+  static func getManageDataOperationAuthEndpoint(from xdr: String) -> String {
+    var domain = ""
+    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+      return ""
+    }
+    
+    for operationXDR in transactionEnvelopeXDR.txOperations {
+      guard let operation = try? Operation.fromXDR(operationXDR: operationXDR) else {
+        return ""
+      }
+      
+      switch type(of: operation) {
+      case is ManageDataOperation.Type:
+        let manageDataOperation = operation as! ManageDataOperation
+        if manageDataOperation.name == "web_auth_domain" {
+          if let data = manageDataOperation.data {
+            domain = String(decoding: data, as: UTF8.self)
+          }
+        } else {
+          domain = ""
+        }
+      default: break
+      }
+    }
+    return domain
+  }
+  
   static func getTruncatedDomain(domain: inout String) -> String {
     if let range = domain.range(of: " auth") {
       domain.removeSubrange(range)
     }
     return domain
   }
+  
+  static func getTrancatedClaimantsWithSeparator(claimants: [Claimant]) -> String {
+    var claimantsFullString = ""
+    var claimantsTruncatedFullString = ""
+    
+    for claimant in claimants {
+      claimantsFullString += claimant.destination
+    }
+    
+    let claimantsFullStringArray = claimantsFullString.split(by: 56)
+    
+    for claimantString in claimantsFullStringArray {
+      let claimantTruncatedString = claimantString.getTruncatedPublicKey()
+      claimantsTruncatedFullString += claimantTruncatedString
+    }
+    
+    let truncatedClaimantsWithSeparator = claimantsTruncatedFullString.inserting(separator: "\n", every: 19)
+    
+    return truncatedClaimantsWithSeparator
+  }
 }
+
+

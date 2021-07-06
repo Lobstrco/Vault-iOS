@@ -8,4 +8,6 @@ protocol HomeView: class {
   func setSignedAccountsList(_ signedAccounts: [SignedAccount])
   func setNumberOfSignedAccount(_ number: Int)
   func setAccountLabel()
+  func rotateRefreshButton(isRotating: Bool)
+  func actionSheetForSignersListWasPressed(with index: Int, isNicknameSet: Bool)
 }

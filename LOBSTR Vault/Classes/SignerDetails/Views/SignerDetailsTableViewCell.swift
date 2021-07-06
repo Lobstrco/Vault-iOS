@@ -29,14 +29,26 @@ class SignerDetailsTableViewCell: UITableViewCell {
     
     publicKeyLabel.text = signedAccount.address?.getTruncatedPublicKey() ?? "unknown address"
     
-    guard let federation = signedAccount.federation else {
-      signerFederationLabel.isHidden = true
-      return
+    
+    var nicknameValue = ""
+    var federationValue = ""
+    
+    if let nickName = signedAccount.nickname, !nickName.isEmpty {
+      nicknameValue = nickName
+    } else {
+      if let federation = signedAccount.federation, !federation.isEmpty {
+        federationValue = federation
+      } else {
+        signerFederationLabel.isHidden = true
+        return
+      }
     }
     
+    let text = !nicknameValue.isEmpty ? nicknameValue : federationValue
+        
     publicKeyLabel.font = UIFont.systemFont(ofSize: 13)
     publicKeyLabel.textColor = Asset.Colors.gray.color
-    signerFederationLabel.text = federation
+    signerFederationLabel.text = text
     signerFederationLabel.isHidden = false
   }
   

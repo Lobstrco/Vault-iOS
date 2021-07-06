@@ -1,5 +1,6 @@
 import UIKit
 import PKHUD
+import stellarsdk
 
 class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
@@ -21,6 +22,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
     super.viewDidLoad()
     setStaticStrings()
     setAppearance()
+    setupNavigationBar()
     
     presenter.transactionDetailsViewDidLoad()    
     configureTableView()
@@ -78,6 +80,50 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   private func setAppearance() {
     AppearanceHelper.set(confirmButton, with: L10n.buttonTitleConfirm)
+  }
+  
+  private func setupNavigationBar() {
+    let moreIcon = UIImage(named: "Icons/Other/icMore")?.withRenderingMode(.alwaysOriginal)
+    let moreButton = UIBarButtonItem(image: moreIcon, style: .plain, target: self, action: #selector(moreDetailsButtonWasPressed))
+  
+    navigationItem.setRightBarButton(moreButton, animated: false)
+  }
+  
+  @objc func moreDetailsButtonWasPressed() {
+    let moreMenu = UIAlertController(title: nil,
+                                       message: nil,
+                                       preferredStyle: .actionSheet)
+    
+    let copySignedXdrAction = UIAlertAction(title: L10n.buttonTitleCopySignedXdr,
+                                     style: .default) { _ in
+      self.presenter.signedXdr()
+    }
+    
+    let copyXdrAction = UIAlertAction(title: L10n.buttonTitleCopyXdr,
+                                     style: .default) { _ in
+      self.presenter.copyXdr()
+    }
+    
+    let viewTransactionDetailsAction = UIAlertAction(title: L10n.buttonTitleViewTransactionDetails, style: .default) { _ in
+      self.presenter.viewTransactionDetails()
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel)
+          
+    moreMenu.addAction(copyXdrAction)
+    moreMenu.addAction(copySignedXdrAction)
+    moreMenu.addAction(viewTransactionDetailsAction)
+    moreMenu.addAction(cancelAction)
+      
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    present(moreMenu, animated: true, completion: nil)
   }
 }
 
@@ -160,6 +206,67 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   func openTransactionListScreen() {
     navigationController?.popViewController(animated: true)
   }
+  
+  func copy(_ text: String) {
+    let pasteboard = UIPasteboard.general
+    pasteboard.string = text
+    HUD.flash(.labeledSuccess(title: nil,
+                              subtitle: L10n.animationCopy), delay: 1.0)
+  }
+  
+  func showActionSheet(_ value: Any?, _ type: ActionSheetType) {
+    let moreMenu = UIAlertController(title: nil,
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
+    
+    switch type {
+    case .assetCode:
+      if let asset = value as? stellarsdk.Asset {
+        let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                               style: .default) { _ in
+          self.presenter.explorerAsset(asset)
+        }
+        
+        moreMenu.addAction(openExplorerAction)
+      }
+    case .publicKey:
+      if let key = value as? String {
+        let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
+                                       style: .default) { _ in
+          self.presenter.copyPublicKey(key)
+        }
+        
+        let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                               style: .default) { _ in
+          self.presenter.explorerPublicKey(key)
+        }
+                    
+        moreMenu.addAction(openExplorerAction)
+        moreMenu.addAction(copyAction)
+      }
+    case .nativeAssetCode:
+      let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                             style: .default) { _ in
+        self.presenter.explorerNativeAsset()
+      }
+  
+      moreMenu.addAction(openExplorerAction)
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTextCancel, style: .cancel)
+    moreMenu.addAction(cancelAction)
+        
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    
+    present(moreMenu, animated: true, completion: nil)
+  }
 }
 
 // MARK: - UITableView
@@ -183,14 +290,25 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
       let cell: OperationTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
       cell.setOperationTitle(title)
       return cell
-    case .operationDetail(let name, let value):
+    case .operationDetail((let name, let value, let isAssetCode)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-      
+      if name == "Claimants" {
+        cell.type = .claimants
+      }
+      if value.isShortStellarPublicAddress {
+        cell.type = .publicKey
+      }
+      if isAssetCode {
+        cell.type = .assetCode
+      }
       cell.setData(title: name, value: value)
       cell.selectionStyle = .none
       return cell
-    case .additionalInformation(let name, let value):
+    case .additionalInformation((let name, let value)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      if value.isShortStellarPublicAddress {
+        cell.type = .publicKey
+      }
       cell.setData(title: name, value: value)
       cell.selectionStyle = .none
       return cell
@@ -204,9 +322,17 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   
   func tableView(_ tableView: UITableView,
                  didSelectRowAt indexPath: IndexPath) {
-    guard let _ = tableView.cellForRow(at: indexPath) as? OperationTableViewCell else { return }
-    tableView.deselectRow(at: indexPath, animated: true)
-    presenter.operationWasSelected(by: indexPath.item)
+    if let _ = tableView.cellForRow(at: indexPath) as? OperationTableViewCell {
+      tableView.deselectRow(at: indexPath, animated: true)
+      presenter.operationWasSelected(by: indexPath.item)
+    } else if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .publicKey {
+      tableView.deselectRow(at: indexPath, animated: true)
+      presenter.publicKeyWasSelected(key: cell.valueLabel.text)
+    } else if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .assetCode
+    {
+      tableView.deselectRow(at: indexPath, animated: true)
+      presenter.assetCodeWasSelected(code: cell.valueLabel.text)
+    } else { return }
   }
   
   func tableView(_ tableView: UITableView,

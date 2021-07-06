@@ -11,6 +11,7 @@ class NotificationManager {
   }
   
   func register() {
+    UIApplication.shared.registerForRemoteNotifications()
     sendFCMTokenToServer()
   }
   

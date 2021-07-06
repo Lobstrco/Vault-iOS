@@ -23,7 +23,7 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
       if let federationName = model.federation {
         sourceAccountLabel.text = federationName
       } else {
-        let numberOfCharactersForTruncate = TransactionHelper.getNumberOfCharactersForTruncate()
+        let numberOfCharactersForTruncate = TransactionHelper.getNumberOfCharactersForTruncatePublicKeyTransactionList()
         sourceAccountLabel.text = model.sourceAccount.getTruncatedPublicKey(numberOfCharacters: numberOfCharactersForTruncate)
       }
       statusLabel.text = L10n.textTransactionInvalidLabel

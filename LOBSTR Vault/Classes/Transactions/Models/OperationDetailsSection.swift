@@ -7,7 +7,7 @@ struct OperationDetailsSection {
 }
 
 enum OperationDetailsRow {
-  case operationDetail((name: String , value: String))
+  case operationDetail((name: String , value: String, isAssetCode: Bool))
   case signer(SignerViewData)
 }
 

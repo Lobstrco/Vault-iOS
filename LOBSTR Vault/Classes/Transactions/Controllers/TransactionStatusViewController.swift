@@ -23,7 +23,7 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
     super.viewDidLoad()
     
     presenter.transactionStatusViewDidLoad()
-    
+    setupNavigationBar()
     setAppearance()
     setStaticString()
   }
@@ -47,11 +47,7 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
     presenter.copyXDRButtonWasPressed(xdr: xdr)
     HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.animationCopy), delay: 1.0)
   }
-  
-  @IBAction func helpButtonAcion() {
-    presenter.helpButtonWasPressed()
-  }
-  
+    
   // MARK: - Private
   
   private func setAppearance() {
@@ -69,6 +65,50 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   
   private func setStaticString() {
     signedXDRTitleLabel.text = L10n.textStatusSignedXdrTitle
+  }
+  
+  private func setupNavigationBar() {
+    let moreIcon = Asset.Icons.Other.icMore.image 
+    let moreButton = UIBarButtonItem(image: moreIcon, style: .plain, target: self, action: #selector(moreDetailsButtonWasPressed))
+  
+    navigationItem.setRightBarButton(moreButton, animated: false)
+  }
+  
+  @objc func moreDetailsButtonWasPressed() {
+    let moreMenu = UIAlertController(title: nil,
+                                       message: nil,
+                                       preferredStyle: .actionSheet)
+    
+    let copySignedXdrAction = UIAlertAction(title: L10n.buttonTitleCopySignedXdr,
+                                     style: .default) { _ in
+      self.presenter.copySignedXdrButtonWasPressed()
+    }
+    
+    let openHelpCenterAction = UIAlertAction(title: L10n.buttonTitleOpenHelpCenter,
+                                     style: .default) { _ in
+      self.presenter.helpButtonWasPressed()
+    }
+    
+    let viewTransactionDetailsAction = UIAlertAction(title: L10n.buttonTitleViewTransactionDetails, style: .default) { _ in
+      self.presenter.viewTransactionDetailsButtonWasPressed()
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel)
+          
+    moreMenu.addAction(openHelpCenterAction)
+    moreMenu.addAction(viewTransactionDetailsAction)
+    moreMenu.addAction(copySignedXdrAction)
+    moreMenu.addAction(cancelAction)
+      
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    present(moreMenu, animated: true, completion: nil)
   }
 }
 
@@ -105,6 +145,13 @@ extension TransactionStatusViewController: TransactionStatusView {
   
   func setErrorMessage(_ message: String) {
     errorMessageLabel.text = message
+  }
+  
+  func copy(_ xdr: String) {
+    let pasteboard = UIPasteboard.general
+    pasteboard.string = xdr
+    HUD.flash(.labeledSuccess(title: nil,
+                              subtitle: L10n.animationCopy), delay: 1.0)
   }
   
 }

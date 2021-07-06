@@ -34,13 +34,14 @@ extension AppDelegate: MessagingDelegate {
       return
     }
     
-    notificationManager.requestAuthorization() { isGranted in
-      if !isGranted {
-        UserDefaultsHelper.isNotificationsEnabled = false
-      }
-      
-      if UserDefaultsHelper.isNotificationsEnabled {
-        notificationManager.sendFCMTokenToServer()
+    if UserDefaultsHelper.isNotificationsEnabled {
+      notificationManager.requestAuthorization { isGranted in
+        if !isGranted {
+          UserDefaultsHelper.isNotificationsEnabled = false
+        }
+        if UserDefaultsHelper.isNotificationsEnabled {
+          notificationManager.sendFCMTokenToServer()
+        }
       }
     }
   }

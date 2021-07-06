@@ -20,7 +20,7 @@ extension OperationType {
       case .manageData:
         return "Manage Data"
       case .pathPayment:
-        return "Path Payment"
+        return "Path Payment Strict Receive"
       case .payment:
         return "Payment"
       case .setOptions:
@@ -33,6 +33,16 @@ extension OperationType {
         return "Sell Offer"
       case .pathPaymentStrictSend:
         return "Path Payment Strict Send"
+      case .beginSponsoringFutureReserves:
+        return "Begin Sponsoring Future Reserves"
+      case .endSponsoringFutureReserves:
+        return "End Sponsoring Future Reserves"
+      case .revokeSponsorship:
+        return "Revoke Sponsorship"
+      case .createClaimableBalance:
+        return "Create Claimable Balance"
+      case .claimClaimableBalance:
+        return "Claim Claimable Balance"
       default: return "Unknown"
       }
     }

@@ -29,8 +29,27 @@ struct UtilityHelper {
     return nil
   }
   
-  static func openStellarExpert(for publicKey: String) {
+  static func openStellarExpertForPublicKey(publicKey: String) {
     let sUrl = "https://stellar.expert/explorer/public/account/\(publicKey)"
+    guard let url = URL(string: sUrl) else { return }
+    UIApplication.shared.open(url, options: .init(), completionHandler: nil)
+  }
+  
+  static func openStellarExpertForAsset(assetCode: String, assetIssuer: String) {
+    let sUrl = "https://stellar.expert/explorer/public/asset/\(assetCode)-\(assetIssuer)"
+    guard let url = URL(string: sUrl) else { return }
+    UIApplication.shared.open(url, options: .init(), completionHandler: nil)
+  }
+  
+  static func openStellarExpertForNativeAsset() {
+    let sUrl = "https://stellar.expert/explorer/public/asset/XLM"
+    guard let url = URL(string: sUrl) else { return }
+    UIApplication.shared.open(url, options: .init(), completionHandler: nil)
+  }
+  
+  static func openStellarLaboratory(for xdr: String) {
+    let replacedXdr = xdr.replacingOccurrences(of: "+", with: "%2B")
+    let sUrl = "https://laboratory.stellar.org/#xdr-viewer?input=\(replacedXdr)&type=TransactionEnvelope&network=public"
     guard let url = URL(string: sUrl) else { return }
     UIApplication.shared.open(url, options: .init(), completionHandler: nil)
   }

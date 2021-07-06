@@ -58,7 +58,7 @@ enum UserDefaultsHelper {
   
   private static let badgesCounterKey = "badgesCounter"
   
-  @UserDefault(pushNotificationKey, defaultValue: false)
+  @UserDefault(pushNotificationKey, defaultValue: true)
   static var isNotificationsEnabled: Bool
     
   @UserDefault(promtForTransactionDecisionsKey, defaultValue: false)

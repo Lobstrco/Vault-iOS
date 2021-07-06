@@ -17,15 +17,31 @@ class SignerTableViewCell: UITableViewCell {
     publicAddressLabel.text = viewData.publicKey.getTruncatedPublicKey()
     yourKeyTitleLabel.isHidden = !viewData.isLocalPublicKey
     
-    guard let federation = viewData.federation else {
-      yourKeyTitleLabel.text = "You"
-      federationLabel.isHidden = true
-      return
+    
+    var nicknameValue = ""
+    var federationValue = ""
+    
+    if let nickName = viewData.nickname, !nickName.isEmpty {
+      nicknameValue = nickName
+    } else {
+      if let federation = viewData.federation, !federation.isEmpty {
+        federationValue = federation
+      } else {
+        if viewData.isLocalPublicKey {
+          publicAddressLabel.font = UIFont.systemFont(ofSize: 13)
+          publicAddressLabel.textColor = Asset.Colors.gray.color
+        }
+        yourKeyTitleLabel.text = "Your Vault account"
+        federationLabel.isHidden = true
+        return
+      }
     }
+    
+    let text = !nicknameValue.isEmpty ? nicknameValue : federationValue
     
     publicAddressLabel.font = UIFont.systemFont(ofSize: 13)
     publicAddressLabel.textColor = Asset.Colors.gray.color
-    federationLabel.text = federation
+    federationLabel.text = text
     federationLabel.isHidden = false
   }
 }

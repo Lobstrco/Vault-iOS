@@ -12,6 +12,9 @@ protocol HomePresenter {
   func updateSignerDetails()
   func refreshButtonWasPressed()
   
+  func moreDetailsButtonWasPressed(with index: Int)
   func copySignerPublicKeyActionWasPressed(with index: Int)
   func explorerSignerAccountActionWasPressed(with index: Int)
+  func setAccountNicknameActionWasPressed(with text: String?, by index: Int?)
+  func clearAccountNicknameActionWasPressed(by index: Int?)
 }

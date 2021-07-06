@@ -44,6 +44,9 @@ class TransactionListPresenterImpl {
   
   private var currentPageNumber: Int? = 1
   
+  private let storage: SignersStorage = SignersStorageDiskImpl()
+  private var storageSigners: [SignedAccount] = []
+  
   init(view: TransactionListView,
        federationService: FederationService = FederationService(),
        crashlyticsService: CrashlyticsService = CrashlyticsService(),
@@ -73,6 +76,10 @@ class TransactionListPresenterImpl {
   @objc func onDidJWTTokenUpdate(_ notification: Notification) {
     displayPendingTransactions(isResetData: true)
   }
+  
+  @objc func onDidNicknameUpdate(_ notification: Notification) {
+    displayPendingTransactions(isResetData: true)
+  }
 }
 
 // MARK: - TransactionImportDelegate
@@ -88,7 +95,9 @@ extension TransactionListPresenterImpl: TransactionImportDelegate {
       case .success(let accounts):
         let accountId = TransactionHelper.getAccountId(signedAccounts: accounts, transactionEnvelopeXDR: transactionEnvelopeXDR)
         let domain = TransactionHelper.getManageDataOperationDomain(from: xdr)
-        let webAuthenticator = WebAuthenticator(authEndpoint: Environment.horizonBaseURL, network: .public, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId, serverHomeDomain: domain)
+        let authEndpoint = TransactionHelper.getManageDataOperationAuthEndpointWithPrefix(from: xdr)
+        let webAuthenticator = WebAuthenticator(authEndpoint: authEndpoint, network: .public, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId, serverHomeDomain: domain)
+       // webAuthenticator.ignoreTimebounds = true
         
         let result = webAuthenticator.isValidChallenge(transactionEnvelopeXDR: transactionEnvelopeXDR, userAccountId: accountId, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId)
         switch result {
@@ -207,6 +216,11 @@ private extension TransactionListPresenterImpl {
                                            selector: #selector(onDidJWTTokenUpdate(_:)),
                                            name: .didJWTTokenUpdate,
                                            object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidNicknameUpdate(_:)),
+                                           name: .didNicknameSet,
+                                           object: nil)
   }
   
   func setStatus(_ status: TaskStatus , didBecomeActive: Bool = false) {
@@ -237,6 +251,7 @@ private extension TransactionListPresenterImpl {
       return
     }
     
+    self.storageSigners = storage.retrieveSigners() ?? []
     setStatus(.loading, didBecomeActive: didBecomeActive)
     transactionService.getPendingTransactionList(page: pageNumber) { result in
       switch result {
@@ -304,12 +319,24 @@ private extension TransactionListPresenterImpl {
   }
   
   func getFederation(by publicKey: String, with cellIndex: Int) -> String? {
-    guard let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first else {
-      tryToLoadFederation(by: publicKey, for: cellIndex)
-      return nil
+    if let account = storageSigners.first(where: { $0.address == publicKey }) {
+      if let nickName = account.nickname, !nickName.isEmpty {
+        return nickName
+      } else {
+        if let federation = account.federation, !federation.isEmpty {
+          return federation
+        } else {
+          tryToLoadFederation(by: publicKey, for: cellIndex)
+          return nil
+        }
+      }
+    } else {
+      guard let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first else {
+        tryToLoadFederation(by: publicKey, for: cellIndex)
+        return nil
+      }
+      return account.federation
     }
-    
-    return account.federation
   }
   
   func tryToLoadFederation(by publicKey: String, for index: Int) {

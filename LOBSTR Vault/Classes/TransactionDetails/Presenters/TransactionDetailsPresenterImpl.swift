@@ -41,10 +41,16 @@ class TransactionDetailsPresenterImpl {
   private let transactionType: TransactionType
   private var operations: [String] = []
   private var signers: [SignerViewData] = []
-  private var operationDetails: [(name: String, value: String)] = []
+  private var operationDetails: [(name: String, value: String, isAssetCode: Bool)] = []
   private var destinationFederation: String = ""
+  private var isDownloading: Bool = false
+  private var assets: [stellarsdk.Asset] = []
+  private var publicKeys: [String] = []
   
   var sections = [TransactionDetailsSection]()
+  
+  private let storage: SignersStorage = SignersStorageDiskImpl()
+  private var storageSigners: [SignedAccount] = []
   
   // MARK: - Init
 
@@ -73,6 +79,12 @@ class TransactionDetailsPresenterImpl {
   @objc func onDidJWTTokenUpdate(_ notification: Notification) {
     transactionDetailsViewDidLoad()
   }
+  
+  @objc func updateProgressAnimation(_ notification: Notification) { 
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { 
+      self.view?.setProgressAnimation(isEnable: self.isDownloading)
+    }
+  }
 }
 
 // MARK: - TransactionDetailsPresenter
@@ -84,7 +96,7 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
           UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     view?.setProgressAnimation(isEnable: true)
-    
+    isDownloading = true
     let destinationId = tryToGetDestinationId()
     
     if !destinationId.isEmpty {
@@ -122,6 +134,30 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
     } catch {
       crashlyticsService?.recordCustomException(error)
       view?.setErrorAlert(for: error)
+    }
+  }
+  
+  func publicKeyWasSelected(key: String?) {
+    do {
+      let operation = try TransactionHelper.getOperation(from: xdr)
+      let publicKeys = TransactionHelper.getPublicKeys(from: operation)
+      self.publicKeys.append(contentsOf: publicKeys)
+      if let key = self.publicKeys.first(where: { $0.prefix(4) == key?.prefix(4) && $0.suffix(4) == key?.suffix(4) }) {
+        self.view?.showActionSheet(key, .publicKey)
+      }
+    } catch {
+      return
+    }
+  }
+  
+  func assetCodeWasSelected(code: String?) {
+    if !self.assets.isEmpty {
+      if let asset = assets.first(where: { $0.code == code }) {
+        self.view?.showActionSheet(asset, .assetCode)
+      }
+      else {
+        self.view?.showActionSheet(nil, .nativeAssetCode)
+      }
     }
   }
   
@@ -173,6 +209,41 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       updateTransactionAndSend(by: hash)
     }
   }
+  
+  func copyXdr() {
+    view?.copy(xdr)
+  }
+  
+  func signedXdr() {
+    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+      return
+    }
+    signTransaction(transactionEnvelopeXDR)
+  }
+  
+  func viewTransactionDetails() {
+    UtilityHelper.openStellarLaboratory(for: xdr)
+  }
+  
+  func copyPublicKey(_ key: String) {
+    UIPasteboard.general.string = key
+    Logger.home.debug("Public key was copied: \(key)")
+    view?.copy(key)
+  }
+  
+  func explorerPublicKey(_ key: String) {
+    UtilityHelper.openStellarExpertForPublicKey(publicKey: key)
+  }
+  
+  func explorerAsset(_ asset: stellarsdk.Asset) {
+    if let assetCode = asset.code, let assetIssuer = asset.issuer?.accountId {
+      UtilityHelper.openStellarExpertForAsset(assetCode: assetCode, assetIssuer: assetIssuer)
+    }
+  }
+  
+  func explorerNativeAsset() {
+    UtilityHelper.openStellarExpertForNativeAsset()
+  }
 }
 
 // MARK: - Private
@@ -180,17 +251,15 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
 private extension TransactionDetailsPresenterImpl {
   func buildAdditionalInformationSection() -> [(name: String, value: String)] {
     var additionalInformationSection: [(name: String, value: String)] = []
-    
+        
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
-      switch transactionXDR.txMemo {
-      case .text(let text):
-        if !text.isEmpty {
-          operationDetails.append((name: "Memo", value: text))
-        }
-      default:
-        break
+      let memo = getMemo()
+      
+      if !memo.isEmpty {
+        additionalInformationSection.append((name: "Memo", value: memo))
       }
-      additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey()))
+      additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters)))
+      publicKeys.append(transactionXDR.txSourceAccountId)
     }
     
     if let transactionDate = transaction.addedAt {
@@ -214,7 +283,11 @@ private extension TransactionDetailsPresenterImpl {
       listOfSections.append(operationDetailsSection)
     }
     
-    listOfSections.append(contentsOf: [additionalInformationSection, signersSection])
+    if !signersSection.rows.isEmpty {
+      listOfSections.append(contentsOf: [additionalInformationSection, signersSection])
+    } else {
+      listOfSections.append(contentsOf: [additionalInformationSection])
+    }
     
     return listOfSections
   }
@@ -238,6 +311,7 @@ private extension TransactionDetailsPresenterImpl {
       if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
         let operation = try TransactionHelper.getOperation(from: xdr)
         operationDetails = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionXDR.txSourceAccountId, memo: nil, created: nil, isListOperations: true, destinationFederation: self.destinationFederation)
+        assets = TransactionHelper.getAssets(from: operation)
       }
     } catch {
       crashlyticsService?.recordCustomException(error)
@@ -302,7 +376,46 @@ private extension TransactionDetailsPresenterImpl {
     }
   }
   
-  func submitTransaction(_ transactionEnvelopeXDR: TransactionEnvelopeXDR, transactionType: ServerTransactionType = .transaction) {    
+  
+  func signTransaction(_ transactionEnvelopeXDR: TransactionEnvelopeXDR) {
+    let gettingMnemonic = GettingMnemonicOperation()
+    let signTransaction = SignTransactionOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
+    let signTransactionWithTangem = SignTransactionWithTangemOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
+    
+    var operations: [AsyncOperation] = []
+    
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      signTransaction.addDependency(gettingMnemonic)
+      operations.append(contentsOf: [gettingMnemonic, signTransaction])
+    case .createdWithTangem:
+      operations.append(contentsOf: [signTransactionWithTangem])
+    default:
+      view?.setProgressAnimation(isEnable: false)
+      return
+    }
+        
+    OperationQueue().addOperations(operations, waitUntilFinished: false)
+    
+    signTransaction.completionBlock = {
+      DispatchQueue.main.async {
+        if let signed = signTransaction.xdrEnvelope {
+          self.view?.copy(signed)
+        }
+      }
+    }
+    
+    signTransactionWithTangem.completionBlock = {
+      DispatchQueue.main.async { [self] in
+        if let signed = signTransactionWithTangem.xdrEnvelope {
+          self.view?.copy(signed)
+        }
+      }
+    }
+  }
+  
+
+  func submitTransaction(_ transactionEnvelopeXDR: TransactionEnvelopeXDR, transactionType: ServerTransactionType = .transaction) {
     let gettingMnemonic = GettingMnemonicOperation()
     let signTransaction = SignTransactionOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
     let signTransactionWithTangem = SignTransactionWithTangemOperation(transactionEnvelopeXDR: transactionEnvelopeXDR)
@@ -354,13 +467,12 @@ private extension TransactionDetailsPresenterImpl {
     
     submitTransactionToVaultServer.completionBlock = {
       DispatchQueue.main.async {
+        self.view?.setProgressAnimation(isEnable: false)
         if let _ = submitTransactionToVaultServer.outputError {
-          // check errors from vault server and send to crashlytics
           return
         }
         
         if transactionType == .authChallenge {
-          self.view?.setProgressAnimation(isEnable: false)
           NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
           let xdr = self.getOutputXdr(signTransaction: signTransaction, signTransactionWithTangem: signTransactionWithTangem)
           self.transitionToTransactionStatus(with: (TransactionResultCode.badAuth, operaiotnMessageError: nil), xdr: xdr, transactionType: .authChallenge)
@@ -423,6 +535,7 @@ private extension TransactionDetailsPresenterImpl {
   {
     var signersViewData: [SignerViewData] = []
     let filteredSigners = signers.filter { $0.key != Constants.vaultMarkerKey }
+    var nickname = ""
     
     for (index, signer) in filteredSigners.enumerated() {
       guard let pulicKey = signer.key else { break }
@@ -430,10 +543,18 @@ private extension TransactionDetailsPresenterImpl {
     
       let signatureStatus: SignatureStatus = signed ? .accepted : .pending
       let isLocalPublicKey = vaultStorage.getPublicKeyFromKeychain() == pulicKey ? true : false
+      
+      if let account = storageSigners.first(where: { $0.address == pulicKey }) {
+        nickname = account.nickname ?? ""
+      } else {
+        nickname = ""
+      }
+      
       signersViewData.append(SignerViewData(status: signatureStatus,
                                             publicKey: pulicKey,
                                             weight: signer.weight,
                                             federation: getFederation(by: pulicKey, with: index),
+                                            nickname: nickname,
                                             isLocalPublicKey: isLocalPublicKey))
     }
     
@@ -494,17 +615,23 @@ private extension TransactionDetailsPresenterImpl {
   }
   
   func tryToGetSignedAccounts(transactionEnvelopeXDR: TransactionEnvelopeXDR) {
+    self.storageSigners = storage.retrieveSigners() ?? []
     transactionService.getSignedAccounts { result in
       switch result {
       case .success(let accounts):
         let accountId = TransactionHelper.getAccountId(signedAccounts: accounts, transactionEnvelopeXDR: transactionEnvelopeXDR)
         self.sdk.accounts.getAccountDetails(accountId: accountId) { [weak self] result in
           guard let self = self else { return }
+          self.isDownloading = false
           switch result {
           case .success(let accountDetails):
             DispatchQueue.main.async {
               self.view?.setProgressAnimation(isEnable: false)
-              self.signers = self.getSignersViewData(signers: accountDetails.signers,
+              
+              let listOfTargetSigners = accountDetails.signers.filter {
+                !($0.key?.contains("VAULT") ?? false) && $0.weight != 0 }
+                
+              self.signers = self.getSignersViewData(signers: listOfTargetSigners,
                                                      transactionEnvelopeXDR: transactionEnvelopeXDR)
               self.numberOfNeededSignatures = self.getNumberOfNeededSignatures(thresholdsResponse: accountDetails.thresholds,
                                                                                signers: self.signers)
@@ -516,7 +643,7 @@ private extension TransactionDetailsPresenterImpl {
               self.view?.setProgressAnimation(isEnable: false)
               self.numberOfNeededSignatures = 0
               self.setData()
-              self.view?.setConfirmButtonWithError(isInvalid: true, withTextError: error.localizedDescription)
+              self.view?.setConfirmButtonWithError(isInvalid: false, withTextError: error.localizedDescription)
               Logger.networking.error("Couldn't get account details with error: \(error)")
             }
           }
@@ -526,7 +653,7 @@ private extension TransactionDetailsPresenterImpl {
           self.view?.setProgressAnimation(isEnable: false)
           self.numberOfNeededSignatures = 0
           self.setData()
-          self.view?.setConfirmButtonWithError(isInvalid: true, withTextError: error.localizedDescription)
+          self.view?.setConfirmButtonWithError(isInvalid: false, withTextError: error.localizedDescription)
           Logger.networking.error("Couldn't get account details with error: \(error)")
         }
       }
@@ -545,9 +672,10 @@ extension TransactionDetailsPresenterImpl {
   func transitionToTransactionStatus(with transactionResult: (TransactionResultCode, operaiotnMessageError: String?), xdr: String?, transactionType: ServerTransactionType?) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
-    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,
-                                                                               transactionResult: transactionResult,
-                                                                               xdr: xdr, transactionType: transactionType)
+    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view:
+      transactionStatusViewController,
+      transactionResult: transactionResult,
+      xdr: xdr, transactionType: transactionType)
 
     let transactionDetailsViewController = view as! TransactionDetailsViewController
     transactionDetailsViewController.navigationController?.pushViewController(transactionStatusViewController, animated: true)
@@ -556,7 +684,7 @@ extension TransactionDetailsPresenterImpl {
   func transition(to operation: stellarsdk.Operation, by index: Int) {
     let operationViewController = OperationViewController.createFromStoryboard()
     
-    operationViewController.presenter = OperationPresenterImpl(view: operationViewController)
+    operationViewController.presenter = OperationPresenterImpl(view: operationViewController, xdr: xdr)
     let memo = getMemo()
     var date = ""
     var transactionSourceAccountId = ""
@@ -580,6 +708,10 @@ extension TransactionDetailsPresenterImpl {
         if !text.isEmpty {
           memo = text
         }
+      case .id(let id):
+        memo = String(id)
+      case .returnHash(let returnHash):
+        memo = returnHash.wrapped.asHexString()
       case .hash(let hash):
         memo = hash.wrapped.asHexString()
       default:
@@ -591,10 +723,15 @@ extension TransactionDetailsPresenterImpl {
 }
 
 private extension TransactionDetailsPresenterImpl {
-  func addObservers() {    
+  func addObservers() {
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(onDidJWTTokenUpdate(_:)),
                                            name: .didJWTTokenUpdate,
                                            object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                          selector: #selector(updateProgressAnimation(_:)),
+                                          name: .didPinScreenClose,
+                                          object: nil)
   }
 }

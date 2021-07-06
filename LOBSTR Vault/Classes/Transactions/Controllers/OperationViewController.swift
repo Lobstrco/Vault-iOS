@@ -1,4 +1,6 @@
 import UIKit
+import PKHUD
+import stellarsdk
 
 class OperationViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .transactions
@@ -49,6 +51,67 @@ extension OperationViewController: OperationDetailsView {
   func setTitle(_ title: String) {
     navigationItem.title = title
   }
+  
+  func showActionSheet(_ value: Any?, _ type: ActionSheetType) {
+    let moreMenu = UIAlertController(title: nil,
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
+    
+    switch type {
+    case .assetCode:
+      if let asset = value as? stellarsdk.Asset {
+        let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                               style: .default) { _ in
+          self.presenter.explorerAsset(asset)
+        }
+        
+        moreMenu.addAction(openExplorerAction)
+      }
+    case .publicKey:
+      if let key = value as? String {
+        let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
+                                       style: .default) { _ in
+          self.presenter.copyPublicKey(key)
+        }
+        
+        let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                               style: .default) { _ in
+          self.presenter.explorerPublicKey(key)
+        }
+                    
+        moreMenu.addAction(openExplorerAction)
+        moreMenu.addAction(copyAction)
+      }
+    case .nativeAssetCode:
+      let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                             style: .default) { _ in
+        self.presenter.explorerNativeAsset()
+      }
+  
+      moreMenu.addAction(openExplorerAction)
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTextCancel, style: .cancel)
+    moreMenu.addAction(cancelAction)
+        
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    
+    present(moreMenu, animated: true, completion: nil)
+  }
+  
+  func copy(_ text: String) {
+    let pasteboard = UIPasteboard.general
+    pasteboard.string = text
+    HUD.flash(.labeledSuccess(title: nil,
+                              subtitle: L10n.animationCopy), delay: 1.0)
+  }
 }
 
 // MARK: - UITableView
@@ -67,9 +130,17 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
     let row = section.rows[indexPath.row]
     
     switch row {
-    case .operationDetail(let name, let value):
+    case .operationDetail((let name, let value, let isAssetCode)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-      
+      if name == "Claimants" {
+        cell.type = .claimants
+      }
+      if value.isShortStellarPublicAddress {
+        cell.type = .publicKey
+      }
+      if isAssetCode {
+        cell.type = .assetCode
+      }
       cell.setData(title: name, value: value)
       cell.selectionStyle = .none
       return cell
@@ -99,5 +170,15 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
     let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
     headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
     return headerView
+  }
+  
+  func tableView(_ tableView: UITableView,
+                 didSelectRowAt indexPath: IndexPath) {
+    if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .publicKey {
+      tableView.deselectRow(at: indexPath, animated: true)
+      presenter.publicKeyWasSelected(key: cell.valueLabel.text)
+    } else if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .assetCode {
+      presenter.assetCodeWasSelected(code: cell.valueLabel.text)
+    } else { return }
   }
 }

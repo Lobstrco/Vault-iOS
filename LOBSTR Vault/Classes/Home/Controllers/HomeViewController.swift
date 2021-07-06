@@ -29,6 +29,7 @@ class HomeViewController: UIViewController, StoryboardCreation {
   @IBOutlet var titleOfPublicKeyLabel: UILabel!
   @IBOutlet var copyKeyButton: UIButton!
   
+  @IBOutlet var signersNumberStackView: UIStackView!
   @IBOutlet var signedAccountsNumberButton: UIButton!
   
   @IBOutlet var accountLabel: UILabel!
@@ -40,6 +41,7 @@ class HomeViewController: UIViewController, StoryboardCreation {
   @IBOutlet var transactionListButton: UIButton!
   @IBOutlet var transactionsToSignLabel: UILabel!
   @IBOutlet var activityIndicator: UIActivityIndicatorView!
+  @IBOutlet var refreshButton: UIButton!
   
   var presenter: HomePresenter!
 }
@@ -160,7 +162,7 @@ private extension HomeViewController {
   func setIconCardOrIdenticon() {
     switch UserDefaultsHelper.accountStatus {
     case .createdByDefault:
-      idenctionView.loadIdenticon(publicAddress: presenter.publicKey!)
+      idenctionView.loadIdenticon(publicAddress: presenter.publicKey ?? "")
       idenctionView.isHidden = false
       cardIconView.isHidden = true
     case .createdWithTangem:
@@ -176,39 +178,6 @@ private extension HomeViewController {
     tableView.separatorColor = .clear
   }
   
-  func actionSheetForSignersListWasPressed(with index: Int) {
-    let moreMenu = UIAlertController(title: nil,
-                                     message: nil,
-                                     preferredStyle: .actionSheet)
-    
-    let copyAction = UIAlertAction(title: "Copy Public Key",
-                                   style: .default) { _ in
-      self.presenter.copySignerPublicKeyActionWasPressed(with: index)
-    }
-    
-    let openExplorerAction = UIAlertAction(title: "Open Explorer",
-                                           style: .default) { _ in
-      self.presenter.explorerSignerAccountActionWasPressed(with: index)
-    }
-    
-    let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        
-    moreMenu.addAction(openExplorerAction)
-    moreMenu.addAction(copyAction)
-    moreMenu.addAction(cancelAction)
-    
-    if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
-      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
-                                                        y: view.bounds.midY,
-                                                        width: 0,
-                                                        height: 0)
-      popoverPresentationController.permittedArrowDirections = []
-    }
-    
-    present(moreMenu, animated: true, completion: nil)
-  }
-  
   func reloadData(signedAccountsNumber: Int) {
     topView.subviews.first?.isHidden = signedAccountsNumber == 0 ? true : false
     topViewHeightConstraint.constant = signedAccountsNumber == 0 ? 100 : 260
@@ -216,6 +185,14 @@ private extension HomeViewController {
     emptyViewHeightConstraint.constant = signedAccountsNumber == 0 ? 300 : 0
     tableViewHeightConstraint.constant = signedAccountsNumber == 0 ? 0 : CGFloat(60 * signedAccountsNumber)
     tableView.reloadData()
+  }
+  
+  func openNicknameDialog(by index: Int) {
+    let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
+    nicknameDialogViewController.delegate = self
+    nicknameDialogViewController.index = index
+    nicknameDialogViewController.nickName = self.presenter.signedAccounts[index].nickname
+    self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
 }
 
@@ -252,12 +229,87 @@ extension HomeViewController: HomeView {
   }
   
   func setNumberOfSignedAccount(_ number: Int) {
+    if number > 9 {
+      signersNumberStackView.spacing = 5
+    }
     signedAccountsNumberButton.setTitle(number.description, for: .normal)
   }
   
   func setAccountLabel() {
     let title = UserDefaultsHelper.numberOfSignerAccounts > 1 ? "accounts" : "account"
     accountLabel.text = title
+  }
+  
+  func rotateRefreshButton(isRotating: Bool) {
+    if isRotating {
+      DispatchQueue.main.async {
+        self.refreshButton.layer.removeAllAnimations()
+      }
+    } else {
+      let spinAnimation = CABasicAnimation()
+      spinAnimation.fromValue = 0
+      spinAnimation.toValue = Double.pi * 2
+      spinAnimation.duration = 0.8
+      spinAnimation.repeatCount = Float.infinity
+      spinAnimation.isRemovedOnCompletion = false
+      spinAnimation.fillMode = CAMediaTimingFillMode.forwards
+      spinAnimation.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.linear)
+      refreshButton.layer.add(spinAnimation, forKey: "transform.rotation.z")
+    }
+  }
+  
+  func actionSheetForSignersListWasPressed(with index: Int, isNicknameSet: Bool) {
+    let moreMenu = UIAlertController(title: nil,
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
+    
+    let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
+                                   style: .default) { _ in
+      self.presenter.copySignerPublicKeyActionWasPressed(with: index)
+    }
+    
+    let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
+                                           style: .default) { _ in
+      self.presenter.explorerSignerAccountActionWasPressed(with: index)
+    }
+    
+    moreMenu.addAction(openExplorerAction)
+    moreMenu.addAction(copyAction)
+    
+    if isNicknameSet {
+      let changeAccountNicknameAction = UIAlertAction(title: L10n.buttonTextChangeAccountNickname,
+                                                   style: .default) { _ in
+        self.openNicknameDialog(by: index)
+      }
+      
+      let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
+                                                   style: .default) { _ in
+        self.presenter.clearAccountNicknameActionWasPressed(by: index)
+      }
+      moreMenu.addAction(changeAccountNicknameAction)
+      moreMenu.addAction(clearAccountNicknameAction)
+    } else {
+      let setAccountNicknameAction = UIAlertAction(title: L10n.buttonTextSetAccountNickname,
+                                                   style: .default) { _ in
+        self.openNicknameDialog(by: index)
+      }
+      moreMenu.addAction(setAccountNicknameAction)
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTextCancel, style: .cancel)
+        
+    moreMenu.addAction(cancelAction)
+    
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    
+    present(moreMenu, animated: true, completion: nil)
   }
 }
 
@@ -286,7 +338,7 @@ extension HomeViewController: UITableViewDataSource {
 extension HomeViewController: SignerAccountDelegate {
   func moreDetailsButtonWasPressed(in cell: SignerAccountTableViewCell) {
     guard let indexPath = tableView.indexPath(for: cell) else { return }
-    actionSheetForSignersListWasPressed(with: indexPath.row)
+    presenter.moreDetailsButtonWasPressed(with: indexPath.row)
   }
   
   func longTapWasActivated(in cell: SignerAccountTableViewCell) {
@@ -310,5 +362,13 @@ extension HomeViewController: UITableViewDelegate {
 extension HomeViewController: VaultPublicKeyTableViewCellDelegate {
   func copyButtonDidPress() {
     presenter.copyKeyButtonWasPressed()
+  }
+}
+
+// MARK: - NicknameDialogDelegate
+
+extension HomeViewController: NicknameDialogDelegate {
+  func submitNickname(with text: String, by index: Int?) {
+    self.presenter.setAccountNicknameActionWasPressed(with: text, by: index)
   }
 }

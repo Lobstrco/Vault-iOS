@@ -28,6 +28,7 @@ internal enum Asset {
     internal static let `default` = ColorAsset(name: "Colors/Default")
     internal static let disabled = ColorAsset(name: "Colors/Disabled")
     internal static let gray = ColorAsset(name: "Colors/Gray")
+    internal static let grayOpacity15 = ColorAsset(name: "Colors/GrayOpacity15")
     internal static let grayOpacity30 = ColorAsset(name: "Colors/GrayOpacity30")
     internal static let grayOpacity70 = ColorAsset(name: "Colors/GrayOpacity70")
     internal static let identiconBorder = ColorAsset(name: "Colors/IdenticonBorder")
@@ -69,6 +70,7 @@ internal enum Asset {
     internal static let bgMultitask = ImageAsset(name: "Other/bg_multitask")
     internal static let fullLogo = ImageAsset(name: "Other/full_logo")
     internal static let logo = ImageAsset(name: "Other/logo")
+    internal static let ultraStellarLogo = ImageAsset(name: "Other/ultra_stellar_logo")
   }
   internal enum States {
 

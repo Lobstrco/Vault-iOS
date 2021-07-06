@@ -64,3 +64,16 @@ extension UITextView: UITextViewDelegate {
     self.delegate = self
   }
 }
+
+extension UITextView {
+  func centerVertically(text: String) {
+    var top: CGFloat = 0.0
+    if text.isEmpty {
+      top = (self.bounds.size.height - self.contentSize.height * self.zoomScale)
+    } else {
+      top = (self.bounds.size.height - self.contentSize.height * self.zoomScale) / 2
+    }
+    top = top < 0.0 ? 0.0 : top
+    self.contentInset.top = top
+  }
+}

@@ -19,6 +19,22 @@ internal enum L10n {
   internal static let buttonTextAppUpdate = L10n.tr("Localizable", "button_text_app_update")
   /// Skip
   internal static let buttonTextAppUpdateSkip = L10n.tr("Localizable", "button_text_app_update_skip")
+  /// Cancel
+  internal static let buttonTextCancel = L10n.tr("Localizable", "button_text_cancel")
+  /// Change Account Nickname
+  internal static let buttonTextChangeAccountNickname = L10n.tr("Localizable", "button_text_change_account_nickname")
+  /// Clear Account Nickname
+  internal static let buttonTextClearAccountNickname = L10n.tr("Localizable", "button_text_clear_account_nickname")
+  /// Copy Public Key
+  internal static let buttonTextCopy = L10n.tr("Localizable", "button_text_copy")
+  /// Cancel
+  internal static let buttonTextNicknameCancel = L10n.tr("Localizable", "button_text_nickname_cancel")
+  /// Save
+  internal static let buttonTextNicknameSave = L10n.tr("Localizable", "button_text_nickname_save")
+  /// Open Network Explorer
+  internal static let buttonTextOpenExplorer = L10n.tr("Localizable", "button_text_open_explorer")
+  /// Set Account Nickname
+  internal static let buttonTextSetAccountNickname = L10n.tr("Localizable", "button_text_set_account_nickname")
   /// Back
   internal static let buttonTitleBack = L10n.tr("Localizable", "button_title_back")
   /// Cancel
@@ -29,6 +45,10 @@ internal enum L10n {
   internal static let buttonTitleConfirm = L10n.tr("Localizable", "button_title_confirm")
   /// Copy Key
   internal static let buttonTitleCopyKey = L10n.tr("Localizable", "button_title_copy_key")
+  /// Copy Signed XDR
+  internal static let buttonTitleCopySignedXdr = L10n.tr("Localizable", "button_title_copy_signed_xdr")
+  /// Copy Transaction XDR
+  internal static let buttonTitleCopyXdr = L10n.tr("Localizable", "button_title_copy_xdr")
   /// Create Account
   internal static let buttonTitleCreateNewAccount = L10n.tr("Localizable", "button_title_create_new_account")
   /// Deny
@@ -41,6 +61,8 @@ internal enum L10n {
   internal static let buttonTitleNext = L10n.tr("Localizable", "button_title_next")
   /// OK
   internal static let buttonTitleOk = L10n.tr("Localizable", "button_title_ok")
+  /// Open Help Center
+  internal static let buttonTitleOpenHelpCenter = L10n.tr("Localizable", "button_title_open_help_center")
   /// Re-Check
   internal static let buttonTitleReCheck = L10n.tr("Localizable", "button_title_re_check")
   /// Re-Check
@@ -69,6 +91,8 @@ internal enum L10n {
   internal static let buttonTitleTurnOnFingerprint = L10n.tr("Localizable", "button_title_turn_on_fingerprint")
   /// I Understand
   internal static let buttonTitleUnderstand = L10n.tr("Localizable", "button_title_understand")
+  /// View Transaction Details
+  internal static let buttonTitleViewTransactionDetails = L10n.tr("Localizable", "button_title_view_transaction_details")
   /// View Transactions List
   internal static let buttonTitleViewTransactionsList = L10n.tr("Localizable", "button_title_view_transactions_list")
   /// Yes
@@ -235,7 +259,7 @@ internal enum L10n {
   internal static let navTitleRestoreAccount = L10n.tr("Localizable", "nav_title_restore_account")
   /// Settings
   internal static let navTitleSettings = L10n.tr("Localizable", "nav_title_settings")
-  /// Protected accounts
+  /// Protected Accounts
   internal static let navTitleSettingsSignedAccounts = L10n.tr("Localizable", "nav_title_settings_signed_accounts")
   /// Transaction Details
   internal static let navTitleTransactionDetails = L10n.tr("Localizable", "nav_title_transaction_details")
@@ -285,6 +309,8 @@ internal enum L10n {
   internal static let textBackupDescription = L10n.tr("Localizable", "text_backup_description")
   /// Backup Your Account
   internal static let textBackupTitle = L10n.tr("Localizable", "text_backup_title")
+  /// Change Account Nickname
+  internal static let textChangeNicknameTitle = L10n.tr("Localizable", "text_change_nickname_title")
   /// Confirm PIN
   internal static let textChangePasscodeConfirmNew = L10n.tr("Localizable", "text_change_passcode_confirm_new")
   /// Create PIN
@@ -325,6 +351,12 @@ internal enum L10n {
   internal static let textMnemonicVerificationDescription = L10n.tr("Localizable", "text_mnemonic_verification_description")
   /// Wrong order. Please try again.
   internal static let textMnemonicVerifivationIncorrectOrder = L10n.tr("Localizable", "text_mnemonic_verifivation_incorrect_order")
+  /// Choose a short name for protected account
+  internal static let textNicknameDescription = L10n.tr("Localizable", "text_nickname_description")
+  /// Limited to 30 symbols
+  internal static let textNicknameTextViewDescrition = L10n.tr("Localizable", "text_nickname_text_view_descrition")
+  /// Enter account nickname
+  internal static let textNicknameTextViewPlaceholder = L10n.tr("Localizable", "text_nickname_text_view_placeholder")
   /// Challenge
   internal static let textOperationNameChallengeTitle = L10n.tr("Localizable", "text_operation_name_challenge_title")
   /// Change PIN
@@ -351,6 +383,8 @@ internal enum L10n {
   internal static let textRestorePlaceholder = L10n.tr("Localizable", "text_restore_placeholder")
   /// Multiply your security
   internal static let textSecureYourLumens = L10n.tr("Localizable", "text_secure_your_lumens")
+  /// Set Account Nickname
+  internal static let textSetNicknameTitle = L10n.tr("Localizable", "text_set_nickname_title")
   /// ACCOUNT
   internal static let textSettingsAccountSection = L10n.tr("Localizable", "text_settings_account_section")
   /// Change PIN
