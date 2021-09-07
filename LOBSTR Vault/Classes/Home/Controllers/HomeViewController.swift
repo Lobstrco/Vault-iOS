@@ -278,14 +278,15 @@ extension HomeViewController: HomeView {
     
     if isNicknameSet {
       let changeAccountNicknameAction = UIAlertAction(title: L10n.buttonTextChangeAccountNickname,
-                                                   style: .default) { _ in
+                                                      style: .default) { _ in
         self.openNicknameDialog(by: index)
       }
       
       let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
-                                                   style: .default) { _ in
+                                                     style: .default) { _ in
         self.presenter.clearAccountNicknameActionWasPressed(by: index)
       }
+      clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
       moreMenu.addAction(changeAccountNicknameAction)
       moreMenu.addAction(clearAccountNicknameAction)
     } else {

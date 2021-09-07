@@ -13,6 +13,7 @@
 		741939BB25540A980060387C /* CancelAllTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741939BA25540A980060387C /* CancelAllTransactions.swift */; };
 		7421AB31266FA0A200E72FAC /* UIView+HideKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7421AB30266FA0A100E72FAC /* UIView+HideKeyboard.swift */; };
 		7429896025F122FE00D5578B /* Collection+UnfoldSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7429895F25F122FE00D5578B /* Collection+UnfoldSequence.swift */; };
+		7435A6F12694863C00BAD34D /* UITextField+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7435A6F02694863C00BAD34D /* UITextField+Padding.swift */; };
 		744E6EC0255BF0BF00F011AB /* SignerDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744E6EBF255BF0BF00F011AB /* SignerDetailsViewController.swift */; };
 		7459F31025B056B7003F47B5 /* UIApplication+TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7459F30F25B056B7003F47B5 /* UIApplication+TopViewController.swift */; };
 		745F37EB2594DBB700CF3714 /* OperationDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745F37EA2594DBB700CF3714 /* OperationDetailsSection.swift */; };
@@ -256,6 +257,7 @@
 		741939BA25540A980060387C /* CancelAllTransactions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancelAllTransactions.swift; sourceTree = "<group>"; };
 		7421AB30266FA0A100E72FAC /* UIView+HideKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+HideKeyboard.swift"; sourceTree = "<group>"; };
 		7429895F25F122FE00D5578B /* Collection+UnfoldSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+UnfoldSequence.swift"; sourceTree = "<group>"; };
+		7435A6F02694863C00BAD34D /* UITextField+Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Padding.swift"; sourceTree = "<group>"; };
 		744E6EBF255BF0BF00F011AB /* SignerDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignerDetailsViewController.swift; sourceTree = "<group>"; };
 		7459F30F25B056B7003F47B5 /* UIApplication+TopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+TopViewController.swift"; sourceTree = "<group>"; };
 		745F37EA2594DBB700CF3714 /* OperationDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDetailsSection.swift; sourceTree = "<group>"; };
@@ -698,6 +700,7 @@
 				7459F30F25B056B7003F47B5 /* UIApplication+TopViewController.swift */,
 				7429895F25F122FE00D5578B /* Collection+UnfoldSequence.swift */,
 				7421AB30266FA0A100E72FAC /* UIView+HideKeyboard.swift */,
+				7435A6F02694863C00BAD34D /* UITextField+Padding.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -2051,6 +2054,7 @@
 				9244A3DC21FF10A8007FF360 /* UITextView+Placeholder.swift in Sources */,
 				84CFB07C21D7B02E0020073C /* ApplicationInfo.swift in Sources */,
 				9277ABB821CA770D00379971 /* Transaction.swift in Sources */,
+				7435A6F12694863C00BAD34D /* UITextField+Padding.swift in Sources */,
 				9277AB8421C8E7C200379971 /* APIRequestLoader.swift in Sources */,
 				9208BEF32475AFCE005E8B21 /* MultisigInfoViewController.swift in Sources */,
 				9277ABB521CA75C300379971 /* PaginationResponse.swift in Sources */,
@@ -2203,7 +2207,7 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
@@ -2212,7 +2216,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2309,7 +2313,7 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault QA.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2317,7 +2321,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2414,7 +2418,7 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault QA.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2422,7 +2426,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2581,7 +2585,7 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
@@ -2590,7 +2594,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2607,7 +2611,7 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 46;
+				CURRENT_PROJECT_VERSION = 47;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
@@ -2615,7 +2619,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.4.0;
+				MARKETING_VERSION = 2.4.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

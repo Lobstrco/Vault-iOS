@@ -30,8 +30,8 @@ enum TransactionDetailsSectionType {
   
   var headerHeight: CGFloat {
     switch self {
-    case .operations: return 0
-    case .operationDetails: return 0
+    case .operations: return 40
+    case .operationDetails: return 40
     case .additionalInformation: return 0
     case .signers: return 40
     }

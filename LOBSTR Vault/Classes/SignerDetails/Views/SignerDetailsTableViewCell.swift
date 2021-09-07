@@ -1,13 +1,12 @@
-import UIKit
 import Kingfisher
+import UIKit
 
 protocol SignerDetailsTableViewCellDelegate: class {
   func moreDetailsButtonWasPressed(in cell: SignerDetailsTableViewCell)
 }
 
 class SignerDetailsTableViewCell: UITableViewCell {
-
-  @IBOutlet weak var publicKeyLabel: UILabel!
+  @IBOutlet var publicKeyLabel: UILabel!
   @IBOutlet var signerFederationLabel: UILabel! {
     didSet {
       signerFederationLabel.lineBreakMode = .byTruncatingTail
@@ -29,7 +28,6 @@ class SignerDetailsTableViewCell: UITableViewCell {
     
     publicKeyLabel.text = signedAccount.address?.getTruncatedPublicKey() ?? "unknown address"
     
-    
     var nicknameValue = ""
     var federationValue = ""
     
@@ -40,6 +38,8 @@ class SignerDetailsTableViewCell: UITableViewCell {
         federationValue = federation
       } else {
         signerFederationLabel.isHidden = true
+        publicKeyLabel.font = UIFont.boldSystemFont(ofSize: 12)
+        publicKeyLabel.textColor = Asset.Colors.black.color
         return
       }
     }
@@ -55,5 +55,4 @@ class SignerDetailsTableViewCell: UITableViewCell {
   @IBAction func menuButtonAction(_ sender: Any) {
     delegate?.moreDetailsButtonWasPressed(in: self)
   }
-  
 }

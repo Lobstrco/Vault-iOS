@@ -35,6 +35,9 @@ class OperationViewController: UIViewController, StoryboardCreation {
   
   func configureTableView() {
     tableView.tableFooterView = UIView()
+    tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNonzeroMagnitude))
+    tableView.sectionFooterHeight = 0.0
+    tableView.sectionHeaderHeight = 0.0
     
     tableView.delegate = self
     tableView.dataSource = self
@@ -130,6 +133,14 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
     let row = section.rows[indexPath.row]
     
     switch row {
+    case .additionalInformation((let name, let value)):
+      let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      if value.isShortStellarPublicAddress {
+        cell.type = .publicKey
+      }
+      cell.setData(title: name, value: value)
+      cell.selectionStyle = .none
+      return cell
     case .operationDetail((let name, let value, let isAssetCode)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
       if name == "Claimants" {
@@ -140,6 +151,14 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
       }
       if isAssetCode {
         cell.type = .assetCode
+      }
+      cell.setData(title: name, value: value)
+      cell.selectionStyle = .none
+      return cell
+    case .additionalInformation((let name, let value)):
+      let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      if value.isShortStellarPublicAddress {
+        cell.type = .publicKey
       }
       cell.setData(title: name, value: value)
       cell.selectionStyle = .none
@@ -163,13 +182,19 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    guard presenter.sections[section].type == .signers else {
+    switch presenter.sections[section].type {
+    case .signers:
+      let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
+      return headerView
+    case .operationDetails:
+      let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      headerView.titleLabel.text = L10n.textOperationDetailsHeaderTitle
+      headerView.numberOfAcceptedSignaturesLabel.isHidden = true
+      return headerView
+    default:
       return nil
     }
-    
-    let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
-    headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
-    return headerView
   }
   
   func tableView(_ tableView: UITableView,

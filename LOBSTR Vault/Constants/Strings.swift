@@ -305,6 +305,8 @@ internal enum L10n {
   internal static let textAppUpdateTitleRequired = L10n.tr("Localizable", "text_app_update_title_required")
   /// Update is available
   internal static let textAppUpdateTitleWeak = L10n.tr("Localizable", "text_app_update_title_weak")
+  /// If you lose your Recovery Phrase, you may lose the control over your protected Stellar account and funds.
+  internal static let textBackupAttention = L10n.tr("Localizable", "text_backup_attention")
   /// You will be shown a 12 word recovery phrase. It will allow you to recover access to your account in case your phone is lost or stolen.
   internal static let textBackupDescription = L10n.tr("Localizable", "text_backup_description")
   /// Backup Your Account
@@ -357,8 +359,12 @@ internal enum L10n {
   internal static let textNicknameTextViewDescrition = L10n.tr("Localizable", "text_nickname_text_view_descrition")
   /// Enter account nickname
   internal static let textNicknameTextViewPlaceholder = L10n.tr("Localizable", "text_nickname_text_view_placeholder")
+  /// OPERATION DETAILS
+  internal static let textOperationDetailsHeaderTitle = L10n.tr("Localizable", "text_operation_details_header_title")
   /// Challenge
   internal static let textOperationNameChallengeTitle = L10n.tr("Localizable", "text_operation_name_challenge_title")
+  /// OPERATIONS
+  internal static let textOperationsHeaderTitle = L10n.tr("Localizable", "text_operations_header_title")
   /// Change PIN
   internal static let textPasscodeSimpleChangeButton = L10n.tr("Localizable", "text_passcode_simple_change_button")
   /// Continue

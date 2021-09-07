@@ -150,6 +150,7 @@ extension SignerDetailsViewController: SignerDetailsView {
                                                    style: .default) { _ in
         self.presenter.clearAccountNicknameActionWasPressed(by: index)
       }
+      clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
       moreMenu.addAction(changeAccountNicknameAction)
       moreMenu.addAction(clearAccountNicknameAction)
     } else {

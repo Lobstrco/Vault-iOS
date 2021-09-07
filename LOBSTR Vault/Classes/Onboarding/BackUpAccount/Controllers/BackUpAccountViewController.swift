@@ -12,6 +12,7 @@ class BackUpAccountViewController: UIViewController, StoryboardCreation, BackUpA
   @IBOutlet var understandButton: UIButton!
   @IBOutlet var backupTitleLabel: UILabel!
   @IBOutlet var backupDescriptionlabel: UILabel!
+  @IBOutlet var backupAttentionlabel: UILabel!
   
   // MARK: - Lifecycle
   
@@ -51,5 +52,6 @@ class BackUpAccountViewController: UIViewController, StoryboardCreation, BackUpA
   private func setStaticStrings() {
     backupTitleLabel.text = L10n.textBackupTitle
     backupDescriptionlabel.text = L10n.textBackupDescription
+    backupAttentionlabel.text = L10n.textBackupAttention
   }
 }

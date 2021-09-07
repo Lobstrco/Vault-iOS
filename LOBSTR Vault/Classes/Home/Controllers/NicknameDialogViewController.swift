@@ -43,7 +43,8 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
 
   @IBAction func saveButtonAction(_ sender: Any) {
     let nickname: String = textField.text ?? ""
-    delegate?.submitNickname(with: nickname, by: index)
+    let trimmedNickname = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
+    delegate?.submitNickname(with: trimmedNickname, by: index)
     dismiss(animated: true, completion: nil)
   }
   
@@ -75,6 +76,7 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
     textField.contentVerticalAlignment = .center
     textField.clearButtonMode = .always
     textField.delegate = self
+    textField.setLeftPaddingPoints(10)
   }
   
   private func setStaticString() {

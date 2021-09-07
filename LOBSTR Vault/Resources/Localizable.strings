@@ -76,6 +76,7 @@
 // Backup screen
 "text_backup_title" = "Backup Your Account";
 "text_backup_description" = "You will be shown a 12 word recovery phrase. It will allow you to recover access to your account in case your phone is lost or stolen.";
+"text_backup_attention" = "If you lose your Recovery Phrase, you may lose the control over your protected Stellar account and funds.";
 "button_title_understand" = "I Understand";
 
 // Mnemonic generation screen
@@ -140,6 +141,8 @@
 "text_confirm_dialog_description" = "Want to confirm the transaction?";
 "text_transaction_invalid_error" = "Transaction can not be confirmed, its sequence number is invalid.";
 "text_transaction_invalid_label" = "Invalid";
+"text_operation_details_header_title" = "OPERATION DETAILS";
+"text_operations_header_title" = "OPERATIONS";
 
 // Settings screen
 "text_settings_account_section" = "ACCOUNT";

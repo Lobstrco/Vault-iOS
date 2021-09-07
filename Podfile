@@ -25,7 +25,7 @@ target 'LOBSTR Vault' do
   pod 'PKHUD', '~> 5.0'
   
   # Ready to use “Acknowledgements”/“Licenses”/“Credits” view controller for CocoaPods.
-  pod 'AcknowList', '~> 1.9.4'
+  pod 'AcknowList', '~> 1.9.5'
   
   # A lightweight, pure-Swift library for downloading and caching images from the web.
   pod 'Kingfisher', '~> 5.0'

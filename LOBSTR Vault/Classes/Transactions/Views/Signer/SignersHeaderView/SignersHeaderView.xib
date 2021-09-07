@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_5" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -30,16 +30,17 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    <viewLayoutGuide key="safeArea" id="fop-AI-Qpn"/>
+                    <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                     <constraints>
                         <constraint firstItem="fop-AI-Qpn" firstAttribute="trailing" secondItem="d3K-J2-NvG" secondAttribute="trailing" constant="15" id="CF3-nj-N1P"/>
                         <constraint firstItem="fop-AI-Qpn" firstAttribute="bottom" secondItem="Ef0-hY-xra" secondAttribute="bottom" constant="7" id="kel-vN-y7w"/>
                         <constraint firstItem="fop-AI-Qpn" firstAttribute="bottom" secondItem="d3K-J2-NvG" secondAttribute="bottom" constant="7" id="oiK-20-Epl"/>
                         <constraint firstItem="Ef0-hY-xra" firstAttribute="leading" secondItem="fop-AI-Qpn" secondAttribute="leading" constant="16" id="w5N-Yp-jlb"/>
                     </constraints>
-                    <viewLayoutGuide key="safeArea" id="fop-AI-Qpn"/>
                 </view>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="zJn-ov-yO6" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="WBH-8w-3Rx"/>
@@ -48,11 +49,16 @@
                 <constraint firstItem="zJn-ov-yO6" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="vFe-fg-aUH"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="numberOfAcceptedSignaturesLabel" destination="d3K-J2-NvG" id="ott-g8-9cr"/>
+                <outlet property="titleLabel" destination="Ef0-hY-xra" id="Ds3-o8-mGN"/>
             </connections>
             <point key="canvasLocation" x="100" y="74"/>
         </view>
     </objects>
+    <resources>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
 </document>

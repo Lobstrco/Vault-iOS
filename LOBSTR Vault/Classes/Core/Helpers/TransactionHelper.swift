@@ -321,7 +321,7 @@ struct TransactionHelper {
     return assets
   }
   
-  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: String?, created: String?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, isAssetCode: Bool)] {
+  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: String?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, isAssetCode: Bool)] {
     var data: [(name: String, value: String, isAssetCode: Bool)] = []
     
     switch type(of: operation) {
@@ -340,7 +340,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = paymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is CreateAccountOperation.Type:
       let createAccountOperation = operation as! CreateAccountOperation
       data.append(("Destination", createAccountOperation.destination.accountId.getTruncatedPublicKey(), false))
@@ -349,7 +348,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = createAccountOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is PathPaymentOperation.Type:
       let pathPaymentOperation = operation as! PathPaymentOperation
       data.append(("Send Asset", pathPaymentOperation.sendAsset.code ?? "XLM", true))
@@ -367,7 +365,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = pathPaymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ManageOfferOperation.Type:
       let manageOfferOperation = operation as! ManageOfferOperation
       data.append(("Selling", manageOfferOperation.selling.code ?? "XLM", true))
@@ -388,7 +385,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = manageOfferOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is CreatePassiveOfferOperation.Type:
       let createPassiveOfferOperation = operation as! CreatePassiveOfferOperation
       data.append(("Selling", createPassiveOfferOperation.selling.code ?? "XLM", true))
@@ -404,7 +400,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = createPassiveOfferOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is SetOptionsOperation.Type:
       let setOptionsOperation = operation as! SetOptionsOperation
       if let homeDomain = setOptionsOperation.homeDomain {
@@ -431,7 +426,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = setOptionsOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
       // Set Flags / Clear Flags
     case is AllowTrustOperation.Type:
       let allowTrustOperation = operation as! AllowTrustOperation
@@ -441,7 +435,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = allowTrustOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ChangeTrustOperation.Type:
       let changeTrustOperation = operation as! ChangeTrustOperation
       if let assetCode = changeTrustOperation.asset.code {
@@ -456,7 +449,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = changeTrustOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is AccountMergeOperation.Type:
       let accountMergeOperation = operation as! AccountMergeOperation
       data.append(("Destination", accountMergeOperation.destinationAccountId.getTruncatedPublicKey(), false))
@@ -464,7 +456,6 @@ struct TransactionHelper {
       if let operationSourceAccountId = accountMergeOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ManageDataOperation.Type:
       let manageDataOperation = operation as! ManageDataOperation
       data.append(("Name", manageDataOperation.name, false))
@@ -474,14 +465,12 @@ struct TransactionHelper {
       if let operationSourceAccountId = manageDataOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is BumpSequenceOperation.Type:
       let bumpSequenceOperation = operation as! BumpSequenceOperation
       data.append(("Bump To", bumpSequenceOperation.bumpTo.description, false))
       if let operationSourceAccountId = bumpSequenceOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
       }
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is BeginSponsoringFutureReservesOperation.Type:
       let beginSponsoringFutureReservesOperation = operation as! BeginSponsoringFutureReservesOperation
       data.append(("Sponsored ID", beginSponsoringFutureReservesOperation.sponsoredId.getTruncatedPublicKey(), false))
@@ -500,12 +489,9 @@ struct TransactionHelper {
           data.append(("Claimant", claimant.destination.getTruncatedPublicKey(), false))
         }
       }
-      
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is ClaimClaimableBalanceOperation.Type:
       let claimClaimableBalanceOperation = operation as! ClaimClaimableBalanceOperation
       data.append(("Balance ID", claimClaimableBalanceOperation.balanceId, false))
-      tryToSetOperationFields(data: &data, transactionSourceAccountId: transactionSourceAccountId, created: created, isListOperations: isListOperations)
     case is RevokeSponsorshipOperation.Type:
       let revokeSponsorshipOperation = operation as! RevokeSponsorshipOperation
     default:
@@ -522,12 +508,12 @@ struct TransactionHelper {
   }
   
   static func tryToSetOperationFields(data: inout [(name: String, value: String, isAssetCode: Bool)], transactionSourceAccountId: String, created: String?, isListOperations: Bool = false) {
-    if !isListOperations {
-      data.append(("Transaction Source", transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
-    }
-    if let created = created, !created.isEmpty {
-      data.append(("Created", created, false))
-    }
+//    if !isListOperations {
+//      data.append(("Transaction Source", transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), false))
+//    }
+//    if let created = created, !created.isEmpty {
+//      data.append(("Created", created, false))
+//    }
   }
   
   static func getPrice(from price: Price) -> String {

@@ -109,6 +109,7 @@ extension BiometricIDPresenterImpl {
       else { return }
     UserDefaultsHelper.isAfterLogin = true
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+      self.view?.setProgressAnimation(isDisplay: false)
       appDelegate.applicationCoordinator.showHomeScreen()
     }
   }

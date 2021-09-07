@@ -305,6 +305,7 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" largeTitleDisplayMode="always" id="fLK-gW-uKg">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="K5p-AT-8IH"/>
                         <barButtonItem key="rightBarButtonItem" title="Clear button" id="Ofy-Dw-ppe">
                             <connections>
                                 <action selector="clearButtonAction:" destination="xd8-nA-9bh" id="Fit-Jp-Hbd"/>
@@ -394,7 +395,9 @@
                             <constraint firstItem="7TV-pv-kP1" firstAttribute="top" secondItem="xjN-5x-O7I" secondAttribute="top" id="xKf-qg-Mi0"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="qOy-cS-0Wl"/>
+                    <navigationItem key="navigationItem" largeTitleDisplayMode="never" id="qOy-cS-0Wl">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="6jz-NU-Uxq"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="confirmButton" destination="1DX-9e-aKv" id="Euq-eL-ACl"/>
                         <outlet property="denyButton" destination="i7O-hb-34a" id="kIh-jJ-NAw"/>
@@ -415,9 +418,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Gz3-G8-J75">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Gz3-G8-J75">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="558"/>
-                                <color key="backgroundColor" name="Colors/Background"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="wze-0s-xqr"/>

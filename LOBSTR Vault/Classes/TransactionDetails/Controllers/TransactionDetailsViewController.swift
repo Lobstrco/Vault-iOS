@@ -345,12 +345,23 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   }
 
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-    guard presenter.sections[section].type == .signers else {
+    switch presenter.sections[section].type {
+    case .signers:
+      let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
+      return headerView
+    case .operationDetails:
+      let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      headerView.titleLabel.text = L10n.textOperationDetailsHeaderTitle
+      headerView.numberOfAcceptedSignaturesLabel.isHidden = true
+      return headerView
+    case .operations:
+      let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      headerView.titleLabel.text = L10n.textOperationsHeaderTitle
+      headerView.numberOfAcceptedSignaturesLabel.isHidden = true
+      return headerView
+    default:
       return nil
     }
-    
-    let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
-    headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
-    return headerView
   }
 }

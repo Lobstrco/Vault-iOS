@@ -277,6 +277,8 @@ private extension TransactionDetailsPresenterImpl {
     let operationDetailsSection = TransactionDetailsSection(type: .operationDetails, rows: operationDetails.map { .operationDetail($0) })
     let signersSection = TransactionDetailsSection(type: .signers, rows: signers.map { .signer($0) })
     
+    listOfSections.append(contentsOf: [additionalInformationSection])
+    
     if operationsSection.rows.count > 1 {
       listOfSections.append(operationsSection)
     } else {
@@ -284,11 +286,8 @@ private extension TransactionDetailsPresenterImpl {
     }
     
     if !signersSection.rows.isEmpty {
-      listOfSections.append(contentsOf: [additionalInformationSection, signersSection])
-    } else {
-      listOfSections.append(contentsOf: [additionalInformationSection])
+      listOfSections.append(signersSection)
     }
-    
     return listOfSections
   }
   
@@ -310,7 +309,7 @@ private extension TransactionDetailsPresenterImpl {
     do {
       if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
         let operation = try TransactionHelper.getOperation(from: xdr)
-        operationDetails = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionXDR.txSourceAccountId, memo: nil, created: nil, isListOperations: true, destinationFederation: self.destinationFederation)
+        operationDetails = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionXDR.txSourceAccountId, memo: nil, isListOperations: true, destinationFederation: self.destinationFederation)
         assets = TransactionHelper.getAssets(from: operation)
       }
     } catch {

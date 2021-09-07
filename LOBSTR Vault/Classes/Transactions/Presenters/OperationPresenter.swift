@@ -81,14 +81,13 @@ extension OperationPresenterImpl: OperationPresenter {
   }
   
   func publicKeyWasSelected(key: String?) {
-    do {
-      let operation = try TransactionHelper.getOperation(from: xdr)
+    if let operation = operation {
       let publicKeys = TransactionHelper.getPublicKeys(from: operation)
       if let key = publicKeys.first(where: { $0.prefix(4) == key?.prefix(4) && $0.suffix(4) == key?.suffix(4) }) {
         self.view?.showActionSheet(key, .publicKey)
+      } else if transactionSourceAccountId.prefix(4) == key?.prefix(4) && transactionSourceAccountId.suffix(4) == key?.suffix(4) {
+        self.view?.showActionSheet(transactionSourceAccountId, .publicKey)
       }
-    } catch {
-      return
     }
   }
   
@@ -133,16 +132,31 @@ extension OperationPresenterImpl: OperationPresenter {
 private extension OperationPresenterImpl {
   func setOperationDetails() {
     guard let operation = operation else { return }
-    operationProperties = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionSourceAccountId, memo: memo, created: date, destinationFederation: destinationFederation)
+    operationProperties = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionSourceAccountId, memo: memo, destinationFederation: destinationFederation)
   }
-
+  
+  
+  func buildAdditionalInformationSection() -> [(name: String, value: String)] {
+    var additionalInformationSection: [(name: String, value: String)] = []
+    if let memo = self.memo, !memo.isEmpty {
+      additionalInformationSection.append((name: "Memo", value: memo))
+    }
+    additionalInformationSection.append((name: "Transaction Source", value: transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters)))
+    if let transactionDate = self.date, !transactionDate.isEmpty {
+      additionalInformationSection.append((name: "Created", value: transactionDate))
+    }
+    return additionalInformationSection
+  }
+  
   func buildSections() -> [OperationDetailsSection] {
     var listOfSections = [OperationDetailsSection]()
     
     let operationDetailsSection = OperationDetailsSection(type: .operationDetails, rows: operationProperties.map { .operationDetail($0) })
     let signersSection = OperationDetailsSection(type: .signers, rows: signers.map { .signer($0) })
+            
+    let additionalInformationSection = OperationDetailsSection(type: .additionalInformation, rows: buildAdditionalInformationSection().map { .additionalInformation($0) })
     
-    listOfSections.append(contentsOf: [operationDetailsSection, signersSection])
+    listOfSections.append(contentsOf: [additionalInformationSection, operationDetailsSection, signersSection])
     
     return listOfSections
   }
