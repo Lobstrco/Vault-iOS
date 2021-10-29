@@ -45,6 +45,10 @@ extension String {
      return self
    }
   
+  func getMiddleTruncated(numberOfCharacters: Int = 8) -> String {
+    return "\(self.prefix(numberOfCharacters))...\(self.suffix(numberOfCharacters))"
+  }
+  
   func split(by length: Int) -> [String] {
     var startIndex = self.startIndex
     var results = [Substring]()

@@ -103,7 +103,7 @@ extension NicknameDialogViewController: UITextFieldDelegate {
     }
     let substringToReplace = textFieldText[rangeOfTextToReplace]
     let count = textFieldText.count - substringToReplace.count + string.count
-    return count <= 30
+    return count <= 20
   }
   
   func textFieldDidBeginEditing(_ textField: UITextField) {

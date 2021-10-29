@@ -127,11 +127,15 @@ struct UtilityHelper {
     case .createdByDefault:
       if let topVC = UIApplication.getTopViewController() {
         if !(topVC is PinEnterViewController) {
-          HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting))
+          DispatchQueue.main.async {
+            HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting))
+          }
         }
       }
       AuthenticationService().updateToken() { result in
-        HUD.hide()
+        DispatchQueue.main.async {
+          HUD.hide()
+        }
         switch result {
         case .success(_):
           NotificationCenter.default.post(name: .didJWTTokenUpdate, object: nil)

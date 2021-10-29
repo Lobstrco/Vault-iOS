@@ -133,6 +133,8 @@ internal enum L10n {
   internal static let errorBiometricPressedPasswordMessage = L10n.tr("Localizable", "error_biometric_pressed_password_message")
   /// Biometric disabled
   internal static let errorBiometricPressedPasswordTitle = L10n.tr("Localizable", "error_biometric_pressed_password_title")
+  /// Your account has reached the Stellar subentries limit at 1000. You can’t add more assets, signers or create more offers.
+  internal static let errorTooManySubentriesMessage = L10n.tr("Localizable", "error_too_many_subentries_message")
   /// error_unknown
   internal static let errorUnknown = L10n.tr("Localizable", "error_unknown")
   /// An unknown error has occured. If this issue persists, please contact support.
@@ -355,7 +357,7 @@ internal enum L10n {
   internal static let textMnemonicVerifivationIncorrectOrder = L10n.tr("Localizable", "text_mnemonic_verifivation_incorrect_order")
   /// Choose a short name for protected account
   internal static let textNicknameDescription = L10n.tr("Localizable", "text_nickname_description")
-  /// Limited to 30 symbols
+  /// Limited to 20 symbols
   internal static let textNicknameTextViewDescrition = L10n.tr("Localizable", "text_nickname_text_view_descrition")
   /// Enter account nickname
   internal static let textNicknameTextViewPlaceholder = L10n.tr("Localizable", "text_nickname_text_view_placeholder")

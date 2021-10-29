@@ -8,8 +8,8 @@ struct TransactionDetailsSection {
 
 enum TransactionDetailsRow {
   case operation(String)
-  case operationDetail((name: String , value: String, isAssetCode: Bool))
-  case additionalInformation((name: String , value: String))
+  case operationDetail((name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool))
+  case additionalInformation((name: String , value: String, nickname: String, isPublicKey: Bool))
   case signer(SignerViewData)
 }
 

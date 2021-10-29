@@ -26,7 +26,7 @@ protocol OperationDetailsView: class {
 class OperationPresenterImpl {
   fileprivate weak var view: OperationDetailsView?
   fileprivate weak var crashlyticsService: CrashlyticsService?
-  fileprivate var operationProperties: [(name: String, value: String, isAssetCode: Bool)] = []
+  fileprivate var operationProperties: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
   fileprivate var xdr: String
   
   var operation: stellarsdk.Operation?
@@ -45,6 +45,9 @@ class OperationPresenterImpl {
   var numberOfNeededSignatures: Int = 0
   var signers: [SignerViewData] = []
   var sections = [OperationDetailsSection]()
+  
+  private let storage: SignersStorage = SignersStorageDiskImpl()
+  private var storageSigners: [SignedAccount] = []
   
   // MARK: - Init
   
@@ -81,19 +84,30 @@ extension OperationPresenterImpl: OperationPresenter {
   }
   
   func publicKeyWasSelected(key: String?) {
+    self.storageSigners = storage.retrieveSigners() ?? []
     if let operation = operation {
-      let publicKeys = TransactionHelper.getPublicKeys(from: operation)
-      if let key = publicKeys.first(where: { $0.prefix(4) == key?.prefix(4) && $0.suffix(4) == key?.suffix(4) }) {
-        self.view?.showActionSheet(key, .publicKey)
-      } else if transactionSourceAccountId.prefix(4) == key?.prefix(4) && transactionSourceAccountId.suffix(4) == key?.suffix(4) {
-        self.view?.showActionSheet(transactionSourceAccountId, .publicKey)
+      var publicKeys = TransactionHelper.getPublicKeys(from: operation)
+      publicKeys.append(transactionSourceAccountId)
+      if let key = key, key.isShortStellarPublicAddress {
+        if let key = publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
+          self.view?.showActionSheet(key, .publicKey)
+        } else if transactionSourceAccountId.prefix(4) == key.prefix(4) && transactionSourceAccountId.suffix(4) == key.suffix(4) {
+          self.view?.showActionSheet(transactionSourceAccountId, .publicKey)
+        }
+      } else {
+        let shortPublicKey = key?.suffix(14) ?? ""
+        let nickname = key?.replacingOccurrences(of: shortPublicKey, with: "")
+        if let account = storageSigners.first(where: { $0.nickname == nickname }) {
+          if let key = publicKeys.first(where: { $0.prefix(4) == account.address?.prefix(4) && $0.suffix(4) == account.address?.suffix(4) }) {
+            self.view?.showActionSheet(key, .publicKey)
+          }
+        }
       }
     }
   }
   
   func assetCodeWasSelected(code: String?) {
-    do {
-      let operation = try TransactionHelper.getOperation(from: xdr)
+    if let operation = operation {
       let assets = TransactionHelper.getAssets(from: operation)
       if !assets.isEmpty {
         if let asset = assets.first(where: { $0.code == code }) {
@@ -103,8 +117,6 @@ extension OperationPresenterImpl: OperationPresenter {
           self.view?.showActionSheet(nil, .nativeAssetCode)
         }
       }
-    } catch {
-      return
     }
   }
   
@@ -136,14 +148,14 @@ private extension OperationPresenterImpl {
   }
   
   
-  func buildAdditionalInformationSection() -> [(name: String, value: String)] {
-    var additionalInformationSection: [(name: String, value: String)] = []
+  func buildAdditionalInformationSection() -> [(name: String , value: String, nickname: String, isPublicKey: Bool)] {
+    var additionalInformationSection: [(name: String , value: String, nickname: String, isPublicKey: Bool)] = []
     if let memo = self.memo, !memo.isEmpty {
-      additionalInformationSection.append((name: "Memo", value: memo))
+      additionalInformationSection.append((name: "Memo", value: memo, nickname: "", isPublicKey: false))
     }
-    additionalInformationSection.append((name: "Transaction Source", value: transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters)))
+    additionalInformationSection.append((name: "Transaction Source", value: transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionSourceAccountId), isPublicKey: true))
     if let transactionDate = self.date, !transactionDate.isEmpty {
-      additionalInformationSection.append((name: "Created", value: transactionDate))
+      additionalInformationSection.append((name: "Created", value: transactionDate, nickname: "", isPublicKey: false))
     }
     return additionalInformationSection
   }

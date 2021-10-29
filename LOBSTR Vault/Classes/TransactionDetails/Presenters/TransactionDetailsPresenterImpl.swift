@@ -41,7 +41,7 @@ class TransactionDetailsPresenterImpl {
   private let transactionType: TransactionType
   private var operations: [String] = []
   private var signers: [SignerViewData] = []
-  private var operationDetails: [(name: String, value: String, isAssetCode: Bool)] = []
+  private var operationDetails: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
   private var destinationFederation: String = ""
   private var isDownloading: Bool = false
   private var assets: [stellarsdk.Asset] = []
@@ -142,8 +142,18 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       let operation = try TransactionHelper.getOperation(from: xdr)
       let publicKeys = TransactionHelper.getPublicKeys(from: operation)
       self.publicKeys.append(contentsOf: publicKeys)
-      if let key = self.publicKeys.first(where: { $0.prefix(4) == key?.prefix(4) && $0.suffix(4) == key?.suffix(4) }) {
-        self.view?.showActionSheet(key, .publicKey)
+      if let key = key, key.isShortStellarPublicAddress {
+        if let key = self.publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
+          self.view?.showActionSheet(key, .publicKey)
+        }
+      } else {
+        let shortPublicKey = key?.suffix(14) ?? ""
+        let nickname = key?.replacingOccurrences(of: shortPublicKey, with: "")
+        if let account = storageSigners.first(where: { $0.nickname == nickname }) {
+          if let key = self.publicKeys.first(where: { $0.prefix(4) == account.address?.prefix(4) && $0.suffix(4) == account.address?.suffix(4) }) {
+            self.view?.showActionSheet(key, .publicKey)
+          }
+        }
       }
     } catch {
       return
@@ -193,6 +203,7 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   
   func confirmOperationWasConfirmed() {
     guard let viewController = view as? UIViewController else { return }
+    guard ConnectionHelper.checkConnection(viewController) else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     view?.setProgressAnimation(isEnable: true)
@@ -249,21 +260,22 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
 // MARK: - Private
 
 private extension TransactionDetailsPresenterImpl {
-  func buildAdditionalInformationSection() -> [(name: String, value: String)] {
-    var additionalInformationSection: [(name: String, value: String)] = []
+  func buildAdditionalInformationSection() -> [(name: String , value: String, nickname: String, isPublicKey: Bool)] {
+    var additionalInformationSection: [(name: String , value: String, nickname: String, isPublicKey: Bool)] = []
         
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
       let memo = getMemo()
       
       if !memo.isEmpty {
-        additionalInformationSection.append((name: "Memo", value: memo))
+        additionalInformationSection.append((name: "Memo", value: memo, nickname: "", isPublicKey: false))
       }
-      additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters)))
+      
+      additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionXDR.txSourceAccountId), true))
       publicKeys.append(transactionXDR.txSourceAccountId)
     }
     
     if let transactionDate = transaction.addedAt {
-      additionalInformationSection.append((name: "Created", value: TransactionHelper.getValidatedDate(from: transactionDate)))
+      additionalInformationSection.append((name: "Created", value: TransactionHelper.getValidatedDate(from: transactionDate), nickname: "", isPublicKey: false))
     }
     
     return additionalInformationSection
@@ -341,6 +353,7 @@ private extension TransactionDetailsPresenterImpl {
   
   func cancelTransaction() {
     guard let viewController = view as? UIViewController else { return }
+    guard ConnectionHelper.checkConnection(viewController) else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     guard let transactionHash = transaction.hash else {

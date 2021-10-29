@@ -196,6 +196,7 @@
 "error_unknown" = "error_unknown";
 "error_unknown_title" = "Unknown Error";
 "error_unknown_message" = "An unknown error has occured. If this issue persists, please contact support.";
+"error_too_many_subentries_message" = "Your account has reached the Stellar subentries limit at 1000. You can’t add more assets, signers or create more offers.";
 
 "error_biometric_not_available" = "error_biometric_not_available";
 "error_biometric_not_available_title" = "Not available";
@@ -294,7 +295,7 @@
 "text_change_nickname_title" = "Change Account Nickname";
 "text_nickname_description" = "Choose a short name for protected account";
 "text_nickname_text_view_placeholder" = "Enter account nickname";
-"text_nickname_text_view_descrition" = "Limited to 30 symbols";
+"text_nickname_text_view_descrition" = "Limited to 20 symbols";
 "button_text_nickname_save" = "Save";
 "button_text_nickname_cancel" = "Cancel";
 

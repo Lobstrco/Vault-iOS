@@ -51,6 +51,9 @@ class AuthViewController: UIViewController, StoryboardCreation {
         }
       }
     case .tangem:
+      guard ConnectionHelper.checkConnection(self) else {
+        return
+      }
       AuthenticationService().updateTokenWithTangem(publicKey: publicKey!, walletPublicKey: walletPublicKey!, cardId: cardId!) { result in
         switch result {
         case .success:

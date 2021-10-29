@@ -1,7 +1,7 @@
 import UIKit
 
 enum OperationDetailsTableViewCellType: String {
-  case claimants
+  case flags
   case other
   case publicKey
   case assetCode
@@ -14,7 +14,7 @@ class OperationDetailsTableViewCell: UITableViewCell {
   @IBOutlet weak var valueLabel: UILabel!
   
   func setData(title: String, value: String) {
-    let numberOfLines = type == .claimants ? 0 : 1
+    let numberOfLines = type == .flags ? 0 : 1
     valueLabel.numberOfLines = numberOfLines
     titleLabel.text = title
     valueLabel.text = value

@@ -114,7 +114,9 @@ extension TransactionListPresenterImpl: TransactionImportDelegate {
       case .failure(let error):
         var transaction = Transaction()
         transaction.xdr = xdr
-        self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
+        DispatchQueue.main.async {
+          self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
+        }
         Logger.networking.error("Couldn't get signed accounts with error: \(error)")
       }
     }

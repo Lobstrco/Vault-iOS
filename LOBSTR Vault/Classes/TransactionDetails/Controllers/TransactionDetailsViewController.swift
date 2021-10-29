@@ -290,26 +290,39 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
       let cell: OperationTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
       cell.setOperationTitle(title)
       return cell
-    case .operationDetail((let name, let value, let isAssetCode)):
+    case .operationDetail((let name, let value, let nickname, let isPublicKey, let isAssetCode)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-      if name == "Claimants" {
-        cell.type = .claimants
+      if name.contains("Flags") {
+        cell.type = .flags
       }
-      if value.isShortStellarPublicAddress {
+      if isPublicKey {
         cell.type = .publicKey
       }
+//      if value.isShortStellarPublicAddress {
+//        cell.type = .publicKey
+//      }
       if isAssetCode {
         cell.type = .assetCode
       }
-      cell.setData(title: name, value: value)
+      if isPublicKey, !nickname.isEmpty {
+        let value = nickname + " (\(value.prefix(4))...\(value.suffix(4)))"
+        cell.setData(title: name, value: value)
+      } else {
+        cell.setData(title: name, value: value)
+      }
       cell.selectionStyle = .none
       return cell
-    case .additionalInformation((let name, let value)):
+    case .additionalInformation((let name, let value, let nickname, let isPublicKey)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-      if value.isShortStellarPublicAddress {
+      if isPublicKey {
         cell.type = .publicKey
       }
-      cell.setData(title: name, value: value)
+      if isPublicKey, !nickname.isEmpty {
+        let value = nickname + " (\(value.prefix(4))...\(value.suffix(4)))"
+        cell.setData(title: name, value: value)
+      } else {
+        cell.setData(title: name, value: value)
+      }
       cell.selectionStyle = .none
       return cell
     case .signer(let signerViewData):
@@ -337,11 +350,34 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   
   func tableView(_ tableView: UITableView,
                  heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return presenter.sections[indexPath.section].type.rowHeight
+    switch presenter.sections[indexPath.section].rows[indexPath.row] {
+    case .operationDetail((let name, let value, _, _, _)):
+      if name.contains("Flags") {
+        let separateCount =  value.components(separatedBy:"\n").count - 1
+        if separateCount > 1 {
+          return 70
+        } else {
+          return presenter.sections[indexPath.section].type.rowHeight
+        }
+      } else {
+        return presenter.sections[indexPath.section].type.rowHeight
+      }
+    default:
+      return presenter.sections[indexPath.section].type.rowHeight
+    }
   }
   
   func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-    return presenter.sections[section].type.headerHeight
+    switch presenter.sections[section].type {
+    case .operationDetails:
+      if presenter.sections[section].rows.count != 0 {
+        return presenter.sections[section].type.headerHeight
+      } else {
+        return 0
+      }
+    default:
+      return presenter.sections[section].type.headerHeight
+    }
   }
 
   func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

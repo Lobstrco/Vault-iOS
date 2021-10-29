@@ -43,6 +43,16 @@ extension OperationType {
         return "Create Claimable Balance"
       case .claimClaimableBalance:
         return "Claim Claimable Balance"
+      case .clawback:
+        return "Clawback"
+      case .clawbackClaimableBalance:
+        return "Clawback Claimable Balance"
+      case .setTrustLineFlags:
+        return "Set Trustline Flags"
+      case .liquidityPoolDeposit:
+        return "Liquidity Pool Deposit"
+      case .liquidityPoolWithdraw:
+        return "Liquidity Pool Withdraw"
       default: return "Unknown"
       }
     }
