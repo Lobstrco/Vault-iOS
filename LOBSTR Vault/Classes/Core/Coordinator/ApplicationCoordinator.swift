@@ -35,7 +35,7 @@ class ApplicationCoordinator {
     notificationManager.postNotification(accordingTo: userInfo)
   }
   
-  func setNotificationBadge(accordingTo userInfo: [AnyHashable : Any]) {    
+  func setNotificationBadge(accordingTo userInfo: [AnyHashable : Any]) {
     notificationManager.setNotificationBadge(accordingTo: userInfo)
   }
   
@@ -48,7 +48,7 @@ class ApplicationCoordinator {
     let startMenuViewController = StartMenuViewController.createFromStoryboard()
     let navigationController = UINavigationController(rootViewController: startMenuViewController)
     window?.rootViewController = navigationController
-  }  
+  }
   
   func showPinScreen(mode: PinMode) {
     let pinViewController = PinEnterViewController.createFromStoryboard()
@@ -56,20 +56,36 @@ class ApplicationCoordinator {
     window?.rootViewController = pinViewController
   }
   
-  func showAppropriateScreen(accordingTo userInfo: [AnyHashable : Any]) {
+  func showAppropriateScreen(accordingTo userInfo: [AnyHashable: Any]) {
     guard let eventType = userInfo["event_type"] as? String, let notificationType = NotificationType(rawValue: eventType) else { return }
     
     switch notificationType {
     case .addedNewTransaction, .addedNewSignature:
-        if let transactionString = userInfo["transaction"] as? String {
-          let data = Data(transactionString.utf8)
-          do {
-            let transaction = try JSONDecoder().decode(Transaction.self, from: data)
+      if let transactionString = userInfo["transaction"] as? String, let userAccountString = userInfo["user_account"] as? String {
+        let transactionData = Data(transactionString.utf8)
+        let userAccountData = Data(userAccountString.utf8)
+        do {
+          let transaction = try JSONDecoder().decode(Transaction.self, from: transactionData)
+          let userAccount = try JSONDecoder().decode(UserAccountFromPush.self, from: userAccountData)
+          // Multiaccount support case
+          if let publicKeysFromKeychain = VaultStorage().getPublicKeysFromKeychain() {
+            if let index = publicKeysFromKeychain.firstIndex(of: userAccount.address) {
+              UserDefaultsHelper.activePublicKeyIndex = index
+              UserDefaultsHelper.activePublicKey = userAccount.address
+              ActivePublicKeyHelper.storeInKeychain(UserDefaultsHelper.activePublicKey)
+              NotificationCenter.default.post(name: .didActivePublicKeyChange, object: nil)
+              showTransactionsDetails(by: transaction)
+            }
+          } else {
+            UserDefaultsHelper.activePublicKeyIndex = 0
+            UserDefaultsHelper.activePublicKey = userAccount.address
+            ActivePublicKeyHelper.storeInKeychain(UserDefaultsHelper.activePublicKey)
             showTransactionsDetails(by: transaction)
-          } catch {
-            Logger.notifications.error("Failed to receive transaction")
           }
+        } catch {
+          Logger.notifications.error("Failed to receive transaction")
         }
+      }
     default:
       break
     }
@@ -130,4 +146,8 @@ private extension ApplicationCoordinator {
       navigationController?.pushViewController(transactionDetailsViewController, animated: true)
     }
   }
+}
+
+struct UserAccountFromPush: Codable {
+  let address: String
 }

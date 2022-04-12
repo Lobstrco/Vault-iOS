@@ -29,6 +29,14 @@ extension String {
     return false
   }
   
+  var isMuxedAddress: Bool {
+    if !isEmpty, count == 69, let firstLetter = first, firstLetter == "M" {
+      return true
+    }
+
+    return false
+  }
+  
   var isShortStellarPublicAddress: Bool {
     if !isEmpty, let firstLetter = first, firstLetter == "G", self.contains("...") {
       return true
@@ -37,11 +45,20 @@ extension String {
     return false
   }
   
+  var isShortMuxedAddress: Bool {
+    if !isEmpty, let firstLetter = first, firstLetter == "M", self.contains("...") {
+      return true
+    }
+
+    return false
+  }
+  
+  
   func getTruncatedPublicKey(numberOfCharacters: Int = 8) -> String {
-     if self.isStellarPublicAddress {
-       return "\(self.prefix(numberOfCharacters))...\(self.suffix(numberOfCharacters))"
-     }
-     
+    if self.isStellarPublicAddress || self.isMuxedAddress {
+      return "\(self.prefix(numberOfCharacters))...\(self.suffix(numberOfCharacters))"
+    }
+    
      return self
    }
   

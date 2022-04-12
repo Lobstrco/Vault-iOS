@@ -58,6 +58,11 @@ enum UserDefaultsHelper {
   
   private static let badgesCounterKey = "badgesCounter"
   
+  private static let activePublicAddressKey = "activePublicAddress"
+  private static let activePublicAddressIndexKey = "activePublicAddressIndex"
+  private static let pushNotificationsStatusesKey = "pushNotificationsStatuses"
+  private static let promtForTransactionDecisionsStatusesKey = "promtForTransactionDecisionsStatuses"
+  
   @UserDefault(pushNotificationKey, defaultValue: true)
   static var isNotificationsEnabled: Bool
     
@@ -84,6 +89,18 @@ enum UserDefaultsHelper {
   
   @UserDefault(badgesCounterKey, defaultValue: 0)
   static var badgesCounter: Int
+  
+  @UserDefault(activePublicAddressKey, defaultValue: "")
+  static var activePublicKey: String
+  
+  @UserDefault(activePublicAddressIndexKey, defaultValue: 0)
+  static var activePublicKeyIndex: Int
+  
+  @UserDefault(pushNotificationsStatusesKey, defaultValue: [:])
+  static var pushNotificationsStatuses: [String:Bool]
+  
+  @UserDefault(promtForTransactionDecisionsStatusesKey, defaultValue: [:])
+  static var promtForTransactionDecisionsStatuses: [String:Bool]
   
   static var accountStatus: AccountStatus {
     get {

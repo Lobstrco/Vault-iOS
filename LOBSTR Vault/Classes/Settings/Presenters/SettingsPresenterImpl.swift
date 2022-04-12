@@ -40,6 +40,7 @@ class SettingsPresenterImpl: SettingsPresenter {
 
 extension SettingsPresenterImpl {
   func settingsViewDidLoad() {
+    UtilityHelper.checkAllJWTTokens()
     view?.setSettings()
   }
   
@@ -47,6 +48,8 @@ extension SettingsPresenterImpl {
     guard let viewController = view as? UIViewController else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
+    PromtForTransactionDecisionsHelper.setPromtForTransactionDecisionsStatusesDefaultValues()
+      
     setSpamProtectionSwitch()
   }
 }
@@ -87,7 +90,13 @@ extension SettingsPresenterImpl {
       switchCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
     case .notifications:
       switchCell.setTitle(L10n.textSettingsNotificationsField)
-      switchCell.setSwitch(UserDefaultsHelper.isNotificationsEnabled)
+      
+      // Multiaccount support case
+      if !UserDefaultsHelper.pushNotificationsStatuses.isEmpty {
+        switchCell.setSwitch(NotificationsStatusesHelper.isNotificationsEnabled)
+      } else {
+        switchCell.setSwitch(UserDefaultsHelper.isNotificationsEnabled)
+      }
     }
   }
   
@@ -113,27 +122,36 @@ extension SettingsPresenterImpl {
     switch row {
     case .signerForAccounts:
       disclosureIndicatorTableViewCell.setAttribute(getSignerForAccountsData().attribute)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .mnemonicCode:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsMnemonicField)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .changePin:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsChangePinField)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .help:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsHelpField)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .logout:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsLogoutfield)
       disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.red.color)
       disclosureIndicatorTableViewCell.setTextStatus("")
     case .licenses:
       disclosureIndicatorTableViewCell.setTitle(L10n.navTitleLicenses)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .rateUs:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsRateUsField)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .buyCard:
       disclosureIndicatorTableViewCell.setTitle("Learn About the Signer Card")
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .support:
       disclosureIndicatorTableViewCell.setTitle("Contact Support")
+      disclosureIndicatorTableViewCell.setTextStatus("")
     case .promptTransactionDecisions:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsPromtDecisionsField)
-      let statusText = UserDefaultsHelper.isPromtTransactionDecisionsEnabled ? "Yes" : "No"
+      let isPromtTransactionDecisionsEnabled = PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled
+      let statusText = isPromtTransactionDecisionsEnabled ? "Yes" : "No"
       disclosureIndicatorTableViewCell.setTextStatus(statusText)
     case .spamProtection:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsSpamProtectionField)
@@ -199,14 +217,24 @@ extension SettingsPresenterImpl {
         }
         
         DispatchQueue.main.async {
-          UserDefaultsHelper.isNotificationsEnabled = value
-          if UserDefaultsHelper.isNotificationsEnabled {
-            self.notificationManager.register()
+          // Multiaccount support case
+          if !UserDefaultsHelper.pushNotificationsStatuses.isEmpty {
+            UserDefaultsHelper.pushNotificationsStatuses[UserDefaultsHelper.activePublicKey] = value
+            if value {
+              self.notificationManager.register(allAccounts: false)
+            } else {
+              self.notificationManager.unregister(allAccounts: false)
+            }
+            self.view?.setSettings()
           } else {
-            self.notificationManager.unregister()
+            UserDefaultsHelper.isNotificationsEnabled = value
+            if UserDefaultsHelper.isNotificationsEnabled {
+              self.notificationManager.register()
+            } else {
+              self.notificationManager.unregister()
+            }
+            self.view?.setSettings()
           }
-          
-          self.view?.setSettings()
         }
       }
       
@@ -260,7 +288,7 @@ private extension SettingsPresenterImpl {
   func getSignerForAccountsData() -> (title: String,
                                       attribute: NSMutableAttributedString)
   {
-    let positionOfNumberInTitle = 11
+    let positionOfNumberInTitle = 9
     var length = 0
     var title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
                                                                    with: String(UserDefaultsHelper.numberOfSignerAccounts))

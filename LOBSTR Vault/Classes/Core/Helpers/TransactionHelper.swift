@@ -3,8 +3,8 @@ import stellarsdk
 
 struct TransactionHelper {
   
-  static let storage: SignersStorage = SignersStorageDiskImpl()
-  static var storageSigners: [SignedAccount] = []
+  static let storage: AccountsStorage = AccountsStorageDiskImpl()
+  static var storageAccounts: [SignedAccount] = []
   
   static let numberOfCharacters = getNumberOfCharactersForTruncatePublicKeyTransactionDetails()
   
@@ -434,9 +434,9 @@ struct TransactionHelper {
     case is PaymentOperation.Type:
       let paymentOperation = operation as! PaymentOperation
       data.append(("Destination", paymentOperation.destinationAccountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: paymentOperation.destinationAccountId), true, false))
-      //tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
+      tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
       data.append(("Asset", paymentOperation.asset.code ?? "XLM", "", false, true))
-      data.append(("Amount", paymentOperation.amount.description, "", false, false))
+      data.append(("Amount", paymentOperation.amount.formattedString, "", false, false))
       if let issuer = paymentOperation.asset.issuer?.accountId, paymentOperation.asset.code != nil {
         data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
       }
@@ -449,45 +449,76 @@ struct TransactionHelper {
     case is CreateAccountOperation.Type:
       let createAccountOperation = operation as! CreateAccountOperation
       data.append(("Destination", createAccountOperation.destination.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: createAccountOperation.destination.accountId), true, false))
-      //tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
+      tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
       data.append(("Asset", "XLM", "" , false, true))
-      data.append(("Starting Balance", createAccountOperation.startBalance.description, "", false, false))
+      data.append(("Starting Balance", createAccountOperation.startBalance.formattedString, "", false, false))
       if let operationSourceAccountId = createAccountOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
     case is PathPaymentOperation.Type:
       let pathPaymentOperation = operation as! PathPaymentOperation
       data.append(("Destination", pathPaymentOperation.destinationAccountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: pathPaymentOperation.destinationAccountId), true, false))
-      //tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
+      tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
       data.append(("Send Asset", pathPaymentOperation.sendAsset.code ?? "XLM", "", false, true))
       if let sendIssuer = pathPaymentOperation.sendAsset.issuer?.accountId, pathPaymentOperation.sendAsset.code != nil {
         data.append(("Asset Issuer", sendIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: sendIssuer), true, false))
       }
-      data.append(("Send Amount", pathPaymentOperation.sendMax.description, "", false, false))
+      data.append((getPathPaymentFieldTitle(pathPaymentOperation: pathPaymentOperation, isSend: true), pathPaymentOperation.sendMax.formattedString, "", false, false))
       data.append(("Receive Asset", pathPaymentOperation.destAsset.code ?? "XLM", "", false, true))
       if let destIssuer = pathPaymentOperation.destAsset.issuer?.accountId, pathPaymentOperation.destAsset.code != nil {
         data.append(("Asset Issuer", destIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: destIssuer), true, false))
       }
-      data.append(("Receive Min", pathPaymentOperation.destAmount.description, "", false, false))
+      data.append((getPathPaymentFieldTitle(pathPaymentOperation: pathPaymentOperation, isSend: false), pathPaymentOperation.destAmount.formattedString, "", false, false))
       if let operationSourceAccountId = pathPaymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
     case is ManageOfferOperation.Type:
       let manageOfferOperation = operation as! ManageOfferOperation
-      data.append(("Selling", manageOfferOperation.selling.code ?? "XLM", "", false, true))
-      if let sellIssuer = manageOfferOperation.selling.issuer?.accountId, manageOfferOperation.selling.code != nil {
-        data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: sellIssuer), true, false))
-      }
-      data.append(("Buying", manageOfferOperation.buying.code ?? "XLM", "", false, true))
-      if let buyIssuer = manageOfferOperation.buying.issuer?.accountId, manageOfferOperation.buying.code != nil {
-        data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: buyIssuer), true, false))
-      }
-      if manageOfferOperation.amount != 0 {
-        data.append(("Amount", manageOfferOperation.amount.description, "", false, false))
-      }
-      data.append(("Price", getPrice(from: manageOfferOperation.price), "", false, false))
       if manageOfferOperation.offerId != 0 {
         data.append(("Offer ID", manageOfferOperation.offerId.description, "", false, false))
+      }
+      
+      if let operationXdr = try? manageOfferOperation.toXDR() {
+        let operationTypeValue = operationXdr.body.type()
+        let operationType = OperationType(rawValue: operationTypeValue)
+        
+        if let type = operationType {
+          switch type {
+          case .manageBuyOffer:
+            data.append(("Buying", manageOfferOperation.buying.code ?? "XLM", "", false, true))
+            if let buyIssuer = manageOfferOperation.buying.issuer?.accountId, manageOfferOperation.buying.code != nil {
+              data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: buyIssuer), true, false))
+            }
+            if manageOfferOperation.amount != 0 {
+              data.append(("Amount", manageOfferOperation.amount.formattedString, "", false, false))
+            }
+            data.append(("Selling", manageOfferOperation.selling.code ?? "XLM", "", false, true))
+            if let sellIssuer = manageOfferOperation.selling.issuer?.accountId, manageOfferOperation.selling.code != nil {
+              data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: sellIssuer), true, false))
+            }
+            data.append(("Price", manageOfferOperation.price.formattedString, "", false, false))
+            if manageOfferOperation.amount != 0 {
+              data.append(("Total", getTotalPrice(for: manageOfferOperation.price, amount: manageOfferOperation.amount), "", false, false))
+            }
+          case .manageSellOffer:
+            data.append(("Selling", manageOfferOperation.selling.code ?? "XLM", "", false, true))
+            if let sellIssuer = manageOfferOperation.selling.issuer?.accountId, manageOfferOperation.selling.code != nil {
+              data.append(("Asset Issuer", sellIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: sellIssuer), true, false))
+            }
+            if manageOfferOperation.amount != 0 {
+              data.append(("Amount", manageOfferOperation.amount.formattedString, "", false, false))
+            }
+            data.append(("Buying", manageOfferOperation.buying.code ?? "XLM", "", false, true))
+            if let buyIssuer = manageOfferOperation.buying.issuer?.accountId, manageOfferOperation.buying.code != nil {
+              data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: buyIssuer), true, false))
+            }
+            data.append(("Price", manageOfferOperation.price.formattedString, "", false, false))
+            if manageOfferOperation.amount != 0 {
+              data.append(("Total", getTotalPrice(for: manageOfferOperation.price, amount: manageOfferOperation.amount), "", false, false))
+            }
+          default: break
+          }
+        }
       }
       if let operationSourceAccountId = manageOfferOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
@@ -502,8 +533,8 @@ struct TransactionHelper {
       if let buyIssuer = createPassiveOfferOperation.buying.issuer?.accountId, createPassiveOfferOperation.buying.code != nil {
         data.append(("Asset Issuer", buyIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: buyIssuer), true, false))
       }
-      data.append(("Amount", createPassiveOfferOperation.amount.description, "", false, false))
-      data.append(("Price", getPrice(from: createPassiveOfferOperation.price), "", false, false))
+      data.append(("Amount", createPassiveOfferOperation.amount.formattedString, "", false, false))
+      data.append(("Price", createPassiveOfferOperation.price.formattedString, "", false, false))
       if let operationSourceAccountId = createPassiveOfferOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
@@ -562,8 +593,19 @@ struct TransactionHelper {
           data.append(("Asset B Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
         }
       }
+  
+      let changeTrustAssetXDR = try? changeTrustOperation.asset.toChangeTrustAssetXDR()
+      switch changeTrustAssetXDR {
+      case .poolShare(let liquidityPoolParametersXDR):
+        switch liquidityPoolParametersXDR {
+        case .constantProduct(let liquidityPoolConstantProductParametersXDR):
+          data.append(("Fee", liquidityPoolConstantProductParametersXDR.fee.description, "", false, false))
+        }
+      default: break
+      }
+      
       if let limit = changeTrustOperation.limit {
-        data.append(("Limit", limit.description, "", false, false))
+        data.append(("Limit", limit.formattedString, "", false, false))
       }
       if let operationSourceAccountId = changeTrustOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
@@ -571,7 +613,7 @@ struct TransactionHelper {
     case is AccountMergeOperation.Type:
       let accountMergeOperation = operation as! AccountMergeOperation
       data.append(("Destination", accountMergeOperation.destinationAccountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: accountMergeOperation.destinationAccountId), true, false))
-      //tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
+      tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
       if let operationSourceAccountId = accountMergeOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
@@ -603,7 +645,7 @@ struct TransactionHelper {
       }
     case is CreateClaimableBalanceOperation.Type:
       let createClaimableBalanceOperation = operation as! CreateClaimableBalanceOperation
-      data.append(("Amount", createClaimableBalanceOperation.amount.description, "", false, false))
+      data.append(("Amount", createClaimableBalanceOperation.amount.formattedString, "", false, false))
       data.append(("Asset", createClaimableBalanceOperation.asset.code ?? "XLM", "", false, true))
       
       if createClaimableBalanceOperation.claimants.count > 1 {
@@ -635,7 +677,7 @@ struct TransactionHelper {
       if let issuer = clawbackOperation.asset.issuer?.accountId {
         data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
       }
-      data.append(("Amount", clawbackOperation.amount.description, "", false, false))
+      data.append(("Amount", clawbackOperation.amount.formattedString, "", false, false))
       if let operationSourceAccountId = clawbackOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
@@ -737,19 +779,19 @@ struct TransactionHelper {
     case is LiquidityPoolDepositOperation.Type:
       let liquidityPoolDepositOperation = operation as! LiquidityPoolDepositOperation
       data.append(("Liquidity Pool ID", liquidityPoolDepositOperation.liquidityPoolId.getMiddleTruncated(), "", false, false))
-      data.append(("Max Amount A", liquidityPoolDepositOperation.maxAmountA.description, "", false, false))
-      data.append(("Max Amount B", liquidityPoolDepositOperation.maxAmountB.description, "", false, false))
-      data.append(("Min Price", getPrice(from: liquidityPoolDepositOperation.minPrice), "", false, false))
-      data.append(("Max Price", getPrice(from: liquidityPoolDepositOperation.maxPrice), "", false, false))
+      data.append(("Max Amount A", liquidityPoolDepositOperation.maxAmountA.formattedString, "", false, false))
+      data.append(("Max Amount B", liquidityPoolDepositOperation.maxAmountB.formattedString, "", false, false))
+      data.append(("Min Price", liquidityPoolDepositOperation.minPrice.formattedString, "", false, false))
+      data.append(("Max Price", liquidityPoolDepositOperation.maxPrice.formattedString, "", false, false))
       if let operationSourceAccountId = liquidityPoolDepositOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
     case is LiquidityPoolWithdrawOperation.Type:
       let liquidityPoolWithdrawOperation = operation as! LiquidityPoolWithdrawOperation
       data.append(("Liquidity Pool ID", liquidityPoolWithdrawOperation.liquidityPoolId.getMiddleTruncated(), "", false, false))
-      data.append(("Amount", liquidityPoolWithdrawOperation.amount.description, "", false, false))
-      data.append(("Min Amount A", liquidityPoolWithdrawOperation.minAmountA.description, "", false, false))
-      data.append(("Min Amount B", liquidityPoolWithdrawOperation.minAmountB.description, "", false, false))
+      data.append(("Amount", liquidityPoolWithdrawOperation.amount.formattedString, "", false, false))
+      data.append(("Min Amount A", liquidityPoolWithdrawOperation.minAmountA.formattedString, "", false, false))
+      data.append(("Min Amount B", liquidityPoolWithdrawOperation.minAmountB.formattedString, "", false, false))
       if let operationSourceAccountId = liquidityPoolWithdrawOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
@@ -760,10 +802,30 @@ struct TransactionHelper {
     return data
   }
   
+  static func getPathPaymentFieldTitle(pathPaymentOperation: PathPaymentOperation, isSend: Bool) -> String {
+    if let operationXdr = try? pathPaymentOperation.toXDR() {
+      let operationTypeValue = operationXdr.body.type()
+      let operationType = OperationType(rawValue: operationTypeValue)
+      
+      if let type = operationType {
+        switch type {
+        case .pathPaymentStrictSend:
+          let title = isSend ? "Send Amount" : "Receive Min"
+          return title
+        case .pathPayment:
+          let title = isSend ? "Send Max" : "Receive Amount"
+          return title
+        default: break
+        }
+      }
+    }
+    return ""
+  }
+  
   static func tryToGetNickname(publicKey: String) -> String {
-    storageSigners = storage.retrieveSigners() ?? []
+    storageAccounts = storage.retrieveAccounts() ?? []
     
-    if let account = storageSigners.first(where: { $0.address == publicKey }) {
+    if let account = storageAccounts.first(where: { $0.address == publicKey }) {
       if let nickName = account.nickname, !nickName.isEmpty {
         return nickName
       } else {
@@ -774,9 +836,9 @@ struct TransactionHelper {
     }
   }
   
-  static func tryToSetDestinationFederation(data: inout [(name: String, value: String, isAssetCode: Bool)], destinationFederation: String) {
+  static func tryToSetDestinationFederation(data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)], destinationFederation: String) {
     if !destinationFederation.isEmpty {
-      data.append(("Destination Federation", destinationFederation, false))
+      data.append(("Destination Federation", destinationFederation, "", false, false))
     }
   }
   
@@ -789,14 +851,12 @@ struct TransactionHelper {
 //    }
   }
   
-  static func getPrice(from price: Price) -> String {
+  static func getTotalPrice(for price: Price, amount: Decimal) -> String {
     let priceValue = Double(price.n) / Double(price.d)
-    let formatter = NumberFormatter()
-    formatter.maximumFractionDigits = 7
-    formatter.minimumIntegerDigits = 1
-    formatter.decimalSeparator = "."
-    
-    return formatter.string(from: NSNumber(floatLiteral: priceValue)) ?? "unknown"
+    let amountValue = NSDecimalNumber(decimal: amount).doubleValue
+    let totalValue = priceValue * amountValue
+    let totalString = totalValue.formattedString
+    return totalString
   }
   
   static func getNumberOfCharactersForTruncatePublicKeyTransactionList() -> Int {
@@ -1026,6 +1086,7 @@ struct TransactionHelper {
         if manageDataOperation.name == "web_auth_domain" {
           if let data = manageDataOperation.data {
             domain = String(decoding: data, as: UTF8.self)
+            return domain
           }
         } else {
           domain = ""
@@ -1034,6 +1095,34 @@ struct TransactionHelper {
       }
     }
     return domain
+  }
+  
+  static func getClientDomainAccount(from xdr: String) -> String {
+    var clientDomainAccount = ""
+    guard let transactionEnvelopeXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
+      return ""
+    }
+    
+    for operationXDR in transactionEnvelopeXDR.txOperations {
+      guard let operation = try? Operation.fromXDR(operationXDR: operationXDR) else {
+        return ""
+      }
+      
+      switch type(of: operation) {
+      case is ManageDataOperation.Type:
+        let manageDataOperation = operation as! ManageDataOperation
+        if manageDataOperation.name == "client_domain" {
+          if let accountId = manageDataOperation.sourceAccountId {
+            clientDomainAccount = accountId
+            return clientDomainAccount
+          }
+        } else {
+          clientDomainAccount = ""
+        }
+      default: break
+      }
+    }
+    return clientDomainAccount
   }
   
   static func getTruncatedDomain(domain: inout String) -> String {
@@ -1103,4 +1192,41 @@ struct TransactionHelper {
   }
 }
 
+// MARK: - Formatting
+
+extension Price {
+  var formattedString: String {
+    let priceDouble = Double(self.n) / Double(self.d)
+    return priceDouble.formattedString
+  }
+}
+
+extension Double {
+  var formattedString: String {
+    let number = NSNumber(value: self)
+    return PriceFormatter.shared.string(from: number) ?? "unknown"
+  }
+}
+
+extension Decimal {
+  var formattedString: String {
+    let decimalNumber = NSDecimalNumber(decimal: self)
+    return PriceFormatter.shared.string(from: decimalNumber) ?? "unknown"
+  }
+}
+
+class PriceFormatter: NumberFormatter {
+  required init?(coder: NSCoder) {
+    super.init(coder: coder)
+  }
+  
+  static let shared = PriceFormatter()
+  override init() {
+    super.init()
+    self.numberStyle = .decimal
+    self.maximumFractionDigits = 7
+    self.groupingSeparator = ","
+    self.decimalSeparator = "."
+  }
+}
 

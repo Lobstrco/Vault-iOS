@@ -56,8 +56,22 @@ class PinViewController: UIViewController, StoryboardCreation {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     presenter.pinViewWillAppear()
+    switch mode {
+    case .changePin, .enterPinForMnemonicPhrase, .createNewPinFirstStep, .createNewPinSecondStep:
+      navigationController?.setNavigationBarAppearance(backgroundColor: Asset.Colors.background.color)
+    default: break
+    }
   }
   
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    switch mode {
+    case .changePin, .enterPinForMnemonicPhrase, .createNewPinFirstStep, .createNewPinSecondStep:
+      navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
+    default: break
+    }
+  }
+
   @IBAction func helpButtonAction(_ sender: Any) {    
     presenter.helpButtonWasPressed()
   }

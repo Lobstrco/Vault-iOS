@@ -38,11 +38,13 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   override func viewWillAppear(_ animated: Bool) {
     tabBarController?.tabBar.isHidden = true
+    navigationController?.setNavigationBarAppearance(backgroundColor: Asset.Colors.background.color)
     setAppearanceAfterPushNotification()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     tabBarController?.tabBar.isHidden = false
+    navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
   }
   
   // MARK: - IBActions
@@ -59,9 +61,9 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   private func setAppearanceAfterPushNotification() {
     if afterPushNotification {
-      navigationController?.setStatusBar(backgroundColor: Asset.Colors.white.color)
+      navigationController?.setStatusBar(backgroundColor: Asset.Colors.background.color)
       navigationController?.navigationBar.tintColor = Asset.Colors.main.color
-      navigationController?.navigationBar.barTintColor = Asset.Colors.white.color
+      navigationController?.navigationBar.barTintColor = Asset.Colors.background.color
       navigationController?.navigationBar.isTranslucent = true
     }
   }

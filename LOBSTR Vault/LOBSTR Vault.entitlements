@@ -13,6 +13,7 @@
 	<array>
 		<string>$(AppIdentifierPrefix)com.ultrastellar.lobstr.vault</string>
 		<string>$(AppIdentifierPrefix)com.ultrastellar.lobstr.vault.publickey</string>
+		<string>$(AppIdentifierPrefix)com.ultrastellar.lobstr.vault.activepublickey</string>
 	</array>
 </dict>
 </plist>

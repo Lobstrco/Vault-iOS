@@ -16,6 +16,7 @@ class SignerDetailsTableViewCell: UITableViewCell {
   @IBOutlet var identiconView: IdenticonView!
   
   weak var delegate: SignerDetailsTableViewCellDelegate?
+  var publicKey: String?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -26,6 +27,7 @@ class SignerDetailsTableViewCell: UITableViewCell {
       identiconView.loadIdenticon(publicAddress: address)
     }
     
+    publicKey = signedAccount.address
     publicKeyLabel.text = signedAccount.address?.getTruncatedPublicKey() ?? "unknown address"
     
     var nicknameValue = ""

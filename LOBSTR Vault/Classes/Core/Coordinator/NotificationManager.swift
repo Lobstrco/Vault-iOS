@@ -10,13 +10,17 @@ class NotificationManager {
     }
   }
   
-  func register() {
-    UIApplication.shared.registerForRemoteNotifications()
+  func register(allAccounts: Bool = true) {
+    if allAccounts {
+      UIApplication.shared.registerForRemoteNotifications()
+    }
     sendFCMTokenToServer()
   }
   
-  func unregister() {
-    UIApplication.shared.unregisterForRemoteNotifications()
+  func unregister(allAccounts: Bool = true) {
+    if allAccounts {
+      UIApplication.shared.unregisterForRemoteNotifications()
+    }
     
     guard let fcmToken = Messaging.messaging().fcmToken else {
       Logger.notifications.error("Failed to unregister device")
@@ -26,6 +30,38 @@ class NotificationManager {
     NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
   }
   
+  func registerAllAccountsForRemoteNotifications() {
+    guard let fcmToken = Messaging.messaging().fcmToken else {
+      Logger.notifications.error("Failed to register device. Couldn't get fcm token")
+      return
+    }
+    let vaultStorage = VaultStorage()
+    if let jwtTokensInfo = vaultStorage.getJWTTokensFromKeychain() {
+      for publicKey in jwtTokensInfo.keys {
+        if let jwtToken = jwtTokensInfo[publicKey] {
+          UserDefaultsHelper.pushNotificationsStatuses[publicKey] = true
+          NotificationsService().registerDeviceForNotifications(with: fcmToken, with: jwtToken)
+        }
+      }
+    }
+  }
+  
+  func unregisterAllAccountsForRemoteNotifications() {
+    guard let fcmToken = Messaging.messaging().fcmToken else {
+      Logger.notifications.error("Failed to unregister device. Couldn't get fcm token")
+      return
+    }
+    let vaultStorage = VaultStorage()
+    if let jwtTokensInfo = vaultStorage.getJWTTokensFromKeychain() {
+      let jwtTokens = jwtTokensInfo.values
+      for jwtToken in jwtTokens {
+        NotificationsService().unregisterDeviceForNotifications(with: fcmToken, with: jwtToken)
+      }
+    } else {
+      NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
+    }
+  }
+
   func setAPNSToken(deviceToken: Data) {
     Messaging.messaging().apnsToken = deviceToken
   }

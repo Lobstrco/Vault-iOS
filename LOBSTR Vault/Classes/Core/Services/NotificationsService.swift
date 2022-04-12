@@ -1,12 +1,12 @@
 import Foundation
 
 struct NotificationsService {
-  public func registerDeviceForNotifications(with registrationID: String) {
+  public func registerDeviceForNotifications(with registrationID: String, with jwtToken: String = "") {
     
     let apiLoader = APIRequestLoader<RegisterDeviceForRemoteNotificationsRequest>(apiRequest: RegisterDeviceForRemoteNotificationsRequest())
     let data = RegisterDeviceForRemoteNotificationsRequestParameters(registrationId: registrationID, active: nil)
     
-    apiLoader.loadAPIRequest(requestData: data) { result in
+    apiLoader.loadAPIRequest(requestData: data, jwtToken: jwtToken) { result in
       switch result {
       case .success(_):
         break
@@ -22,11 +22,11 @@ struct NotificationsService {
     }
   }
   
-  func unregisterDeviceForNotifications(with registrationID: String) {
+  func unregisterDeviceForNotifications(with registrationID: String, with jwtToken: String = "") {
     let apiLoader = APIRequestLoader<RegisterDeviceForRemoteNotificationsRequest>(apiRequest: RegisterDeviceForRemoteNotificationsRequest())
     let data = RegisterDeviceForRemoteNotificationsRequestParameters(registrationId: registrationID, active: false)
     
-    apiLoader.loadAPIRequest(requestData: data) { result in
+    apiLoader.loadAPIRequest(requestData: data, jwtToken: jwtToken) { result in
       switch result {
       case .success(_):
         break

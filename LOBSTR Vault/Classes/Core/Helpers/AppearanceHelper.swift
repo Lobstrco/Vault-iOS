@@ -69,5 +69,28 @@ extension UINavigationController {
     statusBarView.backgroundColor = backgroundColor
     view.addSubview(statusBarView)
   }
-
+  
+  func setNavigationBarAppearance(backgroundColor: UIColor) {
+    if #available(iOS 13.0, *) {
+      let navBarAppearance = UINavigationBarAppearance()
+      navBarAppearance.configureWithOpaqueBackground()
+      navBarAppearance.backgroundColor = backgroundColor
+      self.navigationBar.standardAppearance = navBarAppearance
+      self.navigationBar.scrollEdgeAppearance = navBarAppearance
+    }
+  }
+  
+  func setNavigationBarAppearanceWithoutSeparatorForStandardAppearance() {
+    if #available(iOS 13.0, *) {
+      let navBarScrollEdgeAppearance = UINavigationBarAppearance()
+      navBarScrollEdgeAppearance.configureWithOpaqueBackground()
+      navBarScrollEdgeAppearance.backgroundColor = Asset.Colors.background.color
+      navBarScrollEdgeAppearance.shadowColor = .clear
+      let navBarStandardAppearance = UINavigationBarAppearance()
+      navBarStandardAppearance.configureWithOpaqueBackground()
+      navBarStandardAppearance.backgroundColor = Asset.Colors.background.color
+      self.navigationBar.standardAppearance = navBarStandardAppearance
+      self.navigationBar.scrollEdgeAppearance = navBarScrollEdgeAppearance
+    }
+  }
 }

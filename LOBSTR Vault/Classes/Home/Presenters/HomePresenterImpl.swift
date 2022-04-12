@@ -11,6 +11,8 @@ class HomePresenterImpl: HomePresenter {
   
   var publicKey: String?
   var signedAccounts: [SignedAccount] = []
+  var multiaccountPublicKeysCount: Int = 1
+  var mainAccounts: [SignedAccount] = []
   
   private let notificationManager: NotificationManager
   private let homeSectionsBuilder: HomeSectionsBuilder
@@ -19,9 +21,9 @@ class HomePresenterImpl: HomePresenter {
   
   lazy var sections: [HomeSection] = homeSectionsBuilder.buildSections()
   
-  let storage: SignersStorage = SignersStorageDiskImpl()
-  var storageSigners: [SignedAccount] = []
-    
+  let storage: AccountsStorage = AccountsStorageDiskImpl()
+  var storageAccounts: [SignedAccount] = []
+      
   init(view: HomeView,
        transactionService: TransactionService = TransactionService(),
        versionControlService: VersionControlService = VersionControlService(),
@@ -80,6 +82,19 @@ class HomePresenterImpl: HomePresenter {
     setSignerDetails()
   }
   
+  @objc func onDidAllJWTTokensGet(_ notification: Notification) {
+    if UserDefaultsHelper.isNotificationsEnabled {
+      notificationManager.requestAuthorization { isGranted in
+        UserDefaultsHelper.isNotificationsEnabled = isGranted
+        self.notificationManager.registerAllAccountsForRemoteNotifications()
+      }
+    }
+  }
+  
+  @objc func onDidActivePublicKeyChange(_ notification: Notification) {
+    setPublicKey()
+  }
+    
   // MARK: - HomePresenter
   func homeViewDidAppear() {
     guard let viewController = view as? UIViewController else { return }
@@ -100,6 +115,8 @@ class HomePresenterImpl: HomePresenter {
     guard let viewController = view as? UIViewController else { return }
     registerForRemoteNotifications()
     
+    UtilityHelper.checkAllJWTTokens()
+    
     if ConnectionHelper.checkConnection(viewController) {
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         self.setTransactionNumber()
@@ -115,53 +132,66 @@ class HomePresenterImpl: HomePresenter {
     }
   }
   
-  func moreDetailsButtonWasPressed(with index: Int) {
-    guard let address = signedAccounts[safe: index]?.address else {
-      return
-    }
-    
-    if let index = signedAccounts.firstIndex(where: { $0.address == address }) {
-      var isNicknameSet = false
-      if let nickname = signedAccounts[index].nickname, !nickname.isEmpty {
-        isNicknameSet = true
-      } else {
-        isNicknameSet = false
+  func moreDetailsButtonWasPressed(for publicKey: String, type: NicknameDialogType) {
+    switch type {
+    case .primaryAccount:
+      if let index = mainAccounts.firstIndex(where: { $0.address == publicKey }) {
+        var isNicknameSet = false
+        if let nickname = mainAccounts[index].nickname, !nickname.isEmpty {
+          isNicknameSet = true
+        } else {
+          isNicknameSet = false
+        }
+        self.view?.actionSheetForAccountsListWasPressed(isNicknameSet: isNicknameSet)
       }
-      self.view?.actionSheetForSignersListWasPressed(with: index, isNicknameSet: isNicknameSet)
+    case .protectedAccount:
+      if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }) {
+        var isNicknameSet = false
+        if let nickname = signedAccounts[index].nickname, !nickname.isEmpty {
+          isNicknameSet = true
+        } else {
+          isNicknameSet = false
+        }
+        self.view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
+      }
     }
   }
   
-  func copySignerPublicKeyActionWasPressed(with index: Int) {
-    let publicKey = signedAccounts[safe: index]?.address ?? "uknown public key"
+  func copySignerPublicKeyActionWasPressed(_ publicKey: String) {
     UIPasteboard.general.string = publicKey
     Logger.home.debug("Public key was copied: \(publicKey)")
     view?.setCopyHUD()
   }
   
-  func explorerSignerAccountActionWasPressed(with index: Int) {
-    guard let address = signedAccounts[safe: index]?.address else {
-      Logger.home.error("Couldn't open stellar expert. Signers list is empty")
-      return
-    }
-    
-    UtilityHelper.openStellarExpertForPublicKey(publicKey: address)
+  func explorerSignerAccountActionWasPressed(_ publicKey: String) {
+    UtilityHelper.openStellarExpertForPublicKey(publicKey: publicKey)
   }
   
-  func setAccountNicknameActionWasPressed(with text: String?, by index: Int?) {
-    guard let index = index, let address = signedAccounts[safe: index]?.address else {
-      return
-    }
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
+    guard let type = nicknameDialogType else { return }
+    guard let publicKey = publicKey else { return }
     
-    if let index = signedAccounts.firstIndex(where: { $0.address == address }), let nickname = text {
-      signedAccounts[index].nickname = nickname
-      storage.save(signers: signedAccounts)
-      NotificationCenter.default.post(name: .didNicknameSet, object: nil)
-      self.view?.setSignedAccountsList(self.signedAccounts)
+    var allAccounts: [SignedAccount] = []
+    allAccounts.append(contentsOf: mainAccounts)
+    allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
+    
+    if let index = allAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
+      allAccounts[index].nickname = nickname
+      storage.save(accounts: allAccounts)
+      
+      switch type {
+      case .protectedAccount:
+        NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+        self.view?.setSignedAccountsList(self.signedAccounts)
+      case .primaryAccount:
+        setPublicKey()
+        //NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+      }
     }
   }
   
-  func clearAccountNicknameActionWasPressed(by index: Int?) {
-    setAccountNicknameActionWasPressed(with: "", by: index)
+  func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?) {
+    setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
   }
   
   func updateSignerDetails() {
@@ -177,6 +207,11 @@ class HomePresenterImpl: HomePresenter {
     self.setPublicKey()
     self.setSignerDetails()
   }
+  
+  func changeActiveAccount() {
+    UtilityHelper.jwtTokenUpdate()
+    self.setPublicKey()
+  }
 }
 
 // MARK: - Private
@@ -188,12 +223,12 @@ private extension HomePresenterImpl {
   }
   
   func setSignerDetails() {
-    self.storageSigners = storage.retrieveSigners() ?? []
+    self.storageAccounts = storage.retrieveAccounts() ?? []
     transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let accounts):
         Logger.home.debug("Signed accounts were loaded with data: \(accounts)")
-        self.signedAccounts = self.getAccountsFromCache(accounts)
+        self.signedAccounts = self.getSignedAccountsFromCache(accounts)
         UserDefaultsHelper.numberOfSignerAccounts = self.signedAccounts.count
         
         self.view?.setNumberOfSignedAccount(self.signedAccounts.count)
@@ -210,12 +245,12 @@ private extension HomePresenterImpl {
     }
   }
     
-  func getAccountsFromCache(_ signedAccounts: [SignedAccount]) -> [SignedAccount] {
+  func getSignedAccountsFromCache(_ signedAccounts: [SignedAccount]) -> [SignedAccount] {
     var newAccounts : [SignedAccount] = []
     for (index, signedAccount) in signedAccounts.enumerated() {
       guard let address = signedAccount.address else { break }
       
-      if let account = storageSigners.first(where: { $0.address == address }) {
+      if let account = storageAccounts.first(where: { $0.address == address }) {
         newAccounts.append(SignedAccount(address: account.address, federation: account.federation, nickname: account.nickname))
       } else {
         if let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: address)).first {
@@ -226,7 +261,7 @@ private extension HomePresenterImpl {
         }
       }
     }
-    
+    AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: newAccounts)
     return newAccounts
   }
   
@@ -235,6 +270,7 @@ private extension HomePresenterImpl {
       switch result {
       case .success(let account):
         self.signedAccounts[index].federation = account.federation
+        AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: self.signedAccounts)
         self.view?.setSignedAccountsList(self.signedAccounts)
       case .failure(let error):
         Logger.home.error("Couldn't get federation for \(publicKey) with error: \(error)")
@@ -243,9 +279,28 @@ private extension HomePresenterImpl {
   }
   
   func setPublicKey() {
-    guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() else { return }
+    mainAccounts = AccountsStorageHelper.getMainAccountsFromCache()
+    guard let publicKeysFromKeychain = vaultStorage.getPublicKeysFromKeychain() else {
+      guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() else { return }
+      ActivePublicKeyHelper.storeInKeychain(publicKeyFromKeychain)
+      UserDefaultsHelper.activePublicKey = publicKeyFromKeychain
+      UserDefaultsHelper.activePublicKeyIndex = 0
+      publicKey = publicKeyFromKeychain
+      multiaccountPublicKeysCount = 1
+      let nickname = AccountsStorageHelper.getActiveAccountNickname()
+      view?.setPublicKey(publicKeyFromKeychain.getTruncatedPublicKey(), nickname)
+      view?.setIconCardOrIdenticon()
+      return
+    }
+    
+    guard let index = publicKeysFromKeychain.firstIndex(of: UserDefaultsHelper.activePublicKey) else { return }
+    let publicKeyFromKeychain = publicKeysFromKeychain[index]
+    ActivePublicKeyHelper.storeInKeychain(publicKeyFromKeychain)
     publicKey = publicKeyFromKeychain
-    view?.setPublicKey(publicKeyFromKeychain.getTruncatedPublicKey())
+    multiaccountPublicKeysCount = publicKeysFromKeychain.count
+    let nickname = AccountsStorageHelper.getActiveAccountNickname()
+    view?.setPublicKey(publicKeyFromKeychain.getTruncatedPublicKey(), nickname)
+    view?.setIconCardOrIdenticon()
   }
     
   func setTransactionNumber() {
@@ -277,10 +332,19 @@ private extension HomePresenterImpl {
   }
   
   func registerForRemoteNotifications() {
-    if UserDefaultsHelper.isNotificationsEnabled {
-      notificationManager.requestAuthorization() { isGranted in
-        UserDefaultsHelper.isNotificationsEnabled = isGranted
-        self.notificationManager.sendFCMTokenToServer()
+    // Multiaccount support case
+    if !UserDefaultsHelper.pushNotificationsStatuses.isEmpty {
+      if NotificationsStatusesHelper.isNotificationsEnabled {
+        notificationManager.requestAuthorization() { isGranted in
+          self.notificationManager.sendFCMTokenToServer()
+        }
+      }
+    } else {
+      if UserDefaultsHelper.isNotificationsEnabled {
+        notificationManager.requestAuthorization() { isGranted in
+          UserDefaultsHelper.isNotificationsEnabled = isGranted
+          self.notificationManager.sendFCMTokenToServer()
+        }
       }
     }
   }
@@ -319,6 +383,16 @@ private extension HomePresenterImpl {
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(onDidNicknameUpdate(_:)),
                                            name: .didNicknameSet,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidAllJWTTokensGet(_:)),
+                                           name: .didAllJWTTokensGet,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidActivePublicKeyChange(_:)),
+                                           name: .didActivePublicKeyChange,
                                            object: nil)
    }
 }

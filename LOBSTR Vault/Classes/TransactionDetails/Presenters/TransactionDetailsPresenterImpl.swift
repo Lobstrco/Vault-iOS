@@ -49,8 +49,8 @@ class TransactionDetailsPresenterImpl {
   
   var sections = [TransactionDetailsSection]()
   
-  private let storage: SignersStorage = SignersStorageDiskImpl()
-  private var storageSigners: [SignedAccount] = []
+  private let storage: AccountsStorage = AccountsStorageDiskImpl()
+  private var storageAccounts: [SignedAccount] = []
   
   // MARK: - Init
 
@@ -142,14 +142,14 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       let operation = try TransactionHelper.getOperation(from: xdr)
       let publicKeys = TransactionHelper.getPublicKeys(from: operation)
       self.publicKeys.append(contentsOf: publicKeys)
-      if let key = key, key.isShortStellarPublicAddress {
+      if let key = key, key.isShortStellarPublicAddress || key.isShortMuxedAddress {
         if let key = self.publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
           self.view?.showActionSheet(key, .publicKey)
         }
       } else {
         let shortPublicKey = key?.suffix(14) ?? ""
         let nickname = key?.replacingOccurrences(of: shortPublicKey, with: "")
-        if let account = storageSigners.first(where: { $0.nickname == nickname }) {
+        if let account = storageAccounts.first(where: { $0.nickname == nickname }) {
           if let key = self.publicKeys.first(where: { $0.prefix(4) == account.address?.prefix(4) && $0.suffix(4) == account.address?.suffix(4) }) {
             self.view?.showActionSheet(key, .publicKey)
           }
@@ -177,7 +177,7 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       return
     }
     
-    if UserDefaultsHelper.isPromtTransactionDecisionsEnabled {
+    if PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled {
       view?.setConfirmationAlert()
     } else {
       confirmOperationWasConfirmed()
@@ -185,7 +185,7 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func denyButtonWasPressed() {
-    if UserDefaultsHelper.isPromtTransactionDecisionsEnabled {
+    if PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled {
       view?.setDenyingAlert()
     } else {
       denyOperationWasConfirmed()
@@ -547,30 +547,37 @@ private extension TransactionDetailsPresenterImpl {
   {
     var signersViewData: [SignerViewData] = []
     let filteredSigners = signers.filter { $0.key != Constants.vaultMarkerKey }
-    var nickname = ""
-    
     for (index, signer) in filteredSigners.enumerated() {
-      guard let pulicKey = signer.key else { break }
-      let signed = TransactionHelper.isThereVerifiedSignature(for: pulicKey, in: transactionEnvelopeXDR)
+      guard let publicKey = signer.key else { break }
+      let signed = TransactionHelper.isThereVerifiedSignature(for: publicKey, in: transactionEnvelopeXDR)
     
       let signatureStatus: SignatureStatus = signed ? .accepted : .pending
-      let isLocalPublicKey = vaultStorage.getPublicKeyFromKeychain() == pulicKey ? true : false
-      
-      if let account = storageSigners.first(where: { $0.address == pulicKey }) {
-        nickname = account.nickname ?? ""
-      } else {
-        nickname = ""
-      }
+      let isLocalPublicKey = UserDefaultsHelper.activePublicKey == publicKey ? true : false
+      let nickname = getNickname(for: publicKey, isLocalPublicKey: isLocalPublicKey)
       
       signersViewData.append(SignerViewData(status: signatureStatus,
-                                            publicKey: pulicKey,
+                                            publicKey: publicKey,
                                             weight: signer.weight,
-                                            federation: getFederation(by: pulicKey, with: index),
+                                            federation: getFederation(by: publicKey, with: index),
                                             nickname: nickname,
                                             isLocalPublicKey: isLocalPublicKey))
     }
     
     return signersViewData
+  }
+  
+  func getNickname(for publicKey: String, isLocalPublicKey: Bool) -> String {
+    var nickname = ""
+    if isLocalPublicKey {
+      nickname = AccountsStorageHelper.getActiveAccountNickname()
+    } else {
+      if let account = storageAccounts.first(where: { $0.address == publicKey }) {
+        nickname = account.nickname ?? ""
+      } else {
+        nickname = ""
+      }
+    }
+    return nickname
   }
   
   func getFederation(by publicKey: String, with cellIndex: Int) -> String? {
@@ -627,7 +634,7 @@ private extension TransactionDetailsPresenterImpl {
   }
   
   func tryToGetSignedAccounts(transactionEnvelopeXDR: TransactionEnvelopeXDR) {
-    self.storageSigners = storage.retrieveSigners() ?? []
+    self.storageAccounts = storage.retrieveAccounts() ?? []
     transactionService.getSignedAccounts { result in
       switch result {
       case .success(let accounts):

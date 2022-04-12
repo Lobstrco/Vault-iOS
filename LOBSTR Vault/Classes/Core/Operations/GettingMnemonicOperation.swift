@@ -17,7 +17,7 @@ class GettingMnemonicOperation: AsyncOperation {
       switch result {
       case .success(let mnemonic):
         Logger.operations.debug("GettingMnemonicOperation success")
-        self.outputKeyPair = MnemonicHelper.getKeyPairFrom(mnemonic)
+        self.outputKeyPair = MnemonicHelper.getKeyPairFrom(mnemonic, index: UserDefaultsHelper.activePublicKeyIndex)
         self.finished(error: nil)
       case .failure(let error):
         Logger.operations.debug("GettingMnemonicOperation failure")

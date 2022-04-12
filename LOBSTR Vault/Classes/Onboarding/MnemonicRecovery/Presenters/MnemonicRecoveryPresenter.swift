@@ -134,11 +134,13 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
 
   func recoveryButtonWasPressed() {
     view?.setProgressAnimation(enabled: true)
-    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-      let phrases = MnemonicHelper.getSeparatedWords(from: self.mnemonic)
-      MnemonicHelper.encryptAndStoreInKeychain(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: phrases))
-      self.view?.setProgressAnimation(enabled: false)
-      self.transitionToPinScreen()
+    let phrases = MnemonicHelper.getSeparatedWords(from: self.mnemonic)
+    MnemonicHelper.getRecoveryIndex(mnemonic: self.mnemonic) { index in
+      MnemonicHelper.encryptAndStoreInKeychain(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: phrases), recoveryIndex: index)
+      DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+        self.view?.setProgressAnimation(enabled: false)
+        self.transitionToPinScreen()
+      }
     }
   }
   

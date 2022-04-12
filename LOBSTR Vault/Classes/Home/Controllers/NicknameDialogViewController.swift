@@ -1,7 +1,12 @@
 import UIKit
 
+enum NicknameDialogType {
+  case primaryAccount
+  case protectedAccount
+}
+
 protocol NicknameDialogDelegate {
-  func submitNickname(with text: String, by index: Int?)
+  func submitNickname(with text: String, for publicKey: String?, nicknameDialogType: NicknameDialogType?)
 }
 
 class NicknameDialogViewController: UIViewController, StoryboardCreation {
@@ -22,9 +27,10 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
   @IBOutlet var contentViewTopConstraint: NSLayoutConstraint!
   
   var delegate: NicknameDialogDelegate?
-  var index: Int?
   var nickName: String?
   let constantHeight: CGFloat = 140
+  var type: NicknameDialogType?
+  var publicKey: String?
   
   // MARK: - Lifecycle
   
@@ -44,7 +50,7 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
   @IBAction func saveButtonAction(_ sender: Any) {
     let nickname: String = textField.text ?? ""
     let trimmedNickname = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
-    delegate?.submitNickname(with: trimmedNickname, by: index)
+    delegate?.submitNickname(with: trimmedNickname, for: publicKey, nicknameDialogType: type)
     dismiss(animated: true, completion: nil)
   }
   
@@ -89,7 +95,7 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
 extension NicknameDialogViewController: UITextFieldDelegate {
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     let nickname: String = textField.text ?? ""
-    delegate?.submitNickname(with: nickname, by: index)
+    delegate?.submitNickname(with: nickname, for: publicKey, nicknameDialogType: type)
     dismiss(animated: false, completion: nil)
     textField.resignFirstResponder()
     return true

@@ -73,12 +73,10 @@ struct UtilityHelper {
   }
   
   static func createBodyEmail() -> String {
-    let vaultStorage = VaultStorage()
-    guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() else { return "" }
-    
+    let publicKey = UserDefaultsHelper.activePublicKey
     let bodyEmail = "Information for the support team." +
       "\nLOBSTR Vault. App version: \(ApplicationInfo.version);" +
-      "\nVault public key: \(publicKeyFromKeychain);" +
+      "\nVault public key: \(publicKey);" +
       "\nDevice brand: Apple;" +
       "\nModel: \(UIDevice.modelName);" +
       "\nOS: iOS;" +
@@ -108,11 +106,60 @@ struct UtilityHelper {
       return defaultUrl
   }
   
+  static func jwtTokenUpdate() {
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      if let topVC = UIApplication.getTopViewController() {
+        if !(topVC is PinEnterViewController) {
+          DispatchQueue.main.async {
+            HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting))
+          }
+        }
+      }
+      AuthenticationService().updateToken() { result in
+        DispatchQueue.main.async {
+          HUD.hide()
+        }
+        switch result {
+        case .success(_):
+          NotificationCenter.default.post(name: .didJWTTokenUpdate, object: nil)
+        case .failure(let error):
+          Logger.auth.error("Couldn't update token with error: \(error)")
+        }
+      }
+    default:
+      Logger.auth.error("Fatal error")
+    }
+  }
+  
+  static func jwtTokensExpired() -> [String: Bool] {
+    var result: [String: Bool] = [:]
+    guard let jwtTokens = VaultStorage().getJWTTokensFromKeychain() else { return result }
+    for key in jwtTokens.keys {
+      if let jwtToken = jwtTokens[key], let jwt = try? decode(jwt: jwtToken) {
+        result[key] = jwt.expired
+      }
+    }
+    return result
+  }
+  
   static func jwtTokenExpired() -> Bool {
-    guard let jwtToken = VaultStorage().getJWTFromKeychain() else { return true }
-    guard let jwt = try? decode(jwt: jwtToken) else { return true }
-    
-    return jwt.expired
+    // Multiaccount support case
+    if let jwtTokens = VaultStorage().getJWTTokensFromKeychain() {
+      guard let key = jwtTokens.keys.first(where: { key in
+        key == UserDefaultsHelper.activePublicKey
+      }) else { return true }
+      guard let jwtToken = jwtTokens[key] else { return true }
+      guard let jwt = try? decode(jwt: jwtToken) else { return true }
+      return jwt.expired
+    }
+    // One account
+    else if let jwtToken = VaultStorage().getJWTFromKeychain() {
+      guard let jwt = try? decode(jwt: jwtToken) else { return true }
+      return jwt.expired
+    } else {
+      return true
+    }
   }
   
   static func isTokenUpdated(view: UIViewController) -> Bool {
@@ -149,5 +196,68 @@ struct UtilityHelper {
     
     return !UtilityHelper.jwtTokenExpired()
   }
+  
+  static func checkAllJWTTokens() {
+    guard let publicKeysFromKeychain = VaultStorage().getPublicKeysFromKeychain(), publicKeysFromKeychain.count > 1 else { return }
+    
+    let jwtTokensStatuses = UtilityHelper.jwtTokensExpired()
+      
+    if jwtTokensStatuses.isEmpty {
+      getAllJWTTokens(for: publicKeysFromKeychain)
+    } else {
+      updateExpiredTokens()
+    }
+  }
+  
+  static func getAllJWTTokens(for publicKeysFromKeychain: [String]) {
+    let jwtManager: JWTManager = JWTManagerImpl()
+    var jwtTokens: [String: String] = [:]
+    for index in 0 ... publicKeysFromKeychain.count - 1 {
+      AuthenticationService().getToken(for: index) { result in
+        switch result {
+        case .success(let jwtToken):
+          if let key = jwtToken.keys.first, let value = jwtToken.values.first {
+            jwtTokens[key] = value
+            if jwtTokens.count == publicKeysFromKeychain.count {
+              if jwtManager.store(jwtTokens: jwtTokens) {
+                NotificationCenter.default.post(name: .didAllJWTTokensGet, object: nil)
+              }
+            }
+          }
+        case .failure:
+          break
+        }
+      }
+    }
+  }
+  
+  static func getPublicKeysForExpiredTokens() -> [String] {
+    let jwtTokensStatuses = UtilityHelper.jwtTokensExpired()
+    var expiredKeys: [String] = []
+    for key in jwtTokensStatuses.keys {
+      guard let isExpired = jwtTokensStatuses[key] else { return expiredKeys }
+      if isExpired {
+        expiredKeys.append(key)
+      }
+    }
+    return expiredKeys
+  }
+  
+  static func updateExpiredTokens() {
+    guard let publicKeysFromKeychain = VaultStorage().getPublicKeysFromKeychain() else { return }
+    guard let jwtTokens = VaultStorage().getJWTTokensFromKeychain() else { return }
+    let expiredKeys = getPublicKeysForExpiredTokens()
+    for key in expiredKeys {
+      if let index = publicKeysFromKeychain.firstIndex(of: key), let token = jwtTokens[key] {
+        AuthenticationService().updateToken(for: index, with: token) { result in
+          switch result {
+          case .success:
+            break
+          case .failure:
+            break
+          }
+        }
+      }
+    }
+  }
 }
-

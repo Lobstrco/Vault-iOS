@@ -2,6 +2,11 @@ import Foundation
 import stellarsdk
 
 struct MnemonicHelper {
+  
+  static let additionalAccountsCountLimit = 4
+  
+  private static let sdk = stellarsdk.StellarSDK(withHorizonUrl: Environment.horizonBaseURL)
+  
   static func getSeparatedWords(from string: String) -> [String] {
     let components = string.components(separatedBy: .whitespacesAndNewlines)
     
@@ -80,22 +85,80 @@ struct MnemonicHelper {
     return (mnemonic: mnemonic, separatedWords: separetedWords)
   }
   
-  static func getKeyPairFrom(_ mnemonic: String) -> KeyPair {
+  static func getKeyPairFrom(_ mnemonic: String, index: Int = 0) -> KeyPair {
     let keyPair = try! Wallet.createKeyPair(mnemonic: mnemonic,
                                             passphrase: nil,
-                                            index: 0)
+                                            index: index)
     
     return keyPair
   }
   
   static func encryptAndStoreInKeychain(mnemonic: String,
+                                        recoveryIndex: Int = 0,
                                         mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
                                         vaultStorage: VaultStorage = VaultStorage()) {
     guard mnemonicManager.encryptAndStoreInKeychain(mnemonic: mnemonic) else {
       fatalError()
     }
     
-    let publicKey = MnemonicHelper.getKeyPairFrom(mnemonic).accountId
-    vaultStorage.storePublicKeyInKeychain(publicKey)
+    var publicKeys: [String] = []
+    for index in 0...recoveryIndex {
+      let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic, index: index)
+      publicKeys.append(keyPair.accountId)
+    }
+    
+    vaultStorage.storePublicKeysInKeychain(publicKeys)
+    if let publicKey = publicKeys.first {
+      vaultStorage.storeActivePublicKeyInKeychain(publicKey)
+      UserDefaultsHelper.activePublicKey = publicKey
+      UserDefaultsHelper.activePublicKeyIndex = 0
+    }
+  }
+  
+  static func getRecoveryIndex(mnemonic: String, completion: @escaping (Int) -> Void) {
+    var allPublicKeys: [String] = []
+    var recoveyIndex = 0
+    var verifiedIndex = 0
+    
+    for index in 0...additionalAccountsCountLimit {
+      let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic, index: index)
+      allPublicKeys.append(keyPair.accountId)
+    }
+    
+    let dispatchQueue = DispatchQueue(label: "myQueue", qos: .background)
+    
+    dispatchQueue.async {
+      for index in (1...additionalAccountsCountLimit).reversed() {
+        isSigner(publicKey: allPublicKeys[index]) { result in
+          verifiedIndex = index
+          if result == true {
+            recoveyIndex = index
+            completion(recoveyIndex)
+          } else if verifiedIndex == 1 {
+            completion(recoveyIndex)
+          }
+        }
+      }
+    }
+  }
+  
+  static func isSigner(publicKey: String, completion: @escaping (Bool) -> Void) {
+    let semaphore = DispatchSemaphore(value: 0)
+    sdk.accounts.getAccounts(signer: publicKey) { result in
+      switch result {
+      case .success(let details):
+        if let record = details.records.first, !record.signers.isEmpty {
+          completion(true)
+        } else {
+          semaphore.signal()
+          completion(false)
+        }
+      case .failure:
+        semaphore.signal()
+        completion(false)
+      }
+    }
+    // Wait until the previous API request completes
+    semaphore.wait()
   }
 }

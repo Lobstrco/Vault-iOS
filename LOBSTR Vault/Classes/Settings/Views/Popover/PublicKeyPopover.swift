@@ -27,7 +27,6 @@ class PublicKeyPopover: UIView {
   
   func initData() {
     setAppearance()
-    setStaticString()
     setPublicKey()
     setQRCode()
   }
@@ -35,21 +34,18 @@ class PublicKeyPopover: UIView {
   // MARK: - Private
   
   private func setPublicKey() {
-    let vaultStorage = VaultStorage()
-    guard let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() else { return }
-    self.publicKeyLabel.text = publicKeyFromKeychain.getTruncatedPublicKey()
-    self.publicKey = publicKeyFromKeychain
+    self.publicKey = UserDefaultsHelper.activePublicKey
+    let nickname = AccountsStorageHelper.getActiveAccountNickname()
+    let publicKeyTitle = nickname.isEmpty ? L10n.textSettingsPublicKeyTitle : nickname
+    publicKeyTitleLabel.text = publicKeyTitle
+    self.publicKeyLabel.text = publicKey?.getTruncatedPublicKey()
   }
   
   private func setAppearance() {
     AppearanceHelper.set(copyButton, with: L10n.buttonTitleCopyKey)
     layer.cornerRadius = 10
   }
-  
-  private func setStaticString() {
-    publicKeyTitleLabel.text = L10n.textSettingsPublicKeyTitle
-  }
-  
+    
   private func closePopover() {
     popoverDelegate?.closePopover()
     popoverDelegate = nil

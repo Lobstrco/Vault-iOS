@@ -12,6 +12,7 @@ private struct KeychainKey {
   public static let pin = "pin"
   public static let jwt = "jwt"
   public static let publicKey = "publicKey"
+  public static let activePublicKey = "activePublicKey"
 }
 
 final public class VaultStorage {
@@ -34,6 +35,11 @@ final public class VaultStorage {
   private var publicKeyKeychainAccessGroupName: String {
     return Environment.buildType == .qa ? "6ZVXG76XRR.com.ultrastellar.lobstr.vault.qa.publickey" :
                                           "6ZVXG76XRR.com.ultrastellar.lobstr.vault.publickey"
+  }
+  
+  private var activePublicKeyKeychainAccessGroupName: String {
+    return Environment.buildType == .qa ? "6ZVXG76XRR.com.ultrastellar.lobstr.vault.qa.activepublickey" :
+                                          "6ZVXG76XRR.com.ultrastellar.lobstr.vault.activepublickey"
   }
   
   init(keychain: KeychainManager = KeychainManagerImpl()) {
@@ -95,6 +101,16 @@ final public class VaultStorage {
       kSecAttrAccount as String: KeychainKey.publicKey,
       kSecAttrAccessible as String: securityAttributeAccessible,
       kSecAttrAccessGroup as String: publicKeyKeychainAccessGroupName
+    ]
+  }
+  
+  public var activePublicKeyQueryParameters: [String: Any] {
+    return [
+      kSecClass as String: kSecClassGenericPassword,
+      kSecAttrService as String: vaultSecAttrService,
+      kSecAttrAccount as String: KeychainKey.activePublicKey,
+      kSecAttrAccessible as String: securityAttributeAccessible,
+      kSecAttrAccessGroup as String: activePublicKeyKeychainAccessGroupName
     ]
   }
   

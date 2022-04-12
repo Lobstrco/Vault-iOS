@@ -31,6 +31,13 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     tabBarController?.tabBar.isHidden = true
+    navigationController?.setStatusBar(backgroundColor: .white)
+    navigationController?.setNavigationBarAppearance(backgroundColor: .white)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
   }
   
   // MARK: - IBActions

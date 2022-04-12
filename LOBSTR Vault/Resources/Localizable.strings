@@ -80,7 +80,7 @@
 "button_title_understand" = "I Understand";
 
 // Mnemonic generation screen
-"text_mnemonic_description" = "Recovery phrase can help you to recover access to your account in case your phone is lost or stolen.";
+"text_mnemonic_description" = "Recovery phrase can help you to recover access to your account and associated signer keys in case your phone is lost or stolen.";
 "text_copy_description" = "Write down these [number] words and keep them secure. Don’t email them or screenshot them.";
 "text_confirm_description" = "You will need to confirm recovery phrase on the next screen";
 
@@ -115,7 +115,7 @@
 
 // Home screen
 "text_transactions_to_sign" = "Transactions to Sign";
-"text_vault_publicKey" = "Vault Public Key";
+"text_vault_publicKey" = "Vault Signer Key";
 "text_signer_for" = "Signer For";
 "button_title_view_transactions_list" = "View Transactions List";
 "text_copied_key_snack" = "Copied";
@@ -123,7 +123,7 @@
 // Transaction screen
 "text_add_transaction_title" = "Add Transaction XDR";
 "text_add_transaction_description" = "To submit transaction enter its XDR below";
-"text_add_transaction_placeholder" = "Transaction XDR";
+"text_add_transaction_placeholder" = "Enter transaction XDR";
 "text_add_transaction_error" = "Transaction is invalid. Please try again.";
 "button_title_submit" = "Submit";
 "text_empty_state_transactions" = "No transactions to sign";
@@ -134,6 +134,8 @@
 "button_title_remove_all" = "Remove All";
 "button_title_remove_invalid" = "Remove Invalid";
 "text_operation_name_challenge_title" = "Challenge";
+"text_invalid_xdr_error" = "Invalid XDR";
+"button_title_paste_from_clipboard" = "Paste From Clipboard";
 
 // Transaction details screen
 "text_deny_dialog_title" = "Are you sure?";
@@ -150,7 +152,7 @@
 "text_settings_other_section" = "OTHER";
 "text_settings_help_section" = "HELP";
 "text_settings_public_key_field" = "Vault Public key";
-"text_settings_notifications_field" = "Notifications";
+"text_settings_notifications_field" = "Enable Push Notifications";
 "text_settings_promt_decisions_field" = "Transaction Confirmations";
 "text_settings_spam_protection_field" = "Allow Unsigned Transactions";
 "text_settings_signer_for_field" = "Signer for 5 accounts";
@@ -162,15 +164,15 @@
 "text_settings_help_field" = "Help Center";
 "text_settings_logoutfield" = "Log Out";
 "text_settings_copyright" = "All rights reserved";
-"text_settings_public_key_title" = "Vault Public Key";
-"text_settings_signers_field" = "Signer for [number] Account";
+"text_settings_public_key_title" = "Vault Signer Key";
+"text_settings_signers_field" = "Protects [number] Account";
 "button_title_show" = "Show";
 "text_settings_display_mnemonic_title" = "Enter your PIN to view your Recovery Phrase";
 "text_settings_display_pin_changed" = "PIN changed";
 "text_settings_transactions_confirmations_title" = "CONFIRM TRANSACTIONS";
 "text_settings_transactions_confirmations_about" = "Show additional confirmation alert before signing  transaction requests to avoid mistakes.";
 "text_settings_spam_protection_title" = "ALLOW UNSIGNED TRANSACTIONS";
-"text_settings_spam_protection_about" = "Select whether you want to receive transaction requests that don't contain any valid signatures from the protected account or other signers. Choose 'No' to protect your account from spam transactions.";
+"text_settings_spam_protection_about" = "Select whether you want to receive transaction requests that don’t contain any valid signatures from protected accounts or other signers. Choose ‘No’ to protect your signer account from spam transactions.";
 
 // Change Passcode screen
 "text_change_passcode_enter_old" = "Enter PIN";
@@ -293,7 +295,7 @@
 //Nickname Dialog
 "text_set_nickname_title" = "Set Account Nickname";
 "text_change_nickname_title" = "Change Account Nickname";
-"text_nickname_description" = "Choose a short name for protected account";
+"text_nickname_description" = "Choose a short name for this account";
 "text_nickname_text_view_placeholder" = "Enter account nickname";
 "text_nickname_text_view_descrition" = "Limited to 20 symbols";
 "button_text_nickname_save" = "Save";

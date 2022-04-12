@@ -1,6 +1,7 @@
 import Kingfisher
 import PKHUD
 import UIKit
+import Presentr
 
 class HomeViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .home
@@ -27,6 +28,8 @@ class HomeViewController: UIViewController, StoryboardCreation {
     
   @IBOutlet var publicKeyLabel: UILabel!
   @IBOutlet var titleOfPublicKeyLabel: UILabel!
+  
+  @IBOutlet var changeAccountImageView: UIImageView!
   @IBOutlet var copyKeyButton: UIButton!
   
   @IBOutlet var signersNumberStackView: UIStackView!
@@ -44,6 +47,18 @@ class HomeViewController: UIViewController, StoryboardCreation {
   @IBOutlet var refreshButton: UIButton!
   
   var presenter: HomePresenter!
+  
+  let publicKeyListPresenter: Presentr = {
+    let presenter = Presentr(presentationType: .alert)
+    presenter.transitionType = .coverVertical
+    presenter.dismissTransitionType = .coverVertical
+    presenter.roundCorners = true
+    presenter.cornerRadius = 10.0
+    presenter.dismissOnSwipe = true
+    presenter.dismissOnSwipeDirection = .bottom
+    presenter.backgroundOpacity = 0.54
+    return presenter
+  }()
 }
 
 // MARK: - Lifecycle
@@ -93,7 +108,15 @@ extension HomeViewController {
     multisigInfoEmptyStateButton.layer.borderColor = Asset.Colors.main.color.cgColor
     multisigInfoEmptyStateButton.layer.borderWidth = 1
     
-    titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      let activePublicKeyIndex = UserDefaultsHelper.activePublicKeyIndex + 1
+      titleOfPublicKeyLabel.text = L10n.textVaultPublicKey + " " + activePublicKeyIndex.description
+    default:
+      titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
+      changeAccountImageView.isHidden = true
+    }
+    
     AppearanceHelper.set(copyKeyButton, with: L10n.buttonTitleCopyKey)
     
     AppearanceHelper.set(transactionListButton,
@@ -130,6 +153,29 @@ extension HomeViewController {
     multisigViewController.publicKey = presenter.publicKey ?? "none"
     navigationController?.present(multisigViewController, animated: true, completion: nil)
   }
+    
+  @IBAction func showPublicKeyListButtonAction(_ sender: UIButton) {
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      let customType = PresentationHelper.createPresentationType(cellsCount: presenter.multiaccountPublicKeysCount, cellHeight: MultiaccountPublicKeyTableViewCell.height)
+      let publicKeyListViewController = PublicKeyListViewController.createFromStoryboard()
+      publicKeyListViewController.delegate = self
+      
+      publicKeyListPresenter.presentationType = customType
+      self.navigationController?
+        .topViewController?
+        .customPresentViewController(publicKeyListPresenter,
+                                     viewController: publicKeyListViewController,
+                                     animated: true,
+                                     completion: nil)
+    default:
+      break
+    }
+  }
+  
+  @IBAction func moreDetailsButtonAction(_ sender: UIButton) {
+    presenter.moreDetailsButtonWasPressed(for: UserDefaultsHelper.activePublicKey, type: .primaryAccount)
+  }
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
@@ -158,20 +204,7 @@ private extension HomeViewController {
       PinHelper.tryToShowPinEnterViewController()
     }
   }
-  
-  func setIconCardOrIdenticon() {
-    switch UserDefaultsHelper.accountStatus {
-    case .createdByDefault:
-      idenctionView.loadIdenticon(publicAddress: presenter.publicKey ?? "")
-      idenctionView.isHidden = false
-      cardIconView.isHidden = true
-    case .createdWithTangem:
-      cardIconView.isHidden = false
-      idenctionView.isHidden = true
-    default: return
-    }
-  }
-  
+    
   func setTableView() {
     tableView.dataSource = self
     tableView.delegate = self
@@ -187,11 +220,24 @@ private extension HomeViewController {
     tableView.reloadData()
   }
   
-  func openNicknameDialog(by index: Int) {
+  func openNicknameDialog(for publicKey: String, nicknameDialogType: NicknameDialogType) {
+    var nickName: String?
+    switch nicknameDialogType {
+    case .primaryAccount:
+      if let index = self.presenter.mainAccounts.firstIndex(where: { $0.address == publicKey }) {
+        nickName = self.presenter.mainAccounts[index].nickname
+      }
+    case .protectedAccount:
+      if let index = self.presenter.signedAccounts.firstIndex(where: { $0.address == publicKey }) {
+        nickName = self.presenter.signedAccounts[index].nickname
+      }
+    }
+    
     let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
     nicknameDialogViewController.delegate = self
-    nicknameDialogViewController.index = index
-    nicknameDialogViewController.nickName = self.presenter.signedAccounts[index].nickname
+    nicknameDialogViewController.publicKey = publicKey
+    nicknameDialogViewController.nickName = nickName
+    nicknameDialogViewController.type = nicknameDialogType
     self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
 }
@@ -199,6 +245,19 @@ private extension HomeViewController {
 // MARK: - HomeView
 
 extension HomeViewController: HomeView {
+  func setIconCardOrIdenticon() {
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      idenctionView.loadIdenticon(publicAddress: presenter.publicKey ?? "")
+      idenctionView.isHidden = false
+      cardIconView.isHidden = true
+    case .createdWithTangem:
+      cardIconView.isHidden = false
+      idenctionView.isHidden = true
+    default: return
+    }
+  }
+  
   func setProgressAnimationForTransactionNumber() {
     DispatchQueue.main.async {
       self.transactionNumberButton.setTitle("", for: .normal)
@@ -213,8 +272,22 @@ extension HomeViewController: HomeView {
     PKHUD.sharedHUD.hide(afterDelay: 1.0)
   }
   
-  func setPublicKey(_ publicKey: String) {
+  func setPublicKey(_ publicKey: String, _ nickname: String) {
     publicKeyLabel.text = publicKey
+    var titleOfPublicKeyLabelText = ""
+    if !nickname.isEmpty {
+      titleOfPublicKeyLabelText = nickname
+    } else {
+      switch UserDefaultsHelper.accountStatus {
+      case .createdByDefault:
+        let activePublicKeyIndex = UserDefaultsHelper.activePublicKeyIndex + 1
+        titleOfPublicKeyLabelText = L10n.textVaultPublicKey + " " + activePublicKeyIndex.description
+      default:
+        titleOfPublicKeyLabelText = L10n.textVaultPublicKey
+      }
+    }
+    
+    titleOfPublicKeyLabel.text = titleOfPublicKeyLabelText
   }
   
   func setSignedAccountsList(_ signedAccounts: [SignedAccount]) {
@@ -258,19 +331,19 @@ extension HomeViewController: HomeView {
     }
   }
   
-  func actionSheetForSignersListWasPressed(with index: Int, isNicknameSet: Bool) {
+  func actionSheetForSignersListWasPressed(with publicKey: String, isNicknameSet: Bool) {
     let moreMenu = UIAlertController(title: nil,
                                      message: nil,
                                      preferredStyle: .actionSheet)
     
     let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
                                    style: .default) { _ in
-      self.presenter.copySignerPublicKeyActionWasPressed(with: index)
+      self.presenter.copySignerPublicKeyActionWasPressed(publicKey)
     }
     
     let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
                                            style: .default) { _ in
-      self.presenter.explorerSignerAccountActionWasPressed(with: index)
+      self.presenter.explorerSignerAccountActionWasPressed(publicKey)
     }
     
     moreMenu.addAction(openExplorerAction)
@@ -279,12 +352,12 @@ extension HomeViewController: HomeView {
     if isNicknameSet {
       let changeAccountNicknameAction = UIAlertAction(title: L10n.buttonTextChangeAccountNickname,
                                                       style: .default) { _ in
-        self.openNicknameDialog(by: index)
+        self.openNicknameDialog(for: publicKey, nicknameDialogType: .protectedAccount)
       }
       
       let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
                                                      style: .default) { _ in
-        self.presenter.clearAccountNicknameActionWasPressed(by: index)
+        self.presenter.clearNicknameActionWasPressed(publicKey, nicknameDialogType: .protectedAccount)
       }
       clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
       moreMenu.addAction(changeAccountNicknameAction)
@@ -292,7 +365,56 @@ extension HomeViewController: HomeView {
     } else {
       let setAccountNicknameAction = UIAlertAction(title: L10n.buttonTextSetAccountNickname,
                                                    style: .default) { _ in
-        self.openNicknameDialog(by: index)
+        self.openNicknameDialog(for: publicKey, nicknameDialogType: .protectedAccount)
+      }
+      moreMenu.addAction(setAccountNicknameAction)
+    }
+    
+    let cancelAction = UIAlertAction(title: L10n.buttonTextCancel, style: .cancel)
+        
+    moreMenu.addAction(cancelAction)
+    
+    if let popoverPresentationController = moreMenu.popoverPresentationController {
+      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
+                                                        y: view.bounds.midY,
+                                                        width: 0,
+                                                        height: 0)
+      popoverPresentationController.permittedArrowDirections = []
+    }
+    
+    present(moreMenu, animated: true, completion: nil)
+  }
+  
+  func actionSheetForAccountsListWasPressed(isNicknameSet: Bool) {
+    let moreMenu = UIAlertController(title: nil,
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
+    
+    let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
+                                   style: .default) { _ in
+      self.presenter.copyKeyButtonWasPressed()
+    }
+    
+    moreMenu.addAction(copyAction)
+    
+    if isNicknameSet {
+      let changeAccountNicknameAction = UIAlertAction(title: L10n.buttonTextChangeAccountNickname,
+                                                      style: .default) { _ in
+        self.openNicknameDialog(for: UserDefaultsHelper.activePublicKey, nicknameDialogType: .primaryAccount)
+      }
+      
+      let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
+                                                     style: .default) { _ in
+        self.presenter.clearNicknameActionWasPressed(UserDefaultsHelper.activePublicKey, nicknameDialogType: .primaryAccount)
+      }
+      clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
+      moreMenu.addAction(changeAccountNicknameAction)
+      moreMenu.addAction(clearAccountNicknameAction)
+    } else {
+      let setAccountNicknameAction = UIAlertAction(title: L10n.buttonTextSetAccountNickname,
+                                                   style: .default) { _ in
+        self.openNicknameDialog(for: UserDefaultsHelper.activePublicKey, nicknameDialogType: .primaryAccount)
       }
       moreMenu.addAction(setAccountNicknameAction)
     }
@@ -338,13 +460,13 @@ extension HomeViewController: UITableViewDataSource {
 
 extension HomeViewController: SignerAccountDelegate {
   func moreDetailsButtonWasPressed(in cell: SignerAccountTableViewCell) {
-    guard let indexPath = tableView.indexPath(for: cell) else { return }
-    presenter.moreDetailsButtonWasPressed(with: indexPath.row)
+    guard let publicKey = cell.publicKey else { return }
+    presenter.moreDetailsButtonWasPressed(for: publicKey, type: .protectedAccount)
   }
   
   func longTapWasActivated(in cell: SignerAccountTableViewCell) {
-    guard let indexPath = tableView.indexPath(for: cell) else { return }
-    presenter.copySignerPublicKeyActionWasPressed(with: indexPath.row)
+    guard let publicKey = cell.publicKey else { return }
+    presenter.copySignerPublicKeyActionWasPressed(publicKey)
   }
 }
 
@@ -369,7 +491,15 @@ extension HomeViewController: VaultPublicKeyTableViewCellDelegate {
 // MARK: - NicknameDialogDelegate
 
 extension HomeViewController: NicknameDialogDelegate {
-  func submitNickname(with text: String, by index: Int?) {
-    self.presenter.setAccountNicknameActionWasPressed(with: text, by: index)
+  func submitNickname(with text: String, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
+    self.presenter.setNicknameActionWasPressed(with: text, for: publicKey, nicknameDialogType: nicknameDialogType)
+  }
+}
+
+// MARK: - PublicKeyListDelegate
+
+extension HomeViewController: PublicKeyListDelegate {
+  func publicKeyWasSelected() {
+    presenter.changeActiveAccount()
   }
 }

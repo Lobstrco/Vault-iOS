@@ -35,6 +35,15 @@ class SettingsSelectionViewController: UIViewController, StoryboardCreation {
     configure()
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    navigationController?.setNavigationBarAppearance(backgroundColor: Asset.Colors.background.color)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
+  }
 }
 
 extension SettingsSelectionViewController {
@@ -46,8 +55,8 @@ extension SettingsSelectionViewController {
         titleLabel.text = L10n.textSettingsTransactionsConfirmationsTitle
         aboutLabel.text = L10n.textSettingsTransactionsConfirmationsAbout
         
-        cellData = [CellData(title: "Yes", isSelected: UserDefaultsHelper.isPromtTransactionDecisionsEnabled),
-                        CellData(title: "No", isSelected: !UserDefaultsHelper.isPromtTransactionDecisionsEnabled)]
+        cellData = [CellData(title: "Yes", isSelected: PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled),
+                        CellData(title: "No", isSelected: !PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled)]
       case .spamProtection:
         titleLabel.text = L10n.textSettingsSpamProtectionTitle
         aboutLabel.text = L10n.textSettingsSpamProtectionAbout
@@ -89,7 +98,12 @@ extension SettingsSelectionViewController: UITableViewDelegate, UITableViewDataS
     
     switch screenType {
     case .promptTransactionDecisions:
-      UserDefaultsHelper.isPromtTransactionDecisionsEnabled = indexPath.row == 0 ? true : false
+      let value = indexPath.row == 0 ? true : false
+      if !UserDefaultsHelper.promtForTransactionDecisionsStatuses.isEmpty {
+        UserDefaultsHelper.promtForTransactionDecisionsStatuses[UserDefaultsHelper.activePublicKey] = value
+      } else {
+        UserDefaultsHelper.isPromtTransactionDecisionsEnabled = value
+      }
       cellData[indexPath.row].isSelected = true
       tableView.reloadData()
     case .spamProtection:

@@ -46,7 +46,7 @@ class AuthenticationService {
                     return
                   }
                   Logger.auth.debug("JWT Token was updated: \(token)")
-                  guard self.jwtManager.store(token) else { return }
+                  guard self.jwtManager.store(token, for: "") else { return }
                   completion(.success(token))
                 case .failure(let error):
                   completion(.failure(error))
@@ -65,8 +65,7 @@ class AuthenticationService {
     }
   }
   
-  
-  func updateToken(completion: @escaping (Result<String>) -> Void) {
+  func getToken(for index: Int, completion: @escaping (Result<[String: String]>) -> Void) {
     guard mnemonicManager.isMnemonicStoredInKeychain() else {
       Logger.mnemonic.error("Mnemonic doesn't exist")
       return
@@ -75,10 +74,63 @@ class AuthenticationService {
     mnemonicManager.getDecryptedMnemonicFromKeychain { result in
       switch result {
       case .success(let mnemonic):
-        let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic)
+        let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic, index: index)
         let challengeRequestParameters = ChallengeRequestParameters(account: keyPair.accountId)
         let apiLoader = APIRequestLoader<ChallengeRequest>(apiRequest: ChallengeRequest())
         apiLoader.loadAPIRequest(requestData: challengeRequestParameters) { result in
+          switch result {
+          case .success(let challenge):
+            do {
+              guard let transaction = challenge.transaction else {
+                return
+              }
+              var envelope = TransactionHelper.tryToTransformTransactionXDRV0ToV1(envelopeXDR: try TransactionEnvelopeXDR(xdr: transaction))
+              try TransactionHelper.signTransaction(transactionEnvelopeXDR: &envelope, userKeyPair: keyPair)
+              if let signedTransaction = envelope.xdrEncoded {
+                let submitChallengeRequestParameters = SubmitChallengeRequestParameters(transaction: signedTransaction)
+                let apiLoader = APIRequestLoader<SubmitChallengeRequest>(apiRequest: SubmitChallengeRequest())
+                apiLoader.loadAPIRequest(requestData: submitChallengeRequestParameters) { result in
+                  switch result {
+                  case .success(let jwtToken):
+                    guard let token = jwtToken.token else {
+                      return
+                    }
+                    Logger.auth.debug("JWT Token was got: \(token)")
+                    completion(.success([keyPair.accountId: token]))
+                  case .failure(let error):
+                    completion(.failure(error))
+                  }
+                }
+              }
+            } catch let error {
+              completion(.failure(error))
+            }
+          case .failure(let serverRequestError):
+            completion(.failure(serverRequestError))
+          }
+        }
+      case .failure(let error):
+        completion(.failure(error))
+      }
+    }
+  }
+  
+  
+  func updateToken(for index: Int = UserDefaultsHelper.activePublicKeyIndex,
+                   with token: String = "",
+                   completion: @escaping (Result<String>) -> Void) {
+    guard mnemonicManager.isMnemonicStoredInKeychain() else {
+      Logger.mnemonic.error("Mnemonic doesn't exist")
+      return
+    }
+    
+    mnemonicManager.getDecryptedMnemonicFromKeychain { result in
+      switch result {
+      case .success(let mnemonic):
+        let keyPair = MnemonicHelper.getKeyPairFrom(mnemonic, index: index)
+        let challengeRequestParameters = ChallengeRequestParameters(account: keyPair.accountId)
+        let apiLoader = APIRequestLoader<ChallengeRequest>(apiRequest: ChallengeRequest())
+        apiLoader.loadAPIRequest(requestData: challengeRequestParameters, jwtToken: token) { result in
           switch result {
           case .success(let challenge):
             do {
@@ -99,7 +151,7 @@ class AuthenticationService {
                       return
                     }
                     Logger.auth.debug("JWT Token was updated: \(token)")
-                    guard self.jwtManager.store(token) else { return }
+                    guard self.jwtManager.store(token, for: keyPair.accountId) else { return }
                     completion(.success(token))
                   case .failure(let error):
                     completion(.failure(error))

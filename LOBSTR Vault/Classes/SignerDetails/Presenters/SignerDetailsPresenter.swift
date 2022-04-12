@@ -7,11 +7,11 @@ protocol SignerDetailsPresenter {
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int)
   func signerDetailsViewDidLoad()
-  func copyAlertActionWasPressed(for index: Int)
-  func openExplorerActionWasPressed(for index: Int)
-  func moreDetailsButtonWasPressed(with index: Int)
-  func setAccountNicknameActionWasPressed(with text: String?, by index: Int?)
-  func clearAccountNicknameActionWasPressed(by index: Int?)
+  func moreDetailsButtonWasPressed(for publicKey: String, type: NicknameDialogType)
+  func copyAlertActionWasPressed(_ publicKey: String)
+  func openExplorerActionWasPressed(_ publicKey: String)
+  func setAccountNicknameActionWasPressed(with text: String?, for publicKey: String?)
+  func clearAccountNicknameActionWasPressed(_ publicKey: String?)
 }
 
 class SignerDetailsPresenterImpl {
@@ -23,8 +23,10 @@ class SignerDetailsPresenterImpl {
   
   fileprivate weak var view: SignerDetailsView?
   
-  private let storage: SignersStorage = SignersStorageDiskImpl()
-  private var storageSigners: [SignedAccount] = []
+  private let storage: AccountsStorage = AccountsStorageDiskImpl()
+  private var storageAccounts: [SignedAccount] = []
+  
+  private var mainAccounts: [SignedAccount] = []
   
   init(view: SignerDetailsView,
        transactionService: TransactionService = TransactionService(),
@@ -42,6 +44,7 @@ class SignerDetailsPresenterImpl {
       case .success(let signedAccounts):
         self.signedAccounts = signedAccounts
         self.setFederations(to: &self.signedAccounts)
+        AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: self.signedAccounts)
         self.view?.setAccountList(isEmpty: self.signedAccounts.isEmpty)
       case .failure(let error):
         Logger.networking.error("Couldn't get signed accounts with error: \(error)")
@@ -60,7 +63,7 @@ private extension SignerDetailsPresenterImpl {
     for (index, account) in accounts.enumerated() {
       guard let publicKey = account.address else { break }
       
-      if let account = storageSigners.first(where: { $0.address == publicKey }) {
+      if let account = storageAccounts.first(where: { $0.address == publicKey }) {
         accounts[index].nickname = account.nickname
         accounts[index].federation = account.federation
       } else {
@@ -79,6 +82,7 @@ private extension SignerDetailsPresenterImpl {
       case .success(let account):
         if let federation = account.federation {
           self.signedAccounts[index] = SignedAccount(address: account.publicKey, federation: federation)
+          AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: self.signedAccounts)
           self.view?.reloadRow(index)
         }
       case .failure(let error):
@@ -94,18 +98,12 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
     return signedAccounts.count
   }
 
-  func copyAlertActionWasPressed(for index: Int) {
-    guard let publicKey = signedAccounts[index].address else { return }
+  func copyAlertActionWasPressed(_ publicKey: String) {
     view?.copy(publicKey)
   }
   
-  func openExplorerActionWasPressed(for index: Int) {
-    guard let address = signedAccounts[safe: index]?.address else {
-      Logger.home.error("Couldn't open stellar expert. Signers list is empty")
-      return
-    }
-       
-    UtilityHelper.openStellarExpertForPublicKey(publicKey: address)
+  func openExplorerActionWasPressed(_ publicKey: String) {
+    UtilityHelper.openStellarExpertForPublicKey(publicKey: publicKey)
   }
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int) {
@@ -117,42 +115,42 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     if ConnectionHelper.checkConnection(viewController) {
-      self.storageSigners = storage.retrieveSigners() ?? []
+      self.storageAccounts = storage.retrieveAccounts() ?? []
+      self.mainAccounts = AccountsStorageHelper.getMainAccountsFromCache()
       displayAccountList()
     }
   }
   
-  func setAccountNicknameActionWasPressed(with text: String?, by index: Int?) {
-    guard let index = index, let address = signedAccounts[safe: index]?.address else {
-      return
-    }
+  func setAccountNicknameActionWasPressed(with text: String?, for publicKey: String?) {
+    guard let publicKey = publicKey else { return }
     
-    if let index = signedAccounts.firstIndex(where: { $0.address == address }), let nickname = text {
+    var allAccounts: [SignedAccount] = []
+    allAccounts.append(contentsOf: mainAccounts)
+    
+    if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
       signedAccounts[index].nickname = nickname
-      storage.save(signers: signedAccounts)
+      AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: signedAccounts)
+      allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
+      storage.save(accounts: allAccounts)
       NotificationCenter.default.post(name: .didNicknameSet, object: nil)
       self.view?.reloadRow(index)
     }
   }
   
-  func moreDetailsButtonWasPressed(with index: Int) {
-    guard let address = signedAccounts[safe: index]?.address else {
-      return
-    }
-    
-    if let index = signedAccounts.firstIndex(where: { $0.address == address }) {
+  func moreDetailsButtonWasPressed(for publicKey: String, type: NicknameDialogType) {
+    if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }) {
       var isNicknameSet = false
       if let nickname = signedAccounts[index].nickname, !nickname.isEmpty {
         isNicknameSet = true
       } else {
         isNicknameSet = false
       }
-      self.view?.actionSheetForSignersListWasPressed(with: index, isNicknameSet: isNicknameSet)
+      self.view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
     }
   }
   
-  func clearAccountNicknameActionWasPressed(by index: Int?) {
-    setAccountNicknameActionWasPressed(with: "", by: index)
+  func clearAccountNicknameActionWasPressed(_ publicKey: String?) {
+    setAccountNicknameActionWasPressed(with: "", for: publicKey)
   }
 }
 

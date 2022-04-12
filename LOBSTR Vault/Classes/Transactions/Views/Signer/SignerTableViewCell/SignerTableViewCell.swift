@@ -22,6 +22,7 @@ class SignerTableViewCell: UITableViewCell {
     var federationValue = ""
     
     if let nickName = viewData.nickname, !nickName.isEmpty {
+      yourKeyTitleLabel.isHidden = true
       nicknameValue = nickName
     } else {
       if let federation = viewData.federation, !federation.isEmpty {
@@ -31,7 +32,7 @@ class SignerTableViewCell: UITableViewCell {
           publicAddressLabel.font = UIFont.systemFont(ofSize: 13)
           publicAddressLabel.textColor = Asset.Colors.gray.color
         }
-        yourKeyTitleLabel.text = "Your Vault account"
+        yourKeyTitleLabel.text = "Your Signer Account"
         federationLabel.isHidden = true
         return
       }

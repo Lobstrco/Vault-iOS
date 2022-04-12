@@ -12,9 +12,10 @@ final class APIRequestLoader<T: APIRequest> {
   }
   
   func loadAPIRequest(requestData: T.RequestDataType?,
+                      jwtToken: String = "",
                       completion: @escaping (NetworkingResult<T.ResponseDataType>) -> Void) {
     do {
-      let jwt = jwtManager.getJWT()
+      let jwt = jwtToken.isEmpty ? jwtManager.getJWT() : jwtToken
       var urlRequest = try apiRequest.makeRequest(from: requestData, jwtToken: jwt)
       urlRequest.setValue(UserAgentInfo.getFormattedUserAgent(),
                           forHTTPHeaderField: "User-Agent")

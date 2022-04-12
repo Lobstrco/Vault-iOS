@@ -72,6 +72,7 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   
   func doneButtonWasPressed() {
     let transactionStatusViewController = view as! TransactionStatusViewController
+    transactionStatusViewController.navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
     transactionStatusViewController.navigationController?.popToRootViewController(animated: true)
     requestReview()
   }

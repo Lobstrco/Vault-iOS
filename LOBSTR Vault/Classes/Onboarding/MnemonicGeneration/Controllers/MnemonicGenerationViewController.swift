@@ -28,10 +28,12 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
   
   override func viewWillAppear(_ animated: Bool) {
     tabBarController?.tabBar.isHidden = true
+    navigationController?.setNavigationBarAppearance(backgroundColor: Asset.Colors.background.color)
   }
   
   override func viewWillDisappear(_ animated: Bool) {
     tabBarController?.tabBar.isHidden = false
+    navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
   }
   
   // MARK: - IBAction

@@ -23,13 +23,11 @@ struct ApplicationCoordinatorHelper {
   }
   
   static func logout() {
-    if let fcmToken = Messaging.messaging().fcmToken {
-      NotificationsService().unregisterDeviceForNotifications(with: fcmToken)
-    } else {
-      Logger.notifications.error("Failed to unregister device. Couldn't get fcm token")
-    }
+    NotificationManager().unregisterAllAccountsForRemoteNotifications()
     
     UserDefaultsHelper.accountStatus = .notCreated
+    UserDefaultsHelper.pushNotificationsStatuses = [:]
+    UserDefaultsHelper.promtForTransactionDecisionsStatuses = [:]
     //UserDefaultsHelper.isNotificationsEnabled = false
     UserDefaultsHelper.tangemCardId = nil
     ApplicationCoordinatorHelper.clearKeychain()
@@ -37,8 +35,8 @@ struct ApplicationCoordinatorHelper {
     
     NotificationManager().setNotificationBadge(badgeNumber: 0)
     BiometricAuthManagerImpl().isBiometricAuthEnabled = false
-    
-    SignersStorageDiskImpl.clear()
+
+    AccountsStorageDiskImpl.clear()
     
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
     else { return }

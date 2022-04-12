@@ -104,10 +104,11 @@ PODS:
   - nanopb/decode (0.3.9011)
   - nanopb/encode (0.3.9011)
   - PKHUD (5.3.0)
+  - Presentr (1.9)
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
   - secp256k1.swift (0.1.4)
-  - stellar-ios-mac-sdk (2.0.6)
+  - stellar-ios-mac-sdk (2.0.9)
   - SwiftGen (6.0.2)
   - TangemSdk (2.1.1):
     - KeychainSwift
@@ -138,7 +139,8 @@ DEPENDENCIES:
   - Kingfisher (~> 5.0)
   - lottie-ios (~> 2.5.2)
   - PKHUD (~> 5.0)
-  - stellar-ios-mac-sdk (~> 2.0.6)
+  - Presentr
+  - stellar-ios-mac-sdk (~> 2.0.9)
   - SwiftGen (~> 6.0.2)
   - TangemSdk (~> 2.1.1)
   - ZendeskSupportSDK (= 5.0.1)
@@ -167,6 +169,7 @@ SPEC REPOS:
     - lottie-ios
     - nanopb
     - PKHUD
+    - Presentr
     - PromisesObjC
     - Protobuf
     - secp256k1.swift
@@ -204,10 +207,11 @@ SPEC CHECKSUMS:
   lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   PKHUD: 98f3e4bc904b9c916f1c5bb6d765365b5357291b
+  Presentr: 7078d7eb5d1661ebeaae60c9e42a1e534de1b993
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
   secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
-  stellar-ios-mac-sdk: 117e79a0e950c4e36b429fd39ce54f56ac621945
+  stellar-ios-mac-sdk: 5b55ebd8c5dbc903cf96cc0f3a13f0e7973fea11
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
   TangemSdk: 06c7ccf041f1a2a3d3528770a73359a014e469f0
   ZendeskCommonUISDK: afbee7c58c04cf88012a48c079599ec0d1590d16
@@ -218,6 +222,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: d21ce8eb3df1066338c7d3875bb818b32c3f124e
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: d0dbc5dbc9a34d2626fbae6f6a3a0aba8986362a
+PODFILE CHECKSUM: 87331e3fd541df8e7fd1059f0431537786381fd3
 
 COCOAPODS: 1.10.1

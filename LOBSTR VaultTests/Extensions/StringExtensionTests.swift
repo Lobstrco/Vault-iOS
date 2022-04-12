@@ -26,7 +26,7 @@ class StringExtensionTests: XCTestCase {
     let publicKey = "GGD7XRQF7KOVT47RNWBHOPP2QJCNRCWDRXQ64SC7T7K5AGC47236B4IK"
     let expectedTruncatedPublicKey = "GGD7XR...36B4IK"
     
-    XCTAssertEqual(expectedTruncatedPublicKey, publicKey.getTruncatedPublicKey(numberOfCharacters: 6))
+    XCTAssertEqual(expectedTruncatedPublicKey, publicKey.getTruncatedPublicKey())
   }
 
 }

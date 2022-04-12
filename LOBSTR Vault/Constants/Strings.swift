@@ -63,6 +63,8 @@ internal enum L10n {
   internal static let buttonTitleOk = L10n.tr("Localizable", "button_title_ok")
   /// Open Help Center
   internal static let buttonTitleOpenHelpCenter = L10n.tr("Localizable", "button_title_open_help_center")
+  /// Paste From Clipboard
+  internal static let buttonTitlePasteFromClipboard = L10n.tr("Localizable", "button_title_paste_from_clipboard")
   /// Re-Check
   internal static let buttonTitleReCheck = L10n.tr("Localizable", "button_title_re_check")
   /// Re-Check
@@ -295,7 +297,7 @@ internal enum L10n {
   internal static let textAddTransactionDescription = L10n.tr("Localizable", "text_add_transaction_description")
   /// Transaction is invalid. Please try again.
   internal static let textAddTransactionError = L10n.tr("Localizable", "text_add_transaction_error")
-  /// Transaction XDR
+  /// Enter transaction XDR
   internal static let textAddTransactionPlaceholder = L10n.tr("Localizable", "text_add_transaction_placeholder")
   /// Add Transaction XDR
   internal static let textAddTransactionTitle = L10n.tr("Localizable", "text_add_transaction_title")
@@ -347,15 +349,17 @@ internal enum L10n {
   internal static let textEmptyStateSignedAccounts = L10n.tr("Localizable", "text_empty_state_signed_accounts")
   /// No transactions to sign
   internal static let textEmptyStateTransactions = L10n.tr("Localizable", "text_empty_state_transactions")
+  /// Invalid XDR
+  internal static let textInvalidXdrError = L10n.tr("Localizable", "text_invalid_xdr_error")
   /// Forgot PIN?
   internal static let textLogoutInfo = L10n.tr("Localizable", "text_logout_info")
-  /// Recovery phrase can help you to recover access to your account in case your phone is lost or stolen.
+  /// Recovery phrase can help you to recover access to your account and associated signer keys in case your phone is lost or stolen.
   internal static let textMnemonicDescription = L10n.tr("Localizable", "text_mnemonic_description")
   /// Tap the words in the correct order.
   internal static let textMnemonicVerificationDescription = L10n.tr("Localizable", "text_mnemonic_verification_description")
   /// Wrong order. Please try again.
   internal static let textMnemonicVerifivationIncorrectOrder = L10n.tr("Localizable", "text_mnemonic_verifivation_incorrect_order")
-  /// Choose a short name for protected account
+  /// Choose a short name for this account
   internal static let textNicknameDescription = L10n.tr("Localizable", "text_nickname_description")
   /// Limited to 20 symbols
   internal static let textNicknameTextViewDescrition = L10n.tr("Localizable", "text_nickname_text_view_descrition")
@@ -411,7 +415,7 @@ internal enum L10n {
   internal static let textSettingsLogoutfield = L10n.tr("Localizable", "text_settings_logoutfield")
   /// Recovery Phrase
   internal static let textSettingsMnemonicField = L10n.tr("Localizable", "text_settings_mnemonic_field")
-  /// Notifications
+  /// Enable Push Notifications
   internal static let textSettingsNotificationsField = L10n.tr("Localizable", "text_settings_notifications_field")
   /// OTHER
   internal static let textSettingsOtherSection = L10n.tr("Localizable", "text_settings_other_section")
@@ -419,7 +423,7 @@ internal enum L10n {
   internal static let textSettingsPromtDecisionsField = L10n.tr("Localizable", "text_settings_promt_decisions_field")
   /// Vault Public key
   internal static let textSettingsPublicKeyField = L10n.tr("Localizable", "text_settings_public_key_field")
-  /// Vault Public Key
+  /// Vault Signer Key
   internal static let textSettingsPublicKeyTitle = L10n.tr("Localizable", "text_settings_public_key_title")
   /// Rate Us
   internal static let textSettingsRateUsField = L10n.tr("Localizable", "text_settings_rate_us_field")
@@ -427,9 +431,9 @@ internal enum L10n {
   internal static let textSettingsSecuritySection = L10n.tr("Localizable", "text_settings_security_section")
   /// Signer for 5 accounts
   internal static let textSettingsSignerForField = L10n.tr("Localizable", "text_settings_signer_for_field")
-  /// Signer for [number] Account
+  /// Protects [number] Account
   internal static let textSettingsSignersField = L10n.tr("Localizable", "text_settings_signers_field")
-  /// Select whether you want to receive transaction requests that don't contain any valid signatures from the protected account or other signers. Choose 'No' to protect your account from spam transactions.
+  /// Select whether you want to receive transaction requests that don’t contain any valid signatures from protected accounts or other signers. Choose ‘No’ to protect your signer account from spam transactions.
   internal static let textSettingsSpamProtectionAbout = L10n.tr("Localizable", "text_settings_spam_protection_about")
   /// Allow Unsigned Transactions
   internal static let textSettingsSpamProtectionField = L10n.tr("Localizable", "text_settings_spam_protection_field")
@@ -463,7 +467,7 @@ internal enum L10n {
   internal static let textTransactionsToSign = L10n.tr("Localizable", "text_transactions_to_sign")
   /// You can do it later in Settings
   internal static let textTurnOnDescription = L10n.tr("Localizable", "text_turn_on_description")
-  /// Vault Public Key
+  /// Vault Signer Key
   internal static let textVaultPublicKey = L10n.tr("Localizable", "text_vault_publicKey")
   /// Unknown card status
   internal static let unknownStatus = L10n.tr("Localizable", "unknownStatus")

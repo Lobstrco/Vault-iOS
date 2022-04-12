@@ -44,8 +44,8 @@ class TransactionListPresenterImpl {
   
   private var currentPageNumber: Int? = 1
   
-  private let storage: SignersStorage = SignersStorageDiskImpl()
-  private var storageSigners: [SignedAccount] = []
+  private let storage: AccountsStorage = AccountsStorageDiskImpl()
+  private var storageAccounts: [SignedAccount] = []
   
   init(view: TransactionListView,
        federationService: FederationService = FederationService(),
@@ -94,12 +94,12 @@ extension TransactionListPresenterImpl: TransactionImportDelegate {
       switch result {
       case .success(let accounts):
         let accountId = TransactionHelper.getAccountId(signedAccounts: accounts, transactionEnvelopeXDR: transactionEnvelopeXDR)
+        let clientDomainAccount = TransactionHelper.getClientDomainAccount(from: xdr)
         let domain = TransactionHelper.getManageDataOperationDomain(from: xdr)
         let authEndpoint = TransactionHelper.getManageDataOperationAuthEndpointWithPrefix(from: xdr)
         let webAuthenticator = WebAuthenticator(authEndpoint: authEndpoint, network: .public, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId, serverHomeDomain: domain)
-       // webAuthenticator.ignoreTimebounds = true
         
-        let result = webAuthenticator.isValidChallenge(transactionEnvelopeXDR: transactionEnvelopeXDR, userAccountId: accountId, serverSigningKey: transactionEnvelopeXDR.txSourceAccountId)
+        let result = webAuthenticator.isValidChallenge(transactionEnvelopeXDR: transactionEnvelopeXDR, userAccountId: accountId,serverSigningKey: transactionEnvelopeXDR.txSourceAccountId, clientDomainAccount: clientDomainAccount)
         switch result {
         case .success:
           var transaction = Transaction()
@@ -253,7 +253,7 @@ private extension TransactionListPresenterImpl {
       return
     }
     
-    self.storageSigners = storage.retrieveSigners() ?? []
+    self.storageAccounts = storage.retrieveAccounts() ?? []
     setStatus(.loading, didBecomeActive: didBecomeActive)
     transactionService.getPendingTransactionList(page: pageNumber) { result in
       switch result {
@@ -321,7 +321,7 @@ private extension TransactionListPresenterImpl {
   }
   
   func getFederation(by publicKey: String, with cellIndex: Int) -> String? {
-    if let account = storageSigners.first(where: { $0.address == publicKey }) {
+    if let account = storageAccounts.first(where: { $0.address == publicKey }) {
       if let nickName = account.nickname, !nickName.isEmpty {
         return nickName
       } else {

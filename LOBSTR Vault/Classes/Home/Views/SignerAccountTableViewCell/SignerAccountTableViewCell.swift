@@ -17,6 +17,7 @@ class SignerAccountTableViewCell: UITableViewCell {
   @IBOutlet var separatorView: UIView!
   
   var delegate: SignerAccountDelegate?
+  var publicKey: String?
   
   override func awakeFromNib() {
     super.awakeFromNib()
@@ -41,10 +42,7 @@ class SignerAccountTableViewCell: UITableViewCell {
 
 extension SignerAccountTableViewCell {
   func set(_ signedAccount: SignedAccount) {
-//    var signedAccount = signedAccount
-//    signedAccount.federation = "joejones*lobstr.co"
-//    signedAccount.address = "GCLBYVNZQ2ULXSZKGKSX4O4QKM4QEFDBU6SL7E7BJGNIWNWCCSQWMQER"
-    
+    publicKey = signedAccount.address
     if let address = signedAccount.address {
       identiconView.loadIdenticon(publicAddress: address)
     }

@@ -46,8 +46,8 @@ class OperationPresenterImpl {
   var signers: [SignerViewData] = []
   var sections = [OperationDetailsSection]()
   
-  private let storage: SignersStorage = SignersStorageDiskImpl()
-  private var storageSigners: [SignedAccount] = []
+  private let storage: AccountsStorage = AccountsStorageDiskImpl()
+  private var storageAccounts: [SignedAccount] = []
   
   // MARK: - Init
   
@@ -84,11 +84,11 @@ extension OperationPresenterImpl: OperationPresenter {
   }
   
   func publicKeyWasSelected(key: String?) {
-    self.storageSigners = storage.retrieveSigners() ?? []
+    self.storageAccounts = storage.retrieveAccounts() ?? []
     if let operation = operation {
       var publicKeys = TransactionHelper.getPublicKeys(from: operation)
       publicKeys.append(transactionSourceAccountId)
-      if let key = key, key.isShortStellarPublicAddress {
+      if let key = key, key.isShortStellarPublicAddress || key.isShortMuxedAddress {
         if let key = publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
           self.view?.showActionSheet(key, .publicKey)
         } else if transactionSourceAccountId.prefix(4) == key.prefix(4) && transactionSourceAccountId.suffix(4) == key.suffix(4) {
@@ -97,7 +97,7 @@ extension OperationPresenterImpl: OperationPresenter {
       } else {
         let shortPublicKey = key?.suffix(14) ?? ""
         let nickname = key?.replacingOccurrences(of: shortPublicKey, with: "")
-        if let account = storageSigners.first(where: { $0.nickname == nickname }) {
+        if let account = storageAccounts.first(where: { $0.nickname == nickname }) {
           if let key = publicKeys.first(where: { $0.prefix(4) == account.address?.prefix(4) && $0.suffix(4) == account.address?.suffix(4) }) {
             self.view?.showActionSheet(key, .publicKey)
           }
