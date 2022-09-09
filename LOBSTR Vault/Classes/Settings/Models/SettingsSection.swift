@@ -48,5 +48,6 @@ public enum SettingsRow {
   case spamProtection
   case support
   case buyCard
+  case manageNicknames
 }
 

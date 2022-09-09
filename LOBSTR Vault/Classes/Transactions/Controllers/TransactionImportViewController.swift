@@ -1,7 +1,7 @@
 import stellarsdk
 import UIKit
 
-protocol TransactionImportDelegate {
+protocol TransactionImportDelegate: AnyObject {
   func submitTransaction(with xdr: String)
 }
 
@@ -19,7 +19,7 @@ class TransactionImportViewController: UIViewController, StoryboardCreation {
   
   var presenter: TransactionImportPresenter!
   
-  var delegate: TransactionImportDelegate?
+  weak var delegate: TransactionImportDelegate?
   
   // MARK: - Lifecycle
   

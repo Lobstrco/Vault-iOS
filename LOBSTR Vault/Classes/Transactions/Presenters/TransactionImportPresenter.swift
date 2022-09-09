@@ -23,7 +23,7 @@ protocol TransactionImportPresenter {
 
 class TransactionImportPresenterImpl {
   private weak var view: TransactionImportView?
-  private var delegate: TransactionImportDelegate?
+  private weak var delegate: TransactionImportDelegate?
   
   var clipboardString: String = ""
   

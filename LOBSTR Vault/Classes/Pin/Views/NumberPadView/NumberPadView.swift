@@ -6,7 +6,7 @@ enum NumberPadButton {
   case undefined
 }
 
-protocol NumberPadViewDelegate: class {
+protocol NumberPadViewDelegate: AnyObject {
   func numberPadButtonWasPressed(button: NumberPadButton)
 }
 

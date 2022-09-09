@@ -1,7 +1,7 @@
 import UIKit
 import PKHUD
 
-protocol SettingsView: class {
+protocol SettingsView: AnyObject {
   func setSettings()
   func setDisablePushNotificationAlert()
   func setErrorAlert(for error: Error)
@@ -26,7 +26,7 @@ class SettingsViewController: UIViewController,
     
     setAppearance()
     presenter = SettingsPresenterImpl(view: self,
-                                      navigationController: navigationController!)
+                                      navigationController: navigationController)
     
     presenter.settingsViewDidLoad()    
   }
@@ -196,6 +196,13 @@ class SettingsViewController: UIViewController,
         tableView.dequeueReusableCell(forIndexPath: indexPath)
         as DisclosureIndicatorTableViewCell
       presenter.configure(disclosureIndicatorTableViewCell: cell, row: row)
+      return cell
+    case .manageNicknames:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
       return cell
     }  
   }

@@ -5,28 +5,29 @@ import UIKit
 
 class SettingsPresenterImpl: SettingsPresenter {
   private weak var view: SettingsView?
-  
+
   private lazy var sections: [SettingsSection] =
     self.settingsSectionsBuilder.buildSections()
-  
+
   private let mnemonicManager: MnemonicManager
   private var biometricAuthManager: BiometricAuthManager
   private let settingsSectionsBuilder: SettingsSectionsBuilder
-  
-  private let navigationController: UINavigationController
-  
+
+  private weak var navigationController: UINavigationController?
+
   private let notificationManager: NotificationManager
-  
+
   private var spamProtectionEnabled = false
-  
+
   // MARK: - Init
-  
+
   init(view: SettingsView,
-       navigationController: UINavigationController,
+       navigationController: UINavigationController?,
        mnemonicManager: MnemonicManager = MnemonicManagerImpl(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl(),
        notificationManager: NotificationManager = NotificationManager(),
-       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl()) {
+       settingsSectionsBuilder: SettingsSectionsBuilder = SettingsSectionsBuilderImpl())
+  {
     self.view = view
     self.navigationController = navigationController
     self.mnemonicManager = mnemonicManager
@@ -43,13 +44,13 @@ extension SettingsPresenterImpl {
     UtilityHelper.checkAllJWTTokens()
     view?.setSettings()
   }
-  
+
   func settingsViewDidAppear() {
     guard let viewController = view as? UIViewController else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
-    
+
     PromtForTransactionDecisionsHelper.setPromtForTransactionDecisionsStatusesDefaultValues()
-      
+
     setSpamProtectionSwitch()
   }
 }
@@ -60,17 +61,17 @@ extension SettingsPresenterImpl {
   func numberOfSections() -> Int {
     return sections.count
   }
-  
+
   func numberOfRows(in section: Int) -> Int {
     return sections[section].rows.count
   }
-  
+
   func row(for indexPath: IndexPath) -> SettingsRow {
     let section = sections[indexPath.section]
     let row = section.rows[indexPath.row]
     return row
   }
-  
+
   func title(for section: Int) -> String {
     let section = sections[section]
     return section.type.title
@@ -83,14 +84,14 @@ extension SettingsPresenterImpl {
   func configure(switchCell: SwitchTableViewCell, type: SwitchType) {
     switchCell.switchType = type
     switchCell.delegate = self
-    
+
     switch type {
     case .biometricID:
       switchCell.setTitle(Device.biometricType.name)
       switchCell.setSwitch(biometricAuthManager.isBiometricAuthEnabled)
     case .notifications:
       switchCell.setTitle(L10n.textSettingsNotificationsField)
-      
+
       // Multiaccount support case
       if !UserDefaultsHelper.pushNotificationsStatuses.isEmpty {
         switchCell.setSwitch(NotificationsStatusesHelper.isNotificationsEnabled)
@@ -99,25 +100,27 @@ extension SettingsPresenterImpl {
       }
     }
   }
-  
+
   func configure(rightDetailCell: RightDetailTableViewCell,
-                 row: SettingsRow) {
+                 row: SettingsRow)
+  {
     switch row {
     case .version:
       var title = L10n.textSettingsVersionField
       if Environment.environmentType == .staging {
         title += " (staging)"
       }
-      
+
       let version = ApplicationInfo.version
       rightDetailCell.setTitle(title, detail: version)
     default:
       break
     }
   }
-  
+
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,
-                 row: SettingsRow) {
+                 row: SettingsRow)
+  {
     disclosureIndicatorTableViewCell.setTextColor(Asset.Colors.black.color)
     switch row {
     case .signerForAccounts:
@@ -157,6 +160,9 @@ extension SettingsPresenterImpl {
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsSpamProtectionField)
       let statusText = !spamProtectionEnabled ? "Yes" : "No"
       disclosureIndicatorTableViewCell.setTextStatus(statusText)
+    case .manageNicknames:
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsManageNicknames)
+      disclosureIndicatorTableViewCell.setTextStatus("")
     default:
       break
     }
@@ -168,7 +174,7 @@ extension SettingsPresenterImpl {
 extension SettingsPresenterImpl {
   func settingsRowWasSelected(at indexPath: IndexPath) {
     let selectedRow = row(for: indexPath)
-    
+
     switch selectedRow {
     case .publicKey:
       showPublicKeyButtonWasPressed()
@@ -194,6 +200,8 @@ extension SettingsPresenterImpl {
       transitionToTransactionConfirmation()
     case .spamProtection:
       transitionToSpamProtection()
+    case .manageNicknames:
+      transitionToManageNicknames()
     default:
       break
     }
@@ -206,7 +214,7 @@ extension SettingsPresenterImpl {
   func switchValueChanged(_ value: Bool, type: SwitchType) {
     switch type {
     case .notifications:
-      
+
       notificationManager.requestAuthorization { isGranted in
         guard isGranted else {
           DispatchQueue.main.async {
@@ -215,7 +223,7 @@ extension SettingsPresenterImpl {
           }
           return
         }
-        
+
         DispatchQueue.main.async {
           // Multiaccount support case
           if !UserDefaultsHelper.pushNotificationsStatuses.isEmpty {
@@ -237,18 +245,18 @@ extension SettingsPresenterImpl {
           }
         }
       }
-      
+
     case .biometricID:
       biometricAuthManager.isBiometricAuthEnabled = value
-      
+
       guard biometricAuthManager.isBiometricAuthEnabled == true
       else { return }
-      
+
       biometricAuthManager.authenticateUser { [weak self] result in
         switch result {
         case .success:
           self?.view?.setSettings()
-        case .failure(let error):
+        case let .failure(error):
           guard let error = error as? VaultError.BiometricError else { return }
           self?.biometricAuthManager.isBiometricAuthEnabled = false
           self?.view?.setErrorAlert(for: error)
@@ -265,11 +273,11 @@ extension SettingsPresenterImpl {
                                                  owner: view,
                                                  options: nil)?.first as! PublicKeyPopover
     publicKeyView.initData()
-    
+
     let popoverHeight: CGFloat = UIScreen.main.bounds.height / 2.2
     let popover = CustomPopoverViewController(height: popoverHeight, view: publicKeyView)
     publicKeyView.popoverDelegate = popover
-    
+
     view?.setPublicKeyPopover(popover)
   }
 }
@@ -277,14 +285,13 @@ extension SettingsPresenterImpl {
 // MARK: -  Private
 
 private extension SettingsPresenterImpl {
-  
   func contactSupport() {
     let bodyEmail = UtilityHelper.createBodyEmail()
     if let emailUrl = UtilityHelper.createEmailUrl(to: Constants.recipientEmail, subject: Constants.subjectEmail, body: bodyEmail) {
       UIApplication.shared.open(emailUrl)
     }
   }
-    
+
   func getSignerForAccountsData() -> (title: String,
                                       attribute: NSMutableAttributedString)
   {
@@ -292,17 +299,19 @@ private extension SettingsPresenterImpl {
     var length = 0
     var title = L10n.textSettingsSignersField.replacingOccurrences(of: "[number]",
                                                                    with: String(UserDefaultsHelper.numberOfSignerAccounts))
-    
-    if UserDefaultsHelper.numberOfSignerAccounts > 1 {
+
+    if UserDefaultsHelper.numberOfSignerAccounts == 0 ||
+      UserDefaultsHelper.numberOfSignerAccounts > 1
+    {
       title.append("s")
     }
-    
+
     for symbol in title {
       if symbol.isNumber {
         length += 1
       }
     }
-    
+
     let titleAttribute = NSMutableAttributedString(string: title)
     titleAttribute.addAttributes([.foregroundColor: Asset.Colors.main.color,
                                   .font: UIFont.boldSystemFont(ofSize: 20)],
@@ -310,7 +319,7 @@ private extension SettingsPresenterImpl {
                                                 length: length))
     return (title, titleAttribute)
   }
-  
+
   func addDescriptionLabel(to pinViewController: UIViewController) {
     let titleLabel = UILabel()
     titleLabel.text = L10n.textSettingsDisplayMnemonicTitle
@@ -318,27 +327,27 @@ private extension SettingsPresenterImpl {
     titleLabel.textColor = Asset.Colors.grayOpacity70.color
     titleLabel.font = UIFont.systemFont(ofSize: 15)
     titleLabel.textAlignment = .center
-    
+
     pinViewController.view.addSubview(titleLabel)
     titleLabel.translatesAutoresizingMaskIntoConstraints = false
     titleLabel.topAnchor.constraint(equalTo: pinViewController.view.topAnchor, constant: 100).isActive = true
     titleLabel.widthAnchor.constraint(equalToConstant: 315).isActive = true
     titleLabel.centerXAnchor.constraint(equalTo: pinViewController.view.centerXAnchor).isActive = true
   }
-  
+
   func setSpamProtectionSwitch() {
-     let apiLoader = APIRequestLoader<AccountConfigRequest>(apiRequest: AccountConfigRequest())
-     apiLoader.loadAPIRequest(requestData: nil) { result in
-       switch result {
-       case .success(let accountConfig):
-         guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
-         self.spamProtectionEnabled = protectionEnabled
-         self.view?.setReloadSection()
-       case .failure(let error):
-         Logger.security.error("Couldn't get spam protection data with error: \(error)")
-       }
-     }
-   }
+    let apiLoader = APIRequestLoader<AccountConfigRequest>(apiRequest: AccountConfigRequest())
+    apiLoader.loadAPIRequest(requestData: nil) { result in
+      switch result {
+      case let .success(accountConfig):
+        guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
+        self.spamProtectionEnabled = protectionEnabled
+        self.view?.setReloadSection()
+      case let .failure(error):
+        Logger.security.error("Couldn't get spam protection data with error: \(error)")
+      }
+    }
+  }
 }
 
 // MARK: - Logout
@@ -347,7 +356,7 @@ extension SettingsPresenterImpl {
   func logoutButtonWasPressed() {
     view?.setLogoutAlert()
   }
-  
+
   func logoutOperationWasConfirmed() {
     ApplicationCoordinatorHelper.logout()
   }
@@ -356,72 +365,85 @@ extension SettingsPresenterImpl {
 // MARK: -  Navigation
 
 extension SettingsPresenterImpl {
-  
   func transitionToTransactionConfirmation() {
     let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
     transactionConfirmationViewController.screenType = .promptTransactionDecisions
-    
-    navigationController.pushViewController(transactionConfirmationViewController, animated: true)
+
+    navigationController?.pushViewController(transactionConfirmationViewController,
+                                             animated: true)
   }
-  
+
   func transitionToSpamProtection() {
     let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
     transactionConfirmationViewController.screenType = .spamProtection
     transactionConfirmationViewController.spamProtectionEnabled = spamProtectionEnabled
     transactionConfirmationViewController.delegate = self
-    
-    navigationController.pushViewController(transactionConfirmationViewController, animated: true)
+
+    navigationController?.pushViewController(transactionConfirmationViewController,
+                                             animated: true)
   }
-  
+
   func transitionToChangePin() {
     let pinViewController = PinViewController.createFromStoryboard()
-    
+
     pinViewController.hidesBottomBarWhenPushed = true
     pinViewController.mode = .changePin
-    
-    navigationController.pushViewController(pinViewController, animated: true)
+
+    navigationController?.pushViewController(pinViewController,
+                                             animated: true)
   }
-  
+
   func transitionToSignerDetails() {
     let signerDetailsViewController = SignerDetailsViewController.createFromStoryboard()
-    navigationController.pushViewController(signerDetailsViewController,
-                                            animated: true)
+    signerDetailsViewController.screenType = .protectedAccounts
+    navigationController?.pushViewController(signerDetailsViewController,
+                                             animated: true)
   }
-  
+
   func transitionToMnemonicCode() {
     let pinViewController = PinViewController.createFromStoryboard()
-    
+
     pinViewController.mode = .enterPinForMnemonicPhrase
     addDescriptionLabel(to: pinViewController)
-    
+
     pinViewController.completion = {
       pinViewController.dismiss(animated: true, completion: nil)
       let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
-      mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
-                                                                                   mnemonicMode: .showMnemonic)
-      self.navigationController.pushViewController(mnemonicGenerationViewController,
-                                                   animated: true)
+      mnemonicGenerationViewController.presenter =
+      MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
+                                      mnemonicMode: .showMnemonic)
+      self.navigationController?.pushViewController(mnemonicGenerationViewController,
+                                               animated: true)
     }
-    
+
     let pinNavigationController = UINavigationController(rootViewController: pinViewController)
-    navigationController.present(pinNavigationController, animated: true, completion: nil)
+    navigationController?.present(pinNavigationController,
+                                 animated: true,
+                                 completion: nil)
   }
-  
+
   func transitionToHelp() {
     let settingsViewController = view as! SettingsViewController
-    
+
     let helpCenter = ZendeskHelper.getHelpCenterController()
     settingsViewController.navigationController?.pushViewController(helpCenter, animated: true)
   }
-  
+
   func transitionToLicenses() {
     let acknowListViewController = AcknowListViewController(fileNamed: "Pods-LOBSTR Vault-acknowledgements")
     let settingsViewController = view as! SettingsViewController
     settingsViewController.navigationController?.pushViewController(acknowListViewController, animated: true)
   }
-  
+
   func transitionToMarket() {
     UIApplication.shared.open(URL(string: Constants.appStoreLinkWithReviewAction)!, options: [:], completionHandler: nil)
+  }
+
+  func transitionToManageNicknames() {
+    let signerDetailsViewController = SignerDetailsViewController.createFromStoryboard()
+    signerDetailsViewController.screenType = .manageNicknames
+    navigationController?.pushViewController(signerDetailsViewController,
+                                            animated: true)
   }
 }
 
@@ -433,13 +455,12 @@ extension SettingsPresenterImpl: SettingsSelectionViewControllerDelegate {
     let apiLoader = APIRequestLoader<ChangeAccountConfigRequest>(apiRequest: ChangeAccountConfigRequest())
     apiLoader.loadAPIRequest(requestData: accountConfigParameters) { result in
       switch result {
-      case .success(let accountConfig):
+      case let .success(accountConfig):
         guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
         self.spamProtectionEnabled = protectionEnabled
-      case .failure(let error):
+      case let .failure(error):
         Logger.security.error("Couldn't get spam protection data with error: \(error)")
       }
     }
   }
-  
 }

@@ -10,7 +10,7 @@ enum SwitchType {
   case notifications
 }
 
-protocol SwitchTableViewCellDelegate: class {
+protocol SwitchTableViewCellDelegate: AnyObject {
   func switchValueChanged(_ value: Bool, type: SwitchType)
 }
 

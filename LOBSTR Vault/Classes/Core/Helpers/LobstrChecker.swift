@@ -5,13 +5,13 @@ public enum LobstrCheckResult {
   case notInstalled
 }
 
-public protocol URLOpener: class {
+public protocol URLOpener: AnyObject {
   func canOpenURL(_ url: URL) -> Bool
 }
 
 extension UIApplication: URLOpener {}
 
-public protocol LobstrChecker: class {
+public protocol LobstrChecker: AnyObject {
   init(urlOpener: URLOpener)
   func checkLobstr() -> LobstrCheckResult
 }

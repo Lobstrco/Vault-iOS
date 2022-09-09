@@ -1,5 +1,6 @@
 import Foundation
 import stellarsdk
+import CoreData
 
 class HomePresenterImpl: HomePresenter {
   
@@ -154,6 +155,8 @@ class HomePresenterImpl: HomePresenter {
         }
         self.view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
       }
+    default:
+      break
     }
   }
   
@@ -174,6 +177,7 @@ class HomePresenterImpl: HomePresenter {
     var allAccounts: [SignedAccount] = []
     allAccounts.append(contentsOf: mainAccounts)
     allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
+    allAccounts.append(contentsOf: AccountsStorageHelper.getAllOtherAccounts())
     
     if let index = allAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
       allAccounts[index].nickname = nickname
@@ -185,7 +189,8 @@ class HomePresenterImpl: HomePresenter {
         self.view?.setSignedAccountsList(self.signedAccounts)
       case .primaryAccount:
         setPublicKey()
-        //NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+      default:
+        break
       }
     }
   }
@@ -307,13 +312,14 @@ private extension HomePresenterImpl {
     guard transactionNumberStatus == .ready else {
       return
     }
-    
+        
     setStatus(.loading)
     transactionService.getNumberOfTransactions() { result in
       self.setStatus(.ready)
       self.stopRotate()
       switch result {
       case .success(let numberOfTransactions):
+        UserDefaultsHelper.actualTransactionNumber = numberOfTransactions
         self.view?.setTransactionNumber(numberOfTransactions.description)
         UserDefaultsHelper.badgesCounter = numberOfTransactions
       case .failure(let serverRequestError):

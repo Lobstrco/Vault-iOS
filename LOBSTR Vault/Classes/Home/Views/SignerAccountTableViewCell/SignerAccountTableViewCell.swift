@@ -1,6 +1,6 @@
 import UIKit
 
-protocol SignerAccountDelegate {
+protocol SignerAccountDelegate: AnyObject {
   func moreDetailsButtonWasPressed(in cell: SignerAccountTableViewCell)
   func longTapWasActivated(in cell: SignerAccountTableViewCell)
 }
@@ -16,7 +16,7 @@ class SignerAccountTableViewCell: UITableViewCell {
   @IBOutlet var identiconView: IdenticonView!
   @IBOutlet var separatorView: UIView!
   
-  var delegate: SignerAccountDelegate?
+  weak var delegate: SignerAccountDelegate?
   var publicKey: String?
   
   override func awakeFromNib() {
@@ -24,7 +24,6 @@ class SignerAccountTableViewCell: UITableViewCell {
     
     let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
     lpgr.minimumPressDuration = 0.5
-    lpgr.delaysTouchesBegan = true
     lpgr.delegate = self
     self.addGestureRecognizer(lpgr)
   }

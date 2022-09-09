@@ -71,6 +71,16 @@ public extension UIDevice {
         return "iPhone 12 Pro"
       case "iPhone13,4":
         return "iPhone 12 Pro Max"
+      case "iPhone14,4":
+        return "iPhone 13 mini"
+      case "iPhone14,5":
+        return "iPhone 13"
+      case "iPhone14,2":
+        return "iPhone 13 Pro"
+      case "iPhone14,3":
+        return "iPhone 13 Pro Max"
+      case "iPhone14,6":
+        return "iPhone SE (3rd generation)"
       case "iPad2,1", "iPad2,2", "iPad2,3", "iPad2,4":
         return "iPad 2"
       case "iPad3,1", "iPad3,2", "iPad3,3":
@@ -168,10 +178,12 @@ public enum Model: String {
        iPadAir2 = "iPad Air 2",
        iPadAir3 = "iPad Air 3",
        iPadAir4 = "iPad Air 4",
+       iPadAir5 = "iPad Air 5",
        iPad5 = "iPad 5", // iPad 2017
        iPad6 = "iPad 6", // iPad 2018
        iPad7 = "iPad 7", // iPad 2019
        iPad8 = "iPad 8", // iPad 2020
+       iPad9 = "iPad 9", // iPad 2021
 
        // iPad Mini
        iPadMini = "iPad Mini",
@@ -179,16 +191,19 @@ public enum Model: String {
        iPadMini3 = "iPad Mini 3",
        iPadMini4 = "iPad Mini 4",
        iPadMini5 = "iPad Mini 5",
+       iPadMini6 = "iPad Mini 6",
 
        // iPad Pro
        iPadPro9_7 = "iPad Pro 9.7\"",
        iPadPro10_5 = "iPad Pro 10.5\"",
        iPadPro11 = "iPad Pro 11\"",
        iPadPro2_11 = "iPad Pro 11\" 2nd gen",
+       iPadPro3_11 = "iPad Pro 11\" 3rd gen",
        iPadPro12_9 = "iPad Pro 12.9\"",
        iPadPro2_12_9 = "iPad Pro 2 12.9\"",
        iPadPro3_12_9 = "iPad Pro 3 12.9\"",
        iPadPro4_12_9 = "iPad Pro 4 12.9\"",
+       iPadPro5_12_9 = "iPad Pro 5 12.9\"",
 
        // iPhone
        iPhone4 = "iPhone 4",
@@ -217,6 +232,11 @@ public enum Model: String {
        iPhone12 = "iPhone 12",
        iPhone12Pro = "iPhone 12 Pro",
        iPhone12ProMax = "iPhone 12 Pro Max",
+       iPhone13Mini = "iPhone 13 Mini",
+       iPhone13 = "iPhone 13",
+       iPhone13Pro = "iPhone 13 Pro",
+       iPhone13ProMax = "iPhone 13 Pro Max",
+       iPhoneSE3 = "iPhone SE 3nd gen",
 
        // Apple Watch
        AppleWatch1 = "Apple Watch 1gen",
@@ -227,6 +247,7 @@ public enum Model: String {
        AppleWatchS5 = "Apple Watch Series 5",
        AppleWatchSE = "Apple Watch Special Edition",
        AppleWatchS6 = "Apple Watch Series 6",
+       AppleWatchS7 = "Apple Watch Series 7",
 
        // Apple TV
        AppleTV1 = "Apple TV 1gen",
@@ -234,6 +255,7 @@ public enum Model: String {
        AppleTV3 = "Apple TV 3gen",
        AppleTV4 = "Apple TV 4gen",
        AppleTV_4K = "Apple TV 4K",
+       AppleTV2_4K = "Apple TV 4K 2gen",
 
        unrecognized = "?unrecognized?"
 }
@@ -283,6 +305,8 @@ public extension UIDevice {
       "iPad7,12": .iPad7,
       "iPad11,6": .iPad8, // iPad 2020
       "iPad11,7": .iPad8,
+      "iPad12,1": .iPad9, // iPad 2021
+      "iPad12,2": .iPad9,
 
       // iPad Mini
       "iPad2,5": .iPadMini,
@@ -298,6 +322,8 @@ public extension UIDevice {
       "iPad5,2": .iPadMini4,
       "iPad11,1": .iPadMini5,
       "iPad11,2": .iPadMini5,
+      "iPad14,1": .iPadMini6,
+      "iPad14,2": .iPadMini6,
 
       // iPad Pro
       "iPad6,3": .iPadPro9_7,
@@ -314,12 +340,20 @@ public extension UIDevice {
       "iPad8,4": .iPadPro11,
       "iPad8,9": .iPadPro2_11,
       "iPad8,10": .iPadPro2_11,
+      "iPad13,4": .iPadPro3_11,
+      "iPad13,5": .iPadPro3_11,
+      "iPad13,6": .iPadPro3_11,
+      "iPad13,7": .iPadPro3_11,
       "iPad8,5": .iPadPro3_12_9,
       "iPad8,6": .iPadPro3_12_9,
       "iPad8,7": .iPadPro3_12_9,
       "iPad8,8": .iPadPro3_12_9,
       "iPad8,11": .iPadPro4_12_9,
       "iPad8,12": .iPadPro4_12_9,
+      "iPad13,8": .iPadPro5_12_9,
+      "iPad13,9": .iPadPro5_12_9,
+      "iPad13,10": .iPadPro5_12_9,
+      "iPad13,11": .iPadPro5_12_9,
 
       // iPad Air
       "iPad4,1": .iPadAir,
@@ -331,6 +365,8 @@ public extension UIDevice {
       "iPad11,4": .iPadAir3,
       "iPad13,1": .iPadAir4,
       "iPad13,2": .iPadAir4,
+      "iPad13,16": .iPadAir5,
+      "iPad13,17": .iPadAir5,
 
       // iPhone
       "iPhone3,1": .iPhone4,
@@ -370,6 +406,11 @@ public extension UIDevice {
       "iPhone13,2": .iPhone12,
       "iPhone13,3": .iPhone12Pro,
       "iPhone13,4": .iPhone12ProMax,
+      "iPhone14,4": .iPhone13Mini,
+      "iPhone14,5": .iPhone13,
+      "iPhone14,2": .iPhone13Pro,
+      "iPhone14,3": .iPhone13ProMax,
+      "iPhone14,6": .iPhoneSE3,
 
       // Apple Watch
       "Watch1,1": .AppleWatch1,
@@ -398,6 +439,10 @@ public extension UIDevice {
       "Watch6,2": .AppleWatchS6,
       "Watch6,3": .AppleWatchS6,
       "Watch6,4": .AppleWatchS6,
+      "Watch6,6": .AppleWatchS7,
+      "Watch6,7": .AppleWatchS7,
+      "Watch6,8": .AppleWatchS7,
+      "Watch6,9": .AppleWatchS7,
 
       // Apple TV
       "AppleTV1,1": .AppleTV1,
@@ -405,7 +450,8 @@ public extension UIDevice {
       "AppleTV3,1": .AppleTV3,
       "AppleTV3,2": .AppleTV3,
       "AppleTV5,3": .AppleTV4,
-      "AppleTV6,2": .AppleTV_4K
+      "AppleTV6,2": .AppleTV_4K,
+      "AppleTV11,1": .AppleTV2_4K
     ]
 
     if let model = modelMap[String(validatingUTF8: modelCode!)!] {

@@ -6,17 +6,25 @@ protocol OperationPresenter {
   var sections: [OperationDetailsSection] { get }
   var numberOfAcceptedSignatures: Int { get }
   var numberOfNeededSignatures: Int { get }
+  var isNeedToShowHelpfulMessage: Bool { get }
+  var isNeedToShowSignaturesNumber: Bool { get }
+  
+  var storageAccounts: [SignedAccount] { get }
+  
   func operationViewDidLoad()
-  func setOperation(_ operation: stellarsdk.Operation, transactionSourceAccountId: String, operationName: String, _ memo: String, _ date: String, signers: [SignerViewData], numberOfNeededSignatures: Int, destinationFederation: String)
+  func setOperation(_ operation: stellarsdk.Operation, transactionSourceAccountId: String, operationName: String, _ memo: BeautifulMemo, _ date: String, signers: [SignerViewData], numberOfNeededSignatures: Int, destinationFederation: String, isNeedToShowHelpfulMessage: Bool, isNeedToShowSignaturesNumber: Bool)
   func publicKeyWasSelected(key: String?)
   func assetCodeWasSelected(code: String?)
   func copyPublicKey(_ key: String)
   func explorerPublicKey(_ key: String)
   func explorerAsset(_ asset: stellarsdk.Asset)
   func explorerNativeAsset()
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?)
+  func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?)
+  func signerWasSelected(_ viewData: SignerViewData?)
 }
 
-protocol OperationDetailsView: class {
+protocol OperationDetailsView: AnyObject {
   func setListOfOperationDetails()
   func setTitle(_ title: String)
   func showActionSheet(_ value: Any?, _ type: ActionSheetType)
@@ -32,7 +40,7 @@ class OperationPresenterImpl {
   var operation: stellarsdk.Operation?
   var transactionSourceAccountId: String = ""
   var operationName: String = ""
-  var memo: String?
+  var memo: BeautifulMemo?
   var date: String?
   var destinationFederation: String = ""
   
@@ -43,11 +51,13 @@ class OperationPresenterImpl {
   }
   
   var numberOfNeededSignatures: Int = 0
+  var isNeedToShowHelpfulMessage: Bool = false
+  var isNeedToShowSignaturesNumber: Bool = true
   var signers: [SignerViewData] = []
   var sections = [OperationDetailsSection]()
   
   private let storage: AccountsStorage = AccountsStorageDiskImpl()
-  private var storageAccounts: [SignedAccount] = []
+  var storageAccounts: [SignedAccount] = []
   
   // MARK: - Init
   
@@ -66,13 +76,14 @@ extension OperationPresenterImpl: OperationPresenter {
   }
   
   func operationViewDidLoad() {
+    self.storageAccounts = storage.retrieveAccounts() ?? []
     view?.setTitle(operationName)
     self.setOperationDetails()
     self.sections = self.buildSections()
     view?.setListOfOperationDetails()
   }
   
-  func setOperation(_ operation: stellarsdk.Operation, transactionSourceAccountId: String, operationName: String, _ memo: String, _ date: String, signers: [SignerViewData], numberOfNeededSignatures: Int, destinationFederation: String) {
+  func setOperation(_ operation: stellarsdk.Operation, transactionSourceAccountId: String, operationName: String, _ memo: BeautifulMemo, _ date: String, signers: [SignerViewData], numberOfNeededSignatures: Int, destinationFederation: String, isNeedToShowHelpfulMessage: Bool, isNeedToShowSignaturesNumber: Bool) {
     self.operation = operation
     self.transactionSourceAccountId = transactionSourceAccountId
     self.operationName = operationName
@@ -81,25 +92,33 @@ extension OperationPresenterImpl: OperationPresenter {
     self.date = date
     self.signers = signers
     self.numberOfNeededSignatures = numberOfNeededSignatures
+    self.isNeedToShowHelpfulMessage = isNeedToShowHelpfulMessage
+    self.isNeedToShowSignaturesNumber = isNeedToShowSignaturesNumber
   }
   
   func publicKeyWasSelected(key: String?) {
-    self.storageAccounts = storage.retrieveAccounts() ?? []
     if let operation = operation {
       var publicKeys = TransactionHelper.getPublicKeys(from: operation)
       publicKeys.append(transactionSourceAccountId)
       if let key = key, key.isShortStellarPublicAddress || key.isShortMuxedAddress {
         if let key = publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
-          self.view?.showActionSheet(key, .publicKey)
+          TransactionHelper.isVaultSigner(publicKey: key) { result in
+            self.view?.showActionSheet(key, .publicKey(isNicknameSet: false, isVaultSigner: result))
+          }
         } else if transactionSourceAccountId.prefix(4) == key.prefix(4) && transactionSourceAccountId.suffix(4) == key.suffix(4) {
-          self.view?.showActionSheet(transactionSourceAccountId, .publicKey)
+          TransactionHelper.isVaultSigner(publicKey: transactionSourceAccountId) { result in
+            self.view?.showActionSheet(self.transactionSourceAccountId, .publicKey(isNicknameSet: false, isVaultSigner: result))
+          }
         }
       } else {
-        let shortPublicKey = key?.suffix(14) ?? ""
-        let nickname = key?.replacingOccurrences(of: shortPublicKey, with: "")
-        if let account = storageAccounts.first(where: { $0.nickname == nickname }) {
+        let secondPartOfKey = key?.suffix(14) ?? ""
+        let shortPublicKey = TransactionHelper.getShortPublicKey(String(secondPartOfKey))
+        if let nickname = key?.replacingOccurrences(of: secondPartOfKey, with: ""),
+           let account = storageAccounts.first(where: { $0.nickname == nickname && $0.address?.prefix(4) == shortPublicKey.prefix(4) && $0.address?.suffix(4) == shortPublicKey.suffix(4) }) {
           if let key = publicKeys.first(where: { $0.prefix(4) == account.address?.prefix(4) && $0.suffix(4) == account.address?.suffix(4) }) {
-            self.view?.showActionSheet(key, .publicKey)
+            TransactionHelper.isVaultSigner(publicKey: key) { result in
+              self.view?.showActionSheet(key, .publicKey(isNicknameSet: !nickname.isEmpty, isVaultSigner: result))
+            }
           }
         }
       }
@@ -139,6 +158,46 @@ extension OperationPresenterImpl: OperationPresenter {
   func explorerNativeAsset() {
     UtilityHelper.openStellarExpertForNativeAsset()
   }
+  
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
+    guard let type = nicknameDialogType else { return }
+    guard let publicKey = publicKey else { return }
+    
+    var allAccounts: [SignedAccount] = []
+    allAccounts.append(contentsOf: AccountsStorageHelper.getMainAccountsFromCache())
+    allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
+    allAccounts.append(contentsOf: AccountsStorageHelper.getAllOtherAccounts())
+    
+    if let index = allAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
+      allAccounts[index].nickname = nickname
+    } else {
+      let account = SignedAccount(address: publicKey, federation: nil, nickname: text)
+      allAccounts.append(account)
+    }
+    storage.save(accounts: allAccounts)
+    updateSigners()
+    operationViewDidLoad()
+    
+    switch type {
+    case .primaryAccount:
+      NotificationCenter.default.post(name: .didActivePublicKeyChange, object: nil)
+    default:
+      NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+    }
+  }
+  
+  func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?) {
+    setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+  }
+  
+  func signerWasSelected(_ viewData: SignerViewData?) {
+    guard let viewData = viewData else { return }
+    let nickname = viewData.nickname ?? ""
+    let type: NicknameDialogType = viewData.publicKey == UserDefaultsHelper.activePublicKey ? .primaryAccount : .protectedAccount
+    TransactionHelper.isVaultSigner(publicKey: viewData.publicKey) { result in
+      self.view?.showActionSheet(viewData.publicKey, .publicKey(isNicknameSet: !nickname.isEmpty, type: type, isVaultSigner: result))
+    }
+  }
 }
 
 private extension OperationPresenterImpl {
@@ -150,8 +209,8 @@ private extension OperationPresenterImpl {
   
   func buildAdditionalInformationSection() -> [(name: String , value: String, nickname: String, isPublicKey: Bool)] {
     var additionalInformationSection: [(name: String , value: String, nickname: String, isPublicKey: Bool)] = []
-    if let memo = self.memo, !memo.isEmpty {
-      additionalInformationSection.append((name: "Memo", value: memo, nickname: "", isPublicKey: false))
+    if let memo = self.memo, !memo.value.isEmpty {
+      additionalInformationSection.append((name: memo.title, value: memo.value, nickname: "", isPublicKey: false))
     }
     additionalInformationSection.append((name: "Transaction Source", value: transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionSourceAccountId), isPublicKey: true))
     if let transactionDate = self.date, !transactionDate.isEmpty {
@@ -171,5 +230,18 @@ private extension OperationPresenterImpl {
     listOfSections.append(contentsOf: [additionalInformationSection, operationDetailsSection, signersSection])
     
     return listOfSections
+  }
+  
+  func updateSigners() {
+    var updatedSigners: [SignerViewData] = []
+    storageAccounts = storage.retrieveAccounts() ?? []
+    for signer in signers {
+      if let index = storageAccounts.firstIndex(where: { $0.address == signer.publicKey }) {
+        var signer = signer
+        signer.nickname = storageAccounts[index].nickname
+        updatedSigners.append(signer)
+      }
+    }
+    self.signers = updatedSigners
   }
 }

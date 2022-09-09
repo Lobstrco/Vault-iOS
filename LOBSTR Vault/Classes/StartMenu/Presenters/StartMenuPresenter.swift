@@ -13,7 +13,7 @@ protocol StartMenuPresenter {
   func helpButtonWasPressed()
 }
 
-protocol StartMenuView: class {
+protocol StartMenuView: AnyObject {
   func setTermsButton()
   func open(by url: URL)
 }

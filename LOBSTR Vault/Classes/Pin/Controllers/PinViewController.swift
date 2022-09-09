@@ -1,6 +1,6 @@
 import UIKit
 
-protocol PinView: class {
+protocol PinView: AnyObject {
   func setTitle(_ title: String)
   func setCancelBarButtonItem()
   func fillPinDot(at index: Int)

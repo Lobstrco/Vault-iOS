@@ -1,6 +1,6 @@
 import UIKit
 
-protocol CustomPopoverDelegate: class {
+protocol CustomPopoverDelegate: AnyObject {
   func closePopover()
 }
 

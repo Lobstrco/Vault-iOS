@@ -12,9 +12,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   @IBOutlet weak var confirmButton: UIButton!
   @IBOutlet weak var denyButton: UIButton!
   @IBOutlet weak var expiredErrorLabel: UILabel!
-  
   @IBOutlet weak var errorLabelHeightConstraint: NSLayoutConstraint!
-  
   
   // MARK: - Lifecycle
   
@@ -74,6 +72,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   private func configureTableView() {
     tableView.registerNibForHeaderFooter(SignersHeaderView.self)
+    tableView.registerNibForHeaderFooter(SignersFooterView.self)
     
     tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: 0, height: CGFloat.leastNonzeroMagnitude))
     tableView.sectionFooterHeight = CGFloat.leastNormalMagnitude
@@ -86,9 +85,13 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   private func setupNavigationBar() {
     let moreIcon = UIImage(named: "Icons/Other/icMore")?.withRenderingMode(.alwaysOriginal)
-    let moreButton = UIBarButtonItem(image: moreIcon, style: .plain, target: self, action: #selector(moreDetailsButtonWasPressed))
-  
-    navigationItem.setRightBarButton(moreButton, animated: false)
+    let moreButton = UIButton(frame: CGRect(x: 0, y: 0, width: 25, height: 25))
+    moreButton.layer.masksToBounds = true
+    moreButton.setImage(moreIcon, for: .normal)
+    moreButton.addTarget(self, action: #selector(moreDetailsButtonWasPressed), for: .touchUpInside)
+    
+    let rightBarButton = UIBarButtonItem(customView: moreButton)
+    navigationItem.rightBarButtonItem = rightBarButton
   }
   
   @objc func moreDetailsButtonWasPressed() {
@@ -126,6 +129,19 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
       popoverPresentationController.permittedArrowDirections = []
     }
     present(moreMenu, animated: true, completion: nil)
+  }
+  
+  private func openNicknameDialog(for publicKey: String, nicknameDialogType: NicknameDialogType) {
+    var nickName: String?
+    if let index = self.presenter.storageAccounts.firstIndex(where: { $0.address == publicKey }) {
+      nickName = self.presenter.storageAccounts[index].nickname
+    }
+    let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
+    nicknameDialogViewController.delegate = self
+    nicknameDialogViewController.publicKey = publicKey
+    nicknameDialogViewController.nickName = nickName
+    nicknameDialogViewController.type = nicknameDialogType
+    self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
 }
 
@@ -231,7 +247,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
         
         moreMenu.addAction(openExplorerAction)
       }
-    case .publicKey:
+    case let .publicKey(isNicknameSet, type, isVaultSigner):
       if let key = value as? String {
         let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
                                        style: .default) { _ in
@@ -243,8 +259,31 @@ extension TransactionDetailsViewController: TransactionDetailsView {
           self.presenter.explorerPublicKey(key)
         }
                     
-        moreMenu.addAction(openExplorerAction)
+        if !isVaultSigner {
+          moreMenu.addAction(openExplorerAction)
+        }
         moreMenu.addAction(copyAction)
+        
+        if isNicknameSet {
+          let changeAccountNicknameAction = UIAlertAction(title: L10n.buttonTextChangeAccountNickname,
+                                                          style: .default) { _ in
+            self.openNicknameDialog(for: key, nicknameDialogType: type)
+          }
+          
+          let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
+                                                         style: .default) { _ in
+            self.presenter.clearNicknameActionWasPressed(key, nicknameDialogType: type)
+          }
+          clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
+          moreMenu.addAction(changeAccountNicknameAction)
+          moreMenu.addAction(clearAccountNicknameAction)
+        } else {
+          let setAccountNicknameAction = UIAlertAction(title: L10n.buttonTextSetAccountNickname,
+                                                       style: .default) { _ in
+            self.openNicknameDialog(for: key, nicknameDialogType: type)
+          }
+          moreMenu.addAction(setAccountNicknameAction)
+        }
       }
     case .nativeAssetCode:
       let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
@@ -268,6 +307,22 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     }
     
     present(moreMenu, animated: true, completion: nil)
+  }
+  
+  func showAlert(text: String) {
+    UIAlertController.defaultAlert(with: text, presentingViewController: self)
+  }
+  
+  func setSequenceNumberCountAlert() {
+    let alert = UIAlertController(title: L10n.textSequenceNumberCountDialogTitle,
+                                  message: L10n.textSequenceNumberCountDialogDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleConfirm, style: .destructive, handler: { _ in
+      self.presenter.confirmOperationWasConfirmed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    self.present(alert, animated: true, completion: nil)
   }
 }
 
@@ -294,15 +349,18 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
       return cell
     case .operationDetail((let name, let value, let nickname, let isPublicKey, let isAssetCode)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      if name.contains("Memo") {
+        cell.type = .memo
+      }
       if name.contains("Flags") {
         cell.type = .flags
       }
       if isPublicKey {
         cell.type = .publicKey
       }
-//      if value.isShortStellarPublicAddress {
-//        cell.type = .publicKey
-//      }
+      if name.contains(L10n.textClaimBetween) {
+        cell.type = .claimBetween
+      }
       if isAssetCode {
         cell.type = .assetCode
       }
@@ -316,6 +374,9 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
       return cell
     case .additionalInformation((let name, let value, let nickname, let isPublicKey)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+      if name.contains("Memo") {
+        cell.type = .memo
+      }
       if isPublicKey {
         cell.type = .publicKey
       }
@@ -337,16 +398,16 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   
   func tableView(_ tableView: UITableView,
                  didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
     if let _ = tableView.cellForRow(at: indexPath) as? OperationTableViewCell {
-      tableView.deselectRow(at: indexPath, animated: true)
       presenter.operationWasSelected(by: indexPath.item)
     } else if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .publicKey {
-      tableView.deselectRow(at: indexPath, animated: true)
       presenter.publicKeyWasSelected(key: cell.valueLabel.text)
     } else if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .assetCode
     {
-      tableView.deselectRow(at: indexPath, animated: true)
       presenter.assetCodeWasSelected(code: cell.valueLabel.text)
+    } else if let cell = tableView.cellForRow(at: indexPath) as? SignerTableViewCell {
+      presenter.signerWasSelected(cell.viewData)
     } else { return }
   }
   
@@ -386,6 +447,8 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
     switch presenter.sections[section].type {
     case .signers:
       let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersHeaderView.reuseIdentifier) as! SignersHeaderView
+      headerView.titleLabel.text = L10n.textSignersHeaderTitle
+      headerView.numberOfAcceptedSignaturesLabel.isHidden = !presenter.isNeedToShowSignaturesNumber
       headerView.numberOfAcceptedSignaturesLabel.text = "\(presenter.numberOfAcceptedSignatures) of \(presenter.numberOfNeededSignatures)"
       return headerView
     case .operationDetails:
@@ -401,5 +464,40 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
     default:
       return nil
     }
+  }
+  
+  func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    guard presenter.isNeedToShowHelpfulMessage else { return 0 }
+    switch presenter.sections[section].type {
+    case .signers:
+      return SignersFooterView.height
+    default:
+      return 0
+    }
+  }
+    
+  func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    guard presenter.isNeedToShowHelpfulMessage else { return nil }
+    switch presenter.sections[section].type {
+    case .signers:
+      let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: SignersFooterView.reuseIdentifier) as! SignersFooterView
+      let text = presenter.numberOfNeededSignatures > 1 ? L10n.textSignaturesRequiredMessage("\(presenter.numberOfNeededSignatures)") : L10n.textSignatureRequiredMessage("\(presenter.numberOfNeededSignatures)")
+      footerView.messageLabel.text = text
+      return footerView
+    default:
+      return nil
+    }
+  }
+}
+
+// MARK: - NicknameDialogDelegate
+
+extension TransactionDetailsViewController: NicknameDialogDelegate {
+  func submitNickname(with text: String,
+                      for publicKey: String?,
+                      nicknameDialogType: NicknameDialogType?) {
+    self.presenter.setNicknameActionWasPressed(with: text,
+                                               for: publicKey,
+                                               nicknameDialogType: nicknameDialogType)
   }
 }

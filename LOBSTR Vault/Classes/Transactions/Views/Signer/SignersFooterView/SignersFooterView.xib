@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="dK2-R5-C3N" customClass="SignersFooterView" customModule="LOBSTR_Vault" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0DA-ab-bP5">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2 signatures required to submit this transaction to the network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2LG-gD-nhe">
+                            <rect key="frame" x="16" y="15.5" width="382" height="13.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="displayP3"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <viewLayoutGuide key="safeArea" id="rP1-em-6wH"/>
+                    <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="2LG-gD-nhe" secondAttribute="trailing" constant="16" id="7NS-Ap-CPd"/>
+                        <constraint firstItem="2LG-gD-nhe" firstAttribute="centerY" secondItem="0DA-ab-bP5" secondAttribute="centerY" id="M8Z-ta-oZ4"/>
+                        <constraint firstItem="2LG-gD-nhe" firstAttribute="leading" secondItem="rP1-em-6wH" secondAttribute="leading" constant="16" id="i7w-bD-s0B"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="QWs-Lx-xXI"/>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="0DA-ab-bP5" firstAttribute="leading" secondItem="QWs-Lx-xXI" secondAttribute="leading" id="6bg-n5-RVo"/>
+                <constraint firstAttribute="bottom" secondItem="0DA-ab-bP5" secondAttribute="bottom" id="L0H-9R-1Ci"/>
+                <constraint firstItem="0DA-ab-bP5" firstAttribute="top" secondItem="dK2-R5-C3N" secondAttribute="top" id="MK1-lx-gfs"/>
+                <constraint firstItem="0DA-ab-bP5" firstAttribute="trailing" secondItem="QWs-Lx-xXI" secondAttribute="trailing" id="sxJ-kv-Won"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="messageLabel" destination="2LG-gD-nhe" id="veS-2c-1Md"/>
+            </connections>
+            <point key="canvasLocation" x="100" y="74"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960780000005" green="0.94901960780000005" blue="0.96862745100000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

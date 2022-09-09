@@ -2,7 +2,7 @@
 
 import UIKit
 
-protocol TransactionsToSignTableViewCellDelegate: class {
+protocol TransactionsToSignTableViewCellDelegate: AnyObject {
   func viewTransactionListDidPress()
 }
 

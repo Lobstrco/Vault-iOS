@@ -97,6 +97,10 @@ class ApplicationCoordinator {
 private extension ApplicationCoordinator {
   
   func openStartScreen() {
+    guard let _ = VaultStorage().getEncryptedMnemonicFromKeychain() else {
+      ApplicationCoordinatorHelper.logout()
+      return
+    }
     switch accountStatus {
     case .notCreated:
       Logger.auth.debug("AUTH. NOT CREATED")
@@ -125,7 +129,7 @@ private extension ApplicationCoordinator {
   }
   
   func resetNotificationBadgeIfNeeded() {
-    if accountStatus != .createdByDefault {
+    if accountStatus == .notCreated {
       notificationManager.setNotificationBadge(badgeNumber: 0)
     }
   }

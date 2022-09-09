@@ -3,6 +3,7 @@ import Foundation
 enum ServerTransactionType: String, Codable {
   case authChallenge = "auth_challenge"
   case transaction
+  case unknown
 }
 
 struct Transaction: Codable {
@@ -15,6 +16,7 @@ struct Transaction: Codable {
   var status: Int?
   var getStatusDisplay: String?
   var transactionType: ServerTransactionType?
+  var xdrSourceList: [String]?
   
   enum CodingKeys: String, CodingKey {
     case hash
@@ -26,5 +28,6 @@ struct Transaction: Codable {
     case status
     case getStatusDisplay = "get_status_display"
     case transactionType = "transaction_type"
+    case xdrSourceList = "xdr_source_list"
   }
 }

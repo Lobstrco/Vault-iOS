@@ -50,4 +50,24 @@ struct AccountsStorageHelper {
       }
     }
   }
+  
+  static func getAllOtherAccounts() -> [SignedAccount] {
+    var otherAccounts = storage.retrieveAccounts() ?? []
+    
+    var mainAndSignedAccounts: [SignedAccount] = []
+    mainAndSignedAccounts.append(contentsOf: getMainAccountsFromCache())
+    mainAndSignedAccounts.append(contentsOf: allSignedAccounts)
+    
+    for account in mainAndSignedAccounts {
+      otherAccounts.removeAll(where: { $0.address == account.address })
+    }
+    
+    return otherAccounts
+  }
+  
+  static func clear() {
+    AccountsStorageDiskImpl.clear()
+    storageAccounts = []
+    allSignedAccounts = []
+  }
 }

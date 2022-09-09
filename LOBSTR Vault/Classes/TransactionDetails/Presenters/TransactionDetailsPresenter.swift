@@ -1,8 +1,8 @@
 import Foundation
 import stellarsdk
 
-enum ActionSheetType: String {
-  case publicKey
+enum ActionSheetType {
+  case publicKey(isNicknameSet: Bool, type: NicknameDialogType = .otherAccount, isVaultSigner: Bool = false)
   case assetCode
   case nativeAssetCode
 }
@@ -14,6 +14,11 @@ protocol TransactionDetailsPresenter {
   var numberOfAcceptedSignatures: Int { get }
   var numberOfNeededSignatures: Int { get }
   var numberOfOperation: Int { get }
+  
+  var isNeedToShowHelpfulMessage: Bool { get }
+  var isNeedToShowSignaturesNumber: Bool { get }
+  
+  var storageAccounts: [SignedAccount] { get }
   
   func confirmButtonWasPressed()
   func denyButtonWasPressed()
@@ -30,9 +35,12 @@ protocol TransactionDetailsPresenter {
   func explorerPublicKey(_ key: String)
   func explorerAsset(_ asset: stellarsdk.Asset)
   func explorerNativeAsset()
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?)
+  func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?)
+  func signerWasSelected(_ viewData: SignerViewData?)
 }
 
-protocol TransactionDetailsView: class {
+protocol TransactionDetailsView: AnyObject {
   func setConfirmationAlert()
   func setDenyingAlert()
   func setErrorAlert(for error: Error)
@@ -45,6 +53,8 @@ protocol TransactionDetailsView: class {
   func reloadSignerListRow(_ row: Int)
   func copy(_ text: String)
   func showActionSheet(_ value: Any?, _ type: ActionSheetType)
+  func showAlert(text: String)
+  func setSequenceNumberCountAlert()
 }
 
 enum TransactionType {

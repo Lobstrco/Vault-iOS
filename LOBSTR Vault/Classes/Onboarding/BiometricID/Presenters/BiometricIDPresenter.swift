@@ -6,7 +6,7 @@ protocol BiometricIDPresenter {
   func skipButtonWasPressed()
 }
 
-protocol BiometricIDView: class {
+protocol BiometricIDView: AnyObject {
   func setErrorAlert(for error: Error)
   func setBiometricButton(with type: BiometricType)
   func setProgressAnimation(isDisplay: Bool)
@@ -14,7 +14,7 @@ protocol BiometricIDView: class {
 
 class BiometricIDPresenterImpl: BiometricIDPresenter {
   private weak var view: BiometricIDView?
-  private let navigationController: UINavigationController
+  private weak var navigationController: UINavigationController?
   private var biometricAuthManager: BiometricAuthManager
   
   private let transactionService: TransactionService
@@ -22,7 +22,7 @@ class BiometricIDPresenterImpl: BiometricIDPresenter {
   // MARK: - Init
 
   init(view: BiometricIDView,
-       navigationController: UINavigationController,
+       navigationController: UINavigationController?,
        transactionService: TransactionService = TransactionService(),
        biometricAuthManager: BiometricAuthManager = BiometricAuthManagerImpl()) {
     self.view = view

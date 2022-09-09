@@ -9,27 +9,24 @@ protocol BackUpAccountPresenter {
 
 class BackUpAccountPresenterImpl: BackUpAccountPresenter {
   private weak var view: BackUpAccountView?
-  private let navigationController: UINavigationController
-  
-  
-  init(view: BackUpAccountView, navigationController: UINavigationController) {
+  private weak var navigationController: UINavigationController?
+
+  init(view: BackUpAccountView, navigationController: UINavigationController?) {
     self.view = view
     self.navigationController = navigationController
   }
-  
+
   // MARK: - BackUpAccountPresenter
-  
-  func backUpAccountViewDidLoad() {
-    
-  }
-  
+
+  func backUpAccountViewDidLoad() {}
+
   func understandButtonWasPressed() {
     transitionToMnemenicGeneration()
   }
-  
+
   func helpButtonWasPressed() {
     let helpViewController = ZendeskHelper.getZendeskArticleController(article: .recoveryPhrase)
-    
+
     let backupViewController = view as! BackUpAccountViewController
     backupViewController.navigationController?.pushViewController(helpViewController, animated: true)
   }
@@ -40,8 +37,10 @@ class BackUpAccountPresenterImpl: BackUpAccountPresenter {
 extension BackUpAccountPresenterImpl {
   func transitionToMnemenicGeneration() {
     let mnemonicGenerationViewController = MnemonicGenerationViewController.createFromStoryboard()
-    mnemonicGenerationViewController.presenter = MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
-                                                                                 mnemonicMode: .generationMnemonic)
-    navigationController.pushViewController(mnemonicGenerationViewController, animated: true)
+    mnemonicGenerationViewController.presenter =
+      MnemonicGenerationPresenterImpl(view: mnemonicGenerationViewController,
+                                      mnemonicMode: .generationMnemonic)
+    navigationController?.pushViewController(mnemonicGenerationViewController,
+                                             animated: true)
   }
 }

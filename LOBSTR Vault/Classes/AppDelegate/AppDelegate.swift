@@ -69,7 +69,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   }
   
   func applicationDidEnterBackground(_ application: UIApplication) {
-    UIApplication.shared.applicationIconBadgeNumber = UserDefaultsHelper.badgesCounter
+    let number = UserDefaultsHelper.badgesCounter == 0 ? -1 : UserDefaultsHelper.badgesCounter
+    UIApplication.shared.applicationIconBadgeNumber = number
     if let topController = UIApplication.shared.keyWindow?.rootViewController {
       topController.dismiss(animated: false, completion: nil)
     }

@@ -13,10 +13,11 @@ struct SettingsSectionsBuilderImpl: SettingsSectionsBuilder {
     
     switch UserDefaultsHelper.accountStatus {
     case .createdByDefault:
-      accountRows.append(.promptTransactionDecisions)
+      accountRows.append(contentsOf: [.promptTransactionDecisions, .manageNicknames])
       securityRows.append(contentsOf: [.mnemonicCode, .changePin, .biometricId, .spamProtection])
       otherRows.append(contentsOf: [.buyCard, .rateUs, .licenses, .version,  .logout, .copyright])
     case .createdWithTangem:
+      accountRows.append(.manageNicknames)
       securityRows.append(.spamProtection)
       otherRows.append(contentsOf: [.rateUs, .licenses, .version,  .logout, .copyright])
     default:

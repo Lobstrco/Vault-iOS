@@ -12,10 +12,6 @@ class CoreDataStack {
   private lazy var persistentContainer: NSPersistentContainer = {
     let container = NSPersistentContainer(name: modelName)
     
-    let description = NSPersistentStoreDescription()
-    description.type = NSInMemoryStoreType
-    container.persistentStoreDescriptions = [description]
-    
     container.loadPersistentStores(completionHandler: { (storeDescription, error) in
       print("storeDescription = \(storeDescription)")
       if let error = error as NSError? {
@@ -42,6 +38,21 @@ class CoreDataStack {
   
   func create<T>(_ request: NSFetchRequest<T>) -> T where T : NSManagedObject {
     return NSManagedObject(entity: T.entity(), insertInto: managedContext) as! T
+  }
+  
+  func deleteAllAccounts() {
+    let fetchRequest = Account.fetchRequest()
+    
+    do {
+      let accounts = try managedContext.fetch(fetchRequest)
+      for account in accounts {
+        managedContext.delete(account)
+      }
+      
+      try managedContext.save()
+    } catch {
+       print(error)
+    }
   }
   
   func saveContext() {

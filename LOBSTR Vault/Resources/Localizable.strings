@@ -56,6 +56,7 @@
 "nav_title_transaction_details" = "Transaction Details";
 "nav_title_settings" = "Settings";
 "nav_title_settings_signed_accounts" = "Protected Accounts";
+"nav_title_settings_manage_nicknames" = "Manage Account Nicknames";
 "nav_title_create_passcode" = "Create PIN";
 "nav_title_reenter_passcode" = "Confirm PIN";
 "nav_title_change_passcode_enter_old" = "Enter Old PIN";
@@ -145,6 +146,20 @@
 "text_transaction_invalid_label" = "Invalid";
 "text_operation_details_header_title" = "OPERATION DETAILS";
 "text_operations_header_title" = "OPERATIONS";
+"text_sequence_number_count_dialog_title" = "Confirm this transaction?";
+"text_sequence_number_count_dialog_description" = "Other pending transactions with the same sequence number may become invalid if you confirm this one.";
+"text_signers_header_title" = "SIGNERS";
+"text_signature_required_message" = "%@ signature required to submit this transaction to the network";
+"text_signatures_required_message" = "%@ signatures required to submit this transaction to the network";
+
+// Create claimable balance operation
+"text_claim_conditions" = "Claim Conditions";
+"text_claim_between" = "Claim Between";
+"text_claim_after" = "Claim After";
+"text_claim_before" = "Claim Before";
+"text_cant_be_claimed" = "Can’t be claimed";
+"text_not_set" = "Not set";
+"text_claim_now" = "Claim now";
 
 // Settings screen
 "text_settings_account_section" = "ACCOUNT";
@@ -166,11 +181,12 @@
 "text_settings_copyright" = "All rights reserved";
 "text_settings_public_key_title" = "Vault Signer Key";
 "text_settings_signers_field" = "Protects [number] Account";
+"text_settings_manage_nicknames" = "Manage Account Nicknames";
 "button_title_show" = "Show";
 "text_settings_display_mnemonic_title" = "Enter your PIN to view your Recovery Phrase";
 "text_settings_display_pin_changed" = "PIN changed";
 "text_settings_transactions_confirmations_title" = "CONFIRM TRANSACTIONS";
-"text_settings_transactions_confirmations_about" = "Show additional confirmation alert before signing  transaction requests to avoid mistakes.";
+"text_settings_transactions_confirmations_about" = "Show additional confirmation alert before signing transaction requests to avoid mistakes.";
 "text_settings_spam_protection_title" = "ALLOW UNSIGNED TRANSACTIONS";
 "text_settings_spam_protection_about" = "Select whether you want to receive transaction requests that don’t contain any valid signatures from protected accounts or other signers. Choose ‘No’ to protect your signer account from spam transactions.";
 
@@ -193,6 +209,7 @@
 
 // Signed Details screen
 "text_empty_state_signed_accounts" = "No protected accounts";
+"text_empty_state_manage_nicknames" = "No account nicknames";
 
 // Error messages
 "error_unknown" = "error_unknown";
@@ -220,6 +237,7 @@
 "error_biometric_not_verified_identity_title" = "Biometric disabled";
 "error_biometric_not_verified_identity_message" = "There was a problem verifying your identity";
 
+"error_transaction_already_confirmed_or_denied_message" = "The transaction has already been confirmed or denied";
 
 // Horizon error messages
 "horizon_error_request_failed" = "horizon_error_request_failed";
@@ -308,3 +326,12 @@
 "button_text_set_account_nickname" = "Set Account Nickname";
 "button_text_change_account_nickname" = "Change Account Nickname";
 "button_text_clear_account_nickname" = "Clear Account Nickname";
+
+// Add Nickname screen
+"text_add_nickname_title" = "Set Nickname for Account";
+"text_add_nickname_description" = "Enter a public key and choose a short nickname";
+"text_add_nickname_public_key_placeholder" = "Enter public key";
+"text_add_nickname_public_key_description" = "A sequence of 56 characters starting with the letter “G”";
+"text_add_nickname_nickname_placeholder" = "Enter account nickname";
+"text_add_nickname_nickname_description" = "Limited to 20 symbols";
+"text_add_nickname_public_key_error" = "Please enter a valid Stellar public key ";

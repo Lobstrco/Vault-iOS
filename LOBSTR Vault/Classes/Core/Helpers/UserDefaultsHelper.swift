@@ -63,6 +63,8 @@ enum UserDefaultsHelper {
   private static let pushNotificationsStatusesKey = "pushNotificationsStatuses"
   private static let promtForTransactionDecisionsStatusesKey = "promtForTransactionDecisionsStatuses"
   
+  private static let actualTransactionNumberKey = "actualTransactionNumber"
+  
   @UserDefault(pushNotificationKey, defaultValue: true)
   static var isNotificationsEnabled: Bool
     
@@ -101,6 +103,9 @@ enum UserDefaultsHelper {
   
   @UserDefault(promtForTransactionDecisionsStatusesKey, defaultValue: [:])
   static var promtForTransactionDecisionsStatuses: [String:Bool]
+  
+  @UserDefault(actualTransactionNumberKey, defaultValue: 0)
+  static var actualTransactionNumber: Int
   
   static var accountStatus: AccountStatus {
     get {

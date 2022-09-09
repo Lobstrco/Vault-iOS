@@ -427,7 +427,7 @@ struct TransactionHelper {
     return assets
   }
   
-  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: String?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] {
+  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: BeautifulMemo?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] {
     var data: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
     
     switch type(of: operation) {
@@ -440,8 +440,8 @@ struct TransactionHelper {
       if let issuer = paymentOperation.asset.issuer?.accountId, paymentOperation.asset.code != nil {
         data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
       }
-      if let memo = memo, !memo.isEmpty {
-        data.append(("Memo", memo, "", false, false))
+      if let memo = memo, !memo.value.isEmpty {
+        data.append((memo.title, memo.value, "", false, false))
       }
       if let operationSourceAccountId = paymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
@@ -651,12 +651,16 @@ struct TransactionHelper {
       if createClaimableBalanceOperation.claimants.count > 1 {
         var number = 0
         for claimant in createClaimableBalanceOperation.claimants {
+          let result = PredicateHelper.evaluateClaimPredicate(claimant.predicate, now: Date())
           number += 1
           data.append(("Claimant \(number)", claimant.destination.getTruncatedPublicKey(), tryToGetNickname(publicKey: claimant.destination), true, false))
+          data.append((getPredicateTitle(result), getBeautifulPredicateDate(result), "", false, false))
         }
       } else {
         if let claimant = createClaimableBalanceOperation.claimants.first {
           data.append(("Claimant", claimant.destination.getTruncatedPublicKey(), tryToGetNickname(publicKey: claimant.destination), true, false))
+          let result = PredicateHelper.evaluateClaimPredicate(claimant.predicate, now: Date())
+          data.append((getPredicateTitle(result), getBeautifulPredicateDate(result), "", false, false))
         }
       }
       if let operationSourceAccountId = createClaimableBalanceOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
@@ -1151,6 +1155,21 @@ struct TransactionHelper {
     
     return truncatedClaimantsWithSeparator
   }
+  
+  static func isVaultSigner(publicKey: String, completion: @escaping (Bool) -> Void) {
+    let vaultStorage = VaultStorage()
+    if let publicKeysFromKeychain = vaultStorage.getPublicKeysFromKeychain() {
+      completion(publicKeysFromKeychain.contains(publicKey))
+    } else if let publicKeyFromKeychain = vaultStorage.getPublicKeyFromKeychain() {
+      completion(publicKey == publicKeyFromKeychain)
+    }
+  }
+  
+  static func getShortPublicKey(_ key: String) -> String {
+    var shortPublicKey = key.replacingOccurrences(of: " (", with: "")
+    shortPublicKey = shortPublicKey.replacingOccurrences(of: ")", with: "")
+    return shortPublicKey
+  }
     
   enum BinaryFlags {
     static let authorizated: UInt32 = 1 << 0
@@ -1190,6 +1209,58 @@ struct TransactionHelper {
     }
     return flagsString
   }
+  
+  static func getBeautifulPredicateDate(_ claimResult: ClaimResult) -> String {
+    let outputFormat = "dd MMM yyyy, HH:mm"
+
+    let locale = Locale(identifier: "en_US")
+
+    let formatter = DateFormatter()
+    formatter.locale = locale
+    formatter.dateFormat = outputFormat
+    
+    // Expired
+    if claimResult.expired {
+      return L10n.textCantBeClaimed
+    } else if claimResult.conflict { // Conflict
+      return L10n.textCantBeClaimed
+    }
+    
+    // Claim between.
+    if let startPeriod = claimResult.startPeriod,
+      let endPeriod = claimResult.endPeriod
+    {
+      return "\(formatter.string(from: startPeriod)) \n\(formatter.string(from: endPeriod))"
+    } else if let startPeriod = claimResult.startPeriod { // Claim after
+      return "\(formatter.string(from: startPeriod))"
+    } else if let endPeriod = claimResult.endPeriod { // Claim before
+      return "\(formatter.string(from: endPeriod))"
+    }
+    
+    return L10n.textClaimNow
+  }
+  
+  static func getPredicateTitle(_ claimResult: ClaimResult) -> String {
+    // Expired
+    if claimResult.expired {
+      return L10n.textClaimConditions
+    } else if claimResult.conflict { // Conflict
+      return L10n.textClaimConditions
+    }
+
+    // Claim between.
+    if let _ = claimResult.startPeriod,
+      let _ = claimResult.endPeriod
+    {
+      return L10n.textClaimBetween
+    } else if let _ = claimResult.startPeriod { // Claim after
+      return L10n.textClaimAfter
+    } else if let _ = claimResult.endPeriod { // Claim before
+      return L10n.textClaimBefore
+    }
+    return L10n.textClaimConditions
+  }
+
 }
 
 // MARK: - Formatting

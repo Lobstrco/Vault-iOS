@@ -73,6 +73,7 @@ extension SubmitTransactionToVaultServerOperation {
         inputTransactionHash = dataProvider.transactionHash
         outputError = dataProvider.error
       }
+    default: break
     }
   }
   

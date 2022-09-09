@@ -106,4 +106,30 @@ class TransactionService {
     }
   }
   
+  func getSequenceNumberCount(for account: String, with sequenceNumber: Int, completion: @escaping (Result<SequenceNumberCount>) -> Void) {
+    let apiLoader = APIRequestLoader<SequenceNumberCountRequest>(apiRequest: SequenceNumberCountRequest())
+    let params = SequenceNumberCountParameters(account: account, sequenceNumber: sequenceNumber)
+    
+    apiLoader.loadAPIRequest(requestData: params) { result in
+      switch result {
+      case .success(let sequenceNumberCount):
+        completion(.success(sequenceNumberCount))
+      case .failure(let serverRequestError):
+        completion(.failure(serverRequestError))
+      }
+    }
+  }
+
+  func checkSigners(_ signers: [SignerAddress], completion: @escaping (Result<[SignerStatus]>) -> Void) {
+    let checkSignersRequestData = ChecksSignersRequestData(signers: signers)
+    let apiLoader = APIRequestLoader<CheckSignerRequest>(apiRequest: CheckSignerRequest())
+    apiLoader.loadAPIRequest(requestData: checkSignersRequestData) { result in
+      switch result {
+      case .success(let statuses):
+        completion(.success(statuses))
+      case .failure(let serverRequestError):
+        completion(.failure(serverRequestError))
+      }
+    }
+  }
 }

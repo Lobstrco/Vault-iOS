@@ -4,14 +4,16 @@ import UIKit
 protocol SignerDetailsPresenter {
   var countOfAccounts: Int { get }
   var signedAccounts: [SignedAccount] { get }
+  var sortedNicknames: [SignedAccount] { get }
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int)
   func signerDetailsViewDidLoad()
-  func moreDetailsButtonWasPressed(for publicKey: String, type: NicknameDialogType)
+  func moreDetailsButtonWasPressed(for publicKey: String)
   func copyAlertActionWasPressed(_ publicKey: String)
   func openExplorerActionWasPressed(_ publicKey: String)
   func setAccountNicknameActionWasPressed(with text: String?, for publicKey: String?)
   func clearAccountNicknameActionWasPressed(_ publicKey: String?)
+  func addNicknameButtonWasPressed()
 }
 
 class SignerDetailsPresenterImpl {
@@ -22,20 +24,25 @@ class SignerDetailsPresenterImpl {
   private let federationService: FederationService
   
   fileprivate weak var view: SignerDetailsView?
+  private let screenType: SignerDetailsScreenType
   
   private let storage: AccountsStorage = AccountsStorageDiskImpl()
   private var storageAccounts: [SignedAccount] = []
   
   private var mainAccounts: [SignedAccount] = []
   
+  var sortedNicknames: [SignedAccount] = []
+  
   init(view: SignerDetailsView,
+       screenType: SignerDetailsScreenType,
        transactionService: TransactionService = TransactionService(),
        federationService: FederationService = FederationService()) {
     self.view = view
+    self.screenType = screenType
     self.transactionService = transactionService
     self.federationService = federationService
     addObservers()
-  }    
+  }
   
   func displayAccountList() {
     view?.setProgressAnimation()
@@ -56,6 +63,15 @@ class SignerDetailsPresenterImpl {
     displayAccountList()
   }
   
+  func displayNicknamesList() {
+    sortedNicknames = storageAccounts.filter({ !($0.nickname ?? "").isEmpty })
+    sortedNicknames = sortedNicknames.sorted { (firstAccount, secondAccount) -> Bool in
+      let firstNickname = firstAccount.nickname ?? ""
+      let secondNickname = secondAccount.nickname ?? ""
+      return (firstNickname.localizedCaseInsensitiveCompare(secondNickname) == .orderedAscending)
+    }
+    self.view?.setAccountList(isEmpty: sortedNicknames.isEmpty)
+  }
 }
 
 private extension SignerDetailsPresenterImpl {
@@ -95,7 +111,7 @@ private extension SignerDetailsPresenterImpl {
 extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   
   var countOfAccounts: Int {
-    return signedAccounts.count
+    return screenType == .protectedAccounts ? signedAccounts.count : sortedNicknames.count
   }
 
   func copyAlertActionWasPressed(_ publicKey: String) {
@@ -107,50 +123,84 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   }
   
   func configure(_ cell: SignerDetailsTableViewCell, forRow row: Int) {
-    cell.set(signedAccounts[row])
+    switch screenType {
+    case .protectedAccounts:
+      cell.set(signedAccounts[row])
+    case .manageNicknames:
+      cell.set(sortedNicknames[row])
+    }
   }
   
   func signerDetailsViewDidLoad() {
-    guard let viewController = view as? UIViewController else { return }
-    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
-    
-    if ConnectionHelper.checkConnection(viewController) {
-      self.storageAccounts = storage.retrieveAccounts() ?? []
-      self.mainAccounts = AccountsStorageHelper.getMainAccountsFromCache()
-      displayAccountList()
+    self.storageAccounts = storage.retrieveAccounts() ?? []
+    switch screenType {
+    case .protectedAccounts:
+      guard let viewController = view as? UIViewController else { return }
+      guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
+      
+      if ConnectionHelper.checkConnection(viewController) {
+        self.mainAccounts = AccountsStorageHelper.getMainAccountsFromCache()
+        displayAccountList()
+      }
+    case .manageNicknames:
+      displayNicknamesList()
     }
   }
   
   func setAccountNicknameActionWasPressed(with text: String?, for publicKey: String?) {
     guard let publicKey = publicKey else { return }
     
-    var allAccounts: [SignedAccount] = []
-    allAccounts.append(contentsOf: mainAccounts)
-    
-    if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
-      signedAccounts[index].nickname = nickname
-      AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: signedAccounts)
-      allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
-      storage.save(accounts: allAccounts)
-      NotificationCenter.default.post(name: .didNicknameSet, object: nil)
-      self.view?.reloadRow(index)
+    switch screenType {
+    case .protectedAccounts:
+      var allAccounts: [SignedAccount] = []
+      allAccounts.append(contentsOf: mainAccounts)
+      allAccounts.append(contentsOf: AccountsStorageHelper.getAllOtherAccounts())
+      
+      if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
+        signedAccounts[index].nickname = nickname
+        AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: signedAccounts)
+        allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
+        storage.save(accounts: allAccounts)
+        NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+        self.view?.reloadRow(index)
+      }
+    case .manageNicknames:
+      if let index = storageAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
+        storageAccounts[index].nickname = nickname
+        storage.save(accounts: storageAccounts)
+        NotificationCenter.default.post(name: .didActivePublicKeyChange, object: nil)
+        NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+        signerDetailsViewDidLoad()
+      }
     }
   }
   
-  func moreDetailsButtonWasPressed(for publicKey: String, type: NicknameDialogType) {
-    if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }) {
-      var isNicknameSet = false
-      if let nickname = signedAccounts[index].nickname, !nickname.isEmpty {
-        isNicknameSet = true
-      } else {
-        isNicknameSet = false
+  func moreDetailsButtonWasPressed(for publicKey: String) {
+    switch screenType {
+    case .protectedAccounts:
+      if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }) {
+        var isNicknameSet = false
+        if let nickname = signedAccounts[index].nickname, !nickname.isEmpty {
+          isNicknameSet = true
+        } else {
+          isNicknameSet = false
+        }
+        self.view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
       }
-      self.view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
+    case .manageNicknames:
+      
+      
+      self.view?.actionSheetForSignersListWasPressed(with: publicKey,
+                                                     isNicknameSet: true)
     }
   }
   
   func clearAccountNicknameActionWasPressed(_ publicKey: String?) {
     setAccountNicknameActionWasPressed(with: "", for: publicKey)
+  }
+  
+  func addNicknameButtonWasPressed() {
+    transitionToAddNickname()
   }
 }
 
@@ -165,4 +215,18 @@ private extension SignerDetailsPresenterImpl {
                                            object: nil)
   }
   
+  func transitionToAddNickname() {
+    let addNicknameViewController = AddNicknameViewController.createFromStoryboard()
+    addNicknameViewController.delegate = self
+    let signerDetailsViewController = view as! SignerDetailsViewController
+    signerDetailsViewController.navigationController?.present(addNicknameViewController, animated: true, completion: nil)
+  }
+}
+
+// MARK: - AddNicknameDelegate
+
+extension SignerDetailsPresenterImpl: AddNicknameDelegate {
+  func nicknameWasAdded() {
+    signerDetailsViewDidLoad()
+  }
 }

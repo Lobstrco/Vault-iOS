@@ -32,11 +32,15 @@ struct ApplicationCoordinatorHelper {
     UserDefaultsHelper.tangemCardId = nil
     ApplicationCoordinatorHelper.clearKeychain()
     UserDefaultsHelper.badgesCounter = 0
+    UserDefaultsHelper.actualTransactionNumber = 0
     
     NotificationManager().setNotificationBadge(badgeNumber: 0)
     BiometricAuthManagerImpl().isBiometricAuthEnabled = false
-
-    AccountsStorageDiskImpl.clear()
+    
+    AccountsStorageHelper.clear()
+    
+    CoreDataStack.shared.deleteAllAccounts()
+    CoreDataStack.shared.saveContext()
     
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
     else { return }

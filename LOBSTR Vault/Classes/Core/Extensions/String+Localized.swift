@@ -38,7 +38,8 @@ extension String {
   }
   
   var isShortStellarPublicAddress: Bool {
-    if !isEmpty, let firstLetter = first, firstLetter == "G", self.contains("...") {
+    let keyLength = TransactionHelper.numberOfCharacters * 2 + 3
+    if !isEmpty, self.count == keyLength, let firstLetter = first, firstLetter == "G", self.contains("...") {
       return true
     }
 
@@ -46,7 +47,8 @@ extension String {
   }
   
   var isShortMuxedAddress: Bool {
-    if !isEmpty, let firstLetter = first, firstLetter == "M", self.contains("...") {
+    let keyLength = TransactionHelper.numberOfCharacters * 2 + 3
+    if !isEmpty, self.count == keyLength, let firstLetter = first, firstLetter == "M", self.contains("...") {
       return true
     }
 

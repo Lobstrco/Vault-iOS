@@ -7,7 +7,7 @@ enum TaskStatus {
   case failure
 }
 
-protocol TransactionListView: class {
+protocol TransactionListView: AnyObject {
   func setErrorAlert(for error: Error)
   func setImportXDRPopover(_ popover: CustomPopoverViewController)
   func setHUDSuccessViewAfterRemoveOperation()
@@ -106,14 +106,21 @@ extension TransactionListPresenterImpl: TransactionImportDelegate {
           transaction.xdr = xdr
           transaction.transactionType = .authChallenge
           self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
-        case .failure:
+        case .failure(let error):
           var transaction = Transaction()
           transaction.xdr = xdr
+          // For case when Challenge is signed
+          if error == .signatureNotFound {
+            transaction.transactionType = .authChallenge
+          } else {
+            transaction.transactionType = .transaction
+          }
           self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
         }
       case .failure(let error):
         var transaction = Transaction()
         transaction.xdr = xdr
+        transaction.transactionType = .unknown
         DispatchQueue.main.async {
           self.transitionToTransactionDetailsScreenFromImport(transaction: transaction)
         }

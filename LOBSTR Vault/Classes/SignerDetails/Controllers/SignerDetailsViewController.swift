@@ -1,7 +1,7 @@
 import PKHUD
 import UIKit
 
-protocol SignerDetailsView: class {
+protocol SignerDetailsView: AnyObject {
   func setAccountList(isEmpty: Bool)
   func setProgressAnimation()
   func copy(_ publicKey: String)
@@ -9,12 +9,24 @@ protocol SignerDetailsView: class {
   func actionSheetForSignersListWasPressed(with publicKey: String, isNicknameSet: Bool)
 }
 
+enum SignerDetailsScreenType {
+  case protectedAccounts
+  case manageNicknames
+}
+
 class SignerDetailsViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .signerDetails
   
+  var screenType: SignerDetailsScreenType = .protectedAccounts
+
   @IBOutlet var tableView: UITableView!
   @IBOutlet var emptyStateView: UIView!
   @IBOutlet var emptyStateLabel: UILabel!
+  @IBOutlet var addNewNicknameButton: UIButton! {
+    didSet {
+      addNewNicknameButton.layer.cornerRadius = 28.0
+    }
+  }
   
   var presenter: SignerDetailsPresenter!
   
@@ -23,15 +35,9 @@ class SignerDetailsViewController: UIViewController, StoryboardCreation {
   override func viewDidLoad() {
     super.viewDidLoad()
     setAppearance()
-    presenter = SignerDetailsPresenterImpl(view: self)
+    presenter = SignerDetailsPresenterImpl(view: self, screenType: screenType)
     presenter.signerDetailsViewDidLoad()
-    tableView.delegate = self
-    tableView.dataSource = self
-    tableView.tableFooterView = UIView()
-    if #available(iOS 15.0, *)
-    {
-      tableView.tableHeaderView = UIView()
-    }
+    setTableView()
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -46,15 +52,44 @@ class SignerDetailsViewController: UIViewController, StoryboardCreation {
     navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
   }
   
+  // MARK: - Action
+  
+  @IBAction func addNewNicknameButtonAction(_ sender: UIButton) {
+    presenter.addNicknameButtonWasPressed()
+  }
+  
   // MARK: - Private
   
+  private func setTableView() {
+    tableView.delaysContentTouches = false
+    for case let subview as UIScrollView in tableView.subviews {
+      subview.delaysContentTouches = false
+    }
+    tableView.delegate = self
+    tableView.dataSource = self
+    let footerView = screenType == .protectedAccounts ? UIView() : UIView(frame: CGRect(x: 0, y: 0, width: 0, height: 90))
+    tableView.tableFooterView = footerView
+    if #available(iOS 15.0, *)
+    {
+      tableView.tableHeaderView = UIView()
+    }
+  }
+    
   private func setAppearance() {
-    navigationItem.title = L10n.navTitleSettingsSignedAccounts
+    switch screenType {
+    case .protectedAccounts:
+      navigationItem.title = L10n.navTitleSettingsSignedAccounts
+      addNewNicknameButton.isHidden = true
+    case .manageNicknames:
+      navigationItem.title = L10n.navTitleSettingsManageNicknames
+      addNewNicknameButton.isHidden = false
+    }
   }
   
   private func setEmptyStateView() {
     emptyStateView.isHidden = false
-    emptyStateLabel.text = L10n.textEmptyStateSignedAccounts
+    let text = screenType == .protectedAccounts ? L10n.textEmptyStateSignedAccounts : L10n.textEmptyStateManageNicknames
+    emptyStateLabel.text = text
   }
   
   func removeEmptyStateView() {
@@ -62,12 +97,15 @@ class SignerDetailsViewController: UIViewController, StoryboardCreation {
   }
   
   
-  func openNicknameDialog(for publicKey: String, nicknameDialogType: NicknameDialogType) {
-    if let index = self.presenter.signedAccounts.firstIndex(where: { $0.address == publicKey }) {
+  func openNicknameDialog(for publicKey: String) {
+    let nicknameDialogType: NicknameDialogType = screenType == .protectedAccounts ? .protectedAccount : .otherAccount
+    let accounts = screenType == .protectedAccounts ? presenter.signedAccounts : presenter.sortedNicknames
+    
+    if let index = accounts.firstIndex(where: { $0.address == publicKey }) {
       let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
       nicknameDialogViewController.delegate = self
       nicknameDialogViewController.publicKey = publicKey
-      nicknameDialogViewController.nickName = self.presenter.signedAccounts[index].nickname
+      nicknameDialogViewController.nickName = accounts[index].nickname
       nicknameDialogViewController.type = nicknameDialogType
       self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
     }
@@ -87,10 +125,10 @@ extension SignerDetailsViewController: UITableViewDelegate, UITableViewDataSourc
     cell.delegate = self
     return cell
   }
-  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 80
-  }
   
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 64
+  }
 }
 
 // MARK: - SignerDetailsTableViewCellDelegate
@@ -98,7 +136,7 @@ extension SignerDetailsViewController: UITableViewDelegate, UITableViewDataSourc
 extension SignerDetailsViewController: SignerDetailsTableViewCellDelegate {
   func moreDetailsButtonWasPressed(in cell: SignerDetailsTableViewCell) {
     guard let publicKey = cell.publicKey else { return }
-    presenter.moreDetailsButtonWasPressed(for: publicKey, type: .protectedAccount)
+    presenter.moreDetailsButtonWasPressed(for: publicKey)
   }
 }
 
@@ -111,6 +149,8 @@ extension SignerDetailsViewController: SignerDetailsView {
     
     if isEmpty {
       setEmptyStateView()
+    } else {
+      removeEmptyStateView()
     }
   }
   
@@ -131,11 +171,14 @@ extension SignerDetailsViewController: SignerDetailsView {
     let indexPath = IndexPath(row: row, section: 0)
     tableView.reloadRows(at: [indexPath], with: .automatic)
   }
-  
-  func actionSheetForSignersListWasPressed(with publicKey: String, isNicknameSet: Bool) {
+    
+  func actionSheetForSignersListWasPressed(with publicKey: String,
+                                           isNicknameSet: Bool) {
+    
     let moreMenu = UIAlertController(title: nil,
                                      message: nil,
                                      preferredStyle: .actionSheet)
+    
     
     let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
                                    style: .default) { _ in
@@ -147,13 +190,29 @@ extension SignerDetailsViewController: SignerDetailsView {
       self.presenter.openExplorerActionWasPressed(publicKey)
     }
     
-    moreMenu.addAction(openExplorerAction)
-    moreMenu.addAction(copyAction)
+    switch screenType {
+    case .protectedAccounts:
+      moreMenu.addAction(openExplorerAction)
+      moreMenu.addAction(copyAction)
+    case .manageNicknames:
+      
+      let accountsPublicKeys =
+        AccountsStorageHelper.getMainAccountsFromCache()
+        .compactMap { $0.address}
+      
+      
+      if !accountsPublicKeys.contains(publicKey) {
+        moreMenu.addAction(openExplorerAction)
+      }
+      
+      moreMenu.addAction(copyAction)
+    }
     
+
     if isNicknameSet {
       let changeAccountNicknameAction = UIAlertAction(title: L10n.buttonTextChangeAccountNickname,
                                                    style: .default) { _ in
-        self.openNicknameDialog(for: publicKey, nicknameDialogType: .protectedAccount)
+        self.openNicknameDialog(for: publicKey)
       }
       
       let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
@@ -161,12 +220,14 @@ extension SignerDetailsViewController: SignerDetailsView {
         self.presenter.clearAccountNicknameActionWasPressed(publicKey)
       }
       clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
+      
       moreMenu.addAction(changeAccountNicknameAction)
       moreMenu.addAction(clearAccountNicknameAction)
+      
     } else {
       let setAccountNicknameAction = UIAlertAction(title: L10n.buttonTextSetAccountNickname,
                                                    style: .default) { _ in
-        self.openNicknameDialog(for: publicKey, nicknameDialogType: .protectedAccount)
+        self.openNicknameDialog(for: publicKey)
       }
       moreMenu.addAction(setAccountNicknameAction)
     }
@@ -193,8 +254,8 @@ extension SignerDetailsViewController: SignerDetailsView {
 extension SignerDetailsViewController: NicknameDialogDelegate {
   func submitNickname(with text: String, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
     switch nicknameDialogType {
-    case .protectedAccount:
-      self.presenter.setAccountNicknameActionWasPressed(with: text, for: publicKey)
+    case .protectedAccount, .otherAccount:
+      presenter.setAccountNicknameActionWasPressed(with: text, for: publicKey)
     default:
       break
     }

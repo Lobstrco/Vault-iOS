@@ -36,8 +36,19 @@ class PublicKeyPopover: UIView {
   private func setPublicKey() {
     self.publicKey = UserDefaultsHelper.activePublicKey
     let nickname = AccountsStorageHelper.getActiveAccountNickname()
-    let publicKeyTitle = nickname.isEmpty ? L10n.textSettingsPublicKeyTitle : nickname
-    publicKeyTitleLabel.text = publicKeyTitle
+    var title = ""
+    if !nickname.isEmpty {
+      title = nickname
+    } else {
+      switch UserDefaultsHelper.accountStatus {
+      case .createdByDefault:
+        let activePublicKeyIndex = UserDefaultsHelper.activePublicKeyIndex + 1
+        title = L10n.textSettingsPublicKeyTitle + " " + activePublicKeyIndex.description
+      default:
+        title = L10n.textSettingsPublicKeyTitle
+      }
+    }
+    publicKeyTitleLabel.text = title
     self.publicKeyLabel.text = publicKey?.getTruncatedPublicKey()
   }
   

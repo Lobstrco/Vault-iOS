@@ -137,6 +137,8 @@ internal enum L10n {
   internal static let errorBiometricPressedPasswordTitle = L10n.tr("Localizable", "error_biometric_pressed_password_title")
   /// Your account has reached the Stellar subentries limit at 1000. You can’t add more assets, signers or create more offers.
   internal static let errorTooManySubentriesMessage = L10n.tr("Localizable", "error_too_many_subentries_message")
+  /// The transaction has already been confirmed or denied
+  internal static let errorTransactionAlreadyConfirmedOrDeniedMessage = L10n.tr("Localizable", "error_transaction_already_confirmed_or_denied_message")
   /// error_unknown
   internal static let errorUnknown = L10n.tr("Localizable", "error_unknown")
   /// An unknown error has occured. If this issue persists, please contact support.
@@ -263,6 +265,8 @@ internal enum L10n {
   internal static let navTitleRestoreAccount = L10n.tr("Localizable", "nav_title_restore_account")
   /// Settings
   internal static let navTitleSettings = L10n.tr("Localizable", "nav_title_settings")
+  /// Manage Account Nicknames
+  internal static let navTitleSettingsManageNicknames = L10n.tr("Localizable", "nav_title_settings_manage_nicknames")
   /// Protected Accounts
   internal static let navTitleSettingsSignedAccounts = L10n.tr("Localizable", "nav_title_settings_signed_accounts")
   /// Transaction Details
@@ -293,6 +297,20 @@ internal enum L10n {
   internal static func readingDataProgress(_ p1: String) -> String {
     return L10n.tr("Localizable", "reading_data_progress", p1)
   }
+  /// Enter a public key and choose a short nickname
+  internal static let textAddNicknameDescription = L10n.tr("Localizable", "text_add_nickname_description")
+  /// Limited to 20 symbols
+  internal static let textAddNicknameNicknameDescription = L10n.tr("Localizable", "text_add_nickname_nickname_description")
+  /// Enter account nickname
+  internal static let textAddNicknameNicknamePlaceholder = L10n.tr("Localizable", "text_add_nickname_nickname_placeholder")
+  /// A sequence of 56 characters starting with the letter “G”
+  internal static let textAddNicknamePublicKeyDescription = L10n.tr("Localizable", "text_add_nickname_public_key_description")
+  /// Please enter a valid Stellar public key 
+  internal static let textAddNicknamePublicKeyError = L10n.tr("Localizable", "text_add_nickname_public_key_error")
+  /// Enter public key
+  internal static let textAddNicknamePublicKeyPlaceholder = L10n.tr("Localizable", "text_add_nickname_public_key_placeholder")
+  /// Set Nickname for Account
+  internal static let textAddNicknameTitle = L10n.tr("Localizable", "text_add_nickname_title")
   /// To submit transaction enter its XDR below
   internal static let textAddTransactionDescription = L10n.tr("Localizable", "text_add_transaction_description")
   /// Transaction is invalid. Please try again.
@@ -315,6 +333,8 @@ internal enum L10n {
   internal static let textBackupDescription = L10n.tr("Localizable", "text_backup_description")
   /// Backup Your Account
   internal static let textBackupTitle = L10n.tr("Localizable", "text_backup_title")
+  /// Can’t be claimed
+  internal static let textCantBeClaimed = L10n.tr("Localizable", "text_cant_be_claimed")
   /// Change Account Nickname
   internal static let textChangeNicknameTitle = L10n.tr("Localizable", "text_change_nickname_title")
   /// Confirm PIN
@@ -327,6 +347,16 @@ internal enum L10n {
   internal static let textChangePasscodeError = L10n.tr("Localizable", "text_change_passcode_error")
   /// You can not use old PIN
   internal static let textChangeTheSamePasscode = L10n.tr("Localizable", "text_change_the_same_passcode")
+  /// Claim After
+  internal static let textClaimAfter = L10n.tr("Localizable", "text_claim_after")
+  /// Claim Before
+  internal static let textClaimBefore = L10n.tr("Localizable", "text_claim_before")
+  /// Claim Between
+  internal static let textClaimBetween = L10n.tr("Localizable", "text_claim_between")
+  /// Claim Conditions
+  internal static let textClaimConditions = L10n.tr("Localizable", "text_claim_conditions")
+  /// Claim now
+  internal static let textClaimNow = L10n.tr("Localizable", "text_claim_now")
   /// What type of transactions do you want to remove?
   internal static let textClearTransactionsDescription = L10n.tr("Localizable", "text_clear_transactions_description")
   /// Remove transactions
@@ -345,6 +375,8 @@ internal enum L10n {
   internal static let textDenyDialogDescription = L10n.tr("Localizable", "text_deny_dialog_description")
   /// Are you sure?
   internal static let textDenyDialogTitle = L10n.tr("Localizable", "text_deny_dialog_title")
+  /// No account nicknames
+  internal static let textEmptyStateManageNicknames = L10n.tr("Localizable", "text_empty_state_manage_nicknames")
   /// No protected accounts
   internal static let textEmptyStateSignedAccounts = L10n.tr("Localizable", "text_empty_state_signed_accounts")
   /// No transactions to sign
@@ -365,6 +397,8 @@ internal enum L10n {
   internal static let textNicknameTextViewDescrition = L10n.tr("Localizable", "text_nickname_text_view_descrition")
   /// Enter account nickname
   internal static let textNicknameTextViewPlaceholder = L10n.tr("Localizable", "text_nickname_text_view_placeholder")
+  /// Not set
+  internal static let textNotSet = L10n.tr("Localizable", "text_not_set")
   /// OPERATION DETAILS
   internal static let textOperationDetailsHeaderTitle = L10n.tr("Localizable", "text_operation_details_header_title")
   /// Challenge
@@ -395,6 +429,10 @@ internal enum L10n {
   internal static let textRestorePlaceholder = L10n.tr("Localizable", "text_restore_placeholder")
   /// Multiply your security
   internal static let textSecureYourLumens = L10n.tr("Localizable", "text_secure_your_lumens")
+  /// Other pending transactions with the same sequence number may become invalid if you confirm this one.
+  internal static let textSequenceNumberCountDialogDescription = L10n.tr("Localizable", "text_sequence_number_count_dialog_description")
+  /// Confirm this transaction?
+  internal static let textSequenceNumberCountDialogTitle = L10n.tr("Localizable", "text_sequence_number_count_dialog_title")
   /// Set Account Nickname
   internal static let textSetNicknameTitle = L10n.tr("Localizable", "text_set_nickname_title")
   /// ACCOUNT
@@ -413,6 +451,8 @@ internal enum L10n {
   internal static let textSettingsHelpSection = L10n.tr("Localizable", "text_settings_help_section")
   /// Log Out
   internal static let textSettingsLogoutfield = L10n.tr("Localizable", "text_settings_logoutfield")
+  /// Manage Account Nicknames
+  internal static let textSettingsManageNicknames = L10n.tr("Localizable", "text_settings_manage_nicknames")
   /// Recovery Phrase
   internal static let textSettingsMnemonicField = L10n.tr("Localizable", "text_settings_mnemonic_field")
   /// Enable Push Notifications
@@ -441,16 +481,26 @@ internal enum L10n {
   internal static let textSettingsSpamProtectionTitle = L10n.tr("Localizable", "text_settings_spam_protection_title")
   /// Fingerprint Login
   internal static let textSettingsTouchIdField = L10n.tr("Localizable", "text_settings_touch_id_field")
-  /// Show additional confirmation alert before signing  transaction requests to avoid mistakes.
+  /// Show additional confirmation alert before signing transaction requests to avoid mistakes.
   internal static let textSettingsTransactionsConfirmationsAbout = L10n.tr("Localizable", "text_settings_transactions_confirmations_about")
   /// CONFIRM TRANSACTIONS
   internal static let textSettingsTransactionsConfirmationsTitle = L10n.tr("Localizable", "text_settings_transactions_confirmations_title")
   /// Version
   internal static let textSettingsVersionField = L10n.tr("Localizable", "text_settings_version_field")
+  /// %@ signature required to submit this transaction to the network
+  internal static func textSignatureRequiredMessage(_ p1: String) -> String {
+    return L10n.tr("Localizable", "text_signature_required_message", p1)
+  }
+  /// %@ signatures required to submit this transaction to the network
+  internal static func textSignaturesRequiredMessage(_ p1: String) -> String {
+    return L10n.tr("Localizable", "text_signatures_required_message", p1)
+  }
   /// Your Vault account is not a signer for any other Stellar accounts
   internal static let textSignerCheckInformation = L10n.tr("Localizable", "text_signer_check_information")
   /// Signer For
   internal static let textSignerFor = L10n.tr("Localizable", "text_signer_for")
+  /// SIGNERS
+  internal static let textSignersHeaderTitle = L10n.tr("Localizable", "text_signers_header_title")
   /// You need more signatures to submit the operation
   internal static let textStatusDescription = L10n.tr("Localizable", "text_status_description")
   /// Transaction Failed

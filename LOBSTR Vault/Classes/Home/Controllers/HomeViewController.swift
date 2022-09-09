@@ -27,9 +27,8 @@ class HomeViewController: UIViewController, StoryboardCreation {
   @IBOutlet var multisigInfoEmptyStateButton: UIButton!
     
   @IBOutlet var publicKeyLabel: UILabel!
-  @IBOutlet var titleOfPublicKeyLabel: UILabel!
+  @IBOutlet var titleOfPublicKeyButton: UIButton!
   
-  @IBOutlet var changeAccountImageView: UIImageView!
   @IBOutlet var copyKeyButton: UIButton!
   
   @IBOutlet var signersNumberStackView: UIStackView!
@@ -58,6 +57,14 @@ class HomeViewController: UIViewController, StoryboardCreation {
     presenter.dismissOnSwipeDirection = .bottom
     presenter.backgroundOpacity = 0.54
     return presenter
+  }()
+  
+  lazy var idenctionTapGestureRecognizer: UITapGestureRecognizer = {
+    let tapGestureRecognizer =
+      UITapGestureRecognizer(target: self,
+                             action: #selector(tapGestureRecognizerAction))
+    tapGestureRecognizer.cancelsTouchesInView = false
+    return tapGestureRecognizer
   }()
 }
 
@@ -111,10 +118,11 @@ extension HomeViewController {
     switch UserDefaultsHelper.accountStatus {
     case .createdByDefault:
       let activePublicKeyIndex = UserDefaultsHelper.activePublicKeyIndex + 1
-      titleOfPublicKeyLabel.text = L10n.textVaultPublicKey + " " + activePublicKeyIndex.description
+      titleOfPublicKeyButton.setTitle(L10n.textVaultPublicKey + " " + activePublicKeyIndex.description, for: .normal)
     default:
-      titleOfPublicKeyLabel.text = L10n.textVaultPublicKey
-      changeAccountImageView.isHidden = true
+      titleOfPublicKeyButton.isEnabled = false
+      titleOfPublicKeyButton.setImage(UIImage(named: ""), for: .normal)
+      titleOfPublicKeyButton.setTitle(L10n.textVaultPublicKey, for: .normal)
     }
     
     AppearanceHelper.set(copyKeyButton, with: L10n.buttonTitleCopyKey)
@@ -155,26 +163,15 @@ extension HomeViewController {
   }
     
   @IBAction func showPublicKeyListButtonAction(_ sender: UIButton) {
-    switch UserDefaultsHelper.accountStatus {
-    case .createdByDefault:
-      let customType = PresentationHelper.createPresentationType(cellsCount: presenter.multiaccountPublicKeysCount, cellHeight: MultiaccountPublicKeyTableViewCell.height)
-      let publicKeyListViewController = PublicKeyListViewController.createFromStoryboard()
-      publicKeyListViewController.delegate = self
-      
-      publicKeyListPresenter.presentationType = customType
-      self.navigationController?
-        .topViewController?
-        .customPresentViewController(publicKeyListPresenter,
-                                     viewController: publicKeyListViewController,
-                                     animated: true,
-                                     completion: nil)
-    default:
-      break
-    }
+    showPublicKeyList()
   }
   
   @IBAction func moreDetailsButtonAction(_ sender: UIButton) {
     presenter.moreDetailsButtonWasPressed(for: UserDefaultsHelper.activePublicKey, type: .primaryAccount)
+  }
+  
+  @objc func tapGestureRecognizerAction(recognizer: UITapGestureRecognizer) {
+    showPublicKeyList()
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -206,6 +203,10 @@ private extension HomeViewController {
   }
     
   func setTableView() {
+    tableView.delaysContentTouches = false
+    for case let subview as UIScrollView in tableView.subviews {
+        subview.delaysContentTouches = false
+    }
     tableView.dataSource = self
     tableView.delegate = self
     tableView.separatorColor = .clear
@@ -231,6 +232,8 @@ private extension HomeViewController {
       if let index = self.presenter.signedAccounts.firstIndex(where: { $0.address == publicKey }) {
         nickName = self.presenter.signedAccounts[index].nickname
       }
+    default:
+      break
     }
     
     let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
@@ -240,6 +243,25 @@ private extension HomeViewController {
     nicknameDialogViewController.type = nicknameDialogType
     self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
+  
+  func showPublicKeyList() {
+    switch UserDefaultsHelper.accountStatus {
+    case .createdByDefault:
+      let customType = PresentationHelper.createPresentationType(cellsCount: presenter.multiaccountPublicKeysCount, cellHeight: MultiaccountPublicKeyTableViewCell.height)
+      let publicKeyListViewController = PublicKeyListViewController.createFromStoryboard()
+      publicKeyListViewController.delegate = self
+      
+      publicKeyListPresenter.presentationType = customType
+      self.navigationController?
+        .topViewController?
+        .customPresentViewController(publicKeyListPresenter,
+                                     viewController: publicKeyListViewController,
+                                     animated: true,
+                                     completion: nil)
+    default:
+      break
+    }
+  }
 }
 
 // MARK: - HomeView
@@ -248,11 +270,13 @@ extension HomeViewController: HomeView {
   func setIconCardOrIdenticon() {
     switch UserDefaultsHelper.accountStatus {
     case .createdByDefault:
+      idenctionView.addGestureRecognizer(idenctionTapGestureRecognizer)
       idenctionView.loadIdenticon(publicAddress: presenter.publicKey ?? "")
       idenctionView.isHidden = false
       cardIconView.isHidden = true
     case .createdWithTangem:
       cardIconView.isHidden = false
+      idenctionView.removeGestureRecognizer(idenctionTapGestureRecognizer)
       idenctionView.isHidden = true
     default: return
     }
@@ -287,7 +311,7 @@ extension HomeViewController: HomeView {
       }
     }
     
-    titleOfPublicKeyLabel.text = titleOfPublicKeyLabelText
+    titleOfPublicKeyButton.setTitle(titleOfPublicKeyLabelText, for: .normal)
   }
   
   func setSignedAccountsList(_ signedAccounts: [SignedAccount]) {
@@ -309,7 +333,7 @@ extension HomeViewController: HomeView {
   }
   
   func setAccountLabel() {
-    let title = UserDefaultsHelper.numberOfSignerAccounts > 1 ? "accounts" : "account"
+    let title = UserDefaultsHelper.numberOfSignerAccounts > 1 ? "Accounts" : "Account"
     accountLabel.text = title
   }
   

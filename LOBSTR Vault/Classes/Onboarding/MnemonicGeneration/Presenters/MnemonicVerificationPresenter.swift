@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-protocol MnemonicVerificationView: class {
+protocol MnemonicVerificationView: AnyObject {
   func setShuffledMnemonicList()
   func updateCollectionViewForVerification()
   func setClearButtonStatus(isEnabled: Bool)

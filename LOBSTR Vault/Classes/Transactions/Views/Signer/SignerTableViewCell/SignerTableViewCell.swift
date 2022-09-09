@@ -7,8 +7,21 @@ class SignerTableViewCell: UITableViewCell {
   @IBOutlet var publicAddressLabel: UILabel!
   @IBOutlet var federationLabel: UILabel!
   @IBOutlet var yourKeyTitleLabel: UILabel!
+  
+  var viewData: SignerViewData?
+  
+  override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+    super.setHighlighted(highlighted, animated: animated)
+    if highlighted {
+      backgroundColor = Asset.Colors.grayOpacity15.color
+    } else {
+      backgroundColor = Asset.Colors.white.color
+    }
+  }
     
   func setData(viewData: SignerViewData) {
+    self.viewData = viewData
+    
     identiconView.loadIdenticon(publicAddress: viewData.publicKey)
     
     statusLabel.text = viewData.statusText
@@ -17,6 +30,8 @@ class SignerTableViewCell: UITableViewCell {
     publicAddressLabel.text = viewData.publicKey.getTruncatedPublicKey()
     yourKeyTitleLabel.isHidden = !viewData.isLocalPublicKey
     
+    publicAddressLabel.font = UIFont.boldSystemFont(ofSize: 13)
+    publicAddressLabel.textColor = Asset.Colors.black.color
     
     var nicknameValue = ""
     var federationValue = ""

@@ -1,6 +1,6 @@
 import UIKit
 
-protocol MnemonicSuggestionsViewDelegate {
+protocol MnemonicSuggestionsViewDelegate: AnyObject {
   func suggestionWordWasPressed(_ suggestionWord: String)
 }
 
@@ -8,7 +8,7 @@ class MnemonicSuggestionsView: UIView {
   @IBOutlet var collectionView: UICollectionView!
   
   var suggestionList: [String] = []
-  var delegate: MnemonicSuggestionsViewDelegate?
+  weak var delegate: MnemonicSuggestionsViewDelegate?
   
   // MARK: - Lifecycle
   

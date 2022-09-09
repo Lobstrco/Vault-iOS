@@ -1,6 +1,6 @@
 import Foundation
 
-protocol MnemonicRecoveryView: class {
+protocol MnemonicRecoveryView: AnyObject {
   func setProgressAnimation(enabled: Bool)
   func setRecoveryButtonStatus(isEnabled: Bool)
   func setHighlightTextView(isEnabled: Bool)

@@ -37,6 +37,9 @@ class TransactionDetailsPresenterImpl {
   }
   
   var numberOfNeededSignatures: Int = 0
+
+  var isNeedToShowHelpfulMessage: Bool = false
+  var isNeedToShowSignaturesNumber: Bool = true
   
   private let transactionType: TransactionType
   private var operations: [String] = []
@@ -46,11 +49,13 @@ class TransactionDetailsPresenterImpl {
   private var isDownloading: Bool = false
   private var assets: [stellarsdk.Asset] = []
   private var publicKeys: [String] = []
+  private var txSourceAccountId = ""
+  private var txSequenceNumber = 0
   
   var sections = [TransactionDetailsSection]()
   
   private let storage: AccountsStorage = AccountsStorageDiskImpl()
-  private var storageAccounts: [SignedAccount] = []
+  var storageAccounts: [SignedAccount] = []
   
   // MARK: - Init
 
@@ -80,10 +85,18 @@ class TransactionDetailsPresenterImpl {
     transactionDetailsViewDidLoad()
   }
   
-  @objc func updateProgressAnimation(_ notification: Notification) { 
-    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) { 
+  @objc func updateProgressAnimation(_ notification: Notification) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(10)) {
       self.view?.setProgressAnimation(isEnable: self.isDownloading)
     }
+  }
+  
+  @objc func onDidNicknameUpdate(_ notification: Notification) {
+    reloadData()
+  }
+  
+  @objc func onDidActivePublicKeyChange(_ notification: Notification) {
+    reloadData()
   }
 }
 
@@ -95,6 +108,8 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
           let viewController = view as? UIViewController,
           UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
+    txSourceAccountId = transactionEnvelopeXDR.txSourceAccountId
+    txSequenceNumber = Int(truncatingIfNeeded: transactionEnvelopeXDR.txSeqNum)
     view?.setProgressAnimation(isEnable: true)
     isDownloading = true
     let destinationId = tryToGetDestinationId()
@@ -144,14 +159,19 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
       self.publicKeys.append(contentsOf: publicKeys)
       if let key = key, key.isShortStellarPublicAddress || key.isShortMuxedAddress {
         if let key = self.publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
-          self.view?.showActionSheet(key, .publicKey)
+          TransactionHelper.isVaultSigner(publicKey: key) { result in
+            self.view?.showActionSheet(key, .publicKey(isNicknameSet: false, isVaultSigner: result))
+          }
         }
       } else {
-        let shortPublicKey = key?.suffix(14) ?? ""
-        let nickname = key?.replacingOccurrences(of: shortPublicKey, with: "")
-        if let account = storageAccounts.first(where: { $0.nickname == nickname }) {
+        let secondPartOfKey = key?.suffix(14) ?? ""
+        let shortPublicKey = TransactionHelper.getShortPublicKey(String(secondPartOfKey))
+        if let nickname = key?.replacingOccurrences(of: secondPartOfKey, with: ""),
+           let account = storageAccounts.first(where: { $0.nickname == nickname && $0.address?.prefix(4) == shortPublicKey.prefix(4) && $0.address?.suffix(4) == shortPublicKey.suffix(4) }) {
           if let key = self.publicKeys.first(where: { $0.prefix(4) == account.address?.prefix(4) && $0.suffix(4) == account.address?.suffix(4) }) {
-            self.view?.showActionSheet(key, .publicKey)
+            TransactionHelper.isVaultSigner(publicKey: key) { result in
+              self.view?.showActionSheet(key, .publicKey(isNicknameSet: !nickname.isEmpty, isVaultSigner: result))
+            }
           }
         }
       }
@@ -172,15 +192,21 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   }
   
   func confirmButtonWasPressed() {
-    guard UserDefaultsHelper.accountStatus == .createdByDefault else {
-      confirmOperationWasConfirmed()
-      return
-    }
-    
-    if PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled {
-      view?.setConfirmationAlert()
-    } else {
-      confirmOperationWasConfirmed()
+    checkSequenceNumberCount { result in
+      if result {
+        guard UserDefaultsHelper.accountStatus == .createdByDefault else {
+          self.confirmOperationWasConfirmed()
+          return
+        }
+        
+        if PromtForTransactionDecisionsHelper.isPromtTransactionDecisionsEnabled {
+          self.view?.setConfirmationAlert()
+        } else {
+          self.confirmOperationWasConfirmed()
+        }
+      } else {
+        self.view?.setSequenceNumberCountAlert()
+      }
     }
   }
   
@@ -255,6 +281,44 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   func explorerNativeAsset() {
     UtilityHelper.openStellarExpertForNativeAsset()
   }
+  
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
+    guard let type = nicknameDialogType else { return }
+    guard let publicKey = publicKey else { return }
+    
+    var allAccounts: [SignedAccount] = []
+    allAccounts.append(contentsOf: AccountsStorageHelper.getMainAccountsFromCache())
+    allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
+    allAccounts.append(contentsOf: AccountsStorageHelper.getAllOtherAccounts())
+    
+    if let index = allAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
+      allAccounts[index].nickname = nickname
+    } else {
+      let account = SignedAccount(address: publicKey, federation: nil, nickname: text)
+      allAccounts.append(account)
+    }
+    storage.save(accounts: allAccounts)
+    
+    switch type {
+    case .primaryAccount:
+      NotificationCenter.default.post(name: .didActivePublicKeyChange, object: nil)
+    default:
+      NotificationCenter.default.post(name: .didNicknameSet, object: nil)
+    }
+  }
+  
+  func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?) {
+    setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+  }
+  
+  func signerWasSelected(_ viewData: SignerViewData?) {
+    guard let viewData = viewData else { return }
+    let nickname = viewData.nickname ?? ""
+    let type: NicknameDialogType = viewData.publicKey == UserDefaultsHelper.activePublicKey ? .primaryAccount : .protectedAccount
+    TransactionHelper.isVaultSigner(publicKey: viewData.publicKey) { result in
+      self.view?.showActionSheet(viewData.publicKey, .publicKey(isNicknameSet: !nickname.isEmpty, type: type, isVaultSigner: result))
+    }
+  }
 }
 
 // MARK: - Private
@@ -266,8 +330,8 @@ private extension TransactionDetailsPresenterImpl {
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
       let memo = getMemo()
       
-      if !memo.isEmpty {
-        additionalInformationSection.append((name: "Memo", value: memo, nickname: "", isPublicKey: false))
+      if !memo.value.isEmpty {
+        additionalInformationSection.append((name: memo.title, value: memo.value, nickname: "", isPublicKey: false))
       }
       
       additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionXDR.txSourceAccountId), true))
@@ -382,7 +446,17 @@ private extension TransactionDetailsPresenterImpl {
         }
       case .failure(let error):
         DispatchQueue.main.async {
-          self.view?.setErrorAlert(for: error)
+          self.view?.setProgressAnimation(isEnable: false)
+          if let serverRequestError = error as? ServerRequestError {
+            switch serverRequestError {
+            case .notFound:
+              self.view?.showAlert(text: L10n.errorTransactionAlreadyConfirmedOrDeniedMessage)
+            default:
+              self.view?.setErrorAlert(for: serverRequestError)
+            }
+          } else {
+            self.view?.showAlert(text: L10n.errorTransactionAlreadyConfirmedOrDeniedMessage)
+          }
         }
       }
     }
@@ -472,8 +546,10 @@ private extension TransactionDetailsPresenterImpl {
         }
         guard let horizonResult = submitTransactionToHorizon.horizonResult else { return }
         let xdr = self.getOutputXdr(signTransaction: signTransaction, signTransactionWithTangem: signTransactionWithTangem)
-        NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
         self.transitionToTransactionStatus(with: horizonResult, xdr: xdr, transactionType: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+          NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+        }
       }
     }
     
@@ -485,9 +561,11 @@ private extension TransactionDetailsPresenterImpl {
         }
         
         if transactionType == .authChallenge {
-          NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
           let xdr = self.getOutputXdr(signTransaction: signTransaction, signTransactionWithTangem: signTransactionWithTangem)
           self.transitionToTransactionStatus(with: (TransactionResultCode.badAuth, operaiotnMessageError: nil), xdr: xdr, transactionType: .authChallenge)
+          DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            NotificationCenter.default.post(name: .didChangeTransactionList, object: nil)
+          }
         }
       }
     }
@@ -522,7 +600,13 @@ private extension TransactionDetailsPresenterImpl {
         }
         self.submitTransaction(transactionEnvelopeXDR, transactionType: transactionType)
       case .failure(let serverRequestError):
-        self.view?.setErrorAlert(for: serverRequestError)
+        self.view?.setProgressAnimation(isEnable: false)
+        switch serverRequestError {
+        case .notFound:
+          self.view?.showAlert(text: L10n.errorTransactionAlreadyConfirmedOrDeniedMessage)
+        default:
+          self.view?.setErrorAlert(for: serverRequestError)
+        }
       }
     }
   }
@@ -530,12 +614,24 @@ private extension TransactionDetailsPresenterImpl {
   func getNumberOfNeededSignatures(thresholdsResponse: AccountThresholdsResponse, signers: [SignerViewData]) -> Int {
     let thresholds = [thresholdsResponse.lowThreshold, thresholdsResponse.medThreshold, thresholdsResponse.highThreshold]
     let filteredThresholds = thresholds.filter { $0 == thresholds.first }
+    
+    guard filteredThresholds.first != 0 else {
+      isNeedToShowSignaturesNumber = false
+      return 0
+    }
+    
     let areThresholdsEqual = filteredThresholds.count == thresholds.count
     
     let filteredSigners = signers.filter { $0.weight == signers.first?.weight }
     let areSignersWeightsEqual = filteredSigners.count == signers.count
     
     if areThresholdsEqual, areSignersWeightsEqual, let threshold = thresholds.first, let weight = signers.first?.weight {
+      switch transaction.transactionType {
+      case .transaction:
+        isNeedToShowHelpfulMessage = true
+      default:
+        isNeedToShowHelpfulMessage = false
+      }
       return threshold / weight
     }
     
@@ -678,6 +774,46 @@ private extension TransactionDetailsPresenterImpl {
       }
     }
   }
+  
+  
+  func checkSequenceNumberCount(completion: @escaping (Bool) -> Void) {
+    transactionService.getSequenceNumberCount(for: txSourceAccountId, with: txSequenceNumber) { result in
+      switch result {
+      case .success(let sequenceNumberCount):
+        let sequenceNumberCountMinValue = self.transactionType == .standard ? 1 : 0
+        if let sequenceNumberCount = sequenceNumberCount.count {
+          if sequenceNumberCount > sequenceNumberCountMinValue {
+            completion(false)
+          } else {
+            completion(true)
+          }
+        } else {
+          completion(true)
+        }
+      case .failure(let error):
+        completion(true)
+        Logger.home.error("Couldn't get sequence number count for \(self.txSourceAccountId) with error: \(error)")
+      }
+    }
+  }
+  
+  func reloadData() {
+    updateSigners()
+    setData()
+  }
+  
+  func updateSigners() {
+    var updatedSigners: [SignerViewData] = []
+    storageAccounts = storage.retrieveAccounts() ?? []
+    for signer in signers {
+      if let index = storageAccounts.firstIndex(where: { $0.address == signer.publicKey }) {
+        var signer = signer
+        signer.nickname = storageAccounts[index].nickname
+        updatedSigners.append(signer)
+      }
+    }
+    self.signers = updatedSigners
+  }
 }
 
 // MARK: - Transitions
@@ -713,26 +849,26 @@ extension TransactionDetailsPresenterImpl {
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
       transactionSourceAccountId = transactionXDR.txSourceAccountId
     }
-    operationViewController.presenter.setOperation(operation, transactionSourceAccountId: transactionSourceAccountId, operationName: operations[index], memo, date, signers: self.signers, numberOfNeededSignatures: self.numberOfNeededSignatures, destinationFederation: destinationFederation)
+    operationViewController.presenter.setOperation(operation, transactionSourceAccountId: transactionSourceAccountId, operationName: operations[index], memo, date, signers: self.signers, numberOfNeededSignatures: self.numberOfNeededSignatures, destinationFederation: destinationFederation, isNeedToShowHelpfulMessage: isNeedToShowHelpfulMessage, isNeedToShowSignaturesNumber: isNeedToShowSignaturesNumber)
     
     let transactionDetailsViewController = view as! TransactionDetailsViewController
     transactionDetailsViewController.navigationController?.pushViewController(operationViewController, animated: true)
   }
   
-  func getMemo() -> String {
-    var memo = ""
+  func getMemo() -> BeautifulMemo {
+    var memo: BeautifulMemo = .none
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
       switch transactionXDR.txMemo {
       case .text(let text):
         if !text.isEmpty {
-          memo = text
+          memo = .text(text)
         }
       case .id(let id):
-        memo = String(id)
+        memo = .id(String(id))
       case .returnHash(let returnHash):
-        memo = returnHash.wrapped.asHexString()
+        memo = .returnHash(returnHash.wrapped.asHexString())
       case .hash(let hash):
-        memo = hash.wrapped.asHexString()
+        memo = .hash(hash.wrapped.asHexString())
       default:
         break
       }
@@ -752,5 +888,15 @@ private extension TransactionDetailsPresenterImpl {
                                           selector: #selector(updateProgressAnimation(_:)),
                                           name: .didPinScreenClose,
                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidNicknameUpdate(_:)),
+                                           name: .didNicknameSet,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidActivePublicKeyChange(_:)),
+                                           name: .didActivePublicKeyChange,
+                                           object: nil)
   }
 }

@@ -20,7 +20,7 @@ protocol TransactionStatusPresenter {
   func copySignedXdrButtonWasPressed()
 }
 
-protocol TransactionStatusView: class {
+protocol TransactionStatusView: AnyObject {
   func setStatusTitle(_ title: String)
   func setErrorMessage(_ message: String)
   func setXdr(_ xdr: String)
@@ -55,6 +55,11 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
     displayErrorMessage()
     
     transactionStatus = getTransactionStatus(by: transactionResult.code)
+    
+    if transactionStatus == .success {
+      UserDefaultsHelper.actualTransactionNumber -= 1
+      UserDefaultsHelper.badgesCounter = UserDefaultsHelper.actualTransactionNumber
+    }
     
     let statusTitle = transactionStatus == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
     view.setAnimation(with: transactionStatus)

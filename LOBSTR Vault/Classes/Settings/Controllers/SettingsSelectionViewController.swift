@@ -1,6 +1,6 @@
 import UIKit
 
-protocol SettingsSelectionViewControllerDelegate {
+protocol SettingsSelectionViewControllerDelegate: AnyObject {
   func updateSpamProtection(_ value: Bool?)
 }
 
@@ -28,7 +28,7 @@ class SettingsSelectionViewController: UIViewController, StoryboardCreation {
   
   @IBOutlet var tableView: UITableView!
   
-  var delegate: SettingsSelectionViewControllerDelegate?
+  weak var delegate: SettingsSelectionViewControllerDelegate?
   
   override func viewDidLoad() {
     super.viewDidLoad()

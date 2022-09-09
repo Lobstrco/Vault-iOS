@@ -19,7 +19,7 @@ class BiometricIDViewController: UIViewController, StoryboardCreation {
     super.viewDidLoad()
 
     presenter = BiometricIDPresenterImpl(view: self,
-                                         navigationController: navigationController!)
+                                         navigationController: navigationController)
 
     presenter.biometricIDViewDidLoad()
     

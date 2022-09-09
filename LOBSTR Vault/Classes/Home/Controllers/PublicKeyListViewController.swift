@@ -5,7 +5,7 @@ protocol PublicKeyListView: AnyObject {
   func dismiss()
 }
 
-protocol PublicKeyListDelegate {
+protocol PublicKeyListDelegate: AnyObject {
   func publicKeyWasSelected()
 }
 
@@ -26,7 +26,7 @@ class PublicKeyListViewController: UIViewController, StoryboardCreation {
   
   var presenter: PublicKeyListPresenter!
   
-  var delegate: PublicKeyListDelegate?
+  weak var delegate: PublicKeyListDelegate?
   
   private var accounts: [SignedAccount] = []
   

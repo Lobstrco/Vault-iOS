@@ -17,6 +17,15 @@ class MultiaccountPublicKeyTableViewCell: UITableViewCell {
     checkboxImageView.image = image
   }
   
+  override func setHighlighted(_ highlighted: Bool, animated: Bool) {
+    super.setHighlighted(highlighted, animated: animated)
+    if highlighted {
+      backgroundColor = Asset.Colors.grayOpacity15.color
+    }  else {
+      backgroundColor = .clear
+    }
+  }
+
   func set(_ account: SignedAccount, index: Int) {
     let publicKeyIndex = index + 1
     if let nickName = account.nickname, !nickName.isEmpty {

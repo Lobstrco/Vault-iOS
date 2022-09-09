@@ -13,4 +13,15 @@ extension UIAlertController {
     
     presentingViewController.present(controller, animated: true, completion: nil)
   }
+  
+  static func defaultAlert(with error: String, presentingViewController: UIViewController) {
+    let controller = UIAlertController(title: "",
+                                       message: error,
+                                       preferredStyle: .alert)
+    
+    let action = UIAlertAction(title: L10n.buttonTitleOk, style: .default, handler: nil)
+    controller.addAction(action)
+    
+    presentingViewController.present(controller, animated: true, completion: nil)
+  }
 }

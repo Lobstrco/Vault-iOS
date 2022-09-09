@@ -20,13 +20,13 @@ final class APIRequestLoader<T: APIRequest> {
       urlRequest.setValue(UserAgentInfo.getFormattedUserAgent(),
                           forHTTPHeaderField: "User-Agent")
       urlRequest.setValue("https://vault.lobstr.co/", forHTTPHeaderField: "Referer")
-      Logger.networking.debug("""
-                              Request: \(urlRequest.url ?? URL(string: "unknown")!)
-                              HttpMethod: \(urlRequest.httpMethod ?? "unknown")
-                              HttpBody:\n\(urlRequest.httpBody?.prettyPrintedJSONString ?? "")
-                              Headers:\n\(urlRequest.allHTTPHeaderFields ?? [:])
-                              With JWT Token:\n\(jwt ?? "unknown")
-                              """)
+//      Logger.networking.debug("""
+//                              Request: \(urlRequest.url ?? URL(string: "unknown")!)
+//                              HttpMethod: \(urlRequest.httpMethod ?? "unknown")
+//                              HttpBody:\n\(urlRequest.httpBody?.prettyPrintedJSONString ?? "")
+//                              Headers:\n\(urlRequest.allHTTPHeaderFields ?? [:])
+//                              With JWT Token:\n\(jwt ?? "unknown")
+//                              """)
       
       
       urlSession.dataTask(with: urlRequest) { data, response, error in
