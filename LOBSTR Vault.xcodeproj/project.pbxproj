@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,6 +22,7 @@
 		7429896025F122FE00D5578B /* Collection+UnfoldSequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7429895F25F122FE00D5578B /* Collection+UnfoldSequence.swift */; };
 		7435A6F12694863C00BAD34D /* UITextField+Padding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7435A6F02694863C00BAD34D /* UITextField+Padding.swift */; };
 		7435CE5427A2C5360043FFF8 /* PredicateHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7435CE5327A2C5360043FFF8 /* PredicateHelper.swift */; };
+		743F31D72982A64B008513D6 /* UIDevice+ConnectedToNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = 743F31D62982A64A008513D6 /* UIDevice+ConnectedToNetwork.swift */; };
 		7440E6BA27B51BAD00B0589C /* PublicKeyListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7440E6B927B51BAD00B0589C /* PublicKeyListViewController.swift */; };
 		744E6EC0255BF0BF00F011AB /* SignerDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 744E6EBF255BF0BF00F011AB /* SignerDetailsViewController.swift */; };
 		7459F31025B056B7003F47B5 /* UIApplication+TopViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7459F30F25B056B7003F47B5 /* UIApplication+TopViewController.swift */; };
@@ -30,6 +31,7 @@
 		745A8A3127C7C4A100B0414B /* AccountsStorageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745A8A3027C7C4A100B0414B /* AccountsStorageHelper.swift */; };
 		745A8A3327C90E0400B0414B /* PromtForTransactionDecisionsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745A8A3227C90E0300B0414B /* PromtForTransactionDecisionsHelper.swift */; };
 		745F37EB2594DBB700CF3714 /* OperationDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 745F37EA2594DBB700CF3714 /* OperationDetailsSection.swift */; };
+		7463196B2955CAB30035BA12 /* MainSafariViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7463196A2955CAB30035BA12 /* MainSafariViewController.swift */; };
 		748C71D62611EDBC002BECC6 /* NicknameDialogViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 748C71D52611EDBC002BECC6 /* NicknameDialogViewController.swift */; };
 		74998EF62574FABB004F239C /* VersionControlRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74998EF52574FABB004F239C /* VersionControlRequest.swift */; };
 		74998EFA2575017D004F239C /* VersionControlService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74998EF92575017D004F239C /* VersionControlService.swift */; };
@@ -37,6 +39,8 @@
 		74AD91802822966D001D3BBF /* SignersFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AD917F2822966D001D3BBF /* SignersFooterView.swift */; };
 		74AD9182282296D6001D3BBF /* SignersFooterView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 74AD9181282296D6001D3BBF /* SignersFooterView.xib */; };
 		74AD9B5B2580F8B9000C7057 /* PinHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74AD9B5A2580F8B8000C7057 /* PinHelper.swift */; };
+		74B4BD5027E8982400AC7DFE /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 74B4BD4F27E8982400AC7DFE /* CloudKit.framework */; };
+		74B4BD5227E8984C00AC7DFE /* CloudKitNicknameHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74B4BD5127E8984C00AC7DFE /* CloudKitNicknameHelper.swift */; };
 		74CB42B725D5765100B819B6 /* UserAgentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CB42B625D5765100B819B6 /* UserAgentInfo.swift */; };
 		74E6325127B5206B0061FE54 /* MultiaccountPublicKeyTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E6324F27B5206B0061FE54 /* MultiaccountPublicKeyTableViewCell.swift */; };
 		74E6325427B531E40061FE54 /* PublicKeyListPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74E6325327B531E40061FE54 /* PublicKeyListPresenter.swift */; };
@@ -140,7 +144,7 @@
 		9221B7CA21BE91570070A526 /* MnemonicHelperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */; };
 		92221E0D23CF137C00A586E0 /* GoogleService-Info-QA.plist in Resources */ = {isa = PBXBuildFile; fileRef = 92221E0B23CF137C00A586E0 /* GoogleService-Info-QA.plist */; };
 		92221E0F23CF1F1700A586E0 /* LOBSTR Vault QA.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 92221E0E23CF1F1700A586E0 /* LOBSTR Vault QA.entitlements */; };
-		9223E265249366F900C4D2B9 /* ZendeskHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9223E264249366F900C4D2B9 /* ZendeskHelper.swift */; };
+		9223E265249366F900C4D2B9 /* FreshDeskHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9223E264249366F900C4D2B9 /* FreshDeskHelper.swift */; };
 		922A36332203260E00371B35 /* AppDelegate+Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922A36322203260E00371B35 /* AppDelegate+Notifications.swift */; };
 		922A3636220329FC00371B35 /* NotificationsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922A3635220329FC00371B35 /* NotificationsService.swift */; };
 		922A363822032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 922A363722032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift */; };
@@ -198,9 +202,6 @@
 		927BBBCC221AC6CF002C457A /* ConnectionHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */; };
 		927D630E23C71258007FA611 /* TransactionDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 927D630D23C71258007FA611 /* TransactionDetailsPresenter.swift */; };
 		9287681C221C2CEE00014D23 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9287681B221C2CEE00014D23 /* NotificationManager.swift */; };
-		9287A14723E9A55F0008B493 /* Account+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9287A14623E9A55F0008B493 /* Account+CoreDataProperties.swift */; };
-		9287A14923E9A5710008B493 /* Account+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9287A14823E9A5710008B493 /* Account+CoreDataClass.swift */; };
-		9287A14C23E9A6940008B493 /* Account+Fetch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9287A14B23E9A6940008B493 /* Account+Fetch.swift */; };
 		9287BDA8220CC45200F419B8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9287BDA7220CC45200F419B8 /* Assets.xcassets */; };
 		9292F85422247EDC00954BE1 /* OperationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9292F85322247EDC00954BE1 /* OperationTableViewCell.xib */; };
 		9292F8562224858300954BE1 /* OperationDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9292F8552224858300954BE1 /* OperationDetailsTableViewCell.xib */; };
@@ -238,8 +239,6 @@
 		92C8C24821FB3707003E4F5A /* SignerDetails.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92C8C24721FB3707003E4F5A /* SignerDetails.storyboard */; };
 		92C8C24B21FDB09E003E4F5A /* SignerDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92C8C24A21FDB09E003E4F5A /* SignerDetailsTableViewCell.swift */; };
 		92CA735D2212F03D00506998 /* MarkTransactionAsSubmittedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CA735C2212F03D00506998 /* MarkTransactionAsSubmittedRequest.swift */; };
-		92CF1C7923E846E00072A38C /* Vault.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 92CF1C7723E846E00072A38C /* Vault.xcdatamodeld */; };
-		92CF1C7E23E8520A0072A38C /* CoreDataStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CF1C7D23E8520A0072A38C /* CoreDataStack.swift */; };
 		92D3769221BAA95B00504713 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D3769121BAA95B00504713 /* AppDelegate.swift */; };
 		92D3769C21BAA95B00504713 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 92D3769A21BAA95B00504713 /* LaunchScreen.storyboard */; };
 		92D94EE421F5F6EC0092F4BB /* SignedAccountsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92D94EE321F5F6EC0092F4BB /* SignedAccountsRequest.swift */; };
@@ -285,6 +284,7 @@
 		7429895F25F122FE00D5578B /* Collection+UnfoldSequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Collection+UnfoldSequence.swift"; sourceTree = "<group>"; };
 		7435A6F02694863C00BAD34D /* UITextField+Padding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Padding.swift"; sourceTree = "<group>"; };
 		7435CE5327A2C5360043FFF8 /* PredicateHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredicateHelper.swift; sourceTree = "<group>"; };
+		743F31D62982A64A008513D6 /* UIDevice+ConnectedToNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+ConnectedToNetwork.swift"; sourceTree = "<group>"; };
 		7440E6B927B51BAD00B0589C /* PublicKeyListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeyListViewController.swift; sourceTree = "<group>"; };
 		744E6EBF255BF0BF00F011AB /* SignerDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignerDetailsViewController.swift; sourceTree = "<group>"; };
 		7459F30F25B056B7003F47B5 /* UIApplication+TopViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIApplication+TopViewController.swift"; sourceTree = "<group>"; };
@@ -293,6 +293,7 @@
 		745A8A3027C7C4A100B0414B /* AccountsStorageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountsStorageHelper.swift; sourceTree = "<group>"; };
 		745A8A3227C90E0300B0414B /* PromtForTransactionDecisionsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromtForTransactionDecisionsHelper.swift; sourceTree = "<group>"; };
 		745F37EA2594DBB700CF3714 /* OperationDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperationDetailsSection.swift; sourceTree = "<group>"; };
+		7463196A2955CAB30035BA12 /* MainSafariViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSafariViewController.swift; sourceTree = "<group>"; };
 		748C71D52611EDBC002BECC6 /* NicknameDialogViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NicknameDialogViewController.swift; sourceTree = "<group>"; };
 		74998EF52574FABB004F239C /* VersionControlRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionControlRequest.swift; sourceTree = "<group>"; };
 		74998EF92575017D004F239C /* VersionControlService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionControlService.swift; sourceTree = "<group>"; };
@@ -300,6 +301,8 @@
 		74AD917F2822966D001D3BBF /* SignersFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignersFooterView.swift; sourceTree = "<group>"; };
 		74AD9181282296D6001D3BBF /* SignersFooterView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignersFooterView.xib; sourceTree = "<group>"; };
 		74AD9B5A2580F8B8000C7057 /* PinHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinHelper.swift; sourceTree = "<group>"; };
+		74B4BD4F27E8982400AC7DFE /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		74B4BD5127E8984C00AC7DFE /* CloudKitNicknameHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitNicknameHelper.swift; sourceTree = "<group>"; };
 		74CB42B625D5765100B819B6 /* UserAgentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAgentInfo.swift; sourceTree = "<group>"; };
 		74E6324F27B5206B0061FE54 /* MultiaccountPublicKeyTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiaccountPublicKeyTableViewCell.swift; sourceTree = "<group>"; };
 		74E6325327B531E40061FE54 /* PublicKeyListPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PublicKeyListPresenter.swift; sourceTree = "<group>"; };
@@ -409,7 +412,7 @@
 		9221B7C921BE91570070A526 /* MnemonicHelperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicHelperTest.swift; sourceTree = "<group>"; };
 		92221E0B23CF137C00A586E0 /* GoogleService-Info-QA.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info-QA.plist"; sourceTree = "<group>"; };
 		92221E0E23CF1F1700A586E0 /* LOBSTR Vault QA.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "LOBSTR Vault QA.entitlements"; sourceTree = "<group>"; };
-		9223E264249366F900C4D2B9 /* ZendeskHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZendeskHelper.swift; sourceTree = "<group>"; };
+		9223E264249366F900C4D2B9 /* FreshDeskHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreshDeskHelper.swift; sourceTree = "<group>"; };
 		922A36322203260E00371B35 /* AppDelegate+Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppDelegate+Notifications.swift"; sourceTree = "<group>"; };
 		922A3635220329FC00371B35 /* NotificationsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsService.swift; sourceTree = "<group>"; };
 		922A363722032AB200371B35 /* RegisterDeviceForRemoteNotificationsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterDeviceForRemoteNotificationsRequest.swift; sourceTree = "<group>"; };
@@ -468,9 +471,6 @@
 		927BBBCB221AC6CF002C457A /* ConnectionHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionHelper.swift; sourceTree = "<group>"; };
 		927D630D23C71258007FA611 /* TransactionDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionDetailsPresenter.swift; sourceTree = "<group>"; };
 		9287681B221C2CEE00014D23 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		9287A14623E9A55F0008B493 /* Account+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		9287A14823E9A5710008B493 /* Account+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+CoreDataClass.swift"; sourceTree = "<group>"; };
-		9287A14B23E9A6940008B493 /* Account+Fetch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Account+Fetch.swift"; sourceTree = "<group>"; };
 		9287BDA7220CC45200F419B8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9292F85322247EDC00954BE1 /* OperationTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OperationTableViewCell.xib; sourceTree = "<group>"; };
 		9292F8552224858300954BE1 /* OperationDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OperationDetailsTableViewCell.xib; sourceTree = "<group>"; };
@@ -508,8 +508,6 @@
 		92C8C24721FB3707003E4F5A /* SignerDetails.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SignerDetails.storyboard; sourceTree = "<group>"; };
 		92C8C24A21FDB09E003E4F5A /* SignerDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignerDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		92CA735C2212F03D00506998 /* MarkTransactionAsSubmittedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkTransactionAsSubmittedRequest.swift; sourceTree = "<group>"; };
-		92CF1C7823E846E00072A38C /* Vault.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Vault.xcdatamodel; sourceTree = "<group>"; };
-		92CF1C7D23E8520A0072A38C /* CoreDataStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataStack.swift; sourceTree = "<group>"; };
 		92D3768E21BAA95B00504713 /* LOBSTR Vault.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "LOBSTR Vault.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		92D3769121BAA95B00504713 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		92D3769B21BAA95B00504713 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -539,6 +537,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BC7452D9B7E7ACE5D5641C6 /* Pods_LOBSTR_Vault.framework in Frameworks */,
+				74B4BD5027E8982400AC7DFE /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -757,6 +756,7 @@
 				7429895F25F122FE00D5578B /* Collection+UnfoldSequence.swift */,
 				7421AB30266FA0A100E72FAC /* UIView+HideKeyboard.swift */,
 				7435A6F02694863C00BAD34D /* UITextField+Padding.swift */,
+				743F31D62982A64A008513D6 /* UIDevice+ConnectedToNetwork.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1261,6 +1261,7 @@
 				92D94EEE21F639990092F4BB /* CustomPopoverViewController.swift */,
 				92DED2B0220D72A100A7EA05 /* PKHUDSuccessViewCustom.swift */,
 				7423A46E280448FB00AE5AE9 /* HighlightedButton.swift */,
+				7463196A2955CAB30035BA12 /* MainSafariViewController.swift */,
 			);
 			path = Custom;
 			sourceTree = "<group>";
@@ -1423,14 +1424,6 @@
 			path = Controllers;
 			sourceTree = "<group>";
 		};
-		9287A14A23E9A6830008B493 /* Requests */ = {
-			isa = PBXGroup;
-			children = (
-				9287A14B23E9A6940008B493 /* Account+Fetch.swift */,
-			);
-			path = Requests;
-			sourceTree = "<group>";
-		};
 		9292F85222247E4200954BE1 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
@@ -1564,34 +1557,13 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		92CF1C7A23E8479F0072A38C /* Persistence */ = {
-			isa = PBXGroup;
-			children = (
-				9287A14A23E9A6830008B493 /* Requests */,
-				92CF1C7C23E851730072A38C /* Entities */,
-				92CF1C7723E846E00072A38C /* Vault.xcdatamodeld */,
-				92CF1C7D23E8520A0072A38C /* CoreDataStack.swift */,
-			);
-			path = Persistence;
-			sourceTree = "<group>";
-		};
 		92CF1C7B23E8513A0072A38C /* Infrastructure */ = {
 			isa = PBXGroup;
 			children = (
 				9277AB8221C8E53800379971 /* Networking */,
 				9216EDA923B24484003EFA76 /* Logging */,
-				92CF1C7A23E8479F0072A38C /* Persistence */,
 			);
 			path = Infrastructure;
-			sourceTree = "<group>";
-		};
-		92CF1C7C23E851730072A38C /* Entities */ = {
-			isa = PBXGroup;
-			children = (
-				9287A14623E9A55F0008B493 /* Account+CoreDataProperties.swift */,
-				9287A14823E9A5710008B493 /* Account+CoreDataClass.swift */,
-			);
-			path = Entities;
 			sourceTree = "<group>";
 		};
 		92D3768521BAA95B00504713 = {
@@ -1698,7 +1670,7 @@
 				921E1F522229453400A740C4 /* UtilityHelper.swift */,
 				923142E624700D3F0044C1B9 /* TangemHelper.swift */,
 				92A1423624880EF0001889E3 /* AnalyticsHelper.swift */,
-				9223E264249366F900C4D2B9 /* ZendeskHelper.swift */,
+				9223E264249366F900C4D2B9 /* FreshDeskHelper.swift */,
 				74998EFD25751E34004F239C /* VersionControlHelper.swift */,
 				7435CE5327A2C5360043FFF8 /* PredicateHelper.swift */,
 				74E6325727B5688B0061FE54 /* PresentationHelper.swift */,
@@ -1706,6 +1678,7 @@
 				745A8A3227C90E0300B0414B /* PromtForTransactionDecisionsHelper.swift */,
 				745A8A3027C7C4A100B0414B /* AccountsStorageHelper.swift */,
 				74EBA1CE27CD0D99008D5A75 /* ActivePublicKeyHelper.swift */,
+				74B4BD5127E8984C00AC7DFE /* CloudKitNicknameHelper.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -1730,6 +1703,7 @@
 		BAD7330339BD369057C29BCC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				74B4BD4F27E8982400AC7DFE /* CloudKit.framework */,
 				92BA8BE0247BFE730013E468 /* CoreNFC.framework */,
 				F431B7657DAF2501098D894F /* Pods_LOBSTR_Vault.framework */,
 				308177D9683E517F404689AC /* Pods_LOBSTR_VaultTests.framework */,
@@ -1786,8 +1760,9 @@
 		92D3768621BAA95B00504713 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1010;
-				LastUpgradeCheck = 1150;
+				LastUpgradeCheck = 1500;
 				ORGANIZATIONNAME = "Ultra Stellar";
 				TargetAttributes = {
 					92D3768D21BAA95B00504713 = {
@@ -2001,6 +1976,7 @@
 				9244328B21F50EFB00E9868A /* PinEnterViewController.swift in Sources */,
 				84835AB521D647200039F1C5 /* MnemonicSuggestionsViewCell.swift in Sources */,
 				844215C62335206A00B461A1 /* SignerTableViewCell.swift in Sources */,
+				74B4BD5227E8984C00AC7DFE /* CloudKitNicknameHelper.swift in Sources */,
 				84835AB421D646EF0039F1C5 /* MnemonicSuggestionsView.swift in Sources */,
 				84FB6E8F2339097E009B1380 /* SignersTotalNumberTableViewCell.swift in Sources */,
 				92C4156021E620F200960170 /* UIAlertController+Alert.swift in Sources */,
@@ -2016,9 +1992,7 @@
 				74E6325427B531E40061FE54 /* PublicKeyListPresenter.swift in Sources */,
 				84CFB07721D7AA920020073C /* SettingsSection.swift in Sources */,
 				84FB6E8A23390821009B1380 /* VaultPublicKeyTableViewCell.swift in Sources */,
-				9287A14923E9A5710008B493 /* Account+CoreDataClass.swift in Sources */,
 				92960A6322135CB80055E4AD /* AsyncOperation.swift in Sources */,
-				92CF1C7923E846E00072A38C /* Vault.xcdatamodeld in Sources */,
 				922C641621CBA4D200EDD409 /* TransactionListPresenter.swift in Sources */,
 				84A0C3D121C7B0F8007A076F /* VaultStorage.swift in Sources */,
 				922A36332203260E00371B35 /* AppDelegate+Notifications.swift in Sources */,
@@ -2040,7 +2014,6 @@
 				92D94EED21F61D100092F4BB /* SignedAccount.swift in Sources */,
 				92D94EE421F5F6EC0092F4BB /* SignedAccountsRequest.swift in Sources */,
 				84A8261121E4F415004EF5D9 /* KeyValueStorage.swift in Sources */,
-				9287A14C23E9A6940008B493 /* Account+Fetch.swift in Sources */,
 				84C94CA821E7398F0086991D /* AuthContext.swift in Sources */,
 				8486F68821CB8A000099F1F2 /* PinManager.swift in Sources */,
 				84A8260821E4D570004EF5D9 /* BiometricType.swift in Sources */,
@@ -2066,16 +2039,16 @@
 				921EFBFA2248E73800D08192 /* TransactionImportViewController.swift in Sources */,
 				9277AB8A21C8E8A700379971 /* NetworkingResult.swift in Sources */,
 				923142ED24706B7E0044C1B9 /* SignTransactionWithTangemOperation.swift in Sources */,
+				7463196B2955CAB30035BA12 /* MainSafariViewController.swift in Sources */,
 				84F63DC7233A0DE4004D5F90 /* SignerAccountTableViewCell.swift in Sources */,
 				84835ABC21D651E60039F1C5 /* ReusableView.swift in Sources */,
-				9223E265249366F900C4D2B9 /* ZendeskHelper.swift in Sources */,
+				9223E265249366F900C4D2B9 /* FreshDeskHelper.swift in Sources */,
 				841801F72338E157006B05F6 /* UITableView+Register.swift in Sources */,
 				9221B7AC21BE86B50070A526 /* Storyboards.swift in Sources */,
 				84CFB07921D7AACC0020073C /* SettingsPresenter.swift in Sources */,
 				84483E89233CB351000BB271 /* HomePresenter.swift in Sources */,
 				841801F52338E087006B05F6 /* NibloadableView.swift in Sources */,
 				7423A46F280448FB00AE5AE9 /* HighlightedButton.swift in Sources */,
-				92CF1C7E23E8520A0072A38C /* CoreDataStack.swift in Sources */,
 				922C641321CB8E7100EDD409 /* HomePresenterImpl.swift in Sources */,
 				748C71D62611EDBC002BECC6 /* NicknameDialogViewController.swift in Sources */,
 				844A0C7123CDDA2100424894 /* Environment.swift in Sources */,
@@ -2085,7 +2058,6 @@
 				9248462E21EDF2D7000CC546 /* Images.swift in Sources */,
 				9287681C221C2CEE00014D23 /* NotificationManager.swift in Sources */,
 				7459F31025B056B7003F47B5 /* UIApplication+TopViewController.swift in Sources */,
-				9287A14723E9A55F0008B493 /* Account+CoreDataProperties.swift in Sources */,
 				927BBBCC221AC6CF002C457A /* ConnectionHelper.swift in Sources */,
 				9221B7AF21BE86DC0070A526 /* StoryboardCreation.swift in Sources */,
 				92C4156621ECCF8800960170 /* TransactionService.swift in Sources */,
@@ -2142,6 +2114,7 @@
 				84CFB07C21D7B02E0020073C /* ApplicationInfo.swift in Sources */,
 				9277ABB821CA770D00379971 /* Transaction.swift in Sources */,
 				7435A6F12694863C00BAD34D /* UITextField+Padding.swift in Sources */,
+				743F31D72982A64B008513D6 /* UIDevice+ConnectedToNetwork.swift in Sources */,
 				9277AB8421C8E7C200379971 /* APIRequestLoader.swift in Sources */,
 				9208BEF32475AFCE005E8B21 /* MultisigInfoViewController.swift in Sources */,
 				9277ABB521CA75C300379971 /* PaginationResponse.swift in Sources */,
@@ -2267,6 +2240,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2281,7 +2255,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2299,16 +2273,17 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 70;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.6;
+				MARKETING_VERSION = 3.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2327,6 +2302,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2379,6 +2355,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2387,7 +2364,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -2405,15 +2382,16 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault QA.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.6;
+				MARKETING_VERSION = 3.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2432,6 +2410,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2484,6 +2463,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2492,7 +2472,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -2510,15 +2490,16 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault QA.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.6;
+				MARKETING_VERSION = 3.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2537,6 +2518,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2589,6 +2571,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -2603,7 +2586,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -2651,6 +2634,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -2659,7 +2643,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -2677,16 +2661,17 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 70;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.6;
+				MARKETING_VERSION = 3.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2703,15 +2688,16 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 59;
+				CURRENT_PROJECT_VERSION = 70;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.6;
+				MARKETING_VERSION = 3.4.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2730,6 +2716,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2754,6 +2741,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				INFOPLIST_FILE = "LOBSTR VaultTests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -2808,19 +2796,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		92CF1C7723E846E00072A38C /* Vault.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				92CF1C7823E846E00072A38C /* Vault.xcdatamodel */,
-			);
-			currentVersion = 92CF1C7823E846E00072A38C /* Vault.xcdatamodel */;
-			path = Vault.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 92D3768621BAA95B00504713 /* Project object */;
 }

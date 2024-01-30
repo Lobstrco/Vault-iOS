@@ -12,7 +12,16 @@ protocol OperationPresenter {
   var storageAccounts: [SignedAccount] { get }
   
   func operationViewDidLoad()
-  func setOperation(_ operation: stellarsdk.Operation, transactionSourceAccountId: String, operationName: String, _ memo: BeautifulMemo, _ date: String, signers: [SignerViewData], numberOfNeededSignatures: Int, destinationFederation: String, isNeedToShowHelpfulMessage: Bool, isNeedToShowSignaturesNumber: Bool)
+  func setOperation(_ operation: stellarsdk.Operation,
+                    transactionSourceAccountId: String,
+                    maxFee: String?,
+                    operationName: String,
+                    _ memo: BeautifulMemo,
+                    _ date: String,
+                    signers: [SignerViewData],
+                    numberOfNeededSignatures: Int,
+                    isNeedToShowHelpfulMessage: Bool,
+                    isNeedToShowSignaturesNumber: Bool)
   func publicKeyWasSelected(key: String?)
   func assetCodeWasSelected(code: String?)
   func copyPublicKey(_ key: String)
@@ -22,6 +31,7 @@ protocol OperationPresenter {
   func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?)
   func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?)
   func signerWasSelected(_ viewData: SignerViewData?)
+  func proceedICloudSyncActionWasPressed()
 }
 
 protocol OperationDetailsView: AnyObject {
@@ -29,6 +39,10 @@ protocol OperationDetailsView: AnyObject {
   func setTitle(_ title: String)
   func showActionSheet(_ value: Any?, _ type: ActionSheetType)
   func copy(_ text: String)
+  func showICloudSyncAdviceAlert()
+  func showNoInternetConnectionAlert()
+  func showICloudSyncScreen()
+  func setProgressAnimation(isEnabled: Bool)
 }
 
 class OperationPresenterImpl {
@@ -36,6 +50,7 @@ class OperationPresenterImpl {
   fileprivate weak var crashlyticsService: CrashlyticsService?
   fileprivate var operationProperties: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
   fileprivate var xdr: String
+  private let federationService: FederationService
   
   var operation: stellarsdk.Operation?
   var transactionSourceAccountId: String = ""
@@ -43,6 +58,7 @@ class OperationPresenterImpl {
   var memo: BeautifulMemo?
   var date: String?
   var destinationFederation: String = ""
+  var maxFee: String?
   
   var numberOfAcceptedSignatures: Int {
     return signers
@@ -61,10 +77,13 @@ class OperationPresenterImpl {
   
   // MARK: - Init
   
-  init(view: OperationDetailsView, xdr: String, crashlyticsService: CrashlyticsService = CrashlyticsService()) {
+  init(view: OperationDetailsView, xdr: String,
+       crashlyticsService: CrashlyticsService = CrashlyticsService(),
+       federationService: FederationService = FederationService()) {
     self.view = view
     self.xdr = xdr
     self.crashlyticsService = crashlyticsService
+    self.federationService = federationService
   }
 }
 
@@ -76,18 +95,25 @@ extension OperationPresenterImpl: OperationPresenter {
   }
   
   func operationViewDidLoad() {
-    self.storageAccounts = storage.retrieveAccounts() ?? []
+    storageAccounts = AccountsStorageHelper.getStoredAccounts()
     view?.setTitle(operationName)
-    self.setOperationDetails()
-    self.sections = self.buildSections()
-    view?.setListOfOperationDetails()
+    getDestinationFederation()
   }
   
-  func setOperation(_ operation: stellarsdk.Operation, transactionSourceAccountId: String, operationName: String, _ memo: BeautifulMemo, _ date: String, signers: [SignerViewData], numberOfNeededSignatures: Int, destinationFederation: String, isNeedToShowHelpfulMessage: Bool, isNeedToShowSignaturesNumber: Bool) {
+  func setOperation(_ operation: stellarsdk.Operation,
+                    transactionSourceAccountId: String,
+                    maxFee: String?,
+                    operationName: String,
+                    _ memo: BeautifulMemo,
+                    _ date: String,
+                    signers: [SignerViewData],
+                    numberOfNeededSignatures: Int,
+                    isNeedToShowHelpfulMessage: Bool,
+                    isNeedToShowSignaturesNumber: Bool) {
     self.operation = operation
     self.transactionSourceAccountId = transactionSourceAccountId
+    self.maxFee = maxFee
     self.operationName = operationName
-    self.destinationFederation = destinationFederation
     self.memo = memo
     self.date = date
     self.signers = signers
@@ -130,10 +156,10 @@ extension OperationPresenterImpl: OperationPresenter {
       let assets = TransactionHelper.getAssets(from: operation)
       if !assets.isEmpty {
         if let asset = assets.first(where: { $0.code == code }) {
-          self.view?.showActionSheet(asset, .assetCode)
+          view?.showActionSheet(asset, .assetCode)
         }
         else {
-          self.view?.showActionSheet(nil, .nativeAssetCode)
+          view?.showActionSheet(nil, .nativeAssetCode)
         }
       }
     }
@@ -162,7 +188,7 @@ extension OperationPresenterImpl: OperationPresenter {
   func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
     guard let type = nicknameDialogType else { return }
     guard let publicKey = publicKey else { return }
-    
+
     var allAccounts: [SignedAccount] = []
     allAccounts.append(contentsOf: AccountsStorageHelper.getMainAccountsFromCache())
     allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
@@ -170,9 +196,11 @@ extension OperationPresenterImpl: OperationPresenter {
     
     if let index = allAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
       allAccounts[index].nickname = nickname
+      savedToICloud(account: allAccounts[index])
     } else {
-      let account = SignedAccount(address: publicKey, federation: nil, nickname: text)
+      let account = SignedAccount(address: publicKey, federation: nil, nickname: text, indicateAddress: AccountsStorageHelper.indicateAddress)
       allAccounts.append(account)
+      savedToICloud(account: account)
     }
     storage.save(accounts: allAccounts)
     updateSigners()
@@ -184,10 +212,35 @@ extension OperationPresenterImpl: OperationPresenter {
     default:
       NotificationCenter.default.post(name: .didNicknameSet, object: nil)
     }
+    
+    guard UIDevice.isConnectedToNetwork,
+          let nickname = text,
+          !nickname.isEmpty else { return }
+    
+    CloudKitNicknameHelper.checkIsICloudStatusAvaliable { isAvaliable in
+      if isAvaliable {
+        CloudKitNicknameHelper.isICloudDatabaseEmpty { result in
+          if result, CloudKitNicknameHelper.isNeedToShowICloudSyncAdviceAlert {
+            DispatchQueue.main.async {
+              UserDefaultsHelper.isICloudSyncAdviceShown = true
+              self.view?.showICloudSyncAdviceAlert()
+            }
+          }
+        }
+      }
+    }
   }
   
   func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?) {
-    setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+    if UserDefaultsHelper.isICloudSynchronizationEnabled {
+      guard UIDevice.isConnectedToNetwork else {
+        view?.showNoInternetConnectionAlert()
+        return
+      }
+      setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+    } else {
+      setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+    }
   }
   
   func signerWasSelected(_ viewData: SignerViewData?) {
@@ -198,21 +251,86 @@ extension OperationPresenterImpl: OperationPresenter {
       self.view?.showActionSheet(viewData.publicKey, .publicKey(isNicknameSet: !nickname.isEmpty, type: type, isVaultSigner: result))
     }
   }
+    
+  func proceedICloudSyncActionWasPressed() {
+    view?.showICloudSyncScreen()
+  }
 }
 
 private extension OperationPresenterImpl {
-  func setOperationDetails() {
-    guard let operation = operation else { return }
-    operationProperties = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionSourceAccountId, memo: memo, destinationFederation: destinationFederation)
+  func getDestinationFederation() {
+    let destinationId = tryToGetDestinationId()
+    
+    if !destinationId.isEmpty {
+      view?.setProgressAnimation(isEnabled: true)
+      federationService.getFederation(for: destinationId) { result in
+        self.view?.setProgressAnimation(isEnabled: false)
+        switch result {
+        case .success(let account):
+          DispatchQueue.main.async {
+            if let federation = account.federation {
+              self.destinationFederation = federation
+              self.setOperationDetails()
+            } else {
+              self.setOperationDetails()
+            }
+          }
+        case .failure(let error):
+          Logger.home.error("Couldn't get federation for \(destinationId) with error: \(error)")
+          DispatchQueue.main.async {
+            self.setOperationDetails()
+          }
+        }
+      }
+    } else {
+      setOperationDetails()
+    }
   }
   
+  func setOperationDetails() {
+    setOperationProperties()
+    sections = buildSections()
+    view?.setListOfOperationDetails()
+  }
   
+  func setOperationProperties() {
+    guard let operation = operation else { return }
+    operationProperties = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionSourceAccountId, destinationFederation: destinationFederation)
+  }
+  
+  func tryToGetDestinationId() -> String {
+    var destinationId = ""
+    guard let operation = operation else { return destinationId }
+    switch type(of: operation) {
+    case is PaymentOperation.Type:
+      let paymentOperation = operation as! PaymentOperation
+      destinationId = paymentOperation.destinationAccountId
+    case is PathPaymentOperation.Type:
+      let pathPaymentOperation = operation as! PathPaymentOperation
+      destinationId = pathPaymentOperation.destinationAccountId
+    case is CreateAccountOperation.Type:
+      let createAccountOperation = operation as! CreateAccountOperation
+      destinationId = createAccountOperation.destination.accountId
+    case is AccountMergeOperation.Type:
+      let accountMergeOperation = operation as! AccountMergeOperation
+      destinationId = accountMergeOperation.destinationAccountId
+    default:
+      return destinationId
+    }
+    return destinationId
+  }
+
   func buildAdditionalInformationSection() -> [(name: String , value: String, nickname: String, isPublicKey: Bool)] {
     var additionalInformationSection: [(name: String , value: String, nickname: String, isPublicKey: Bool)] = []
     if let memo = self.memo, !memo.value.isEmpty {
       additionalInformationSection.append((name: memo.title, value: memo.value, nickname: "", isPublicKey: false))
     }
     additionalInformationSection.append((name: "Transaction Source", value: transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionSourceAccountId), isPublicKey: true))
+    
+    if let maxFee = maxFee {
+      additionalInformationSection.append((name: "Max Network Fee", value: maxFee + " XLM", nickname: "", isPublicKey: false))
+    }
+    
     if let transactionDate = self.date, !transactionDate.isEmpty {
       additionalInformationSection.append((name: "Created", value: transactionDate, nickname: "", isPublicKey: false))
     }
@@ -234,14 +352,23 @@ private extension OperationPresenterImpl {
   
   func updateSigners() {
     var updatedSigners: [SignerViewData] = []
-    storageAccounts = storage.retrieveAccounts() ?? []
+    storageAccounts = AccountsStorageHelper.getStoredAccounts()
     for signer in signers {
       if let index = storageAccounts.firstIndex(where: { $0.address == signer.publicKey }) {
         var signer = signer
         signer.nickname = storageAccounts[index].nickname
         updatedSigners.append(signer)
+      } else {
+        updatedSigners.append(signer)
       }
     }
-    self.signers = updatedSigners
+    signers = updatedSigners
+  }
+  
+  func savedToICloud(account: SignedAccount?) {
+    CloudKitNicknameHelper.accountToSave = account
+    if let accountToSave = CloudKitNicknameHelper.accountToSave {
+      CloudKitNicknameHelper.saveToICloud(accountToSave)
+    }
   }
 }

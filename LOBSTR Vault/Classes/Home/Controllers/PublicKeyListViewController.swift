@@ -106,6 +106,6 @@ private extension PublicKeyListViewController {
     addNewAccountView.isHidden = true
     addNewAccountViewHeightConstraint.constant = 0.0
     tableViewBottomConstraint.isActive = false
-    tableView.bottomAnchor.constraint(equalTo: self.view.safeBottomAnchor, constant: 0.0).isActive = true
+    tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
   }
 }

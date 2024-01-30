@@ -4,9 +4,6 @@ import UIKit
 import UserNotifications
 import FirebaseMessaging
 
-import ZendeskCoreSDK
-import SupportSDK
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
@@ -22,24 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     application.registerForRemoteNotifications()
     firebaseSetup()
-    zendeskSetup()
     countAppLaunches()
     applicationCoordinator.start(appDelegate: self)
     
     UITabBar.appearance().tintColor = Asset.Colors.main.color
     
     return true
-  }
-  
-  func zendeskSetup() {
-    Zendesk.initialize(appId: ZendeskHelper.appId,
-                       clientId: ZendeskHelper.clientId,
-                       zendeskUrl: ZendeskHelper.zendeskUrl)
-    
-    let identity = Identity.createAnonymous()
-    Zendesk.instance?.setIdentity(identity)
-    
-    Support.initialize(withZendesk: Zendesk.instance)
   }
   
   func firebaseSetup() {

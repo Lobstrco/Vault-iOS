@@ -9,6 +9,8 @@ enum TextFieldType {
 
 protocol AddNicknameDelegate: AnyObject {
   func nicknameWasAdded()
+  func showICloudSyncAdviceAlert()
+  func showNoInternetConnectionAlert()
 }
 
 class AddNicknameViewController: UIViewController, StoryboardCreation {
@@ -110,12 +112,21 @@ extension AddNicknameViewController: UITextFieldDelegate {
   }
 }
 
-
 // MARK: - AddNicknameView
 
 extension AddNicknameViewController: AddNicknameView {
-  func closeScreen() {
-    dismiss(animated: true, completion: nil)
+  func closeScreen(isAfterSave: Bool, isNeedToShowInternetConnectionAlert: Bool) {
+    dismiss(animated: true) { [weak self] in
+      guard let self = self else { return }
+      guard !isNeedToShowInternetConnectionAlert else {
+        self.presenter.showNoInternetConnectionAlert()
+        return
+      }
+      
+      if isAfterSave {
+        self.presenter.showICloudSyncAdviceAlert()
+      }
+    }
   }
   
   func setSaveButton(isEnabled: Bool) {

@@ -18,7 +18,10 @@ class ApplicationCoordinator {
     Messaging.messaging().delegate = appDelegate
     UNUserNotificationCenter.current().delegate = appDelegate
     
-    Localization.localizationsBundle = Bundle(for: AppDelegate.self)
+    if #available(iOS 13.0, *) {
+      Localization.localizationsBundle = Bundle(for: AppDelegate.self)
+    }
+    
     resetNotificationBadgeIfNeeded()
     openStartScreen()
   }
@@ -97,10 +100,21 @@ class ApplicationCoordinator {
 private extension ApplicationCoordinator {
   
   func openStartScreen() {
-    guard let _ = VaultStorage().getEncryptedMnemonicFromKeychain() else {
-      ApplicationCoordinatorHelper.logout()
-      return
+    if accountStatus != .createdWithTangem {
+      guard let _ = VaultStorage().getEncryptedMnemonicFromKeychain() else {
+        ApplicationCoordinatorHelper.logout()
+        return
+      }
+    } else {
+      guard let _ = UserDefaultsHelper.tangemPublicKeyData,
+            let _ = UserDefaultsHelper.tangemCardId,
+            let _ = VaultStorage().getPublicKeyFromKeychain()
+        else {
+        ApplicationCoordinatorHelper.logout()
+        return
+      }
     }
+        
     switch accountStatus {
     case .notCreated:
       Logger.auth.debug("AUTH. NOT CREATED")
@@ -117,9 +131,11 @@ private extension ApplicationCoordinator {
       Logger.auth.debug("AUTH. WAITING TO SIGNER")
       enablePromtForTransactionDecisions()
       ApplicationCoordinatorHelper.clearKeychain()
+      CloudKitNicknameHelper.getAllRecords()
       showMenuScreen()
     case .createdByDefault:
       Logger.auth.debug("AUTH. DEFAULT")
+      CloudKitNicknameHelper.getAllRecords()
       showHomeScreen()
     }
   }
@@ -136,12 +152,13 @@ private extension ApplicationCoordinator {
   
   func showTransactionsDetails(by transaction: Transaction) {
     let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
-    transactionDetailsViewController.afterPushNotification = true
+    transactionDetailsViewController.isAfterPushNotification = true
     
     transactionDetailsViewController.presenter =
       TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                       transaction: transaction,
-                                      type: .standard)
+                                      type: .standard,
+                                      isAfterPushNotification: true)
     Logger.transactionDetails.debug("Transaction: \(transaction)")
     transactionDetailsViewController.presenter.transactionListIndex = 0
     guard let tabBarViewController = self.window!.rootViewController as? TabBarViewController else { return }

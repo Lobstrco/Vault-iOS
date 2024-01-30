@@ -93,7 +93,6 @@ PODS:
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
   - JWTDecode (2.4.1)
-  - KeychainSwift (19.0.0)
   - Kingfisher (5.12.0):
     - Kingfisher/Core (= 5.12.0)
   - Kingfisher/Core (5.12.0)
@@ -107,32 +106,15 @@ PODS:
   - Presentr (1.9)
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
-  - secp256k1.swift (0.1.4)
-  - stellar-ios-mac-sdk (2.2.1)
+  - stellar-ios-mac-sdk (2.5.2)
   - SwiftGen (6.0.2)
-  - TangemSdk (2.1.1):
-    - KeychainSwift
-    - secp256k1.swift
-  - ZendeskCommonUISDK (4.2.0):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.2)
-  - ZendeskCoreSDK (2.4.0)
-  - ZendeskMessagingAPISDK (3.2.0):
-    - ZendeskSDKConfigurationsSDK (~> 1.1.2)
-  - ZendeskMessagingSDK (3.2.0):
-    - ZendeskCommonUISDK (~> 4.2.0)
-    - ZendeskMessagingAPISDK (~> 3.2.0)
-  - ZendeskSDKConfigurationsSDK (1.1.5)
-  - ZendeskSupportProvidersSDK (5.0.5):
-    - ZendeskCoreSDK (~> 2.4.0)
-  - ZendeskSupportSDK (5.0.1):
-    - ZendeskMessagingSDK (~> 3.2.0)
-    - ZendeskSupportProvidersSDK (~> 5.0.1)
+  - TangemSdk (3.4.0)
 
 DEPENDENCIES:
   - AcknowList (~> 1.9.5)
   - Disk
   - Firebase/Analytics
-  - Firebase/Core (~> 6.15.0)
+  - Firebase/Core
   - Firebase/Crashlytics
   - Firebase/Messaging
   - JWTDecode (~> 2.4)
@@ -140,10 +122,9 @@ DEPENDENCIES:
   - lottie-ios (~> 2.5.2)
   - PKHUD (~> 5.0)
   - Presentr
-  - stellar-ios-mac-sdk (~> 2.2.1)
+  - stellar-ios-mac-sdk (~> 2.5.2)
   - SwiftGen (~> 6.0.2)
-  - TangemSdk (~> 2.1.1)
-  - ZendeskSupportSDK (= 5.0.1)
+  - TangemSdk (~> 3.4.0)
 
 SPEC REPOS:
   trunk:
@@ -164,7 +145,6 @@ SPEC REPOS:
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
     - JWTDecode
-    - KeychainSwift
     - Kingfisher
     - lottie-ios
     - nanopb
@@ -172,17 +152,9 @@ SPEC REPOS:
     - Presentr
     - PromisesObjC
     - Protobuf
-    - secp256k1.swift
     - stellar-ios-mac-sdk
     - SwiftGen
     - TangemSdk
-    - ZendeskCommonUISDK
-    - ZendeskCoreSDK
-    - ZendeskMessagingAPISDK
-    - ZendeskMessagingSDK
-    - ZendeskSDKConfigurationsSDK
-    - ZendeskSupportProvidersSDK
-    - ZendeskSupportSDK
 
 SPEC CHECKSUMS:
   AcknowList: 485f0e0da8ff7d5aaa8fb54bbff1da1f065e496c
@@ -202,7 +174,6 @@ SPEC CHECKSUMS:
   GoogleDataTransportCCTSupport: 0f39025e8cf51f168711bd3fb773938d7e62ddb5
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   JWTDecode: 4bd4da0cdf0f8154fd467fa48499f34ec057fb88
-  KeychainSwift: a06190cf933ad46b1e0abc3d77d29c06331715c7
   Kingfisher: dc6e0f53bb5b12c3e75bedb0e01bbd7a640eea69
   lottie-ios: a50d5c0160425cd4b01b852bb9578963e6d92d31
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
@@ -210,18 +181,10 @@ SPEC CHECKSUMS:
   Presentr: 7078d7eb5d1661ebeaae60c9e42a1e534de1b993
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
-  secp256k1.swift: a7e7a214f6db6ce5db32cc6b2b45e5c4dd633634
-  stellar-ios-mac-sdk: 554fb985f38598f3b6009548d68a5f669720d979
+  stellar-ios-mac-sdk: 354f234fd2d130024a68726e44e9d0df042cffc3
   SwiftGen: e5b047067aa84082826a0c4f1c4c2ddc95bcf74c
-  TangemSdk: 06c7ccf041f1a2a3d3528770a73359a014e469f0
-  ZendeskCommonUISDK: afbee7c58c04cf88012a48c079599ec0d1590d16
-  ZendeskCoreSDK: 804aff5229ae9500b8057b65fe53ad869856f427
-  ZendeskMessagingAPISDK: c12dacdb94a89a957d911d5cff82a7cc9ee9666b
-  ZendeskMessagingSDK: 9cd3a5af8bc0766b5e4774d8cbd8a0468263af97
-  ZendeskSDKConfigurationsSDK: 0c610c22c9e3cafcd31591344b8cc3b4398e49b2
-  ZendeskSupportProvidersSDK: d21ce8eb3df1066338c7d3875bb818b32c3f124e
-  ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
+  TangemSdk: d782fc8c55cb56ffdfcaf7081422e02b19f18334
 
-PODFILE CHECKSUM: 6a836c4f86ec9a2ff485b8ed3218652408724925
+PODFILE CHECKSUM: 8258794c3733208acb55bad07c80691b44c41f0d
 
-COCOAPODS: 1.11.3
+COCOAPODS: 1.14.3

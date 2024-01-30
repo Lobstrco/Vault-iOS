@@ -2,11 +2,12 @@ import Foundation
 import stellarsdk
 
 struct TransactionHelper {
-  
   static let storage: AccountsStorage = AccountsStorageDiskImpl()
   static var storageAccounts: [SignedAccount] = []
   
   static let numberOfCharacters = getNumberOfCharactersForTruncatePublicKeyTransactionDetails()
+  
+  static var operationsCount = 0
   
   // tangem auth sep-10 and tangem sign transaction
   static func signTransaction(walletPublicKey: Data, signature: Data, txEnvelope: inout TransactionEnvelopeXDR) {
@@ -48,9 +49,10 @@ struct TransactionHelper {
     case .v0(let txEnvV0):
       let tV0Xdr = txEnvV0.tx
       guard let pk = try? PublicKey(tV0Xdr.sourceAccountEd25519) else { break }
+      let conditions = tV0Xdr.timeBounds != nil ? PreconditionsXDR.time(tV0Xdr.timeBounds!) : .none
       let transactionXdr = TransactionXDR(sourceAccount: pk,
                                           seqNum: tV0Xdr.seqNum,
-                                          timeBounds: tV0Xdr.timeBounds,
+                                          cond: conditions,
                                           memo: tV0Xdr.memo,
                                           operations: tV0Xdr.operations,
                                           maxOperationFee: tV0Xdr.fee / UInt32(tV0Xdr.operations.count))
@@ -69,19 +71,25 @@ struct TransactionHelper {
     for operation in xdr.txOperations {
       let operationTypeValue = operation.body.type()
     
-      let operationType = OperationType.init(rawValue: operationTypeValue)
+      let operationType = OperationType(rawValue: operationTypeValue)
     
       if let type = operationType {
         var name = ""
         switch type {
         case .accountCreated:
-          name = "Create Account"
+          name = L10n.textOperationNameCreateAccount
         case .manageSellOffer:
           guard let manageOperation = try? stellarsdk.Operation.fromXDR(operationXDR: operation) as? ManageOfferOperation else {
-            name = "Sell Offer"
+            name = L10n.textOperationNameSellOffer
             continue
           }
-          name = manageOperation.amount == 0 && manageOperation.offerId != 0 ? "Cancel Offer" : "Sell Offer"
+          name = manageOperation.amount == 0 && manageOperation.offerId != 0 ? L10n.textOperationNameCancelOffer : L10n.textOperationNameSellOffer
+        case .manageBuyOffer:
+          guard let manageOperation = try? stellarsdk.Operation.fromXDR(operationXDR: operation) as? ManageOfferOperation else {
+            name = L10n.textOperationNameManageBuyOffer
+            continue
+          }
+          name = manageOperation.amount == 0 && manageOperation.offerId != 0 ? L10n.textOperationNameCancelOffer : L10n.textOperationNameManageBuyOffer
         case .manageData:
           if let transactionType = transactionType {
             switch transactionType {
@@ -90,8 +98,7 @@ struct TransactionHelper {
             default:
               name = type.description
             }
-          }
-          else {
+          } else {
             name = type.description
           }
         case .revokeSponsorship:
@@ -105,20 +112,20 @@ struct TransactionHelper {
             if let ledgerKey = revokeSponsorshipOperation.ledgerKey {
               switch ledgerKey {
               case .account:
-                name = "Revoke Account Sponsorship"
+                name = L10n.textOperationNameRevokeAccountSponsorship
               case .claimableBalance:
-                name = "Revoke Claimable Balance Sponsorship"
+                name = L10n.textOperationNameRevokeClaimableBalanceSponsorship
               case .data:
-                name = "Revoke Data Sponsorship"
+                name = L10n.textOperationNameRevokeDataSponsorship
               case .offer:
-                name = "Revoke Offer Sponsorship"
+                name = L10n.textOperationNameRevokeOfferSponsorship
               case .trustline:
-                name = "Revoke Trustline Sponsorship"
-              case .liquidityPool:
+                name = L10n.textOperationNameRevokeTrustlineSponsorship
+              case .liquidityPool, .contractData, .contractCode, .configSetting, .ttl:
                 name = ""
               }
             } else {
-              name = "Revoke Signer Sponsorship"
+              name = L10n.textOperationNameRevokeSignerSponsorship
             }
           }
         default:
@@ -132,7 +139,6 @@ struct TransactionHelper {
   }
   
   static func getOperation(from xdr: String, by index: Int = 0) throws -> stellarsdk.Operation {
-    
     guard let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) else {
       throw VaultError.TransactionError.invalidTransaction
     }
@@ -319,7 +325,7 @@ struct TransactionHelper {
             publicKeys.append(operationSourceAccountId)
           }
           
-        case .liquidityPool:
+        case .liquidityPool, .contractData, .contractCode, .configSetting, .ttl:
           break
         }
       } else {
@@ -353,6 +359,82 @@ struct TransactionHelper {
       if let operationSourceAccountId = liquidityPoolWithdrawOperation.sourceAccountId {
         publicKeys.append(operationSourceAccountId)
       }
+      
+    case is ExtendFootprintTTLOperation.Type:
+      let extendFootprintTTLOperation = operation as! ExtendFootprintTTLOperation
+      if let operationSourceAccountId = extendFootprintTTLOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is RestoreFootprintOperation.Type:
+      let restoreFootprintOperation = operation as! RestoreFootprintOperation
+      if let operationSourceAccountId = restoreFootprintOperation.sourceAccountId {
+        publicKeys.append(operationSourceAccountId)
+      }
+    case is InvokeHostFunctionOperation.Type:
+      let invokeHostFunctionOperation = operation as! InvokeHostFunctionOperation
+      switch invokeHostFunctionOperation.hostFunction {
+      case .createContract(let createContract):
+        switch createContract.contractIDPreimage {
+        case .fromAddress(let preimage):
+          if let address = preimage.address.accountId {
+            publicKeys.append(address)
+          }
+        case .fromAsset(let preimage):
+          if let issuer = preimage.issuer?.accountId {
+            publicKeys.append(issuer)
+          }
+        }
+      case .invokeContract(let invokeContract):
+        if let address = invokeContract.contractAddress.accountId {
+          publicKeys.append(address)
+        }
+        
+        for scVal in invokeContract.args {
+          getPublicKeyFromSCValXDR(args: scVal, publicKeys: &publicKeys)
+        }
+      default:
+        break
+      }
+      
+      for auth in invokeHostFunctionOperation.auth {
+        switch auth.credentials {
+        case .sourceAccount:
+          break
+        case .address(let address):
+          
+          switch address.address {
+          case .account(let account):
+            publicKeys.append(account.accountId)
+          default:
+            break
+          }
+          getPublicKeyFromSCValXDR(args: address.signature, publicKeys: &publicKeys)
+        }
+        
+        switch auth.rootInvocation.function {
+        case .contractFn(let contract):
+          switch contract.contractAddress {
+          case .account(let account):
+            publicKeys.append(account.accountId)
+          default:
+            break
+          }
+          for arg in contract.args {
+            getPublicKeyFromSCValXDR(args: arg, publicKeys: &publicKeys)
+          }
+        case .contractHostFn(let args):
+          switch args.contractIDPreimage {
+          case .fromAddress(let preimage):
+            if let address = preimage.address.accountId {
+              publicKeys.append(address)
+            }
+          case .fromAsset(let preimage):
+            if let issuer = preimage.issuer?.accountId {
+              publicKeys.append(issuer)
+            }
+          }
+        }
+      }
     default:
       break
     }
@@ -366,7 +448,7 @@ struct TransactionHelper {
     switch type(of: operation) {
     case is PaymentOperation.Type:
       let paymentOperation = operation as! PaymentOperation
-      assets.append((paymentOperation.asset))
+      assets.append(paymentOperation.asset)
     case is CreateAccountOperation.Type:
       if let nativeAsset = stellarsdk.Asset(canonicalForm: "XLM") {
         assets.append(nativeAsset)
@@ -410,7 +492,7 @@ struct TransactionHelper {
         switch ledgerKey {
         case .trustline(let ledgerKey):
           if let publicKey = ledgerKey.asset.issuer {
-            if let asset = stellarsdk.Asset.init(type: ledgerKey.asset.type(), code: ledgerKey.asset.assetCode, issuer: KeyPair.init(publicKey: publicKey)) {
+            if let asset = stellarsdk.Asset(type: ledgerKey.asset.type(), code: ledgerKey.asset.assetCode, issuer: KeyPair(publicKey: publicKey)) {
               assets.append(asset)
             }
           }
@@ -427,7 +509,7 @@ struct TransactionHelper {
     return assets
   }
   
-  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, memo: BeautifulMemo?, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] {
+  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] {
     var data: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
     
     switch type(of: operation) {
@@ -440,9 +522,6 @@ struct TransactionHelper {
       if let issuer = paymentOperation.asset.issuer?.accountId, paymentOperation.asset.code != nil {
         data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
       }
-      if let memo = memo, !memo.value.isEmpty {
-        data.append((memo.title, memo.value, "", false, false))
-      }
       if let operationSourceAccountId = paymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
@@ -450,7 +529,7 @@ struct TransactionHelper {
       let createAccountOperation = operation as! CreateAccountOperation
       data.append(("Destination", createAccountOperation.destination.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: createAccountOperation.destination.accountId), true, false))
       tryToSetDestinationFederation(data: &data, destinationFederation: destinationFederation)
-      data.append(("Asset", "XLM", "" , false, true))
+      data.append(("Asset", "XLM", "", false, true))
       data.append(("Starting Balance", createAccountOperation.startBalance.formattedString, "", false, false))
       if let operationSourceAccountId = createAccountOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
@@ -469,6 +548,9 @@ struct TransactionHelper {
         data.append(("Asset Issuer", destIssuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: destIssuer), true, false))
       }
       data.append((getPathPaymentFieldTitle(pathPaymentOperation: pathPaymentOperation, isSend: false), pathPaymentOperation.destAmount.formattedString, "", false, false))
+      if !pathPaymentOperation.path.isEmpty {
+        data.append(("Path", getPathPaymentPathValue(pathPaymentOperation: pathPaymentOperation), "", false, false))
+      }
       if let operationSourceAccountId = pathPaymentOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
@@ -621,7 +703,7 @@ struct TransactionHelper {
       let manageDataOperation = operation as! ManageDataOperation
       data.append(("Name", manageDataOperation.name, "", false, false))
       if let value = manageDataOperation.data {
-        data.append(("Value", value.toUtf8String() ?? "none", "", false, false))
+        data.append(("Value", value.utf8String ?? "none", "", false, false))
       }
       if let operationSourceAccountId = manageDataOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
@@ -746,6 +828,9 @@ struct TransactionHelper {
           if let operationSourceAccountId = revokeSponsorshipOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
             data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
           }
+          
+        case .contractData, .contractCode, .configSetting, .ttl:
+          break
         }
       } else {
         if let accountId = revokeSponsorshipOperation.signerAccountId {
@@ -799,11 +884,244 @@ struct TransactionHelper {
       if let operationSourceAccountId = liquidityPoolWithdrawOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
+    case is ExtendFootprintTTLOperation.Type:
+      let extendFootprintTTLOperation = operation as! ExtendFootprintTTLOperation
+      if let operationSourceAccountId = extendFootprintTTLOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
+      }
+      data.append(("Extend To", extendFootprintTTLOperation.extendTo.description, "", false, false))
+    case is RestoreFootprintOperation.Type:
+      let restoreFootprintOperation = operation as! RestoreFootprintOperation
+      if let operationSourceAccountId = restoreFootprintOperation.sourceAccountId,
+          transactionSourceAccountId != operationSourceAccountId {
+        data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
+      }
+    case is InvokeHostFunctionOperation.Type:
+      let invokeHostFunctionOperation = operation as! InvokeHostFunctionOperation
+      switch invokeHostFunctionOperation.hostFunction {
+      case .createContract(let createContract):
+        data.append(("Function", "Create Contract", "", false, false))
+        switch createContract.contractIDPreimage {
+        case .fromAddress(let preimage):
+          data.append(("Contract ID Preimage", "From Address", "", false, false))
+          if let address = preimage.address.accountId {
+            data.append(("Account ID", address.getTruncatedPublicKey(), tryToGetNickname(publicKey: address), true, false))
+          }
+          let salt = getWrappedData32(data: preimage.salt)
+          if !salt.isEmpty {
+            data.append(("Salt", salt, "", false, false))
+          }
+        case .fromAsset(let preimage):
+          data.append(("Contract ID Preimage", "From Asset", "", false, false))
+          let assetCode = preimage.assetCode.isEmpty ? "XLM" : preimage.assetCode
+          data.append(("Receive asset", assetCode, "", false, true))
+          
+          if let issuer = preimage.issuer?.accountId {
+            data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
+          }
+        }
+        switch createContract.executable {
+        case .token:
+          data.append(("Contract Executable", "Stellar Asset", "", false, false))
+        case .wasm(let wasm):
+          data.append(("Contract Executable", "Wasm", "", false, false))
+          let wasmHash = getWrappedData32(data: wasm)
+          if !wasmHash.isEmpty {
+            data.append(("Wasm Hash", wasmHash, "", false, false))
+          }
+        }
+      case .invokeContract(let invokeContract):
+        data.append(("Function", "Invoke Contract", "", false, false))
+        if let address = invokeContract.contractAddress.accountId {
+          data.append(("Account ID", address.getTruncatedPublicKey(), tryToGetNickname(publicKey: address), true, false))
+        }
+        if let id = invokeContract.contractAddress.contractId {
+          data.append(("Contract ID", id.getTruncatedPublicKey(), "", false, false))
+        }
+        data.append(("Function Name", invokeContract.functionName, "", false, false))
+        
+        for scVal in invokeContract.args {
+          tryToSetSCValXDR(args: scVal, data: &data)
+        }
+        
+      case .uploadContractWasm(let wasm):
+        data.append(("Function", "Upload Contract Wasm", "", false, false))
+        data.append(("Wasm", wasm.base64EncodedString(), "", false, false))
+      }
+      
+      for auth in invokeHostFunctionOperation.auth {
+        switch auth.credentials {
+        case .sourceAccount:
+          data.append(("Credentials", "Source Account", "", false, false))
+        case .address(let address):
+          data.append(("Credentials", "Address", "", false, false))
+          switch address.address {
+          case .account(let account):
+            data.append(("Account ID", account.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: account.accountId), true, false))
+          case .contract(let contract):
+            let capacity = getWrappedData32(data: contract)
+            if !capacity.isEmpty {
+              data.append(("Capacity", capacity, "", false, false))
+            }
+          }
+          data.append(("Nonce", "\(address.nonce)", "", false, false))
+          data.append(("Signature Expiration Ledger", "\(address.signatureExpirationLedger)", "", false, false))
+          tryToSetSCValXDR(args: address.signature, data: &data)
+        }
+        
+        switch auth.rootInvocation.function {
+        case .contractFn(let contract):
+          data.append(("Authorized Function", "Contract", "", false, false))
+          switch contract.contractAddress {
+          case .account(let account):
+            data.append(("Account ID", account.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: account.accountId), true, false))
+          case .contract(let contract):
+            let capacity = getWrappedData32(data: contract)
+            if !capacity.isEmpty {
+              data.append(("Capacity", capacity, "", false, false))
+            }
+          }
+          data.append(("Function Name", contract.functionName, "", false, false))
+          for arg in contract.args {
+            tryToSetSCValXDR(args: arg, data: &data)
+          }
+        case .contractHostFn(let args):
+          data.append(("Authorized Function", "Contract Host", "", false, false))
+          switch args.contractIDPreimage {
+          case .fromAddress(let preimage):
+            data.append(("Contract ID Preimage", "From Address", "", false, false))
+            if let address = preimage.address.accountId {
+              data.append(("Account ID", address.getTruncatedPublicKey(), tryToGetNickname(publicKey: address), true, false))
+            }
+            let salt = getWrappedData32(data: preimage.salt)
+            if !salt.isEmpty {
+              data.append(("Salt", salt, "", false, false))
+            }
+          case .fromAsset(let preimage):
+            data.append(("Contract ID Preimage", "From Asset", "", false, false))
+            let assetCode = preimage.assetCode.isEmpty ? "XLM" : preimage.assetCode
+            data.append(("Receive asset", assetCode, "", false, true))
+            
+            if let issuer = preimage.issuer?.accountId {
+              data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
+            }
+          }
+          switch args.executable {
+          case .token:
+            data.append(("Contract Executable", "Stellar Asset", "", false, false))
+          case .wasm(let wasm):
+            data.append(("Contract Executable", "Wasm", "", false, false))
+            let wasmHash = getWrappedData32(data: wasm)
+            if !wasmHash.isEmpty {
+              data.append(("Wasm Hash", wasmHash, "", false, false))
+            }
+          }
+        }
+      }
     default:
       break
     }
     
     return data
+  }
+    
+  // parse SCValXDR
+  static func tryToSetSCValXDR(args: SCValXDR, data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)]) {
+    switch args {
+    case .bool(let bool):
+      let value = bool ? "True" : "False"
+      data.append(("Bool", value, "", false, false))
+    case .timepoint(let timepoint):
+      data.append(("Timepoint", "\(timepoint)", "", false, false))
+    case .duration(let duration):
+      data.append(("Duration", "\(duration)", "", false, false))
+    case .symbol(let symbol):
+      data.append(("Symbol", symbol, "", false, false))
+    case .string(let string):
+      data.append(("String", string, "", false, false))
+    case .bytes(let bytes):
+      data.append(("Bytes", bytes.base64EncodedString(), "", false, false))
+    case .address(let scAddress):
+      switch scAddress {
+      case .account(let account):
+        data.append(("Account ID", account.accountId.getTruncatedPublicKey(),
+                     tryToGetNickname(publicKey: account.accountId), true, false))
+      case .contract(let contract):
+        let capacity = getWrappedData32(data: contract)
+        if !capacity.isEmpty {
+          data.append(("Capacity", capacity, "", false, false))
+        }
+      }
+    case .u32(let value):
+      data.append(("U32", "\(value)", "", false, false))
+    case .i32(let value):
+      data.append(("I32", "\(value)", "", false, false))
+    case .u64(let value):
+      data.append(("U64", "\(value)", "", false, false))
+    case .i64(let value):
+      data.append(("I64", "\(value)", "", false, false))
+    case .i128(let parts):
+      let value = "hi: \(parts.hi), lo: \(parts.lo)"
+      data.append(("I128", "\(value)", "", false, false))
+    case .u128(let parts):
+      let value = "hi: \(parts.hi), lo: \(parts.lo)"
+      data.append(("U128", "\(value)", "", false, false))
+    case .u256(let parts):
+      let value = "hi_hi: \(parts.hiHi), hi_lo: \(parts.hiLo), lo_hi: \(parts.loHi), lo_lo: \(parts.loLo)"
+      data.append(("U256", "\(value)", "", false, false))
+    case .i256(let parts):
+      let value = "hi_hi: \(parts.hiHi), hi_lo: \(parts.hiLo), lo_hi: \(parts.loHi), lo_lo: \(parts.loLo)"
+      data.append(("I256", "\(value)", "", false, false))
+    case .contractInstance(let contract):
+      switch contract.executable {
+      case .token:
+        data.append(("Contract Executable", "Stellar Asset", "", false, false))
+      case .wasm(let wasm):
+        data.append(("Contract Executable", "Wasm", "", false, false))
+        let wasmHash = getWrappedData32(data: wasm)
+        if !wasmHash.isEmpty {
+          data.append(("Wasm Hash", wasmHash, "", false, false))
+        }
+      }
+    case .ledgerKeyContractInstance:
+      break
+    case .ledgerKeyNonce(let key):
+      data.append(("Nonce Key", "\(key.nonce)", "", false, false))
+    case .void:
+      break
+    case .error:
+      break
+    default:
+      break
+    }
+  }
+
+  static func getWrappedData32(data: WrappedData32) -> String {
+    let encodedString = data.wrapped.base64EncodedString()
+    if encodedString.isEmpty {
+      return ""
+    } else {
+      if encodedString.count > 16 {
+        return "\(encodedString.prefix(8))...\(encodedString.suffix(8))"
+      } else {
+        return encodedString
+        
+      }
+    }
+  }
+  
+  static func getPublicKeyFromSCValXDR(args: SCValXDR, publicKeys: inout [String]) {
+    switch args {
+    case .address(let scAddress):
+      switch scAddress {
+      case .account(let account):
+        publicKeys.append(account.accountId)
+      default:
+        break
+      }
+    default:
+      break
+    }
   }
   
   static func getPathPaymentFieldTitle(pathPaymentOperation: PathPaymentOperation, isSend: Bool) -> String {
@@ -826,9 +1144,14 @@ struct TransactionHelper {
     return ""
   }
   
+  static func getPathPaymentPathValue(pathPaymentOperation: PathPaymentOperation) -> String {
+    return pathPaymentOperation.path.map { asset in
+      return asset.code ?? "XLM"
+    }.joined(separator: " ")
+  }
+  
   static func tryToGetNickname(publicKey: String) -> String {
-    storageAccounts = storage.retrieveAccounts() ?? []
-    
+    self.storageAccounts = AccountsStorageHelper.getStoredAccounts()
     if let account = storageAccounts.first(where: { $0.address == publicKey }) {
       if let nickName = account.nickname, !nickName.isEmpty {
         return nickName
@@ -885,7 +1208,7 @@ struct TransactionHelper {
     let inputDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZ"
     var outputDateFormat = ""
     let locale = NSLocale.current
-    let formatter : String? = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)
+    let formatter: String? = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: locale)
     
     switch UIDevice().type {
     case .iPhone5, .iPhone5C, .iPhone5S, .iPhoneSE:
@@ -908,8 +1231,7 @@ struct TransactionHelper {
           } else {
             outputDateFormat = "MMM d HH:mm"
           }
-        }
-        else {
+        } else {
           outputDateFormat = "MMM d yyyy"
         }
       }
@@ -941,15 +1263,13 @@ struct TransactionHelper {
     } else {
       return "none"
     }
-    
   }
 
-  
   static func getValidatedDate(from sourceDate: String) -> String {
     let inputDateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSSSSZZZ"
     var outputDateFormat = "MMM d yyyy hh:mm a"
     let locale = NSLocale.current
-    let formatter : String? = DateFormatter.dateFormat(fromTemplate: "j", options:0, locale:locale)
+    let formatter: String? = DateFormatter.dateFormat(fromTemplate: "j", options: 0, locale: locale)
     if let formatter = formatter, formatter.contains("a") {
       outputDateFormat = "MMM d yyyy hh:mm a"
     } else {
@@ -973,10 +1293,11 @@ struct TransactionHelper {
   }
   
   static func getTransactionResult(from message: String) throws ->
-    (resultCode: TransactionResultCode, operaiotnMessageError: String?) {
-      
+  (resultCode: TransactionResultCode, operationMessageError: String?)
+  {
     guard let errorMessage = try? JSONDecoder().decode(HorizonErrorMessage.self,
-                                                       from: message.data(using: String.Encoding.utf8)!) else {
+                                                       from: message.data(using: String.Encoding.utf8)!)
+    else {
       throw VaultError.TransactionError.invalidTransaction
     }
     
@@ -988,47 +1309,938 @@ struct TransactionHelper {
       throw VaultError.TransactionError.invalidTransaction
     }
       
-    var operationMessageError: String? = nil
-    if let resultBody = transactionResultXDR.resultBody {
-      operationMessageError = tryToGetOperationErrorMessage(from: resultBody)
-    }
+    var operationMessageError: String?
+    var resultCode = transactionResultXDR.code
     
-    return (transactionResultXDR.code, operationMessageError)
+    if let resultBody = transactionResultXDR.resultBody {
+      let operationResultCodes = getOperationsResultCodes(from: resultBody)
+      if checkIsBadAuth(operationResultCodes) {
+        resultCode = .badAuth
+      } else {
+        operationMessageError = tryToGetOperationErrorMessage(from: resultBody)
+      }
+    }
+    return (resultCode, operationMessageError)
   }
+  
+  // MARK: - Operations Errors Parsing
   
   static func tryToGetOperationErrorMessage(from resultBody: TransactionResultBodyXDR) -> String? {
     switch resultBody {
-    case .success(let operations):
-      guard let operation = operations.first else { break }
-      switch operation {
-      case .payment(_, let paymentResult):
-        switch paymentResult {
+    case let .failed(operations):
+      operationsCount = operations.count
+      for (index, operation) in operations.enumerated() {
+        switch operation {
+        case .createAccount(_, let createAccountResultXDR):
+          if let message = getCreateAccountOperationErrorMessage(createAccountResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .payment(_, let paymentResultXDR):
+          if let message = getPaymentOperationErrorMessage(paymentResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .pathPayment(_, let pathPaymentResultXDR), .pathPaymentStrictSend(_, let pathPaymentResultXDR):
+          if let message = getPathPaymentOperationErrorMessage(pathPaymentResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .manageSellOffer(_, let manageOfferResultXDR), .createPassiveSellOffer(_, let manageOfferResultXDR), .manageBuyOffer(_, let manageOfferResultXDR):
+          if let message = getManageOfferOperationErrorMessage(manageOfferResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .setOptions(_, let setOptionsResultXDR):
+          if let message = getSetOptionsOperationErrorMessage(setOptionsResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .changeTrust(_, let changeTrustResultXDR):
+          if let message = getChangeTrustOperationErrorMessage(changeTrustResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .allowTrust(_, let allowTrustResultXDR):
+          if let message = getAllowTrustOperationErrorMessage(allowTrustResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .accountMerge(_, let accountMergeResultXDR):
+          if let message = getAccountMergeOperationErrorMessage(accountMergeResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .inflation(_, let inflationResultXDR):
+          if let message = getInflationOperationErrorMessage(inflationResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .manageData(_, let manageDataResultXDR):
+          if let message = getManageDataOperationErrorMessage(manageDataResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .bumpSequence(_, let bumpSequenceResultXDR):
+          if let message = getBumpSequenceOperationErrorMessage(bumpSequenceResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .createClaimableBalance(_, let createClaimableBalanceResultXDR):
+          if let message = getCreateClaimableBalanceOperationErrorMessage(createClaimableBalanceResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .claimClaimableBalance(_, let claimClaimableBalanceResultXDR):
+          if let message = getClaimClaimableBalanceOperationErrorMessage(claimClaimableBalanceResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .beginSponsoringFutureReserves(_, let beginSponsoringFutureReservesResultXDR):
+          if let message = getBeginSponsoringFutureReservesOperationErrorMessage(beginSponsoringFutureReservesResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .endSponsoringFutureReserves(_, let endSponsoringFutureReservesResultXDR):
+          if let message = getEndSponsoringFutureReservesOperationErrorMessage(endSponsoringFutureReservesResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .revokeSponsorship(_, let revokeSponsorshipResultXDR):
+          if let message = getRevokeSponsorshipOperationErrorMessage(revokeSponsorshipResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .clawback(_, let clawbackResultXDR):
+          if let message = getClawbackOperationErrorMessage(clawbackResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .clawbackClaimableBalance(_, let clawbackClaimableBalanceResultXDR):
+          if let message = getClawbackClaimableBalanceOperationErrorMessage(clawbackClaimableBalanceResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .setTrustLineFlags(_, let setTrustLineFlagsResultXDR):
+          if let message = getSetTrustLineFlagsOperationErrorMessage(setTrustLineFlagsResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .liquidityPoolDeposit(_, let liquidityPoolDepositResultXDR):
+          if let message = getLiquidityPoolDepositOperationErrorMessage(liquidityPoolDepositResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .liquidityPoolWithdraw(_, let liquidityPoolWithdrawResultXDR):
+          if let message = getLiquidityPoolWithdrawOperationErrorMessage(liquidityPoolWithdrawResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .invokeHostFunction(_, let invokeHostFunctionResultXDR):
+          if let message = getInvokeHostFunctionOperationErrorMessage(invokeHostFunctionResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .extendFootprintTTL(_, let extendFootprintTTLResultXDR):
+          if let message = getExtendFootprintTTLOperationErrorMessage(extendFootprintTTLResultXDR, operation: operation, index: index) {
+            return message
+          }
+        case .restoreFootprint(_, let restoreFootprintResultXDR):
+          if let message = getRestoreFootprintOperationErrorMessage(restoreFootprintResultXDR, operation: operation, index: index) {
+            return message
+          }
         case .empty(let errorCode):
-          return PaymentResultCode.underfunded.rawValue == errorCode ? "Not enough funds" : nil
-        default: break
+          switch OperationResultCode(rawValue: errorCode) {
+          case .badAuth:
+            return L10n.opBadAuth
+          case .noAccount:
+            return L10n.opNoAccount
+          case .notSupported:
+            return L10n.opNotSupported
+          case .tooManySubentries:
+            return L10n.errorTooManySubentriesMessage
+          case .exceededWorkLimit:
+            return L10n.opExceedWorkLimit
+          case .tooManySponsoring:
+            return L10n.opTooManySponsoring
+          default: break
+          }
         }
-      case .createAccount(_, let createAccountResult):
-        switch createAccountResult {
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func checkIsBadAuth(_ codes: [OperationResultCode]) -> Bool {
+    let operationErrors = codes.filter { $0 != .inner }
+    if !operationErrors.isEmpty {
+      let isBadAuth = operationErrors.allSatisfy { $0 == .badAuth }
+      return isBadAuth
+    } else {
+      return false
+    }
+  }
+  
+  private static func getOperationsResultCodes(from resultBody: TransactionResultBodyXDR) -> [OperationResultCode] {
+    var operationResultCodes: [OperationResultCode] = []
+    switch resultBody {
+    case let .failed(operations):
+      for operation in operations {
+        switch operation {
+        case .createAccount(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .payment(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .pathPayment(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .manageSellOffer(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .createPassiveSellOffer(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .setOptions(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .changeTrust(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .allowTrust(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .accountMerge(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .inflation(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .manageData(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .bumpSequence(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .manageBuyOffer(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .pathPaymentStrictSend(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .createClaimableBalance(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .claimClaimableBalance(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .beginSponsoringFutureReserves(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .endSponsoringFutureReserves(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .revokeSponsorship(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .clawback(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .clawbackClaimableBalance(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .setTrustLineFlags(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .liquidityPoolDeposit(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .liquidityPoolWithdraw(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .invokeHostFunction(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
         case .empty(let errorCode):
-          return CreateAccountResultCode.underfunded.rawValue == errorCode ? "Not enough funds" : nil
-        default: break
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .extendFootprintTTL(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
+        case .restoreFootprint(let errorCode, _):
+          if let operationResultCode = OperationResultCode(rawValue: errorCode) {
+            operationResultCodes.append(operationResultCode)
+          }
         }
-      case .manageBuyOffer(_, let manageOfferResult), .manageSellOffer(_, let manageOfferResult):
-        switch manageOfferResult {
-        case .empty(let errorCode):
-          return ManageOfferResultCode.underfunded.rawValue == errorCode ? "Not enough funds" : nil
-        default: break
-        }
-      case .empty(let errorCode):
-        if errorCode == OperationResultCode.tooManySubentries.rawValue {
-          return L10n.errorTooManySubentriesMessage
-        }
+      }
+    default: break
+    }
+    return operationResultCodes
+  }
+  
+  private static func getCreateAccountOperationErrorMessage(_ createAccountResultXDR: CreateAccountResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch createAccountResultXDR {
+    case .empty(let errorCode):
+      switch CreateAccountResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.createAccountMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfunded:
+        operationErrorMessage = L10n.createAccountUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.createAccountLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .alreadyExists:
+        operationErrorMessage = L10n.createAccountAlreadyExist
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
       default: break
       }
     default: break
     }
-    
     return nil
+  }
+  
+  private static func getPaymentOperationErrorMessage(_ paymentResultXDR: PaymentResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch paymentResultXDR {
+    case .empty(let errorCode):
+      switch PaymentResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.paymentMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfunded:
+        operationErrorMessage = L10n.paymentUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .srcNoTrust:
+        operationErrorMessage = L10n.paymentSrcNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .srcNotAuthorized:
+        operationErrorMessage = L10n.paymentSrcNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noDestination:
+        operationErrorMessage = L10n.paymentNoDestination
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrust:
+        operationErrorMessage = L10n.paymentNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notAuthorized:
+        operationErrorMessage = L10n.paymentNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lineFull:
+        operationErrorMessage = L10n.paymentLineFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noIssuer:
+        operationErrorMessage = L10n.paymentNoIssuer
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getPathPaymentOperationErrorMessage(_ pathPaymentResultXDR: PathPaymentResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch pathPaymentResultXDR {
+    case .empty(let errorCode):
+      switch PathPaymentResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.pathPaymentStrictMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfounded:
+        operationErrorMessage = L10n.pathPaymentStrictUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .srcNoTrust:
+        operationErrorMessage = L10n.pathPaymentStrictSrcNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .srcNotAuthorized:
+        operationErrorMessage = L10n.pathPaymentStrictSrcNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noDestination:
+        operationErrorMessage = L10n.pathPaymentStrictNoDestination
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrust:
+        operationErrorMessage = L10n.pathPaymentStrictNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notAuthorized:
+        operationErrorMessage = L10n.pathPaymentStrictNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lineFull:
+        operationErrorMessage = L10n.pathPaymentStrictLineFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noIssuer:
+        operationErrorMessage = L10n.pathPaymentStrictNoIssuer
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .tooFewOffers:
+        operationErrorMessage = L10n.pathPaymentStrictTooFewOffers
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .offerCrossSelf:
+        operationErrorMessage = L10n.pathPaymentStrictOfferCrossSelf
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .overSendMax:
+        operationErrorMessage = L10n.pathPaymentStrictReceiveOverSendmax
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getManageOfferOperationErrorMessage(_ manageOfferResultXDR: ManageOfferResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch manageOfferResultXDR {
+    case .empty(let errorCode):
+      switch ManageOfferResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.manageOfferMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .sellNoTrust:
+        operationErrorMessage = L10n.manageOfferSellNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .buyNoTrust:
+        operationErrorMessage = L10n.manageOfferBuyNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .sellNotAuthorized:
+        operationErrorMessage = L10n.manageOfferSellNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .buyNotAuthorized:
+        operationErrorMessage = L10n.manageOfferBuyNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lineFull:
+        operationErrorMessage = L10n.manageOfferLineFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfunded:
+        operationErrorMessage = L10n.manageOfferUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .crossSelf:
+        operationErrorMessage = L10n.manageOfferCrossSelf
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .sellNoIssuer:
+        operationErrorMessage = L10n.manageOfferSellNoIssuer
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .buyNoIssuer:
+        operationErrorMessage = L10n.manageOfferBuyNoIssuer
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notFound:
+        operationErrorMessage = L10n.manageOfferNotFound
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.manageOfferLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getSetOptionsOperationErrorMessage(_ setOptionsResultXDR: SetOptionsResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch setOptionsResultXDR {
+    case .empty(let errorCode):
+      switch SetOptionsResultCode(rawValue: errorCode) {
+      case .lowReserve:
+        operationErrorMessage = L10n.setOptionsLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .tooManySigners:
+        operationErrorMessage = L10n.setOptionsTooManySigners
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .badFlags:
+        operationErrorMessage = L10n.setOptionsBadFlags
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .invalidInflation:
+        operationErrorMessage = L10n.setOptionsInvalidInflation
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .cantChange:
+        operationErrorMessage = L10n.setOptionsCantChange
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .unknownFlag:
+        operationErrorMessage = L10n.setOptionsUnknownFlag
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .thresholdOutOfRange:
+        operationErrorMessage = L10n.setOptionsThresholdOutOfRange
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .badSigner:
+        operationErrorMessage = L10n.setOptionsBadSigner
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .invalidHomeDomain:
+        operationErrorMessage = L10n.setOptionsInvalidHomeDomain
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getChangeTrustOperationErrorMessage(_ changeTrustResultXDR: ChangeTrustResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch changeTrustResultXDR {
+    case .empty(let errorCode):
+      switch ChangeTrustResultCode(rawValue: errorCode) {
+      case .trustMalformed:
+        operationErrorMessage = L10n.changeTrustMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noIssuer:
+        operationErrorMessage = L10n.changeTrustNoIssuer
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .trustInvalidLimit:
+        operationErrorMessage = L10n.changeTrustInvalidLimit
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .changeTrustLowReserve:
+        operationErrorMessage = L10n.changeTrustLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .changeTrustSelfNotAllowed:
+        operationErrorMessage = L10n.changeTrustSelfNotAllowed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .trustlineMissing:
+        operationErrorMessage = L10n.changeTrustTrustLineMissing
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .cannotDelete:
+        operationErrorMessage = L10n.changeTrustCannotDelete
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notAuthMaintainLiabilities:
+        operationErrorMessage = L10n.changeTrustNotAuthMaintainLiabilities
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getAllowTrustOperationErrorMessage(_ allowTrustResultXDR: AllowTrustResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch allowTrustResultXDR {
+    case .empty(let errorCode):
+      switch AllowTrustResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.allowTrustMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrustline:
+        operationErrorMessage = L10n.allowTrustNoTrustLine
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .trustNotRequired:
+        operationErrorMessage = L10n.allowTrustTrustNotRequired
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .cantRevoke:
+        operationErrorMessage = L10n.allowTrustCantRevoke
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .selfNotAllowed:
+        operationErrorMessage = L10n.allowTrustSelfNotAllowed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.allowTrustLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getAccountMergeOperationErrorMessage(_ accountMergeResultXDR: AccountMergeResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch accountMergeResultXDR {
+    case .empty(let errorCode):
+      switch AccountMergeResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.accountMergeMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noAccount:
+        operationErrorMessage = L10n.accountMergeNoAccount
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .immutableSet:
+        operationErrorMessage = L10n.accountMergeImmutableSet
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .hasSubEntries:
+        operationErrorMessage = L10n.accountMergeHasSubEntries
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .seqnumTooFar:
+        operationErrorMessage = L10n.accountMergeSeqnumToFar
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .destinationFull:
+        operationErrorMessage = L10n.accountMergeDestFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .isSponsor:
+        operationErrorMessage = L10n.accountMergeIsSponsor
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getInflationOperationErrorMessage(_ inflationResultXDR: InflationResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch inflationResultXDR {
+    case .empty(let errorCode):
+      switch InflationResultCode(rawValue: errorCode) {
+      case .notTime:
+        operationErrorMessage = L10n.inflationNotTime
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getManageDataOperationErrorMessage(_ manageDataResultXDR: ManageDataResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch manageDataResultXDR {
+    case .empty(let errorCode):
+      switch ManageDataResultCode(rawValue: errorCode) {
+      case .notSupportedYet:
+        operationErrorMessage = L10n.manageDataNotSupportedYet
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .nameNotFound:
+        operationErrorMessage = L10n.manageDataNameNotFound
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.manageDataLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .invalidName:
+        operationErrorMessage = L10n.manageDataInvalidName
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getBumpSequenceOperationErrorMessage(_ bumpSequenceResultXDR: BumpSequenceResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch bumpSequenceResultXDR {
+    case .empty(let errorCode):
+      switch BumpSequenceResultCode(rawValue: errorCode) {
+      case .bad_seq:
+        operationErrorMessage = L10n.bumpSequnceBadSeq
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getCreateClaimableBalanceOperationErrorMessage(_ createClaimableBalanceResultXDR: CreateClaimableBalanceResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch createClaimableBalanceResultXDR {
+    case .empty(let errorCode):
+      switch CreateClaimableBalanceResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.createClaimableBalanceMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.createClaimableBalanceLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrust:
+        operationErrorMessage = L10n.createClaimableBalanceNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notAUthorized:
+        operationErrorMessage = L10n.createClaimableBalanceNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfunded:
+        operationErrorMessage = L10n.createClaimableBalanceUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getClaimClaimableBalanceOperationErrorMessage(_ claimClaimableBalanceResultXDR: ClaimClaimableBalanceResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch claimClaimableBalanceResultXDR {
+    case .empty(let errorCode):
+      switch ClaimClaimableBalanceResultCode(rawValue: errorCode) {
+      case .doesNotExist:
+        operationErrorMessage = L10n.claimClaimableBalanceDoesNotExist
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .cannotClaim:
+        operationErrorMessage = L10n.claimClaimableBalanceCannotClaim
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lineFill:
+        operationErrorMessage = L10n.claimClaimableBalanceLineFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrust:
+        operationErrorMessage = L10n.claimClaimableBalanceNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notAUthorized:
+        operationErrorMessage = L10n.claimClaimableBalanceNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getBeginSponsoringFutureReservesOperationErrorMessage(_ beginSponsoringFutureReservesResultXDR: BeginSponsoringFutureReservesResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch beginSponsoringFutureReservesResultXDR {
+    case .empty(let errorCode):
+      switch BeginSponsoringFutureReservesResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.beginSponsoringFutureReservesMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .alreadySponsored:
+        operationErrorMessage = L10n.beginSponsoringFutureReservesAlreadySponsored
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .recursive:
+        operationErrorMessage = L10n.beginSponsoringFutureReservesRecursive
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getEndSponsoringFutureReservesOperationErrorMessage(_ endSponsoringFutureReservesResultXDR: EndSponsoringFutureReservesResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch endSponsoringFutureReservesResultXDR {
+    case .empty(let errorCode):
+      switch EndSponsoringFutureReservesResultCode(rawValue: errorCode) {
+      case .notSponsored:
+        operationErrorMessage = L10n.endSponsoringFutureReservesNotSponsored
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getRevokeSponsorshipOperationErrorMessage(_ revokeSponsorshipResultXDR: RevokeSponsorshipResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch revokeSponsorshipResultXDR {
+    case .empty(let errorCode):
+      switch RevokeSponsorshipResultCode(rawValue: errorCode) {
+      case .doesNotExist:
+        operationErrorMessage = L10n.revokeSponsorshipDoesNotExist
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notSponsored:
+        operationErrorMessage = L10n.revokeSponsorshipNotSponsor
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.revokeSponsorshipLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .onlyTransferabel:
+        operationErrorMessage = L10n.revokeSponsorshipOnlyTransferable
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .malformed:
+        operationErrorMessage = L10n.revokeSponsorshipMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getClawbackOperationErrorMessage(_ clawbackResultXDR: ClawbackResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch clawbackResultXDR {
+    case .empty(let errorCode):
+      switch ClawbackResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.clawbackMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notClawbackEnabled:
+        operationErrorMessage = L10n.clawbackNotClawbackEnabled
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrust:
+        operationErrorMessage = L10n.clawbackNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .unterfunded:
+        operationErrorMessage = L10n.clawbackUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getClawbackClaimableBalanceOperationErrorMessage(_ clawbackClaimableBalanceResultXDR: ClawbackClaimableBalanceResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch clawbackClaimableBalanceResultXDR {
+    case .empty(let errorCode):
+      switch ClawbackClaimableBalanceResultCode(rawValue: errorCode) {
+      case .doesNotExist:
+        operationErrorMessage = L10n.clawbackClaimableBalanceDoesNotExist
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notIssuer:
+        operationErrorMessage = L10n.clawbackClaimableBalanceNotIssuer
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notClawbackEnabled:
+        operationErrorMessage = L10n.clawbackClaimableBalanceNotClawbackEnabled
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getSetTrustLineFlagsOperationErrorMessage(_ setTrustLineFlagsResultXDR: SetTrustLineFlagsResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch setTrustLineFlagsResultXDR {
+    case .empty(let errorCode):
+      switch SetTrustLineFlagsResultCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.setTrustLineFlagsMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrustLine:
+        operationErrorMessage = L10n.setTrustLineFlagsNoTrustLine
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .cantRevoke:
+        operationErrorMessage = L10n.setTrustLineFlagsCantRevoke
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .invalidState:
+        operationErrorMessage = L10n.setTrustLineFlagsInvalidState
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lowReserve:
+        operationErrorMessage = L10n.setTrustLineFlagsLowReserve
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+
+  private static func getLiquidityPoolDepositOperationErrorMessage(_ liquidityPoolDepositResultXDR: LiquidityPoolDepositResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch liquidityPoolDepositResultXDR {
+    case .empty(let errorCode):
+      switch LiquidityPoolDepositResulCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.liquidityPoolDepositMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrustLine:
+        operationErrorMessage = L10n.liquidityPoolDepositNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .notAuhorized:
+        operationErrorMessage = L10n.liquidityPoolDepositNotAuthorized
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfunded:
+        operationErrorMessage = L10n.liquidityPoolDepositUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lineFull:
+        operationErrorMessage = L10n.liquidityPoolDepositLineFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .badPrice:
+        operationErrorMessage = L10n.liquidityPoolDepositBadPrice
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .poolFull:
+        operationErrorMessage = L10n.liquidityPoolDepositPoolFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getLiquidityPoolWithdrawOperationErrorMessage(_ liquidityPoolWithdrawResultXDR: LiquidityPoolWithdrawResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch liquidityPoolWithdrawResultXDR {
+    case .empty(let errorCode):
+      switch LiquidityPoolWithdrawResulCode(rawValue: errorCode) {
+      case .malformed:
+        operationErrorMessage = L10n.liquidityPoolWithdrawMalformed
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .noTrustLine:
+        operationErrorMessage = L10n.liquidityPoolWithdrawNoTrust
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underfunded:
+        operationErrorMessage = L10n.liquidityPoolWithdrawUnderfunded
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .lineFull:
+        operationErrorMessage = L10n.liquidityPoolWithdrawLineFull
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      case .underMinimum:
+        operationErrorMessage = L10n.liquidityPoolWithdrawUnderMinimum
+        return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+      default: break
+      }
+    default: break
+    }
+    return nil
+  }
+  
+  private static func getInvokeHostFunctionOperationErrorMessage(_ invokeHostFunctionResultXDR: InvokeHostFunctionResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    switch invokeHostFunctionResultXDR {
+    case .malformed:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    case .trapped:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    default:
+      break
+    }
+    return nil
+  }
+
+  private static func getExtendFootprintTTLOperationErrorMessage(_ extendFootprintTTLResultXDR: ExtendFootprintTTLResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    
+    switch extendFootprintTTLResultXDR {
+    case .malformed:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    case .resourceLimitExceeded:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    case .insufficientRefundableFee:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    default:
+      break
+    }
+    return nil
+  }
+  
+  private static func getRestoreFootprintOperationErrorMessage(_ restoreFootprintResultXDR: RestoreFootprintResultXDR, operation: OperationResultXDR, index: Int) -> String? {
+    var operationErrorMessage: String?
+    
+    switch restoreFootprintResultXDR {
+    case .malformed:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    case .resourceLimitExceeded:
+      operationErrorMessage = ""
+      return getFullOperationErrorMessage(operation: operation, operationIndex: index, message: operationErrorMessage)
+    default:
+      break
+    }
+    return nil
+  }
+  
+  private static func getFullOperationErrorMessage(operation: OperationResultXDR, operationIndex: Int, message: String?) -> String? {
+    guard let message = message else { return nil }
+    let fullOperationErrorMessage = operationsCount <= 1 ?
+      L10n.textTvErrorShortDescription(operation.description) + " " + message :
+      L10n.textTvErrorShortDescriptionWithNumber(operation.description, "\(operationIndex + 1)") + " " + message
+    return fullOperationErrorMessage
   }
   
   // account id finding logic for non-funded source account
@@ -1228,7 +2440,7 @@ struct TransactionHelper {
     
     // Claim between.
     if let startPeriod = claimResult.startPeriod,
-      let endPeriod = claimResult.endPeriod
+       let endPeriod = claimResult.endPeriod
     {
       return "\(formatter.string(from: startPeriod)) \n\(formatter.string(from: endPeriod))"
     } else if let startPeriod = claimResult.startPeriod { // Claim after
@@ -1250,7 +2462,7 @@ struct TransactionHelper {
 
     // Claim between.
     if let _ = claimResult.startPeriod,
-      let _ = claimResult.endPeriod
+       let _ = claimResult.endPeriod
     {
       return L10n.textClaimBetween
     } else if let _ = claimResult.startPeriod { // Claim after
@@ -1260,7 +2472,6 @@ struct TransactionHelper {
     }
     return L10n.textClaimConditions
   }
-
 }
 
 // MARK: - Formatting
@@ -1300,4 +2511,3 @@ class PriceFormatter: NumberFormatter {
     self.decimalSeparator = "."
   }
 }
-

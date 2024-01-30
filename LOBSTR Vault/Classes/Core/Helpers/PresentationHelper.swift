@@ -3,7 +3,7 @@ import Foundation
 import Presentr
 
 struct PresentationHelper {
-  static func createPresentationType(cellsCount: Int, cellHeight: CGFloat) -> PresentationType {
+  static func createPresentationType(parentView: UIViewController, tabBarHeight: CGFloat, cellsCount: Int, cellHeight: CGFloat) -> PresentationType {
     var finalHeight: CGFloat = 0.0
 
     let statusBarHeight: CGFloat = 20.0
@@ -30,9 +30,9 @@ struct PresentationHelper {
     let height = ModalSize.custom(size: Float(finalHeight))
 
     let center = ModalCenterPosition.custom(centerPoint:
-      CGPoint(x: UIScreen.main.bounds.width / 2,
-              y: UIScreen.main.bounds.height - finalHeight
-                + finalHeight / 2))
+      CGPoint(x: parentView.view.bounds.width  / 2,
+              y: parentView.view.bounds.height - finalHeight
+                + finalHeight / 2 + tabBarHeight))
 
     let customType = PresentationType.custom(width: width,
                                              height: height,

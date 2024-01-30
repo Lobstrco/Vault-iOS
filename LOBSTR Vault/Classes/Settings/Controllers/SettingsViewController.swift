@@ -7,7 +7,9 @@ protocol SettingsView: AnyObject {
   func setErrorAlert(for error: Error)
   func setLogoutAlert()
   func setPublicKeyPopover(_ popover: CustomPopoverViewController)
-  func setReloadSection()
+  func setGetLatestNicknamesAlert()
+  func setICloudSyncIsActiveAlert()
+  func showNoInternetConnectionAlert()
 }
 
 class SettingsViewController: UIViewController,
@@ -95,6 +97,7 @@ class SettingsViewController: UIViewController,
       let cell =
         tableView.dequeueReusableCell(forIndexPath: indexPath)
         as PublicKeyTableViewCell
+      presenter.configure(rightActionCell: cell, row: row)
       return cell
     case .signerForAccounts:
       let cell =
@@ -204,6 +207,20 @@ class SettingsViewController: UIViewController,
       presenter.configure(disclosureIndicatorTableViewCell: cell,
                           row: row)
       return cell
+    case .iCloudSync:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+          as DisclosureIndicatorTableViewCell
+      presenter.configure(disclosureIndicatorTableViewCell: cell,
+                          row: row)
+      return cell
+      
+    case .updateNicknames:
+      let cell =
+        tableView.dequeueReusableCell(forIndexPath: indexPath)
+        as PublicKeyTableViewCell
+      presenter.configure(rightActionCell: cell, row: row)
+      return cell
     }  
   }
   
@@ -216,12 +233,7 @@ class SettingsViewController: UIViewController,
 
 // MARK: - SettingsView
 
-extension SettingsViewController: SettingsView {
-  
-  func setReloadSection() {
-    tableView.reloadData()
-  }
-  
+extension SettingsViewController: SettingsView {  
   func setSettings() {
     tableView.reloadData()
   }
@@ -264,10 +276,37 @@ extension SettingsViewController: SettingsView {
     
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
-    self.present(alert, animated: true, completion: nil)
+    present(alert, animated: true, completion: nil)
   }
   
   func setPublicKeyPopover(_ popover: CustomPopoverViewController) {
     present(popover, animated: true, completion: nil)    
+  }
+  
+  func setGetLatestNicknamesAlert() {
+    let alert = UIAlertController(title: L10n.textGetLatestNicknamesAlertTitle,
+                                  message: L10n.textGetLatestNicknamesAlertDescription, preferredStyle: .alert)
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleSync, style: .default, handler: { _ in
+      self.presenter.syncButtonWasPressed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func setICloudSyncIsActiveAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncIsActiveAlertTitle,
+                                  message: L10n.textICloudSyncIsActiveAlertDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .default))
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showNoInternetConnectionAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncNoInternetConnectionAlertTitle, message: L10n.textICloudSyncNoInternetConnectionAlertDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .cancel))
+
+    present(alert, animated: true, completion: nil)
   }
 }

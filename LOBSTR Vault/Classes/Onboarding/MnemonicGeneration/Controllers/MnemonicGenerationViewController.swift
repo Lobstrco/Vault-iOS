@@ -27,11 +27,14 @@ class MnemonicGenerationViewController: UIViewController, StoryboardCreation {
   }
   
   override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
     tabBarController?.tabBar.isHidden = true
     navigationController?.setNavigationBarAppearance(backgroundColor: Asset.Colors.background.color)
+    presenter.mnemonicGenerationViewWillAppear()
   }
   
   override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
     tabBarController?.tabBar.isHidden = false
     navigationController?.setNavigationBarAppearanceWithoutSeparatorForStandardAppearance()
   }
@@ -112,7 +115,7 @@ extension MnemonicGenerationViewController: MnemonicGenerationView {
     
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
-    self.present(alert, animated: true, completion: nil)
+    present(alert, animated: true, completion: nil)
   }
   
   func setBackButton(isEnabled: Bool) {
@@ -127,6 +130,10 @@ extension MnemonicGenerationViewController: MnemonicGenerationView {
   func setHelpButton(isEnabled: Bool) {
     navigationItem.rightBarButtonItem?.image = isEnabled ? Asset.Icons.Other.icQuestionSign.image : UIImage()
     navigationItem.rightBarButtonItem?.isEnabled = isEnabled
+  }
+  
+  func showScreenshotTakenAlert() {
+    UIAlertController.screenshotTakenAlert(presentingViewController: self)
   }
 }
 

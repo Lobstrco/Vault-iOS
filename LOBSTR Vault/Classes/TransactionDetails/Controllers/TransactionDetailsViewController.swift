@@ -1,18 +1,25 @@
-import UIKit
 import PKHUD
 import stellarsdk
+import UIKit
 
 class TransactionDetailsViewController: UIViewController, StoryboardCreation {
-  
   static var storyboardType: Storyboards = .transactions
   var presenter: TransactionDetailsPresenter!
-  var afterPushNotification: Bool = false
+  var isAfterPushNotification: Bool = false
   
-  @IBOutlet weak var tableView: UITableView!
-  @IBOutlet weak var confirmButton: UIButton!
-  @IBOutlet weak var denyButton: UIButton!
-  @IBOutlet weak var expiredErrorLabel: UILabel!
-  @IBOutlet weak var errorLabelHeightConstraint: NSLayoutConstraint!
+  @IBOutlet var tableView: UITableView!
+  @IBOutlet var confirmButton: UIButton!
+  @IBOutlet var denyButton: UIButton!
+  @IBOutlet var expiredErrorLabel: UILabel!
+  @IBOutlet var errorLabelHeightConstraint: NSLayoutConstraint!
+  @IBOutlet var buttonsStackView: UIStackView!
+  
+  @IBOutlet var buttonsStackViewHeightConstraint: NSLayoutConstraint! {
+    didSet {
+      buttonsStackView.isHidden = true
+      buttonsStackViewHeightConstraint.constant = 0.0
+    }
+  }
   
   // MARK: - Lifecycle
   
@@ -22,7 +29,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
     setAppearance()
     setupNavigationBar()
     
-    presenter.transactionDetailsViewDidLoad()    
+    presenter.transactionDetailsViewDidLoad()
     configureTableView()
     denyButton.layer.borderWidth = 1
     denyButton.layer.borderColor = Asset.Colors.red.color.cgColor
@@ -31,7 +38,6 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   override func viewDidAppear(_ animated: Bool) {
     super.viewDidAppear(animated)
-    
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -58,7 +64,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   // MARK: - Private
   
   private func setAppearanceAfterPushNotification() {
-    if afterPushNotification {
+    if isAfterPushNotification {
       navigationController?.setStatusBar(backgroundColor: Asset.Colors.background.color)
       navigationController?.navigationBar.tintColor = Asset.Colors.main.color
       navigationController?.navigationBar.barTintColor = Asset.Colors.background.color
@@ -96,16 +102,16 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   
   @objc func moreDetailsButtonWasPressed() {
     let moreMenu = UIAlertController(title: nil,
-                                       message: nil,
-                                       preferredStyle: .actionSheet)
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
     
     let copySignedXdrAction = UIAlertAction(title: L10n.buttonTitleCopySignedXdr,
-                                     style: .default) { _ in
+                                            style: .default) { _ in
       self.presenter.signedXdr()
     }
     
     let copyXdrAction = UIAlertAction(title: L10n.buttonTitleCopyXdr,
-                                     style: .default) { _ in
+                                      style: .default) { _ in
       self.presenter.copyXdr()
     }
     
@@ -121,7 +127,7 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
     moreMenu.addAction(cancelAction)
       
     if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceView = view
       popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
                                                         y: view.bounds.midY,
                                                         width: 0,
@@ -132,23 +138,22 @@ class TransactionDetailsViewController: UIViewController, StoryboardCreation {
   }
   
   private func openNicknameDialog(for publicKey: String, nicknameDialogType: NicknameDialogType) {
-    var nickName: String?
-    if let index = self.presenter.storageAccounts.firstIndex(where: { $0.address == publicKey }) {
-      nickName = self.presenter.storageAccounts[index].nickname
+    var nickname: String?
+    if let index = presenter.storageAccounts.firstIndex(where: { $0.address == publicKey }) {
+      nickname = presenter.storageAccounts[index].nickname
     }
     let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
     nicknameDialogViewController.delegate = self
     nicknameDialogViewController.publicKey = publicKey
-    nicknameDialogViewController.nickName = nickName
+    nicknameDialogViewController.nickname = nickname
     nicknameDialogViewController.type = nicknameDialogType
-    self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
+    navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
 }
 
 // MARK: - TransactionDetailsView
 
 extension TransactionDetailsViewController: TransactionDetailsView {
-  
   func setTitle(_ title: String) {
     navigationItem.title = title
   }
@@ -160,18 +165,18 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   func reloadSignerListRow(_ row: Int) {
     let indexPath = IndexPath(row: row, section: TransactionDetailsSectionType.signers.index)
     tableView.reloadRows(at: [indexPath], with: .automatic)
-  }  
+  }
   
-  func setConfirmationAlert() {
+  func showConfirmationAlert(with description: String) {
     let alert = UIAlertController(title: L10n.textDenyDialogTitle,
-                                  message: L10n.textConfirmDialogDescription, preferredStyle: .alert)
+                                  message: description, preferredStyle: .alert)
     alert.addAction(UIAlertAction(title: L10n.buttonTitleYes, style: .destructive, handler: { _ in
       self.presenter.confirmOperationWasConfirmed()
     }))
     
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
-    self.present(alert, animated: true, completion: nil)
+    present(alert, animated: true, completion: nil)
   }
   
   func setDenyingAlert() {
@@ -183,20 +188,20 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
-    self.present(alert, animated: true, completion: nil)
+    present(alert, animated: true, completion: nil)
   }
   
   func setErrorAlert(for error: Error) {
     UIAlertController.defaultAlert(for: error, presentingViewController: self)
   }
   
-  func setProgressAnimation(isEnable: Bool) {
+  func setProgressAnimation(isEnabled: Bool) {
     DispatchQueue.main.async {
-      self.navigationItem.hidesBackButton = isEnable
+      self.navigationItem.hidesBackButton = isEnabled
       if let topVC = UIApplication.getTopViewController() {
         if !(topVC is PinEnterViewController) {
-          isEnable ? HUD.show(.labeledProgress(title: nil,
-                                               subtitle: L10n.animationWaiting)) : HUD.hide()
+          isEnabled ? HUD.show(.labeledProgress(title: nil,
+                                                subtitle: L10n.animationWaiting)) : HUD.hide()
         }
       }
     }
@@ -208,6 +213,9 @@ extension TransactionDetailsViewController: TransactionDetailsView {
   }
   
   func setConfirmButtonWithError(isInvalid: Bool, withTextError: String?) {
+    buttonsStackView.isHidden = false
+    buttonsStackViewHeightConstraint.constant = 40.0
+    
     guard isInvalid else {
       confirmButton.backgroundColor = Asset.Colors.main.color
       return
@@ -221,6 +229,14 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     confirmButton.setTitleColor(Asset.Colors.white.color, for: .normal)
   }
   
+  func hideButtonsWithError(withTextError: String?) {
+    expiredErrorLabel.isHidden = false
+    errorLabelHeightConstraint.constant = 30
+    expiredErrorLabel.text = withTextError == nil ? L10n.textTransactionInvalidError : withTextError
+    buttonsStackView.isHidden = true
+    buttonsStackViewHeightConstraint.constant = 0
+  }
+
   func openTransactionListScreen() {
     navigationController?.popViewController(animated: true)
   }
@@ -247,7 +263,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
         
         moreMenu.addAction(openExplorerAction)
       }
-    case let .publicKey(isNicknameSet, type, isVaultSigner):
+    case .publicKey(let isNicknameSet, let type, let isVaultSigner):
       if let key = value as? String {
         let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
                                        style: .default) { _ in
@@ -298,7 +314,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     moreMenu.addAction(cancelAction)
         
     if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceView = view
       popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
                                                         y: view.bounds.midY,
                                                         width: 0,
@@ -313,6 +329,19 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     UIAlertController.defaultAlert(with: text, presentingViewController: self)
   }
   
+  func showICloudSyncAdviceAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncAdviceAlertTitle,
+                                  message: L10n.textICloudSyncAdviceAlertDescription, preferredStyle: .alert)
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleProceed, style: .default, handler: { _ in
+      self.presenter.proceedICloudSyncActionWasPressed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    present(alert, animated: true, completion: nil)
+  }
+      
   func setSequenceNumberCountAlert() {
     let alert = UIAlertController(title: L10n.textSequenceNumberCountDialogTitle,
                                   message: L10n.textSequenceNumberCountDialogDescription, preferredStyle: .alert)
@@ -322,14 +351,38 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
-    self.present(alert, animated: true, completion: nil)
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func setTransactionAlreadySignedOrDeniedAlert() {
+    let alert = UIAlertController(title: "", message: L10n.msgTransactionAlreadySignedOrDenied, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .cancel))
+    
+    present(alert, animated: true, completion: nil)
+  }
+
+  func showNoInternetConnectionAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncNoInternetConnectionAlertTitle, message: L10n.textICloudSyncNoInternetConnectionAlertDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .cancel))
+
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func setButtons(isEnabled: Bool) {
+    confirmButton.isEnabled = isEnabled
+    denyButton.isEnabled = isEnabled
+  }
+  
+  func showICloudSyncScreen() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .iCloudSync
+    navigationController?.pushViewController(transactionConfirmationViewController, animated: true)
   }
 }
 
 // MARK: - UITableView
 
 extension TransactionDetailsViewController: UITableViewDelegate, UITableViewDataSource {
-  
   func numberOfSections(in tableView: UITableView) -> Int {
     return presenter.sections.count
   }
@@ -397,7 +450,8 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   }
   
   func tableView(_ tableView: UITableView,
-                 didSelectRowAt indexPath: IndexPath) {
+                 didSelectRowAt indexPath: IndexPath)
+  {
     tableView.deselectRow(at: indexPath, animated: true)
     if let _ = tableView.cellForRow(at: indexPath) as? OperationTableViewCell {
       presenter.operationWasSelected(by: indexPath.item)
@@ -412,11 +466,12 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
   }
   
   func tableView(_ tableView: UITableView,
-                 heightForRowAt indexPath: IndexPath) -> CGFloat {
+                 heightForRowAt indexPath: IndexPath) -> CGFloat
+  {
     switch presenter.sections[indexPath.section].rows[indexPath.row] {
     case .operationDetail((let name, let value, _, _, _)):
       if name.contains("Flags") {
-        let separateCount =  value.components(separatedBy:"\n").count - 1
+        let separateCount = value.components(separatedBy: "\n").count - 1
         if separateCount > 1 {
           return 70
         } else {
@@ -493,11 +548,16 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
 // MARK: - NicknameDialogDelegate
 
 extension TransactionDetailsViewController: NicknameDialogDelegate {
+  func displayNoInternetConnectionAlert() {
+    showNoInternetConnectionAlert()
+  }
+  
   func submitNickname(with text: String,
                       for publicKey: String?,
-                      nicknameDialogType: NicknameDialogType?) {
-    self.presenter.setNicknameActionWasPressed(with: text,
-                                               for: publicKey,
-                                               nicknameDialogType: nicknameDialogType)
+                      nicknameDialogType: NicknameDialogType?)
+  {
+    presenter.setNicknameActionWasPressed(with: text,
+                                          for: publicKey,
+                                          nicknameDialogType: nicknameDialogType)
   }
 }

@@ -66,7 +66,7 @@ final public class VaultStorage {
         kSecAttrIsPermanent as String: true,
         kSecAttrApplicationTag as String: encryptionPrivateKeyTag.data(using: .utf8)!,
         kSecAttrAccessControl as String: access,
-      ]
+      ] as [String : Any]
     ]
     
     if Device.hasSecureEnclave {

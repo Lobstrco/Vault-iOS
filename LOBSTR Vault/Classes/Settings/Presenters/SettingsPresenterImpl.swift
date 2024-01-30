@@ -2,6 +2,7 @@ import AcknowList
 import Foundation
 import stellarsdk
 import UIKit
+import PKHUD
 
 class SettingsPresenterImpl: SettingsPresenter {
   private weak var view: SettingsView?
@@ -34,6 +35,22 @@ class SettingsPresenterImpl: SettingsPresenter {
     self.biometricAuthManager = biometricAuthManager
     self.settingsSectionsBuilder = settingsSectionsBuilder
     self.notificationManager = notificationManager
+    
+    addObservers()
+  }
+  
+  @objc func onDidCloudRecordsGet(_ notification: Notification) {
+    DispatchQueue.main.async {
+      HUD.hide()
+    }
+  }
+    
+  @objc func showICloudStatusIsNotAvaliableAlert(_ notification: Notification) {
+    DispatchQueue.main.async {
+      UserDefaultsHelper.isICloudSynchronizationEnabled = false
+      self.reloadSections()
+      HUD.hide()
+    }
   }
 }
 
@@ -46,6 +63,7 @@ extension SettingsPresenterImpl {
   }
 
   func settingsViewDidAppear() {
+    reloadSections()
     guard let viewController = view as? UIViewController else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
 
@@ -163,6 +181,24 @@ extension SettingsPresenterImpl {
     case .manageNicknames:
       disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsManageNicknames)
       disclosureIndicatorTableViewCell.setTextStatus("")
+    case .iCloudSync:
+      disclosureIndicatorTableViewCell.setTitle(L10n.textSettingsICloudSync)
+      let statusText = UserDefaultsHelper.isICloudSynchronizationEnabled ? "Yes" : "No"
+      disclosureIndicatorTableViewCell.setTextStatus(statusText)
+    default:
+      break
+    }
+  }
+  
+  func configure(rightActionCell: PublicKeyTableViewCell,
+                 row: SettingsRow)
+  {
+    
+    switch row {
+    case .publicKey:
+      rightActionCell.configure(L10n.textSettingsPublicKeyTitle, L10n.buttonTitleShow)
+    case .updateNicknames:
+      rightActionCell.configure(L10n.textSettingsGetLatestNicknamesTitle, L10n.buttonTitleSync)
     default:
       break
     }
@@ -202,6 +238,10 @@ extension SettingsPresenterImpl {
       transitionToSpamProtection()
     case .manageNicknames:
       transitionToManageNicknames()
+    case .iCloudSync:
+      transitionToICloudSync()
+    case .updateNicknames:
+      syncICloudNicknamesButtonWasPressed()
     default:
       break
     }
@@ -280,11 +320,28 @@ extension SettingsPresenterImpl {
 
     view?.setPublicKeyPopover(popover)
   }
+  
+  func syncICloudNicknamesButtonWasPressed() {
+    guard UIDevice.isConnectedToNetwork else {
+      view?.showNoInternetConnectionAlert()
+      return
+    }
+    if !UserDefaultsHelper.isICloudSynchronizationActive {
+      view?.setGetLatestNicknamesAlert()
+    } else {
+      view?.setICloudSyncIsActiveAlert()
+    }
+  }
 }
 
 // MARK: -  Private
 
 private extension SettingsPresenterImpl {
+  func reloadSections() {
+    sections = settingsSectionsBuilder.buildSections()
+    view?.setSettings()
+  }
+  
   func contactSupport() {
     let bodyEmail = UtilityHelper.createBodyEmail()
     if let emailUrl = UtilityHelper.createEmailUrl(to: Constants.recipientEmail, subject: Constants.subjectEmail, body: bodyEmail) {
@@ -342,12 +399,29 @@ private extension SettingsPresenterImpl {
       case let .success(accountConfig):
         guard let protectionEnabled = accountConfig.spamProtectionEnabled else { return }
         self.spamProtectionEnabled = protectionEnabled
-        self.view?.setReloadSection()
+        self.view?.setSettings()
       case let .failure(error):
         Logger.security.error("Couldn't get spam protection data with error: \(error)")
       }
     }
   }
+  
+  func addObservers() {
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidCloudRecordsGet(_:)),
+                                           name: .didCloudRecordsGet,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(showICloudStatusIsNotAvaliableAlert(_:)),
+                                           name: .iCloudStatusIsNotAvaliable,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidCloudRecordsGet(_:)),
+                                           name: .didCloudRecordsGetError,
+                                           object: nil)
+   }
 }
 
 // MARK: - Logout
@@ -359,6 +433,13 @@ extension SettingsPresenterImpl {
 
   func logoutOperationWasConfirmed() {
     ApplicationCoordinatorHelper.logout()
+  }
+  
+  func syncButtonWasPressed() {
+    DispatchQueue.main.async {
+      HUD.show(.labeledProgress(title: nil, subtitle: L10n.animationWaiting))
+    }
+    CloudKitNicknameHelper.getAllRecords()
   }
 }
 
@@ -382,7 +463,14 @@ extension SettingsPresenterImpl {
     navigationController?.pushViewController(transactionConfirmationViewController,
                                              animated: true)
   }
-
+  
+  func transitionToICloudSync() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .iCloudSync
+    
+    navigationController?.pushViewController(transactionConfirmationViewController, animated: true)
+  }
+  
   func transitionToChangePin() {
     let pinViewController = PinViewController.createFromStoryboard()
 
@@ -424,9 +512,8 @@ extension SettingsPresenterImpl {
 
   func transitionToHelp() {
     let settingsViewController = view as! SettingsViewController
-
-    let helpCenter = ZendeskHelper.getHelpCenterController()
-    settingsViewController.navigationController?.pushViewController(helpCenter, animated: true)
+    let helpViewController = FreshDeskHelper.getHelpCenterController()
+    settingsViewController.navigationController?.present(helpViewController, animated: true)
   }
 
   func transitionToLicenses() {

@@ -1,18 +1,20 @@
-import UIKit
 import Lottie
 import PKHUD
+import UIKit
 
 class TransactionStatusViewController: UIViewController, StoryboardCreation {
-  
   static var storyboardType: Storyboards = .transactions
 
-  @IBOutlet weak var XDRContainerView: UIView!
-  @IBOutlet weak var statusLabel: UILabel!
-  @IBOutlet weak var doneButton: UIButton!
-  @IBOutlet weak var xdrLabel: UILabel!
-  @IBOutlet weak var errorMessageLabel: UILabel!
-  @IBOutlet weak var signedXDRTitleLabel: UILabel!
-  @IBOutlet weak var animationContainer: UIView!
+  @IBOutlet var XDRContainerView: UIView!
+  @IBOutlet var statusLabel: UILabel!
+  @IBOutlet var doneButton: UIButton!
+  @IBOutlet var xdrLabel: UILabel!
+  @IBOutlet var descriptionMessageLabel: UILabel!
+  @IBOutlet var signedXDRTitleLabel: UILabel!
+  @IBOutlet var animationContainer: UIView!
+  @IBOutlet var viewDetailsButton: UIButton!
+  @IBOutlet var viewDetailsButtonBottomConstraint: NSLayoutConstraint!
+  @IBOutlet var descriptionMessageLabelBottomConstraint: NSLayoutConstraint!
   
   var presenter: TransactionStatusPresenter!
   let feedbackGenerator = UINotificationFeedbackGenerator()
@@ -54,12 +56,16 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
     presenter.copyXDRButtonWasPressed(xdr: xdr)
     HUD.flash(.labeledSuccess(title: nil, subtitle: L10n.animationCopy), delay: 1.0)
   }
-    
+  
+  @IBAction func viewDetailsButtonAction(_ sender: Any) {
+    presenter.viewDetailsButtonWasPressed()
+  }
+  
   // MARK: - Private
   
   private func setAppearance() {
     AppearanceHelper.set(doneButton, with: L10n.buttonTitleDone)
-    navigationItem.hidesBackButton = true    
+    navigationItem.hidesBackButton = true
     
     guard let xdrView = XDRContainerView.subviews.first else {
       return
@@ -75,7 +81,7 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   }
   
   private func setupNavigationBar() {
-    let moreIcon = Asset.Icons.Other.icMore.image 
+    let moreIcon = Asset.Icons.Other.icMore.image
     let moreButton = UIBarButtonItem(image: moreIcon, style: .plain, target: self, action: #selector(moreDetailsButtonWasPressed))
   
     navigationItem.setRightBarButton(moreButton, animated: false)
@@ -83,16 +89,16 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
   
   @objc func moreDetailsButtonWasPressed() {
     let moreMenu = UIAlertController(title: nil,
-                                       message: nil,
-                                       preferredStyle: .actionSheet)
+                                     message: nil,
+                                     preferredStyle: .actionSheet)
     
     let copySignedXdrAction = UIAlertAction(title: L10n.buttonTitleCopySignedXdr,
-                                     style: .default) { _ in
+                                            style: .default) { _ in
       self.presenter.copySignedXdrButtonWasPressed()
     }
     
     let openHelpCenterAction = UIAlertAction(title: L10n.buttonTitleOpenHelpCenter,
-                                     style: .default) { _ in
+                                             style: .default) { _ in
       self.presenter.helpButtonWasPressed()
     }
     
@@ -122,13 +128,13 @@ class TransactionStatusViewController: UIViewController, StoryboardCreation {
 // MARK: - TransactionStatusView
 
 extension TransactionStatusViewController: TransactionStatusView {
-  
   func setStatusTitle(_ title: String) {
     statusLabel.text = title
   }
   
   func setAnimation(with status: TransactionStatus) {
-    let animationView = LOTAnimationView(name: status.rawValue)
+    let transactionStatus: TransactionStatus = status == .failure ? .failure : .success
+    let animationView = LOTAnimationView(name: transactionStatus.rawValue)
     
     animationContainer.addSubview(animationView)
     
@@ -140,9 +146,9 @@ extension TransactionStatusViewController: TransactionStatusView {
   }
   
   func setFeedback(with status: TransactionStatus) {
-    status == .success ?
-      feedbackGenerator.notificationOccurred(.success) :
-      feedbackGenerator.notificationOccurred(.error)
+    status == .failure ?
+      feedbackGenerator.notificationOccurred(.error) :
+      feedbackGenerator.notificationOccurred(.success)
   }
   
   func setXdr(_ xdr: String) {
@@ -150,8 +156,9 @@ extension TransactionStatusViewController: TransactionStatusView {
     xdrLabel.text = xdr
   }
   
-  func setErrorMessage(_ message: String) {
-    errorMessageLabel.text = message
+  func setDescriptionMessage(_ message: String, transactionStatus: TransactionStatus) {
+    descriptionMessageLabel.textColor = transactionStatus == .success ? Asset.Colors.grayOpacity70.color : Asset.Colors.red.color
+    descriptionMessageLabel.text = message
   }
   
   func copy(_ xdr: String) {
@@ -161,4 +168,19 @@ extension TransactionStatusViewController: TransactionStatusView {
                               subtitle: L10n.animationCopy), delay: 1.0)
   }
   
+  func setViewDetailsButton(isHidden: Bool, title: String) {
+    viewDetailsButton.isHidden = isHidden
+    viewDetailsButton.setTitle(title, for: .normal)
+    if isHidden {
+      viewDetailsButtonBottomConstraint.isActive = false
+      descriptionMessageLabelBottomConstraint.isActive = false
+      descriptionMessageLabel.bottomAnchor.constraint(equalTo: XDRContainerView.topAnchor, constant: 10).isActive = true
+    }
+  }
+  
+  func showOperationMessageErrorDescriptionAlert(_ error: String) {
+    let alert = UIAlertController(title: L10n.titleErrorOperationDetails, message: error, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleClose, style: .cancel))
+    present(alert, animated: true, completion: nil)
+  }
 }

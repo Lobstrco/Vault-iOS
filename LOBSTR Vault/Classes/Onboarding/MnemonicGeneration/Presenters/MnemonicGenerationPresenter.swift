@@ -1,11 +1,12 @@
 import Foundation
+import UIKit
 
 enum MnemonicMode {
   case generationMnemonic
   case showMnemonic
 }
 
-protocol MnemonicGenerationView: class {
+protocol MnemonicGenerationView: AnyObject {
   func setMnemonicList(mnemonicList: [String])
   func copyToClipboard(mnemonic: String)
   func setNextButton(isHidden: Bool)
@@ -13,6 +14,7 @@ protocol MnemonicGenerationView: class {
   func setCancelAlert()
   func setBackButton(isEnabled: Bool)
   func setHelpButton(isEnabled: Bool)
+  func showScreenshotTakenAlert()
 }
 
 protocol MnemonicCellView {
@@ -24,6 +26,7 @@ protocol MnemonicGenerationPresenter {
   var numberOfMnemonicWords: Int { get }
   
   func mnemonicGenerationViewDidLoad()
+  func mnemonicGenerationViewWillAppear()
   func copyToClipboardWasPressed()
   func nextButtondWasPressed()
   func cancelButtonWasPressed()
@@ -104,7 +107,10 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
         }
       }
     }
-    
+  }
+  
+  func mnemonicGenerationViewWillAppear() {
+    addObservers()
   }
   
   func copyToClipboardWasPressed() {
@@ -116,6 +122,7 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   }
   
   func nextButtondWasPressed() {
+    removeObserver()
     transitionToMnemonicVerificationScreen()
   }
   
@@ -124,15 +131,33 @@ extension MnemonicGenerationPresenterImpl: MnemonicGenerationPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpViewController = ZendeskHelper.getZendeskArticleController(article: .recoveryPhrase)
-    
     let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
-    mnemonicGenerationViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    let helpViewController = FreshDeskHelper.getFreshDeskArticleController(article: .recoveryPhrase)
+    mnemonicGenerationViewController.navigationController?.present(helpViewController, animated: true)
   }
   
   func cancelOperationWasConfirmed() {
     ApplicationCoordinatorHelper.clearKeychain()
     let mnemonicGenerationViewController = view as! MnemonicGenerationViewController
     mnemonicGenerationViewController.navigationController?.popToRootViewController(animated: true)
+  }
+}
+
+extension MnemonicGenerationPresenterImpl {
+  private func addObservers() {
+    NotificationCenter.default.addObserver(
+      self,
+      selector: #selector(screenshotTaken),
+      name: UIApplication.userDidTakeScreenshotNotification,
+      object: nil
+    )
+  }
+  
+  private func removeObserver() {
+    NotificationCenter.default.removeObserver(self)
+  }
+  
+  @objc func screenshotTaken() {
+    view?.showScreenshotTakenAlert()
   }
 }

@@ -85,5 +85,7 @@
 		<string>A000000812010208</string>
 		<string>D2760000850101</string>
 	</array>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

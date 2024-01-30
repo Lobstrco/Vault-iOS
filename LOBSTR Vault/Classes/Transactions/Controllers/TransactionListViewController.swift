@@ -69,12 +69,7 @@ class TransactionListViewController: UIViewController {
     navigationController?.navigationBar.barTintColor = Asset.Colors.background.color
     tabBarController?.tabBar.isHidden = false
   }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
-    presenter.transactionListViewDidAppear()
-  }
-  
+    
   // MARK: - IBActions
   
   @IBAction func importXDRButtonAction(_ sender: Any) {
@@ -223,6 +218,18 @@ extension TransactionListViewController: TransactionListView {
   func setClearButton(isHidden: Bool) {
     self.navigationItem.rightBarButtonItem = isHidden ? nil : clearButton
   }
+  
+  func setProgressAnimation(isEnabled: Bool) {
+    DispatchQueue.main.async {
+      self.navigationItem.hidesBackButton = isEnabled
+      if let topVC = UIApplication.getTopViewController() {
+        if !(topVC is PinEnterViewController) {
+          isEnabled ? HUD.show(.labeledProgress(title: nil,
+                                               subtitle: L10n.animationWaiting)) : HUD.hide()
+        }
+      }
+    }
+  }
 }
 
 // MARK: - UITableView
@@ -247,6 +254,22 @@ extension TransactionListViewController: UITableViewDelegate, UITableViewDataSou
     return 88
   }
   
+  func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+    let deleteAction = UIContextualAction(style: .destructive, title: L10n.buttonTitleDeny) {
+      (action, sourceView, completionHandler) in
+      self.presenter.transactionWasDenied(with: indexPath.item)
+      completionHandler(true)
+    }
+    
+    let trashImage = Asset.Icons.Other.icTrash.image
+    deleteAction.image = trashImage
+    deleteAction.backgroundColor = Asset.Colors.background.color
+
+    let swipeConfiguration = UISwipeActionsConfiguration(actions: [deleteAction])
+    swipeConfiguration.performsFirstActionWithFullSwipe = false
+    return swipeConfiguration
+  }
+
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     let height = scrollView.frame.size.height
     let contentYoffset = scrollView.contentOffset.y

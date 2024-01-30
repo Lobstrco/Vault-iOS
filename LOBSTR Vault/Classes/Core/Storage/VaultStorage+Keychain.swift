@@ -22,7 +22,6 @@ protocol VaultStorageKeychain {
   func getPublicKeysFromKeychain() -> [String]?
   func getJWTTokensFromKeychain() -> [String: String]?
   func getActivePublicKeyFromKeychain() -> String?
-
 }
 
 // MARK: - VaultStorageKeychain
@@ -82,7 +81,7 @@ extension VaultStorage: VaultStorageKeychain {
   
   public func getEncryptedMnemonicFromKeychain() -> Data? {
     guard let data = keychain.getData(with: encryptedMnemonicQueryParameters)
-    else { return nil}
+    else { return nil }
     
     return data
   }
@@ -112,24 +111,39 @@ extension VaultStorage: VaultStorageKeychain {
   }
     
   private func storeStringInKeychain(_ string: String,
-                                     with parameters: [String: Any]) -> Bool {
+                                     with parameters: [String: Any]) -> Bool
+  {
     guard let data = string.data(using: .utf8) else { return false }
     return keychain.store(data, with: parameters)
   }
   
   private func storeStringsInKeychain(_ strings: [String],
-                                     with parameters: [String: Any]) -> Bool {
-    
-    let data = NSKeyedArchiver.archivedData(withRootObject: strings)
-    return keychain.store(data, with: parameters)
+                                      with parameters: [String: Any]) -> Bool
+  {
+    do {
+      let data = try NSKeyedArchiver.archivedData(withRootObject: strings,
+                                                  requiringSecureCoding: true)
+      return keychain.store(data, with: parameters)
+    } catch {
+      print("An error occurred while archiving the data: \(error)")
+      return false
+    }
   }
-  
+
   private func storeDictionaryInKeychain(_ dict: [String: String],
-                                         with parameters: [String: Any]) -> Bool {
-    let data = NSKeyedArchiver.archivedData(withRootObject: dict)
-    return keychain.store(data, with: parameters)
+                                         with parameters: [String: Any]) -> Bool
+  {
+    do {
+      // Ensure that the dictionary to be archived conforms to NSSecureCoding
+      let data = try NSKeyedArchiver.archivedData(withRootObject: dict,
+                                                  requiringSecureCoding: true)
+      return keychain.store(data, with: parameters)
+    } catch {
+      print("An error occurred while archiving the data: \(error)")
+      return false
+    }
   }
-  
+
   private func getStringFromKeychain(with parameters: [String: Any]) -> String? {
     guard let data = keychain.getData(with: parameters)
     else { return nil }
@@ -138,18 +152,28 @@ extension VaultStorage: VaultStorageKeychain {
   }
   
   private func getStringsFromKeychain(with parameters: [String: Any]) -> [String]? {
-    guard let data = keychain.getData(with: parameters)
-    else { return nil }
-    
-    let arrayFromData = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String]
-    return arrayFromData
+    guard let data = keychain.getData(with: parameters) else { return nil }
+      
+    do {
+      let arrayFromData = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSArray.self, NSString.self],
+                                                                 from: data) as? [String]
+      return arrayFromData
+    } catch {
+      print("An error occurred while unarchiving the data: \(error)")
+      return nil
+    }
   }
-  
+
   private func getDictionaryFromKeychain(with parameters: [String: Any]) -> [String: String]? {
-    guard let data = keychain.getData(with: parameters)
-    else { return nil }
-    
-    let dictionaryFromData = NSKeyedUnarchiver.unarchiveObject(with: data) as? [String: String]
-    return dictionaryFromData
+    guard let data = keychain.getData(with: parameters) else { return nil }
+      
+    do {
+      let dictionaryFromData = try NSKeyedUnarchiver.unarchivedObject(ofClasses: [NSDictionary.self,
+                                                                                  NSString.self], from: data) as? [String: String]
+      return dictionaryFromData
+    } catch {
+      print("An error occurred while unarchiving the data: \(error)")
+      return nil
+    }
   }
 }

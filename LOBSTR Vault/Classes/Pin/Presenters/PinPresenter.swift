@@ -1,6 +1,6 @@
 import Foundation
 
-protocol PinPresenter: class {
+protocol PinPresenter: AnyObject {
   func pinViewDidLoad()
   func pinViewWillAppear()
   func digitButtonWasPressed(with digit: Int)

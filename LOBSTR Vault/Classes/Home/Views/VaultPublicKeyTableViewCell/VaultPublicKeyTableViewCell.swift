@@ -1,6 +1,6 @@
 import UIKit
 
-protocol VaultPublicKeyTableViewCellDelegate: class {
+protocol VaultPublicKeyTableViewCellDelegate: AnyObject {
   func copyButtonDidPress()
 }
 

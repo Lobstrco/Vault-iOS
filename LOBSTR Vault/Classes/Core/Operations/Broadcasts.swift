@@ -13,7 +13,7 @@ protocol HorizonTransactionDataBroadcast {
 
 protocol VaultServerTransactionDataBroadcast {
   var xdrEnvelope: String? { get }  
-  var horizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)? { get }
+  var horizonResult: (resultCode: TransactionResultCode, operationMessageError: String?)? { get }
   var transactionHash: String? { get }
   var error: Error? { get }
 }

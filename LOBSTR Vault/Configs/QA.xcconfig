@@ -1,8 +1,9 @@
 BASE_URL = https:/$()/vault.lobstr.co
-HORIZON_BASE_URL = https:/$()/horizon.stellar.lobstr.co
+HORIZON_BASE_URL = https:/$()/lobstr.co/horizon
 APP_NAME = QA Vault
 APP_BUNDLE_ID = com.ultrastellar.lobstr.vault.qa
 BUILD_TYPE = qa // release, debug
 ENVIRONMENT_TYPE = production // staging
 
 #include "Pods/Target Support Files/Pods-LOBSTR Vault/Pods-LOBSTR Vault.qa.xcconfig"
+#include "Pods/Target Support Files/Pods-LOBSTR VaultTests/Pods-LOBSTR VaultTests.qa.xcconfig"

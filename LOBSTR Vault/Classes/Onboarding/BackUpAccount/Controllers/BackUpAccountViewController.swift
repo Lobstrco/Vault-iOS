@@ -1,8 +1,6 @@
 import UIKit
 
-protocol BackUpAccountView: class {
-  
-}
+protocol BackUpAccountView: AnyObject {}
 
 class BackUpAccountViewController: UIViewController, StoryboardCreation, BackUpAccountView {
   static var storyboardType: Storyboards = .backUpAccount

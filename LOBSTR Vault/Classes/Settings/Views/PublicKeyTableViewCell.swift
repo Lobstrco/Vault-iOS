@@ -1,14 +1,15 @@
 import UIKit
 
 protocol PublicKeyTableViewCellView {
-  func setPublicKey(_ publicKey: String)
+  func configure(_ title: String, _ actionDescription: String)
 }
 
 class PublicKeyTableViewCell: UITableViewCell, PublicKeyTableViewCellView {
+  @IBOutlet var titleLabel: UILabel!
+  @IBOutlet var actionDescriptionLabel: UILabel!
 
-  @IBOutlet var publicKeyLabel: UILabel!
-  
-  func setPublicKey(_ publicKey: String) {
-    self.publicKeyLabel.text = publicKey
+  func configure(_ title: String, _ actionDescription: String) {
+    titleLabel.text = title
+    actionDescriptionLabel.text = actionDescription
   }
 }

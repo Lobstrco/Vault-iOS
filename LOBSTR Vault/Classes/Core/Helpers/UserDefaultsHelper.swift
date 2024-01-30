@@ -63,12 +63,17 @@ enum UserDefaultsHelper {
   private static let pushNotificationsStatusesKey = "pushNotificationsStatuses"
   private static let promtForTransactionDecisionsStatusesKey = "promtForTransactionDecisionsStatuses"
   
+  private static let iCloudSynchronizationKey = "iCloudSynchronization"
+  private static let showICloudSyncAdviceKey = "showICloudSyncAdvice"
+  
   private static let actualTransactionNumberKey = "actualTransactionNumber"
+
+  private static let iCloudSynchronizationActiveKey = "isICloudSynchronizationActive"
   
   @UserDefault(pushNotificationKey, defaultValue: true)
   static var isNotificationsEnabled: Bool
     
-  @UserDefault(promtForTransactionDecisionsKey, defaultValue: false)
+  @UserDefault(promtForTransactionDecisionsKey, defaultValue: true)
   static var isPromtTransactionDecisionsEnabled: Bool
   
   @UserDefault(signerAccountsKey, defaultValue: 0)
@@ -104,8 +109,17 @@ enum UserDefaultsHelper {
   @UserDefault(promtForTransactionDecisionsStatusesKey, defaultValue: [:])
   static var promtForTransactionDecisionsStatuses: [String:Bool]
   
+  @UserDefault(iCloudSynchronizationKey, defaultValue: false)
+  static var isICloudSynchronizationEnabled: Bool
+  
+  @UserDefault(showICloudSyncAdviceKey, defaultValue: false)
+  static var isICloudSyncAdviceShown
+    
   @UserDefault(actualTransactionNumberKey, defaultValue: 0)
   static var actualTransactionNumber: Int
+  
+  @UserDefault(iCloudSynchronizationActiveKey, defaultValue: false)
+  static var isICloudSynchronizationActive
   
   static var accountStatus: AccountStatus {
     get {

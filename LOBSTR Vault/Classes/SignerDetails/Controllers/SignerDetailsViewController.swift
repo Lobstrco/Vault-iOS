@@ -7,6 +7,9 @@ protocol SignerDetailsView: AnyObject {
   func copy(_ publicKey: String)
   func reloadRow(_ row: Int)
   func actionSheetForSignersListWasPressed(with publicKey: String, isNicknameSet: Bool)
+  func showICloudSyncAdviceAlert()
+  func showNoInternetConnectionAlert()
+  func showICloudSyncScreen()
 }
 
 enum SignerDetailsScreenType {
@@ -105,9 +108,9 @@ class SignerDetailsViewController: UIViewController, StoryboardCreation {
       let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
       nicknameDialogViewController.delegate = self
       nicknameDialogViewController.publicKey = publicKey
-      nicknameDialogViewController.nickName = accounts[index].nickname
+      nicknameDialogViewController.nickname = accounts[index].nickname
       nicknameDialogViewController.type = nicknameDialogType
-      self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
+      navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
     }
   }
 }
@@ -217,7 +220,7 @@ extension SignerDetailsViewController: SignerDetailsView {
       
       let clearAccountNicknameAction = UIAlertAction(title: L10n.buttonTextClearAccountNickname,
                                                    style: .default) { _ in
-        self.presenter.clearAccountNicknameActionWasPressed(publicKey)
+        self.presenter.clearNicknameActionWasPressed(publicKey)
       }
       clearAccountNicknameAction.setValue(UIColor.red, forKey: "titleTextColor")
       
@@ -237,7 +240,7 @@ extension SignerDetailsViewController: SignerDetailsView {
     moreMenu.addAction(cancelAction)
     
     if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceView = view
       popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
                                                         y: view.bounds.midY,
                                                         width: 0,
@@ -247,15 +250,45 @@ extension SignerDetailsViewController: SignerDetailsView {
     
     present(moreMenu, animated: true, completion: nil)
   }
+  
+  func showICloudSyncAdviceAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncAdviceAlertTitle,
+                                  message: L10n.textICloudSyncAdviceAlertDescription, preferredStyle: .alert)
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleProceed, style: .default, handler: { _ in
+      self.presenter.proceedICloudSyncActionWasPressed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showNoInternetConnectionAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncNoInternetConnectionAlertTitle, message: L10n.textICloudSyncNoInternetConnectionAlertDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .cancel))
+
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showICloudSyncScreen() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .iCloudSync
+    navigationController?.pushViewController(transactionConfirmationViewController, animated: true)
+  }
 }
 
 // MARK: - NicknameDialogDelegate
 
 extension SignerDetailsViewController: NicknameDialogDelegate {
+  func displayNoInternetConnectionAlert() {
+    showNoInternetConnectionAlert()
+  }
+  
   func submitNickname(with text: String, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
     switch nicknameDialogType {
     case .protectedAccount, .otherAccount:
-      presenter.setAccountNicknameActionWasPressed(with: text, for: publicKey)
+      presenter.setNicknameActionWasPressed(with: text, for: publicKey)
     default:
       break
     }

@@ -135,8 +135,9 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   func recoveryButtonWasPressed() {
     view?.setProgressAnimation(enabled: true)
     let phrases = MnemonicHelper.getSeparatedWords(from: self.mnemonic)
-    MnemonicHelper.getRecoveryIndex(mnemonic: self.mnemonic) { index in
-      MnemonicHelper.encryptAndStoreInKeychain(mnemonic: MnemonicHelper.getStringFromSeparatedWords(in: phrases), recoveryIndex: index)
+    let mnemonic = MnemonicHelper.getStringFromSeparatedWords(in: phrases)
+    MnemonicHelper.getRecoveryIndex(mnemonic: mnemonic) { index in
+      MnemonicHelper.encryptAndStoreInKeychain(mnemonic: mnemonic, recoveryIndex: index)
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
         self.view?.setProgressAnimation(enabled: false)
         self.transitionToPinScreen()
@@ -145,9 +146,8 @@ extension MnemonicRecoveryPresenterImpl: MnemonicRecoveryPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpViewController = ZendeskHelper.getZendeskArticleController(article: .recoverAccount)
-    
     let mnemonicRecoveryViewController = view as! MnemonicRecoveryViewController
-    mnemonicRecoveryViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    let helpViewController = FreshDeskHelper.getFreshDeskArticleController(article: .recoverAccount)
+    mnemonicRecoveryViewController.navigationController?.present(helpViewController, animated: true)
   }
 }

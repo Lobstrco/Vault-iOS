@@ -21,4 +21,5 @@ protocol HomePresenter {
   func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?)
   
   func changeActiveAccount()
+  func proceedICloudSyncActionWasPressed()
 }

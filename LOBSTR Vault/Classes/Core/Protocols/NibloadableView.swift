@@ -1,6 +1,6 @@
 import UIKit
 
-protocol NibloadableView: class {}
+protocol NibloadableView: AnyObject {}
 
 extension NibloadableView where Self: UIView {
   static var nibName: String {

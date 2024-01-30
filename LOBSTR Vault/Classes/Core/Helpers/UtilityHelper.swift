@@ -67,7 +67,7 @@ struct UtilityHelper {
   }
   
   static func openTangemShop() {
-    let sUrl = "https://shop.tangem.com/products/tangem-for-lobstr-vault"
+    let sUrl = "https://lobstr.tangem.com"
     guard let url = URL(string: sUrl) else { return }
     UIApplication.shared.open(url, options: .init(), completionHandler: nil)
   }

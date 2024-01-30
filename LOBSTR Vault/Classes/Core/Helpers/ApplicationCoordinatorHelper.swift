@@ -28,6 +28,10 @@ struct ApplicationCoordinatorHelper {
     UserDefaultsHelper.accountStatus = .notCreated
     UserDefaultsHelper.pushNotificationsStatuses = [:]
     UserDefaultsHelper.promtForTransactionDecisionsStatuses = [:]
+    UserDefaultsHelper.isPromtTransactionDecisionsEnabled = true
+    UserDefaultsHelper.isICloudSynchronizationEnabled = false
+    UserDefaultsHelper.isICloudSyncAdviceShown = false
+    UserDefaultsHelper.isICloudSynchronizationActive = false
     //UserDefaultsHelper.isNotificationsEnabled = false
     UserDefaultsHelper.tangemCardId = nil
     ApplicationCoordinatorHelper.clearKeychain()
@@ -38,10 +42,8 @@ struct ApplicationCoordinatorHelper {
     BiometricAuthManagerImpl().isBiometricAuthEnabled = false
     
     AccountsStorageHelper.clear()
-    
-    CoreDataStack.shared.deleteAllAccounts()
-    CoreDataStack.shared.saveContext()
-    
+    CloudKitNicknameHelper.clear()
+       
     guard let appDelegate = UIApplication.shared.delegate as? AppDelegate
     else { return }
     

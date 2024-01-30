@@ -31,10 +31,13 @@ protocol SettingsCellConfigurator {
                  row: SettingsRow)
   func configure(disclosureIndicatorTableViewCell: DisclosureIndicatorTableViewCell,
                  row: SettingsRow)
+  func configure(rightActionCell: PublicKeyTableViewCell,
+                 row: SettingsRow)
 }
 
 protocol SettingsLogout {
   func logoutButtonWasPressed()
   func logoutOperationWasConfirmed()
+  func syncButtonWasPressed()
 }
 

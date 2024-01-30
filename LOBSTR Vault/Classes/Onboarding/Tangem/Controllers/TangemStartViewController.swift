@@ -1,11 +1,10 @@
-import UIKit
 import TangemSdk
+import UIKit
 
 class TangemStartViewController: UIViewController, StoryboardCreation {
-  
   static var storyboardType: Storyboards = .tangem
-  @IBOutlet weak var scanButton: UIButton!
-  @IBOutlet weak var buyNowButton: UIButton!
+  @IBOutlet var scanButton: UIButton!
+  @IBOutlet var buyNowButton: UIButton!
     
   @IBOutlet var learnMoreButtonTopConstraint: NSLayoutConstraint!
   @IBOutlet var aboutLabelHeightConstraint: NSLayoutConstraint!
@@ -47,8 +46,8 @@ class TangemStartViewController: UIViewController, StoryboardCreation {
   }
   
   @IBAction func helpButtonAcion() {
-    let helpViewController = ZendeskHelper.getZendeskArticleController(article: .signingTangem)        
-    navigationController?.pushViewController(helpViewController, animated: true)
+    let helpViewController = FreshDeskHelper.getFreshDeskArticleController(article: .signingTangem)
+    navigationController?.present(helpViewController, animated: true)
   }
   
   func setupUI() {
@@ -68,18 +67,17 @@ class TangemStartViewController: UIViewController, StoryboardCreation {
       return
     }
     
-    TangemHelper.scanCard() { result in
+    TangemHelper.scanCard { result in
       switch result {
       case .success(let card):
         UserDefaultsHelper.tangemCardId = card.cardId
-        switch card.status {
-        case .loaded:
-          self.transactionToAuth(walletPublicKey: card.walletPublicKey, cardId: card.cardId)
-        case .empty:
-          self.transactionToWalletCreation()
-        default:
-          Logger.tangem.error("Wrong card")
+                
+        guard let wallet = card.wallets.first, let _ = try? wallet.publicKey.encodeEd25519PublicKey() else {
+          self.transactionToWalletCreation(curve: card.supportedCurves.first)
+          return
         }
+                
+        self.transactionToAuth(walletPublicKey: wallet.publicKey, cardId: card.cardId)
       case .failure(let error):
         switch error {
         case .unsupportedDevice:
@@ -96,22 +94,22 @@ class TangemStartViewController: UIViewController, StoryboardCreation {
     let alert = UIAlertController(title: "iOS 12 or lower not supported",
                                   message: "Signer Card can’t be scanned. Signer card only works with iOS 13 or higher.",
                                   preferredStyle: .alert)
-   alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
-   
-   self.present(alert, animated: true, completion: nil)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    present(alert, animated: true, completion: nil)
   }
   
   func displayNFCDisabledAlert() {
     let alert = UIAlertController(title: "NFC not supported",
                                   message: "Signer Card can’t be scanned. This device does not support NFC functionality.",
                                   preferredStyle: .alert)
-   alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
-   
-   self.present(alert, animated: true, completion: nil)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    present(alert, animated: true, completion: nil)
   }
 
-  func transactionToWalletCreation() {
+  @available(iOS 13.0, *)
+  func transactionToWalletCreation(curve: EllipticCurve?) {
     let tangemCreateWalletViewController = TangemCreateWalletViewController.createFromStoryboard()
+    tangemCreateWalletViewController.curve = curve
     navigationController!.pushViewController(tangemCreateWalletViewController, animated: true)
   }
   

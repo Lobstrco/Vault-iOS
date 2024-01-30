@@ -222,15 +222,15 @@ private extension HomeViewController {
   }
   
   func openNicknameDialog(for publicKey: String, nicknameDialogType: NicknameDialogType) {
-    var nickName: String?
+    var nickname: String?
     switch nicknameDialogType {
     case .primaryAccount:
-      if let index = self.presenter.mainAccounts.firstIndex(where: { $0.address == publicKey }) {
-        nickName = self.presenter.mainAccounts[index].nickname
+      if let index = presenter.mainAccounts.firstIndex(where: { $0.address == publicKey }) {
+        nickname = presenter.mainAccounts[index].nickname
       }
     case .protectedAccount:
-      if let index = self.presenter.signedAccounts.firstIndex(where: { $0.address == publicKey }) {
-        nickName = self.presenter.signedAccounts[index].nickname
+      if let index = presenter.signedAccounts.firstIndex(where: { $0.address == publicKey }) {
+        nickname = presenter.signedAccounts[index].nickname
       }
     default:
       break
@@ -239,20 +239,21 @@ private extension HomeViewController {
     let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
     nicknameDialogViewController.delegate = self
     nicknameDialogViewController.publicKey = publicKey
-    nicknameDialogViewController.nickName = nickName
+    nicknameDialogViewController.nickname = nickname
     nicknameDialogViewController.type = nicknameDialogType
-    self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
+    navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
   
   func showPublicKeyList() {
     switch UserDefaultsHelper.accountStatus {
     case .createdByDefault:
-      let customType = PresentationHelper.createPresentationType(cellsCount: presenter.multiaccountPublicKeysCount, cellHeight: MultiaccountPublicKeyTableViewCell.height)
+      let tabBarHeight = tabBarController?.tabBar.frame.size.height ?? 49.0
+      let customType = PresentationHelper.createPresentationType(parentView: self, tabBarHeight: tabBarHeight, cellsCount: presenter.multiaccountPublicKeysCount, cellHeight: MultiaccountPublicKeyTableViewCell.height)
       let publicKeyListViewController = PublicKeyListViewController.createFromStoryboard()
       publicKeyListViewController.delegate = self
       
       publicKeyListPresenter.presentationType = customType
-      self.navigationController?
+      navigationController?
         .topViewController?
         .customPresentViewController(publicKeyListPresenter,
                                      viewController: publicKeyListViewController,
@@ -399,7 +400,7 @@ extension HomeViewController: HomeView {
     moreMenu.addAction(cancelAction)
     
     if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceView = view
       popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
                                                         y: view.bounds.midY,
                                                         width: 0,
@@ -448,7 +449,7 @@ extension HomeViewController: HomeView {
     moreMenu.addAction(cancelAction)
     
     if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceView = view
       popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
                                                         y: view.bounds.midY,
                                                         width: 0,
@@ -457,6 +458,55 @@ extension HomeViewController: HomeView {
     }
     
     present(moreMenu, animated: true, completion: nil)
+  }
+  
+  func setProgressAnimation(isEnabled: Bool) {
+    DispatchQueue.main.async {
+      self.navigationItem.hidesBackButton = isEnabled
+      if let topVC = UIApplication.getTopViewController() {
+        if !(topVC is PinEnterViewController) {
+          isEnabled ? HUD.show(.labeledProgress(title: nil,
+                                               subtitle: L10n.animationWaiting)) : HUD.hide()
+        }
+      }
+    }
+  }
+  
+  func showICloudSyncAdviceAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncAdviceAlertTitle,
+                                  message: L10n.textICloudSyncAdviceAlertDescription, preferredStyle: .alert)
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleProceed, style: .default, handler: { _ in
+      self.presenter.proceedICloudSyncActionWasPressed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showICloudStatusIsNotAvaliableAlert() {
+    let alert = UIAlertController(title: L10n.textSignOutFromICloudAlertTitle,
+                                  message: L10n.textSignOutFromICloudAlertDescription, preferredStyle: .alert)
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .destructive, handler: { _ in
+      UserDefaultsHelper.isICloudSynchronizationEnabled = false
+    }))
+    
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showNoInternetConnectionAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncNoInternetConnectionAlertTitle, message: L10n.textICloudSyncNoInternetConnectionAlertDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .cancel))
+
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showICloudSyncScreen() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .iCloudSync
+    navigationController?.pushViewController(transactionConfirmationViewController, animated: true)
   }
 }
 
@@ -515,8 +565,12 @@ extension HomeViewController: VaultPublicKeyTableViewCellDelegate {
 // MARK: - NicknameDialogDelegate
 
 extension HomeViewController: NicknameDialogDelegate {
+  func displayNoInternetConnectionAlert() {
+    showNoInternetConnectionAlert()
+  }
+  
   func submitNickname(with text: String, for publicKey: String?, nicknameDialogType: NicknameDialogType?) {
-    self.presenter.setNicknameActionWasPressed(with: text, for: publicKey, nicknameDialogType: nicknameDialogType)
+    presenter.setNicknameActionWasPressed(with: text, for: publicKey, nicknameDialogType: nicknameDialogType)
   }
 }
 

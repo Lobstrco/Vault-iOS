@@ -454,10 +454,10 @@ public extension UIDevice {
       "AppleTV11,1": .AppleTV2_4K
     ]
 
-    if let model = modelMap[String(validatingUTF8: modelCode!)!] {
+    if let model = modelMap[modelCode!] {
       if model == .simulator {
         if let simModelCode = ProcessInfo().environment["SIMULATOR_MODEL_IDENTIFIER"] {
-          if let simModel = modelMap[String(validatingUTF8: simModelCode)!] {
+          if let simModel = modelMap[simModelCode] {
             return simModel
           }
         }

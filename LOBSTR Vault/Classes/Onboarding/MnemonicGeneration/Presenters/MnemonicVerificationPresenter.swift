@@ -167,9 +167,8 @@ extension MnemonicVerificationPresenterImpl: MnemonicVerificationPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpViewController = ZendeskHelper.getZendeskArticleController(article: .recoveryPhrase)
-    
     let mnemonicVerificationViewController = view as! MnemonicVerificationViewController
-    mnemonicVerificationViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    let helpViewController = FreshDeskHelper.getFreshDeskArticleController(article: .recoveryPhrase)
+    mnemonicVerificationViewController.navigationController?.present(helpViewController, animated: true)
   }
 }

@@ -6,6 +6,12 @@ enum ServerTransactionType: String, Codable {
   case unknown
 }
 
+enum StatusType: Int, Codable {
+  case pending = 1
+  case cancelled = 2
+  case signed = 3
+}
+
 struct Transaction: Codable {
   var hash: String?
   var xdr: String?
@@ -13,7 +19,7 @@ struct Transaction: Codable {
   var cancelledAt: String?
   var sequenceOutdatedAt: String?
   var signedAt: String?
-  var status: Int?
+  var status: StatusType?
   var getStatusDisplay: String?
   var transactionType: ServerTransactionType?
   var xdrSourceList: [String]?

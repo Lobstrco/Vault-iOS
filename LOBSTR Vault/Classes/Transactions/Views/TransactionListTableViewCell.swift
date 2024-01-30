@@ -12,6 +12,9 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
   @IBOutlet var dateStackViewRightConstraint: NSLayoutConstraint!
   @IBOutlet var dateStackViewLeftConstraint: NSLayoutConstraint!
   
+  @IBOutlet var leftStackView: UIStackView!
+  @IBOutlet var leftView: UIView!
+  @IBOutlet var operationTypeLabelInView: UILabel!
   
   private var borderView: UIView!
   
@@ -20,6 +23,7 @@ class TransactionListTableViewCell: UITableViewCell, TransactionListCellView {
       guard let model = viewModel else { return }
       dateLabel.text = model.date
       operationTypeLabel.text = model.operationType
+      operationTypeLabelInView.text = model.operationType
       if let federationName = model.federation {
         sourceAccountLabel.text = federationName
       } else {
@@ -82,7 +86,13 @@ private extension TransactionListTableViewCell {
   }
   
   func setStatusLabel(_ isValid: Bool) {
-    statusLabel.isHidden = isValid ? true : false
+    if isValid {
+      leftStackView.isHidden = true
+      leftView.isHidden = false
+    } else {
+      leftStackView.isHidden = false
+      leftView.isHidden = true
+    }
   }
 }
 

@@ -25,10 +25,9 @@ class BackUpAccountPresenterImpl: BackUpAccountPresenter {
   }
 
   func helpButtonWasPressed() {
-    let helpViewController = ZendeskHelper.getZendeskArticleController(article: .recoveryPhrase)
-
     let backupViewController = view as! BackUpAccountViewController
-    backupViewController.navigationController?.pushViewController(helpViewController, animated: true)
+    let helpViewController = FreshDeskHelper.getFreshDeskArticleController(article: .recoveryPhrase)
+    backupViewController.navigationController?.present(helpViewController, animated: true)
   }
 }
 

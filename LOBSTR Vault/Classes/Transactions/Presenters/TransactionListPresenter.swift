@@ -17,17 +17,18 @@ protocol TransactionListView: AnyObject {
   func setProgressAnimationAfterDelete(isEnabled: Bool)
   func setProgressAnimationAfterError()
   func setClearButton(isHidden: Bool)
+  func setProgressAnimation(isEnabled: Bool)
 }
 
 protocol TransactionListPresenter {
   func transactionWasSelected(with index: Int)
   func transactionListViewDidLoad()
-  func transactionListViewDidAppear()
   func importXDRButtonWasPressed()
   func clearAllTransactions()
   func clearInvalidTransactions()
   func pullToRefreshWasActivated()
   func tableViewReachedBottom()
+  func transactionWasDenied(with index: Int)
 }
 
 protocol TransactionListCellView {
@@ -78,7 +79,9 @@ class TransactionListPresenterImpl {
   }
   
   @objc func onDidNicknameUpdate(_ notification: Notification) {
-    displayPendingTransactions(isResetData: true)
+    DispatchQueue.main.async {
+      self.displayPendingTransactions(isResetData: true)
+    }
   }
 }
 
@@ -134,6 +137,10 @@ extension TransactionListPresenterImpl: TransactionImportDelegate {
 
 extension TransactionListPresenterImpl: TransactionListPresenter {
   
+  func transactionWasDenied(with index: Int) {
+    cancelTransaction(by: index)
+  }
+  
   func tableViewReachedBottom() {
     displayPendingTransactions()
   }
@@ -143,6 +150,9 @@ extension TransactionListPresenterImpl: TransactionListPresenter {
   }
   
   func clearAllTransactions() {
+    guard let viewController = view as? UIViewController else { return }
+    guard ConnectionHelper.checkConnection(viewController) else { return }
+    
     view?.setProgressAnimationAfterDelete(isEnabled: true)
     transactionService.cancelAllTransaction { result in
       switch result {
@@ -158,6 +168,9 @@ extension TransactionListPresenterImpl: TransactionListPresenter {
   }
   
   func clearInvalidTransactions() {
+    guard let viewController = view as? UIViewController else { return }
+    guard ConnectionHelper.checkConnection(viewController) else { return }
+    
     view?.setProgressAnimationAfterDelete(isEnabled: true)
     transactionService.cancelOutdatedTransaction { result in
       switch result {
@@ -175,18 +188,12 @@ extension TransactionListPresenterImpl: TransactionListPresenter {
   
   func transactionListViewDidLoad() {
     guard let viewController = view as? UIViewController else { return }
-   //guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
     if ConnectionHelper.checkConnection(viewController) {
       displayPendingTransactions()
     }
   }
-  
-  func transactionListViewDidAppear() {
-//    guard let viewController = view as? UIViewController else { return }
-//    guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
-  }
-  
+    
   func transactionWasSelected(with index: Int) {
     transitionToTransactionDetailsScreenFromList(by: index)
   }
@@ -230,6 +237,11 @@ private extension TransactionListPresenterImpl {
                                            selector: #selector(onDidNicknameUpdate(_:)),
                                            name: .didNicknameSet,
                                            object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidNicknameUpdate(_:)),
+                                           name: .didCloudRecordsGet,
+                                           object: nil)
   }
   
   func setStatus(_ status: TaskStatus , didBecomeActive: Bool = false) {
@@ -255,12 +267,19 @@ private extension TransactionListPresenterImpl {
       return
     }
     if isResetData { currentPageNumber = 1 }
-    guard transactionListStatus == .ready, let pageNumber = currentPageNumber, ConnectionHelper.isConnectedToNetwork() else {
+    guard transactionListStatus == .ready, let pageNumber = currentPageNumber,
+          UIDevice.isConnectedToNetwork else {
       view?.setProgressAnimation(isEnabled: false, didBecomeActive: false)
+      if isResetData {
+        storageAccounts = AccountsStorageHelper.getStoredAccounts()
+        let cellViewModels = getCellViewModels(transactions: transactionList, with: transactionList.count)
+        view?.setTransactionList(viewModels: cellViewModels, isResetData: isResetData)
+        setStatus(.ready, didBecomeActive: didBecomeActive)
+      }
       return
     }
     
-    self.storageAccounts = storage.retrieveAccounts() ?? []
+    self.storageAccounts = AccountsStorageHelper.getStoredAccounts()
     setStatus(.loading, didBecomeActive: didBecomeActive)
     transactionService.getPendingTransactionList(page: pageNumber) { result in
       switch result {
@@ -340,11 +359,8 @@ private extension TransactionListPresenterImpl {
         }
       }
     } else {
-      guard let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first else {
-        tryToLoadFederation(by: publicKey, for: cellIndex)
-        return nil
-      }
-      return account.federation
+      tryToLoadFederation(by: publicKey, for: cellIndex)
+      return nil
     }
   }
   
@@ -357,6 +373,33 @@ private extension TransactionListPresenterImpl {
         }
       case .failure(let error):
         Logger.home.error("Couldn't get federation for \(publicKey) with error: \(error)")
+      }
+    }
+  }
+  
+  func cancelTransaction(by index: Int) {
+    guard let viewController = view as? UIViewController,
+          ConnectionHelper.checkConnection(viewController),
+          UtilityHelper.isTokenUpdated(view: viewController) else { return }
+    
+    guard let transactionHash = transactionList[index].hash else {
+      let error = VaultError.TransactionError.invalidTransaction
+      view?.setErrorAlert(for: error)
+      return
+    }
+    view?.setProgressAnimation(isEnabled: true)
+    transactionService.cancelTransaction(by: transactionHash) { result in
+      switch result {
+      case .success:
+        DispatchQueue.main.async {
+          self.view?.setProgressAnimation(isEnabled: false)
+          NotificationCenter.default.post(name: .didRemoveTransaction,
+                                          object: nil)
+        }
+      case .failure(let error):
+        DispatchQueue.main.async {
+          self.view?.setErrorAlert(for: error)
+        }
       }
     }
   }
@@ -379,7 +422,8 @@ extension TransactionListPresenterImpl {
     transactionDetailsViewController.presenter =
       TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                       transaction: transactionList[index],
-                                      type: .standard)
+                                      type: .standard,
+                                      isAfterPushNotification: false)
     Logger.transactionDetails.debug("Transaction: \(transactionList[index])")
     transactionDetailsViewController.presenter.transactionListIndex = index
     
@@ -392,7 +436,7 @@ extension TransactionListPresenterImpl {
     
     transactionDetailsViewController.presenter = TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                                                                  transaction: transaction,
-                                                                                 type: .imported)
+                                                                                 type: .imported, isAfterPushNotification: false)
     let transactionListViewController = view as! TransactionListViewController
     transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
   }

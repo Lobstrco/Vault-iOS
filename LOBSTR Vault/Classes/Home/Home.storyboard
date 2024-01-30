@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="R07-jA-whE">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="R07-jA-whE">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -383,7 +383,7 @@ or LOBSTR on another device?</string>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="MultiaccountPublicKeyTableViewCell" rowHeight="76" id="7HY-uQ-cHV" customClass="MultiaccountPublicKeyTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="44.5" width="375" height="76"/>
+                                        <rect key="frame" x="0.0" y="50" width="375" height="76"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7HY-uQ-cHV" id="6GU-za-hBj">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="76"/>
@@ -398,16 +398,16 @@ or LOBSTR on another device?</string>
                                                     </constraints>
                                                 </view>
                                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="eOR-jM-WkQ">
-                                                    <rect key="frame" x="72" y="21" width="40" height="34"/>
+                                                    <rect key="frame" x="72" y="21" width="255" height="34"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5gS-AD-vVJ">
-                                                            <rect key="frame" x="0.0" y="0.0" width="40" height="18"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5gS-AD-vVJ">
+                                                            <rect key="frame" x="0.0" y="0.0" width="255" height="18"/>
                                                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                                             <nil key="textColor"/>
                                                             <nil key="highlightedColor"/>
                                                         </label>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ul5-vn-Tu2">
-                                                            <rect key="frame" x="0.0" y="18" width="40" height="16"/>
+                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ul5-vn-Tu2">
+                                                            <rect key="frame" x="0.0" y="18" width="255" height="16"/>
                                                             <fontDescription key="fontDescription" type="system" pointSize="13"/>
                                                             <color key="textColor" name="Colors/Gray"/>
                                                             <nil key="highlightedColor"/>
@@ -426,6 +426,7 @@ or LOBSTR on another device?</string>
                                                 <constraint firstItem="jzt-kL-dPi" firstAttribute="centerY" secondItem="6GU-za-hBj" secondAttribute="centerY" id="4wt-pb-OpR"/>
                                                 <constraint firstAttribute="trailing" secondItem="jzt-kL-dPi" secondAttribute="trailing" constant="16" id="IRI-Qy-UyJ"/>
                                                 <constraint firstItem="sbg-ft-0NY" firstAttribute="leading" secondItem="6GU-za-hBj" secondAttribute="leading" constant="16" id="IrG-fd-5jz"/>
+                                                <constraint firstItem="jzt-kL-dPi" firstAttribute="leading" secondItem="eOR-jM-WkQ" secondAttribute="trailing" constant="8" id="SiP-9A-ifg"/>
                                                 <constraint firstItem="eOR-jM-WkQ" firstAttribute="leading" secondItem="sbg-ft-0NY" secondAttribute="trailing" constant="8" id="XuR-HB-06m"/>
                                                 <constraint firstItem="eOR-jM-WkQ" firstAttribute="centerY" secondItem="6GU-za-hBj" secondAttribute="centerY" id="q64-GL-tGY"/>
                                                 <constraint firstItem="sbg-ft-0NY" firstAttribute="centerY" secondItem="6GU-za-hBj" secondAttribute="centerY" id="rel-Uh-3Zm"/>
@@ -672,6 +673,13 @@ or LOBSTR on another device?</string>
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cHn-id-laD">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="128"/>
+                                <color key="backgroundColor" name="Colors/Main"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="VSu-Yb-UwA"/>
+                                </constraints>
+                            </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Hki-qv-z2j">
                                 <rect key="frame" x="0.0" y="44" width="375" height="623"/>
                                 <subviews>
@@ -767,7 +775,7 @@ or LOBSTR on another device?</string>
                                                         <rect key="frame" x="0.0" y="0.0" width="343" height="160"/>
                                                         <subviews>
                                                             <button opaque="NO" contentMode="scaleToFill" semanticContentAttribute="forceRightToLeft" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ojG-mD-byx">
-                                                                <rect key="frame" x="96" y="50" width="151" height="24"/>
+                                                                <rect key="frame" x="8" y="50" width="327" height="24"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" constant="24" id="wBD-XH-u8n"/>
                                                                 </constraints>
@@ -811,6 +819,8 @@ or LOBSTR on another device?</string>
                                                             <constraint firstItem="aA5-wP-J6E" firstAttribute="top" secondItem="V4f-bN-erX" secondAttribute="bottom" constant="16" id="8VA-Di-rDL"/>
                                                             <constraint firstItem="ojG-mD-byx" firstAttribute="centerX" secondItem="uMa-qW-i2D" secondAttribute="centerX" id="9gb-Ej-LoJ"/>
                                                             <constraint firstItem="V4f-bN-erX" firstAttribute="leading" secondItem="uMa-qW-i2D" secondAttribute="leading" constant="14" id="TUF-my-4FF"/>
+                                                            <constraint firstAttribute="trailing" secondItem="ojG-mD-byx" secondAttribute="trailing" constant="8" id="dYI-3k-NJs"/>
+                                                            <constraint firstItem="ojG-mD-byx" firstAttribute="leading" secondItem="uMa-qW-i2D" secondAttribute="leading" constant="8" id="nK4-6n-869"/>
                                                             <constraint firstItem="ojG-mD-byx" firstAttribute="top" secondItem="uMa-qW-i2D" secondAttribute="top" constant="50" id="oBR-b1-z5e"/>
                                                         </constraints>
                                                     </view>
@@ -906,7 +916,7 @@ or LOBSTR on another device?</string>
                                                                 </constraints>
                                                                 <prototypes>
                                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" reuseIdentifier="SignerAccountTableViewCell" rowHeight="60" id="9ZM-fx-2jd" customClass="SignerAccountTableViewCell" customModule="LOBSTR_Vault" customModuleProvider="target">
-                                                                        <rect key="frame" x="0.0" y="44.5" width="305" height="60"/>
+                                                                        <rect key="frame" x="0.0" y="50" width="305" height="60"/>
                                                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="9ZM-fx-2jd" id="Tiw-Ne-bZN">
                                                                             <rect key="frame" x="0.0" y="0.0" width="305" height="60"/>
@@ -1153,8 +1163,11 @@ or LOBSTR on another device?</string>
                         <viewLayoutGuide key="safeArea" id="7az-C7-urT"/>
                         <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="Hki-qv-z2j" firstAttribute="top" secondItem="7az-C7-urT" secondAttribute="top" id="NX4-Fj-0Ym"/>
+                            <constraint firstItem="Hki-qv-z2j" firstAttribute="top" secondItem="7az-C7-urT" secondAttribute="top" id="89z-1f-igW"/>
                             <constraint firstItem="Hki-qv-z2j" firstAttribute="leading" secondItem="7az-C7-urT" secondAttribute="leading" id="ZUm-AT-LhO"/>
+                            <constraint firstItem="cHn-id-laD" firstAttribute="leading" secondItem="r0U-oU-Agq" secondAttribute="leading" id="cJ6-Ez-o7I"/>
+                            <constraint firstAttribute="trailing" secondItem="cHn-id-laD" secondAttribute="trailing" id="eha-5y-THg"/>
+                            <constraint firstItem="cHn-id-laD" firstAttribute="top" secondItem="r0U-oU-Agq" secondAttribute="top" id="fBZ-95-amD"/>
                             <constraint firstItem="7az-C7-urT" firstAttribute="bottom" secondItem="Hki-qv-z2j" secondAttribute="bottom" id="fZT-Ep-CXD"/>
                             <constraint firstItem="7az-C7-urT" firstAttribute="trailing" secondItem="Hki-qv-z2j" secondAttribute="trailing" id="tER-rC-sSX"/>
                         </constraints>
@@ -1193,6 +1206,7 @@ or LOBSTR on another device?</string>
             <point key="canvasLocation" x="-60" y="160.56338028169014"/>
         </scene>
     </scenes>
+    <color key="tintColor" name="Colors/Main"/>
     <resources>
         <image name="Icons/Other/icAdd" width="52" height="52"/>
         <image name="Icons/Other/icArrow" width="24" height="24"/>

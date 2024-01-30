@@ -38,6 +38,7 @@ extension BiometricIDPresenterImpl {
   
   func biometricIDViewDidLoad() {
     view?.setBiometricButton(with: Device.biometricType)
+    CloudKitNicknameHelper.getAllRecords()
   }
 
   func turnOnButtonWasPressed() {

@@ -143,10 +143,9 @@ class PinPresenterImpl: PinPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpCenter = ZendeskHelper.getHelpCenterController()
-
     let pinViewController = view as! PinViewController
-    pinViewController.navigationController?.pushViewController(helpCenter, animated: true)
+    let helpViewController = FreshDeskHelper.getHelpCenterController()
+    pinViewController.navigationController?.present(helpViewController, animated: true)
   }
   
   func ignoreSimplePin() {

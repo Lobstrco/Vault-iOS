@@ -4,7 +4,7 @@ import stellarsdk
 class SubmitTransactionToVaultServerOperation: AsyncOperation {
   
   private var inputXdrEnvelope: String?
-  private var inputHorizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)?
+  private var inputHorizonResult: (resultCode: TransactionResultCode, operationMessageError: String?)?
   private var inputTransactionHash: String?
   
   private var transactionType: ServerTransactionType

@@ -10,6 +10,8 @@ protocol NicknameDialogDelegate: AnyObject {
   func submitNickname(with text: String,
                       for publicKey: String?,
                       nicknameDialogType: NicknameDialogType?)
+  
+  func displayNoInternetConnectionAlert()
 }
 
 class NicknameDialogViewController: UIViewController, StoryboardCreation {
@@ -35,7 +37,8 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
   @IBOutlet var contentViewTopConstraint: NSLayoutConstraint!
 
   weak var delegate: NicknameDialogDelegate?
-  var nickName: String?
+  var nickname: String?
+  var trimmedNickname: String = ""
   let constantHeight: CGFloat = 140
   var type: NicknameDialogType?
   var publicKey: String?
@@ -57,9 +60,21 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
 
   @IBAction func saveButtonAction(_: Any) {
     let nickname: String = textField.text ?? ""
-    let trimmedNickname = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
-    delegate?.submitNickname(with: trimmedNickname, for: publicKey, nicknameDialogType: type)
-    dismiss(animated: true, completion: nil)
+    trimmedNickname = nickname.trimmingCharacters(in: .whitespacesAndNewlines)
+
+    dismiss(animated: true) { [weak self] in
+      guard let self = self else { return }
+      
+      if UserDefaultsHelper.isICloudSynchronizationEnabled {
+        guard UIDevice.isConnectedToNetwork else {
+          self.delegate?.displayNoInternetConnectionAlert()
+          return
+        }
+        self.delegate?.submitNickname(with: self.trimmedNickname, for: self.publicKey, nicknameDialogType: self.type)
+      } else {
+        self.delegate?.submitNickname(with: self.trimmedNickname, for: self.publicKey, nicknameDialogType: self.type)
+      }
+    }
   }
 
   @IBAction func textFieldDidChange(_: Any) {
@@ -88,13 +103,13 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
   }
 
   private func setAppearance() {
-    self.view.hideKeyboardWhenTapped()
+    view.hideKeyboardWhenTapped()
     AppearanceHelper.set(saveButton, with: L10n.buttonTextNicknameSave)
 
-    if let nickName = self.nickName, !nickName.isEmpty {
+    if let nickname = self.nickname, !nickname.isEmpty {
       titleLabel.text = L10n.textChangeNicknameTitle
       textViewPlaceholderLabel.isHidden = true
-      textField.text = nickName
+      textField.text = nickname
     } else {
       titleLabel.text = L10n.textSetNicknameTitle
       textViewPlaceholderLabel.isHidden = false
@@ -118,13 +133,23 @@ class NicknameDialogViewController: UIViewController, StoryboardCreation {
 extension NicknameDialogViewController: UITextFieldDelegate {
   func textFieldShouldReturn(_ textField: UITextField) -> Bool {
     let nickname: String = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-    
+
     guard !nickname.isEmpty else { return false }
     
-    delegate?.submitNickname(with: nickname,
-                             for: publicKey,
-                             nicknameDialogType: type)
-    dismiss(animated: false, completion: nil)
+    dismiss(animated: true) { [weak self] in
+      guard let self = self else { return }
+      
+      if UserDefaultsHelper.isICloudSynchronizationEnabled {
+        if UIDevice.isConnectedToNetwork {
+          self.delegate?.submitNickname(with: nickname, for: self.publicKey, nicknameDialogType: self.type)
+        } else {
+          self.delegate?.displayNoInternetConnectionAlert()
+        }
+      } else {
+        self.delegate?.submitNickname(with: nickname, for: self.publicKey, nicknameDialogType: self.type)
+      }
+    }
+    
     textField.resignFirstResponder()
     return true
   }

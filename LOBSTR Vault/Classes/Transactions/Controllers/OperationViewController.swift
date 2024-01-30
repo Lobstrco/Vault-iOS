@@ -1,6 +1,6 @@
-import UIKit
 import PKHUD
 import stellarsdk
+import UIKit
 
 class OperationViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .transactions
@@ -71,7 +71,7 @@ extension OperationViewController: OperationDetailsView {
         
         moreMenu.addAction(openExplorerAction)
       }
-    case let .publicKey(isNicknameSet, type, isVaultSigner):
+    case .publicKey(let isNicknameSet, let type, let isVaultSigner):
       if let key = value as? String {
         let copyAction = UIAlertAction(title: L10n.buttonTextCopy,
                                        style: .default) { _ in
@@ -108,8 +108,6 @@ extension OperationViewController: OperationDetailsView {
           }
           moreMenu.addAction(setAccountNicknameAction)
         }
-        
-        
       }
     case .nativeAssetCode:
       let openExplorerAction = UIAlertAction(title: L10n.buttonTextOpenExplorer,
@@ -124,7 +122,7 @@ extension OperationViewController: OperationDetailsView {
     moreMenu.addAction(cancelAction)
         
     if let popoverPresentationController = moreMenu.popoverPresentationController {
-      popoverPresentationController.sourceView = self.view
+      popoverPresentationController.sourceView = view
       popoverPresentationController.sourceRect = CGRect(x: view.bounds.midX,
                                                         y: view.bounds.midY,
                                                         width: 0,
@@ -140,6 +138,44 @@ extension OperationViewController: OperationDetailsView {
     pasteboard.string = text
     HUD.flash(.labeledSuccess(title: nil,
                               subtitle: L10n.animationCopy), delay: 1.0)
+  }
+  
+  func showICloudSyncAdviceAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncAdviceAlertTitle,
+                                  message: L10n.textICloudSyncAdviceAlertDescription, preferredStyle: .alert)
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleProceed, style: .default, handler: { _ in
+      self.presenter.proceedICloudSyncActionWasPressed()
+    }))
+    
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
+    
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showNoInternetConnectionAlert() {
+    let alert = UIAlertController(title: L10n.textICloudSyncNoInternetConnectionAlertTitle, message: L10n.textICloudSyncNoInternetConnectionAlertDescription, preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .cancel))
+
+    present(alert, animated: true, completion: nil)
+  }
+  
+  func showICloudSyncScreen() {
+    let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
+    transactionConfirmationViewController.screenType = .iCloudSync
+    navigationController?.pushViewController(transactionConfirmationViewController, animated: true)
+  }
+  
+  func setProgressAnimation(isEnabled: Bool) {
+    DispatchQueue.main.async {
+      self.navigationItem.hidesBackButton = isEnabled
+      if let topVC = UIApplication.getTopViewController() {
+        if !(topVC is PinEnterViewController) {
+          isEnabled ? HUD.show(.labeledProgress(title: nil,
+                                                subtitle: L10n.animationWaiting)) : HUD.hide()
+        }
+      }
+    }
   }
 }
 
@@ -214,7 +250,7 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
     switch presenter.sections[indexPath.section].rows[indexPath.row] {
     case .operationDetail((let name, let value, _, _, _)):
       if name.contains("Flags") {
-        let separateCount =  value.components(separatedBy:"\n").count - 1
+        let separateCount = value.components(separatedBy: "\n").count - 1
         if separateCount > 1 {
           return 70
         } else {
@@ -260,7 +296,8 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView,
-                 didSelectRowAt indexPath: IndexPath) {
+                 didSelectRowAt indexPath: IndexPath)
+  {
     if let cell = tableView.cellForRow(at: indexPath) as? OperationDetailsTableViewCell, cell.type == .publicKey {
       tableView.deselectRow(at: indexPath, animated: true)
       presenter.publicKeyWasSelected(key: cell.valueLabel.text)
@@ -300,28 +337,32 @@ extension OperationViewController: UITableViewDelegate, UITableViewDataSource {
 
 extension OperationViewController {
   private func openNicknameDialog(for publicKey: String, nicknameDialogType: NicknameDialogType) {
-    var nickName: String?
-    if let index = self.presenter.storageAccounts.firstIndex(where: { $0.address == publicKey }) {
-      nickName = self.presenter.storageAccounts[index].nickname
+    var nickname: String?
+    if let index = presenter.storageAccounts.firstIndex(where: { $0.address == publicKey }) {
+      nickname = presenter.storageAccounts[index].nickname
     }
     let nicknameDialogViewController = NicknameDialogViewController.createFromStoryboard()
     nicknameDialogViewController.delegate = self
     nicknameDialogViewController.publicKey = publicKey
-    nicknameDialogViewController.nickName = nickName
+    nicknameDialogViewController.nickname = nickname
     nicknameDialogViewController.type = nicknameDialogType
-    self.navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
+    navigationController?.present(nicknameDialogViewController, animated: false, completion: nil)
   }
 }
 
 // MARK: - NicknameDialogDelegate
 
 extension OperationViewController: NicknameDialogDelegate {
+  func displayNoInternetConnectionAlert() {
+    showNoInternetConnectionAlert()
+  }
+  
   func submitNickname(with text: String,
                       for publicKey: String?,
-                      nicknameDialogType: NicknameDialogType?) {
-    self.presenter.setNicknameActionWasPressed(with: text,
-                                               for: publicKey,
-                                               nicknameDialogType: nicknameDialogType)
+                      nicknameDialogType: NicknameDialogType?)
+  {
+    presenter.setNicknameActionWasPressed(with: text,
+                                          for: publicKey,
+                                          nicknameDialogType: nicknameDialogType)
   }
 }
-

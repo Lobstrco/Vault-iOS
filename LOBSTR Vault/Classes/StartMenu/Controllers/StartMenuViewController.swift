@@ -110,5 +110,4 @@ extension StartMenuViewController {
   @objc func checkAppVersion() {
     presenter.checkAppVersion()
   }
-  
 }

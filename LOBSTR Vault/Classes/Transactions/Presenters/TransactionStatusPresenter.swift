@@ -6,27 +6,33 @@ import StoreKit
 enum TransactionStatus: String {
   case success = "success"
   case failure = "failure"
+  case badAuth = "badAuth"
 }
 
 protocol TransactionStatusPresenter {
   init(view: TransactionStatusView,
        transactionResult: (TransactionResultCode, String?),
-       xdr: String?, transactionType: ServerTransactionType?)
+       xdr: String?,
+       transactionType: ServerTransactionType?,
+       transactionHash: String?)
   func transactionStatusViewDidLoad()
   func copyXDRButtonWasPressed(xdr: String)
   func doneButtonWasPressed()
   func helpButtonWasPressed()
   func viewTransactionDetailsButtonWasPressed()
   func copySignedXdrButtonWasPressed()
+  func viewDetailsButtonWasPressed()
 }
 
 protocol TransactionStatusView: AnyObject {
   func setStatusTitle(_ title: String)
-  func setErrorMessage(_ message: String)
+  func setDescriptionMessage(_ message: String, transactionStatus: TransactionStatus)
   func setXdr(_ xdr: String)
   func setAnimation(with status: TransactionStatus)
   func setFeedback(with status: TransactionStatus)
   func copy(_ xdr: String)
+  func setViewDetailsButton(isHidden: Bool, title: String)
+  func showOperationMessageErrorDescriptionAlert(_ error: String)
 }
 
 class TransactionStatusPresenterImpl {
@@ -35,15 +41,21 @@ class TransactionStatusPresenterImpl {
   private var transactionResult: (code: TransactionResultCode, operationMessageError: String?)
   private var xdr: String?
   private var transactionType: ServerTransactionType?
+  private var transactionHash: String?
   private var transactionStatus: TransactionStatus = .failure
   
+  var operationMessageErrorDescription: String = ""
+  
   required init(view: TransactionStatusView,
-       transactionResult: (TransactionResultCode, String?),
-       xdr: String?, transactionType: ServerTransactionType?) {
+                transactionResult: (TransactionResultCode, String?),
+                xdr: String?,
+                transactionType: ServerTransactionType?,
+                transactionHash: String?) {
     self.view = view
     self.transactionResult = transactionResult
     self.xdr = xdr
     self.transactionType = transactionType
+    self.transactionHash = transactionHash
   }
 }
 
@@ -52,16 +64,15 @@ class TransactionStatusPresenterImpl {
 extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   
   func transactionStatusViewDidLoad() {
-    displayErrorMessage()
-    
     transactionStatus = getTransactionStatus(by: transactionResult.code)
-    
+    displayErrorMessage()
     if transactionStatus == .success {
       UserDefaultsHelper.actualTransactionNumber -= 1
       UserDefaultsHelper.badgesCounter = UserDefaultsHelper.actualTransactionNumber
     }
     
-    let statusTitle = transactionStatus == .success ? L10n.textStatusSuccessTitle : L10n.textStatusFailureTitle
+    let statusTitle = transactionStatus == .failure ? L10n.textStatusFailureTitle : L10n.textStatusSuccessTitle
+
     view.setAnimation(with: transactionStatus)
     view.setStatusTitle(statusTitle)
     view.setFeedback(with: transactionStatus)
@@ -83,10 +94,9 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
   }
   
   func helpButtonWasPressed() {
-    let helpCenter = ZendeskHelper.getHelpCenterController()
-    
     let transactionStatusViewController = view as! TransactionStatusViewController
-    transactionStatusViewController.navigationController?.pushViewController(helpCenter, animated: true)
+    let helpViewController = FreshDeskHelper.getHelpCenterController()
+    transactionStatusViewController.navigationController?.present(helpViewController, animated: true)
   }
   
   func viewTransactionDetailsButtonWasPressed() {
@@ -98,6 +108,24 @@ extension TransactionStatusPresenterImpl: TransactionStatusPresenter {
     guard let xdr = xdr else { return }
     view.copy(xdr)
   }
+  
+  func viewDetailsButtonWasPressed() {
+    switch transactionStatus {
+    case .success:
+      guard let transactionHash = transactionHash,
+            let url = URL(string: "https://stellar.expert/explorer/public/tx/\(transactionHash)")
+      else { return }
+      
+      let transactionStatusViewController = view as! TransactionStatusViewController
+      let safariViewController = MainSafariViewController(url: url)
+      safariViewController.modalPresentationStyle = .pageSheet
+      transactionStatusViewController.navigationController?.present(safariViewController, animated: true)
+    case .failure:
+      view.showOperationMessageErrorDescriptionAlert(operationMessageErrorDescription)
+    default:
+      break
+    }
+  }
 }
 
 // MARK: - Private
@@ -106,8 +134,10 @@ extension TransactionStatusPresenterImpl {
   
   private func getTransactionStatus(by resultCode: TransactionResultCode) -> TransactionStatus {
     switch resultCode {
-    case .success, .badAuth:
+    case .success:
       return .success
+    case .badAuth:
+      return .badAuth
     default:
       return .failure
     }
@@ -115,52 +145,59 @@ extension TransactionStatusPresenterImpl {
   
   private func displayErrorMessage() {
     let errorMessage = getErrorMessage(from: transactionResult)
-    view.setErrorMessage(errorMessage)
+    view.setDescriptionMessage(errorMessage, transactionStatus: transactionStatus)
   }
   
   private func getErrorMessage(from transactionResult: (code: TransactionResultCode, operationMessageError: String?)) -> String {
     
     if let operationMessageError = transactionResult.operationMessageError {
-      return operationMessageError
+      let messageErrorTitle = splitOperationMessageError(operationMessageError)
+      view.setViewDetailsButton(isHidden: operationMessageErrorDescription.isEmpty,
+                                title: L10n.textBtnErrorViewDetails)
+      return messageErrorTitle
     } else {
+      if transactionHash != nil, transactionStatus == .success {
+        view.setViewDetailsButton(isHidden: false,
+                                  title: L10n.textBtnViewOnNetworkExplorer)
+      }
       switch transactionResult.code {
       case .success:
-        return ""
+        return L10n.textStatusSuccessDescription
       case .badAuth:
-        if let _ = self.transactionType {
+        if self.transactionType != nil {
           return ""
         } else {
-          return "You have successfully signed this transaction. More signatures required to submit this transaction to the network"
+          return L10n.textStatusNeedMoreSignaturesDescription
         }
       case .badSeq:
-        return "Sequence number does not match source account"
+        return L10n.txBadSeq
       case .failed:
-        return "One of the operations failed."
+        return L10n.txFailed
       case .tooEarly:
-        return "Ledger closeTime before minTime value in the transaction."
+        return L10n.txTooEarly
       case .tooLate:
-        return "Ledger closeTime after maxTime value in the transaction."
+        return L10n.txTooLate
       case .missingOperation:
-        return "No operation was specified."
+        return L10n.txMissingOperation
       case .insufficientBalance:
-        return "Fee would bring account below minimum reserve."
+        return L10n.txInsufficientBalance
       case .noAccount:
-        return "Source account not found."
+        return L10n.txNoAccount
       case .insufficientFee:
-        return "Fee is too small."
+        return L10n.txInsufficientFee
       case .badAuthExtra:
-        return "Unused signatures attached to transaction."
+        return L10n.txBadAuthExtra
       case .internalError:
-        return "An unknown error occurred."
-      case .basSponsorship:
-        return "Sponsorship not ended."
+        return L10n.txInternalError
+      case .badSponsorship:
+        return L10n.txBadSponsorship
       case .feeBumpInnerFailed:
-        return "Fee bump inner transaction failed."
+        return L10n.txBumpInnerFailed
       default:
         if let error = transactionResult.operationMessageError {
           return error
         } else {
-          return "Transaction was failed"
+          return L10n.txCommonError
         }
       }
     }
@@ -170,5 +207,17 @@ extension TransactionStatusPresenterImpl {
     if transactionStatus == .success {
       SKStoreReviewController.requestReview()
     }
+  }
+  
+  private func splitOperationMessageError(_ error: String) -> String {
+    var shortMessageError = ""
+    let operationMessageErrorArray = error.components(separatedBy: "failed ")
+    if operationMessageErrorArray.count == 2 {
+      if let shortError = operationMessageErrorArray.first, let errorDescription = operationMessageErrorArray.last {
+        shortMessageError = shortError + "failed"
+        operationMessageErrorDescription = errorDescription
+      }
+    }
+    return shortMessageError
   }
 }

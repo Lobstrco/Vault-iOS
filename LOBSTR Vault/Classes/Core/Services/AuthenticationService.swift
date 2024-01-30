@@ -27,8 +27,9 @@ class AuthenticationService {
           TangemHelper.signTransactionHash(hash: hash, cardId: cardId) { result in
             switch result {
             case .success(let signedTransaction):
+              guard let signature = signedTransaction.signatures.first else { return }
               TransactionHelper.signTransaction(walletPublicKey: walletPublicKey,
-                                                signature: signedTransaction.signature,
+                                                signature: signature,
                                                 txEnvelope: &envelope)
                             
               guard let signedTransaction = envelope.xdrEncoded else {

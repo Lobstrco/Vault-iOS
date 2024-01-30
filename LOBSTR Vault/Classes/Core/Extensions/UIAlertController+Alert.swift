@@ -1,7 +1,6 @@
 import UIKit
 
 extension UIAlertController {
-  
   static func defaultAlert(for error: Error, presentingViewController: UIViewController) {
     guard let infoError = error as? ErrorDisplayable else { return }
     
@@ -23,5 +22,14 @@ extension UIAlertController {
     controller.addAction(action)
     
     presentingViewController.present(controller, animated: true, completion: nil)
+  }
+  
+  static func screenshotTakenAlert(presentingViewController: UIViewController) {
+    let alert = UIAlertController(title: L10n.screenshotWarningTitle,
+                                  message: L10n.screenshotWarningDescription,
+                                  preferredStyle: .alert)
+    alert.addAction(UIAlertAction(title: L10n.buttonTitleOk, style: .default))
+
+    presentingViewController.present(alert, animated: true, completion: nil)
   }
 }

@@ -1,6 +1,6 @@
 import UIKit
 
-protocol SignersBottomTileTableViewCellDelegate: class {
+protocol SignersBottomTileTableViewCellDelegate: AnyObject {
   func multisigInfoButtonDidPress()
 }
 

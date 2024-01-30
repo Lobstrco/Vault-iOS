@@ -22,7 +22,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
 }
 
 extension AppDelegate: MessagingDelegate {
-  func messaging(_: Messaging, didReceiveRegistrationToken fcmToken: String) {
+  func messaging(_: Messaging, didReceiveRegistrationToken fcmToken: String?) {
     checkNotificationAvailability()
   }
   

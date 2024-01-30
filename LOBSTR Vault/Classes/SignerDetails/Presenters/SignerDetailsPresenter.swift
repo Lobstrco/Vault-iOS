@@ -11,9 +11,10 @@ protocol SignerDetailsPresenter {
   func moreDetailsButtonWasPressed(for publicKey: String)
   func copyAlertActionWasPressed(_ publicKey: String)
   func openExplorerActionWasPressed(_ publicKey: String)
-  func setAccountNicknameActionWasPressed(with text: String?, for publicKey: String?)
-  func clearAccountNicknameActionWasPressed(_ publicKey: String?)
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?)
+  func clearNicknameActionWasPressed(_ publicKey: String?)
   func addNicknameButtonWasPressed()
+  func proceedICloudSyncActionWasPressed()
 }
 
 class SignerDetailsPresenterImpl {
@@ -82,12 +83,9 @@ private extension SignerDetailsPresenterImpl {
       if let account = storageAccounts.first(where: { $0.address == publicKey }) {
         accounts[index].nickname = account.nickname
         accounts[index].federation = account.federation
+        accounts[index].indicateAddress = AccountsStorageHelper.indicateAddress
       } else {
-        if let result = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: publicKey)).first {
-          accounts[index].federation = result.federation
-        } else {
-          tryToLoadFederation(by: publicKey, for: index)
-        }
+        tryToLoadFederation(by: publicKey, for: index)
       }
     }
   }
@@ -97,7 +95,7 @@ private extension SignerDetailsPresenterImpl {
       switch result {
       case .success(let account):
         if let federation = account.federation {
-          self.signedAccounts[index] = SignedAccount(address: account.publicKey, federation: federation)
+          self.signedAccounts[index] = SignedAccount(address: account.publicKey, federation: federation, indicateAddress: AccountsStorageHelper.indicateAddress)
           AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: self.signedAccounts)
           self.view?.reloadRow(index)
         }
@@ -132,7 +130,7 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
   }
   
   func signerDetailsViewDidLoad() {
-    self.storageAccounts = storage.retrieveAccounts() ?? []
+    self.storageAccounts = AccountsStorageHelper.getStoredAccounts()
     switch screenType {
     case .protectedAccounts:
       guard let viewController = view as? UIViewController else { return }
@@ -147,7 +145,7 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
     }
   }
   
-  func setAccountNicknameActionWasPressed(with text: String?, for publicKey: String?) {
+  func setNicknameActionWasPressed(with text: String?, for publicKey: String?) {
     guard let publicKey = publicKey else { return }
     
     switch screenType {
@@ -161,6 +159,7 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
         AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: signedAccounts)
         allAccounts.append(contentsOf: AccountsStorageHelper.allSignedAccounts)
         storage.save(accounts: allAccounts)
+        savedToICloud(account: signedAccounts[index])
         NotificationCenter.default.post(name: .didNicknameSet, object: nil)
         self.view?.reloadRow(index)
       }
@@ -168,9 +167,27 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
       if let index = storageAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
         storageAccounts[index].nickname = nickname
         storage.save(accounts: storageAccounts)
+        savedToICloud(account: storageAccounts[index])
         NotificationCenter.default.post(name: .didActivePublicKeyChange, object: nil)
         NotificationCenter.default.post(name: .didNicknameSet, object: nil)
         signerDetailsViewDidLoad()
+      }
+    }
+    
+    guard UIDevice.isConnectedToNetwork,
+          let nickname = text,
+          !nickname.isEmpty else { return }
+    
+    CloudKitNicknameHelper.checkIsICloudStatusAvaliable { isAvaliable in
+      if isAvaliable {
+        CloudKitNicknameHelper.isICloudDatabaseEmpty { result in
+          if result, CloudKitNicknameHelper.isNeedToShowICloudSyncAdviceAlert {
+            DispatchQueue.main.async {
+              UserDefaultsHelper.isICloudSyncAdviceShown = true
+              self.view?.showICloudSyncAdviceAlert()
+            }
+          }
+        }
       }
     }
   }
@@ -195,12 +212,24 @@ extension SignerDetailsPresenterImpl: SignerDetailsPresenter {
     }
   }
   
-  func clearAccountNicknameActionWasPressed(_ publicKey: String?) {
-    setAccountNicknameActionWasPressed(with: "", for: publicKey)
+  func clearNicknameActionWasPressed(_ publicKey: String?) {
+    if UserDefaultsHelper.isICloudSynchronizationEnabled {
+      guard UIDevice.isConnectedToNetwork else {
+        view?.showNoInternetConnectionAlert()
+        return
+      }
+      setNicknameActionWasPressed(with: "", for: publicKey)
+    } else {
+      setNicknameActionWasPressed(with: "", for: publicKey)
+    }
   }
   
   func addNicknameButtonWasPressed() {
     transitionToAddNickname()
+  }
+    
+  func proceedICloudSyncActionWasPressed() {
+    view?.showICloudSyncScreen()
   }
 }
 
@@ -221,6 +250,13 @@ private extension SignerDetailsPresenterImpl {
     let signerDetailsViewController = view as! SignerDetailsViewController
     signerDetailsViewController.navigationController?.present(addNicknameViewController, animated: true, completion: nil)
   }
+  
+  func savedToICloud(account: SignedAccount?) {
+    CloudKitNicknameHelper.accountToSave = account
+    if let accountToSave = CloudKitNicknameHelper.accountToSave {
+      CloudKitNicknameHelper.saveToICloud(accountToSave)
+    }
+  }
 }
 
 // MARK: - AddNicknameDelegate
@@ -228,5 +264,13 @@ private extension SignerDetailsPresenterImpl {
 extension SignerDetailsPresenterImpl: AddNicknameDelegate {
   func nicknameWasAdded() {
     signerDetailsViewDidLoad()
+  }
+  
+  func showICloudSyncAdviceAlert() {
+    view?.showICloudSyncAdviceAlert()
+  }
+  
+  func showNoInternetConnectionAlert() {
+    view?.showNoInternetConnectionAlert()
   }
 }

@@ -1,10 +1,14 @@
 import UIKit
+import TangemSdk
 
+@available(iOS 13.0, *)
 class TangemCreateWalletViewController: UIViewController, StoryboardCreation {
 
   static var storyboardType: Storyboards = .tangem
   
   @IBOutlet weak var createButton: UIButton!
+  
+  var curve: EllipticCurve?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -13,26 +17,21 @@ class TangemCreateWalletViewController: UIViewController, StoryboardCreation {
   }
 
   @IBAction func createWalletButtonAction(_ sender: Any) {
-    if #available(iOS 13.0, *) {
-      createWallet()
-    } else {
-      Logger.tangem.error("Tangem SDK supports version higher 13")
-    }
+    createWallet()
   }
   
   @IBAction func helpButtonAction(_ sender: Any) {
-    let helpViewController = ZendeskHelper.getZendeskArticleController(article: .signingTangem)
-    navigationController?.pushViewController(helpViewController, animated: true)
+    let helpViewController = FreshDeskHelper.getFreshDeskArticleController(article: .signingTangem)
+    navigationController?.present(helpViewController, animated: true)
   }
   
-  @available(iOS 13.0, *)
   func createWallet() {
     guard let cardId = UserDefaultsHelper.tangemCardId else { return }
-    TangemHelper.createWallet(cardId: cardId) { result in
+    TangemHelper.createWallet(cardId: cardId, curve: curve) { result in
       switch result {
       case .success(let createWalletResponse):
         UserDefaultsHelper.tangemCardId = createWalletResponse.cardId
-        self.transactionToAuth(walletPublicKey: createWalletResponse.walletPublicKey, cardId: createWalletResponse.cardId)
+        self.transactionToAuth(walletPublicKey: createWalletResponse.wallet.publicKey, cardId: createWalletResponse.cardId)
       case .failure(let error):
         Logger.tangem.error(error)
       }

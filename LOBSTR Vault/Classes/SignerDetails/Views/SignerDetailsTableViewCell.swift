@@ -1,7 +1,7 @@
 import Kingfisher
 import UIKit
 
-protocol SignerDetailsTableViewCellDelegate: class {
+protocol SignerDetailsTableViewCellDelegate: AnyObject {
   func moreDetailsButtonWasPressed(in cell: SignerDetailsTableViewCell)
 }
 

@@ -38,15 +38,17 @@ protocol TransactionDetailsPresenter {
   func setNicknameActionWasPressed(with text: String?, for publicKey: String?, nicknameDialogType: NicknameDialogType?)
   func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?)
   func signerWasSelected(_ viewData: SignerViewData?)
+  func proceedICloudSyncActionWasPressed()
 }
 
 protocol TransactionDetailsView: AnyObject {
-  func setConfirmationAlert()
+  func showConfirmationAlert(with description: String)
   func setDenyingAlert()
   func setErrorAlert(for error: Error)
-  func setProgressAnimation(isEnable: Bool)
+  func setProgressAnimation(isEnabled: Bool)
   func registerTableViewCell(with cellName: String)
   func setConfirmButtonWithError(isInvalid: Bool, withTextError: String?)
+  func hideButtonsWithError(withTextError: String?)
   func setTitle(_ title: String)  
   func openTransactionListScreen()
   func reloadData()
@@ -54,7 +56,12 @@ protocol TransactionDetailsView: AnyObject {
   func copy(_ text: String)
   func showActionSheet(_ value: Any?, _ type: ActionSheetType)
   func showAlert(text: String)
+  func showICloudSyncAdviceAlert()
   func setSequenceNumberCountAlert()
+  func setTransactionAlreadySignedOrDeniedAlert()
+  func showNoInternetConnectionAlert()
+  func setButtons(isEnabled: Bool)
+  func showICloudSyncScreen()
 }
 
 enum TransactionType {

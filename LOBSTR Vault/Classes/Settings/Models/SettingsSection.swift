@@ -13,6 +13,7 @@ extension SettingsSection: Equatable {
 
 public enum SettingsSectionType {
   case account
+  case nicknames
   case security
   case help
   case other
@@ -21,6 +22,8 @@ public enum SettingsSectionType {
     switch self {
     case .account:
       return L10n.textSettingsAccountSection
+    case .nicknames:
+      return L10n.textSettingsNicknamesSection
     case .security:
       return L10n.textSettingsSecuritySection
     case .help:
@@ -49,5 +52,7 @@ public enum SettingsRow {
   case support
   case buyCard
   case manageNicknames
+  case iCloudSync
+  case updateNicknames 
 }
 

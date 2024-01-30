@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -26,8 +26,8 @@
                         <action selector="closeButtonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="eRp-8F-ESR"/>
                     </connections>
                 </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EBc-S4-pot">
-                    <rect key="frame" x="165.5" y="15" width="44.5" height="20.5"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EBc-S4-pot">
+                    <rect key="frame" x="48" y="15" width="279" height="20.5"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
@@ -44,7 +44,7 @@
                         <constraint firstAttribute="width" constant="200" id="z2t-vf-nHa"/>
                     </constraints>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0J1-5x-mbX">
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0J1-5x-mbX">
                     <rect key="frame" x="16" y="323" width="343" height="48"/>
                     <color key="backgroundColor" name="Colors/Main"/>
                     <constraints>
@@ -59,9 +59,11 @@
                     </connections>
                 </button>
             </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="0J1-5x-mbX" secondAttribute="bottom" constant="16" id="092-ha-sqM"/>
+                <constraint firstItem="EBc-S4-pot" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="48" id="94C-o9-VjY"/>
                 <constraint firstItem="823-IQ-nUn" firstAttribute="top" secondItem="EBc-S4-pot" secondAttribute="bottom" constant="10" id="FCv-BT-xMO"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="0J1-5x-mbX" secondAttribute="trailing" constant="16" id="Ig2-MC-5j7"/>
                 <constraint firstItem="0J1-5x-mbX" firstAttribute="top" secondItem="Jm5-yb-w42" secondAttribute="bottom" constant="29.5" id="Kmw-Qr-4uI"/>
@@ -74,9 +76,9 @@
                 <constraint firstItem="Jm5-yb-w42" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="i6o-oT-gp0"/>
                 <constraint firstItem="EBc-S4-pot" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="15" id="nIM-3i-Yzn"/>
                 <constraint firstItem="EBc-S4-pot" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="tYI-ji-oqh"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="EBc-S4-pot" secondAttribute="trailing" constant="48" id="zLh-aU-aDJ"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
                 <outlet property="closeButton" destination="jdZ-vW-9YA" id="pLb-te-ip0"/>
                 <outlet property="copyButton" destination="0J1-5x-mbX" id="Hic-lU-RFx"/>

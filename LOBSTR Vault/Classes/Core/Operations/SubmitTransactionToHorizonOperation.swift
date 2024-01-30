@@ -3,7 +3,7 @@ import stellarsdk
 
 class SubmitTransactionToHorizonOperation: AsyncOperation {
   
-  private var outputHorizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)?
+  private var outputHorizonResult: (resultCode: TransactionResultCode, operationMessageError: String?)?
   private var outputXdrEnvelope: String?
   private var outputTransactionHash: String?
   
@@ -61,7 +61,7 @@ extension SubmitTransactionToHorizonOperation {
 
 extension SubmitTransactionToHorizonOperation: VaultServerTransactionDataBroadcast {
   var xdrEnvelope: String? { return outputXdrEnvelope }
-  var horizonResult: (resultCode: TransactionResultCode, operaiotnMessageError: String?)? { return outputHorizonResult }
+  var horizonResult: (resultCode: TransactionResultCode, operationMessageError: String?)? { return outputHorizonResult }
   var transactionHash: String? { return outputTransactionHash }
   var error: Error? { return outputError }
 }

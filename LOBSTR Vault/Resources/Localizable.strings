@@ -11,14 +11,18 @@
 "generic_error_code" = "Operation could not be completed. Code: %@";
 "reading_data_progress" = "Reading data: %@%%";
 "writing_data_progress" = "Writing data: %@%%";
+"scan_card_description" = "Hold the Signer Card near the back of your device for a few seconds";
 
 
 // Button titles
 "button_title_ok" = "OK";
 "button_title_yes" = "Yes";
+"button_title_enable" = "Enable";
+"button_title_proceed" = "Proceed";
 "button_title_deny" = "Deny";
 "button_title_back" = "Back";
 "button_title_cancel" = "Cancel";
+"button_title_close" = "Close";
 "button_title_next" = "Next";
 "button_title_copy_key" = "Copy Key";
 "button_title_signed_accounts" = "Signed Accounts";
@@ -142,6 +146,8 @@
 "text_deny_dialog_title" = "Are you sure?";
 "text_deny_dialog_description" = "Want to deny the transaction?";
 "text_confirm_dialog_description" = "Want to confirm the transaction?";
+"text_confirm_dialog_description_no_other_signatures_required" = "Want to confirm this transaction? Your transaction will be signed and submitted to the network.";
+"text_confirm_dialog_description_other_signatures_required" = "Want to confirm this transaction? Your transaction will be signed, and you will need confirmations from other signers to submit it to the network.";
 "text_transaction_invalid_error" = "Transaction can not be confirmed, its sequence number is invalid.";
 "text_transaction_invalid_label" = "Invalid";
 "text_operation_details_header_title" = "OPERATION DETAILS";
@@ -151,6 +157,41 @@
 "text_signers_header_title" = "SIGNERS";
 "text_signature_required_message" = "%@ signature required to submit this transaction to the network";
 "text_signatures_required_message" = "%@ signatures required to submit this transaction to the network";
+"msg_transaction_already_signed_or_denied" = "The transaction has already been confirmed or denied";
+
+// Operation name
+"text_operation_name_account_created" = "Account Created";
+"text_operation_name_account_merge" = "Account Merge";
+"text_operation_name_allow_trust" = "Allow Trust";
+"text_operation_name_bump_sequence" = "Bump Sequence";
+"text_operation_name_change_trust" = "Change Trust";
+"text_operation_name_inflation" = "Inflation";
+"text_operation_name_manage_data" = "Manage Data";
+"text_operation_name_path_payment_strict_receive" = "Path Payment Strict Receive";
+"text_operation_name_payment" = "Payment";
+"text_operation_name_set_options" = "Set Options";
+"text_operation_name_create_passive_sell_offer" = "Create Passive Offer";
+"text_operation_name_manage_buy_offer" = "Buy Offer";
+"text_operation_name_sell_offer" = "Sell Offer";
+"text_operation_name_cancel_offer" = "Cancel Offer";
+"text_operation_name_path_payment_strict_send" = "Path Payment Strict Send";
+"text_operation_name_begin_sponsoring_future_reserves" = "Begin Sponsoring Future Reserves";
+"text_operation_name_end_sponsoring_future_reserves" = "End Sponsoring Future Reserves";
+"text_operation_name_revoke_sponsorship" = "Revoke Sponsorship";
+"text_operation_name_create_claimable_balance" = "Create Claimable Balance";
+"text_operation_name_claim_claimable_balance" = "Claim Claimable Balance";
+"text_operation_name_clawback" = "Clawback";
+"text_operation_name_clawback_claimable_balance" = "Clawback Claimable Balance";
+"text_operation_name_set_trustline_flags" = "Set Trustline Flags";
+"text_operation_name_liquidity_pool_deposit" = "Liquidity Pool Deposit";
+"text_operation_name_liquidity_pool_withdraw" = "Liquidity Pool Withdraw";
+"text_operation_name_create_account" = "Create Account";
+"text_operation_name_revoke_account_sponsorship" = "Revoke Account Sponsorship";
+"text_operation_name_revoke_claimable_balance_sponsorship" = "Revoke Claimable Balance Sponsorship";
+"text_operation_name_revoke_data_sponsorship" = "Revoke Data Sponsorship";
+"text_operation_name_revoke_offer_sponsorship" = "Revoke Offer Sponsorship";
+"text_operation_name_revoke_trustline_sponsorship" = "Revoke Trustline Sponsorship";
+"text_operation_name_revoke_signer_sponsorship" = "Revoke Signer Sponsorship";
 
 // Create claimable balance operation
 "text_claim_conditions" = "Claim Conditions";
@@ -163,6 +204,7 @@
 
 // Settings screen
 "text_settings_account_section" = "ACCOUNT";
+"text_settings_nicknames_section" = "NICKNAMES";
 "text_settings_security_section" = "SECURITY";
 "text_settings_other_section" = "OTHER";
 "text_settings_help_section" = "HELP";
@@ -180,15 +222,22 @@
 "text_settings_logoutfield" = "Log Out";
 "text_settings_copyright" = "All rights reserved";
 "text_settings_public_key_title" = "Vault Signer Key";
+"text_settings_get_latest_nicknames_title" = "Get Latest Nicknames";
 "text_settings_signers_field" = "Protects [number] Account";
 "text_settings_manage_nicknames" = "Manage Account Nicknames";
+"text_settings_iCloud_sync" = "Backup Nicknames to iCloud";
 "button_title_show" = "Show";
+"button_title_sync" = "Sync";
 "text_settings_display_mnemonic_title" = "Enter your PIN to view your Recovery Phrase";
 "text_settings_display_pin_changed" = "PIN changed";
 "text_settings_transactions_confirmations_title" = "CONFIRM TRANSACTIONS";
 "text_settings_transactions_confirmations_about" = "Show additional confirmation alert before signing transaction requests to avoid mistakes.";
 "text_settings_spam_protection_title" = "ALLOW UNSIGNED TRANSACTIONS";
 "text_settings_spam_protection_about" = "Select whether you want to receive transaction requests that don’t contain any valid signatures from protected accounts or other signers. Choose ‘No’ to protect your signer account from spam transactions.";
+"text_settings_iCloud_sync_title" = "BACKUP NICKNAMES TO ICLOUD";
+"text_settings_iCloud_sync_about" = "iCloud backup for account nicknames allow you to sync nicknames across multiple Apple devices where you use the Vault app. It will also help you quickly restore your nicknames in case you log out from your Vault account.";
+"text_settings_iCloud_sync_multiple_devices_title" = "Using this Vault account on multiple devices?";
+"text_settings_iCloud_sync_multiple_devices_description" = "If you are using Vault app on multiple devices, you should first turn on the iCloud backup on the device where your nicknames are most up-to-date. They will be uploaded to iCloud and downloaded on other devices when you enable the backup there.";
 
 // Change Passcode screen
 "text_change_passcode_enter_old" = "Enter PIN";
@@ -203,9 +252,15 @@
 
 // Transaction Status screen
 "text_status_success_title" = "Success";
+"text_status_success_description" = "Transaction confirmed and submitted to the network";
 "text_status_failure_title" = "Transaction Failed";
-"text_status_description" = "You need more signatures to submit the operation";
+"text_status_need_more_signatures_description" = "You have successfully signed this transaction. More signatures are required to submit this transaction to the network";
 "text_status_signed_xdr_title" = "Signed XDR";
+"text_tv_error_short_description" = "%@ operation failed";
+"text_tv_error_short_description_with_number" = "%@ (operation %@) failed";
+"text_btn_error_view_details" = "View Details";
+"title_error_operation_details" = "Operation Error";
+"text_btn_view_on_network_explorer" = "View on Network Explorer";
 
 // Signed Details screen
 "text_empty_state_signed_accounts" = "No protected accounts";
@@ -327,6 +382,36 @@
 "button_text_change_account_nickname" = "Change Account Nickname";
 "button_text_clear_account_nickname" = "Clear Account Nickname";
 
+// Operations descriptions
+"text_account_created" = "Account Created";
+"text_account_merge" = "Account Merge";
+"text_allow_trust" = "Allow Trust";
+"text_bump_sequence" = "Bump Sequence";
+"text_change_trust" = "Change Trust";
+"text_inflation" = "Inflation";
+"text_manage_data" = "Manage Data";
+"text_path_payment_strict_receive" = "Path Payment Strict Receive";
+"text_payment" = "Payment";
+"text_set_options" = "Set Options";
+"text_create_passive_offer" = "Create Passive Offer";
+"text_buy_offer" = "Buy Offer";
+"text_sell_offer" = "Sell Offer";
+"text_path_payment_strict_send" = "Path Payment Strict Send";
+"text_begin_sponsoring_future_reserves" = "Begin Sponsoring Future Reserves";
+"text_end_sponsoring_future_reserves" = "End Sponsoring Future Reserves";
+"text_revoke_sponsorship" = "Revoke Sponsorship";
+"text_create_claimable_balance" = "Create Claimable Balance";
+"text_claim_claimable_balance" = "Claim Claimable Balance";
+"text_clawback" = "Clawback";
+"text_clawback_claimable_balance" = "Clawback Claimable Balance";
+"text_set_trustline_flags" = "Set Trustline Flags";
+"text_liquidity_pool_deposit" = "Liquidity Pool Deposit";
+"text_liquidity_pool_withdraw" = "Liquidity Pool Withdraw";
+"text_extend_footprint_ttl" = "Extend Footprint TTL";
+"text_restore_footprint" = "Restore Footprint";
+"text_invoke_host_function" = "Invoke Host Function";
+"text_unknown" = "Unknown";
+
 // Add Nickname screen
 "text_add_nickname_title" = "Set Nickname for Account";
 "text_add_nickname_description" = "Enter a public key and choose a short nickname";
@@ -335,3 +420,226 @@
 "text_add_nickname_nickname_placeholder" = "Enter account nickname";
 "text_add_nickname_nickname_description" = "Limited to 20 symbols";
 "text_add_nickname_public_key_error" = "Please enter a valid Stellar public key ";
+
+// Sync Nicknames to iCloud alerts
+"text_iCloud_sync_alert_title" = "Your on-device nicknames will be deleted";
+"text_iCloud_sync_alert_description" = "You have account nicknames stored in your local storage on this device. Enabling the iCloud backup will delete your local nicknames and set nicknames stored in your iCloud backup. Do you want to proceed?";
+"text_iCloud_sync_advice_alert_title" = "Enable iCloud backup?";
+"text_iCloud_sync_advice_alert_description" = "Enable iCloud backup for account nicknames to keep your nicknames up to date across multiple Apple devices and quickly restore them in case you log out from your Vault account.";
+"text_sign_in_to_iCloud_alert_title" = "Sign In to iCloud";
+"text_sign_in_to_iCloud_alert_description" = "Sign in to your iCloud account in device Settings to enable backup for nicknames. Launch Settings on the Home screen of your device, and sign in with your Apple ID. From there tap iCloud and turn iCloud Drive on. Grant access to iCloud for Vault app under Apps Using iCloud.";
+"text_sign_out_from_iCloud_alert_title" = "iCloud backup disabled";
+"text_sign_out_from_iCloud_alert_description" = "It looks like you’ve signed out from your Apple ID or disabled iCloud access for Vault app in device Settings. iCloud backup for nicknames has been disabled. Your nicknames will be stored locally on-device.";
+"text_get_latest_nicknames_alert_title" = "Get latest nicknames";
+"text_get_latest_nicknames_alert_description" = "Nicknames saved in your iCloud storage will be downloaded and applied on this device. Note that your nicknames are also synced with iCloud every time you restart the app. Proceed with manual sync?";
+"text_iCloud_sync_is_active_alert_title" = "iCloud sync in progress";
+"text_iCloud_sync_is_active_alert_description" = "Initial iCloud sync is currently in progress. It usually takes about 30 seconds. Please wait until it completes.";
+"text_iCloud_sync_no_internet_connection_alert_title" = "No internet connection";
+"text_iCloud_sync_no_internet_connection_alert_description" = "Enable the internet connection to sync nicknames with iCloud.";
+
+//Transaction
+"tx_undefined" = "Undefined.";
+"tx_fee_bump_inner_success" = "Fee bump inner transaction succeeded.";
+"tx_success" = "All operations succeeded.";
+"tx_bad_seq" = "Sequence number does not match source account.";
+"tx_failed" = "One of the operations failed.";
+"tx_too_early" = "Ledger closeTime before minTime value in the transaction.";
+"tx_too_late" = "Ledger closeTime after maxTime value in the transaction.";
+"tx_missing_operation" = "No operation was specified.";
+"tx_bad_auth" = "Additional signatures are needed to authorize this transaction, please copy XDR and sign it.";
+"tx_insufficient_balance" = "The network transaction fee would bring your XLM balance below minimum reserve. Fund the account with extra XLM to complete the transaction.";
+"tx_no_account" = "Source account not found.";
+"tx_insufficient_fee" = "Fee is too small.";
+"tx_bad_auth_extra" = "Unused signatures attached to transaction.";
+"tx_internal_error" = "An unknown error occurred.";
+"tx_not_supported" = "Transaction type not supported.";
+"tx_bump_inner_failed" = "Fee bump inner transaction failed.";
+"tx_bad_sponsorship" = "Sponsorship not confirmed.";
+"tx_bad_min_sec_age_or_gap" = "minSeqAge or minSeqLedgerGap conditions not met.";
+"tx_malformed" = "Precondition is invalid.";
+"tx_common_error" = "Transaction was failed";
+
+//Operations
+"op_success" = "Success.";
+"op_undefined" = "Undefined.";
+
+//Common
+"op_inner" = "The inner object result is valid and the operation was a success.";
+"op_bad_auth" = "There are too few valid signatures, or the transaction was submitted to the wrong network.";
+"op_no_account" = "Source account was not found.";
+
+"op_not_supported" = "Operation not supported at this time.";
+"op_to_many_subentries" = "Max number of subentries (1000) already reached.";
+"op_exceed_work_limit" = "Operation did too much work.";
+"op_too_many_sponsoring" = "Account is sponsoring too many entries.";
+
+
+//OPERATIONS: https://developers.stellar.org/docs/start/list-of-operations
+
+//Manage Sell/buy offer, Create passive sell
+"manage_offer_malformed" = "The input is incorrect and would result in an invalid offer.";
+"manage_offer_sell_no_trust" = "The account creating the offer does not have a trustline for the asset it is selling.";
+"manage_offer_buy_no_trust" = "The account creating the offer does not have a trustline for the asset it is buying.";
+"manage_offer_sell_not_authorized" = "The account creating the offer is not authorized to sell this asset.";
+"manage_offer_buy_not_authorized" = "The account creating the offer is not authorized to buy this asset.";
+"manage_offer_line_full" = "The account creating the offer only trusts the issuer of buying asset to a certain credit limit. If this offer succeeded, the account would exceed its trust limit with the issuer.";
+"manage_offer_underfunded" = "The account does not have enough of selling asset to fund this offer.";
+"manage_offer_cross_self" = "The account has opposite offer of equal or lesser price active, so the account creating this offer would immediately cross itself.";
+"manage_offer_sell_no_issuer" = "The issuer of selling asset does not exist.";
+"manage_offer_buy_no_issuer" = "The issuer of buying asset does not exist.";
+"manage_offer_not_found" = "The offer could not be found.";
+"manage_offer_low_reserve" = "The account creating this offer does not have enough XLM. For every offer an account creates, the minimum amount of XLM that account must hold will increase.";
+
+//Set Options
+"set_options_low_reserve" = "This account does not have enough XLM to satisfy the minimum XLM reserve increase caused by adding a subentry and still satisfy its XLM selling liabilities. For every new signer added to an account, the minimum reserve of XLM that account must hold increases.";
+"set_options_too_many_signers" = "20 is the maximum number of signers an account can have, and adding another signer would exceed that.";
+"set_options_bad_flags" = "The flags set and/or cleared are invalid by themselves or in combination.";
+"set_options_invalid_inflation" = "The destination account set in the inflation field does not exist.";
+"set_options_cant_change" = "This account can no longer change the option it wants to change.";
+"set_options_unknown_flag" = "The account is trying to set a flag that is unknown.";
+"set_options_threshold_out_of_range" = "The value for a key weight or threshold is invalid.";
+"set_options_bad_signer" = "Any additional signers added to the account cannot be the master key.";
+"set_options_invalid_home_domain" = "Home domain is malformed.";
+"set_options_auth_revocable_required" = "Auth revocable is required for clawback";
+
+//Change Trust
+"change_trust_low_reserve" = "You don't have enough XLM available to perform this transaction.";
+"change_trust_malformed" = "The input to this operation is invalid.";
+"change_trust_no_issuer" = "The issuer of the asset cannot be found.";
+"change_trust_invalid_limit" = "The limit is not sufficient to hold the current balance of the trustline and still satisfy its buying liabilities.";
+"change_trust_self_not_allowed" = "The source account attempted to create a trustline for itself, which is not allowed.";
+"change_trust_cannot_delete" = "Asset trustline can't be removed. Stellar account provides liquidity into a pool that involves this asset.";
+"change_trust_trust_line_missing" = "The asset trustline is missing for the liquidity pool.";
+"change_trust_not_auth_maintain_liabilities" = "Asset trustline is deauthorized.";
+
+//Payment
+"payment_malformed" = "The input to the payment is invalid.";
+"payment_underfunded" = "The source account (sender) does not have enough funds to send amount and still satisfy its selling liabilities. Note that if sending XLM then the sender must additionally maintain its minimum XLM reserve.";
+"payment_src_no_trust" = "The source account does not trust the issuer of the asset it is trying to send.";
+"payment_src_not_authorized" = "The source account is not authorized to send this payment.";
+"payment_no_destination" = "The receiving account does not exist.";
+"payment_no_trust" = "The receiver does not trust the issuer of the asset being sent.";
+"payment_not_authorized" = "The destination account is not authorized by the asset's issuer to hold the asset.";
+"payment_line_full" = "The destination account (receiver) does not have sufficient limits to receive amount and still satisfy its buying liabilities.";
+"payment_no_issuer" = "The issuer of the asset does not exist.";
+
+//Path Payment Strict (common)
+"path_payment_strict_malformed" = "The input to this path payment is invalid.";
+"path_payment_strict_underfunded" = "The source account (sender) does not have enough funds to send amount and still satisfy its selling liabilities. Note that if sending XLM then the sender must additionally maintain its minimum XLM reserve.";
+"path_payment_strict_src_no_trust" = "The source account does not trust the issuer of the asset it is trying to send.";
+"path_payment_strict_src_not_authorized" = "The source account is not authorized to send this payment.";
+"path_payment_strict_no_destination" = "The receiving account does not exist.";
+"path_payment_strict_no_trust" = "The receiver does not trust the issuer of the asset being sent.";
+"path_payment_strict_not_authorized" = "The receiving account is not authorized by the asset's issuer to hold the asset.";
+"path_payment_strict_line_full" = "The receiving account does not have sufficient limits to receive amount and still satisfy its buying liabilities.";
+"path_payment_strict_no_issuer" = "The issuer of the asset does not exist.";
+"path_payment_strict_too_few_offers" = "There is no path of offers connecting the send asset and destination asset. Stellar only considers paths of length 5 or shorter.";
+"path_payment_strict_offer_cross_self" = "Couldn't complete the transaction. The payment or asset swap would cross one of your own trading offers.";
+
+//Path Payment Strict Receive
+"path_payment_strict_receive_over_sendmax" = "The paths that could send destination amount of destination asset would exceed send max.";
+
+//Path Payment Strict Send
+"path_payment_strict_send_under_destmin" = "The paths that could send destination amount of destination asset would fall short of destination min.";
+
+//Create Account
+"create_account_malformed" = "The destination is invalid.";
+"create_account_underfunded" = "The source account performing the command does not have enough funds to give destination the starting balance amount of XLM and still maintain its minimum XLM reserve plus satisfy its XLM selling liabilities.";
+"create_account_low_reserve" = "This operation would create an account with fewer than the minimum number of XLM an account must hold.";
+"create_account_already_exist" = "The destination account already exists.";
+
+//Allow Trust
+"allow_trust_malformed" = "The asset specified in type is invalid. In addition, this error happens when the native asset is specified.";
+"allow_trust_no_trust_line" = "The trustor does not have a trustline with the issuer performing this operation.";
+"allow_trust_trust_not_required" = "The source account (issuer performing this operation) does not require trust. In other words, it does not have the flag AUTH_REQUIRED_FLAG set.";
+"allow_trust_cant_revoke" = "The source account is trying to revoke the trustline of the trustor, but it cannot do so.";
+"allow_trust_self_not_allowed" = "The source account attempted to allow a trustline for itself, which is not allowed because an account cannot create a trustline with itself.";
+"allow_trust_low_reserve" = "Claimable balances can't be created on revocation of asset (or pool share) trustlines associated with a liquidity pool due to low reserves.";
+
+//Account Merge
+"account_merge_malformed" = "The operation is malformed because the source account cannot merge with itself. The destination must be a different account.";
+"account_merge_no_account" = "The destination account does not exist.";
+"account_merge_immutable_set" = "The source account has AUTH_IMMUTABLE flag set.";
+"account_merge_has_sub_entries" = "The source account has trust lines/offers.";
+"account_merge_seqnum_to_far" = "Source's account sequence number is too high. It must be less than (ledgerSeq &lt;&lt; 32) = (ledgerSeq * 0x100000000).";
+"account_merge_dest_full" = "The destination account cannot receive the balance of the source account and still satisfy its lumen buying liabilities.";
+"account_merge_is_sponsor" = "Can't merge account that is a sponsor.";
+
+//Manage Data
+"manage_data_not_supported_yet" = "The network hasn't moved to this protocol change yet. This failure means the network doesn't support this feature yet.";
+"manage_data_name_not_found" = "Trying to remove a Data Entry that isn't there. This will happen if Name is set (and Value isn't) but the Account doesn't have a DataEntry with that Name.";
+"manage_data_low_reserve" = "This account does not have enough XLM to satisfy the minimum XLM reserve increase caused by adding a subentry and still satisfy its XLM selling liabilities. For every new DataEntry added to an account, the minimum reserve of XLM that account must hold increases.";
+"manage_data_invalid_name" = "Name not a valid string.";
+
+//Claim Claimable Balance
+"claim_claimable_balance_does_not_exist" = "There is no existing ClaimableBalanceEntry that matches the input BalanceID.";
+"claim_claimable_balance_cannot_claim" = "There is no claimant that matches the source account, or the claimants predicate is not satisfied.";
+"claim_claimable_balance_line_full" = "The account claiming the ClaimableBalanceEntry does not have sufficient limits to receive amount of the asset and still satisfy its buying liabilities.";
+"claim_claimable_balance_no_trust" = "The source account does not trust the issuer of the asset it is trying to claim in the ClaimableBalanceEntry.";
+"claim_claimable_balance_not_authorized" = "The source account is not authorized to claim the asset in the ClaimableBalanceEntry.";
+
+//Create Claimable Balance
+"create_claimable_balance_malformed" = "The input to this operation is invalid.";
+"create_claimable_balance_low_reserve" = "The account creating this entry does not have enough XLM to satisfy the minimum XLM reserve increase caused by adding a ClaimableBalanceEntry. For every claimant in the list, the minimum amount of XLM this account must hold will increase by baseReserve.";
+"create_claimable_balance_no_trust" = "The source account does not trust the issuer of the asset it is trying to include in the ClaimableBalanceEntry.";
+"create_claimable_balance_not_authorized" = "The source account is not authorized to transfer this asset.";
+"create_claimable_balance_underfunded" = "The source account does not have enough funds to transfer amount of this asset to the ClaimableBalanceEntry.";
+
+//Inflation
+"inflation_not_time" = "Codes considered as 'failure' for the operation.";
+
+//Bump Sequence
+"bump_sequnce_bad_seq" = "The specified bumpTo sequence number is not a valid sequence number. It must be between 0 and INT64_MAX (9223372036854775807 or 0x7fffffffffffffff).";
+
+//Begin Sponsoring Future Reserves
+"begin_sponsoring_future_reserves_malformed" = "Source account is equal to sponsoredID.";
+"begin_sponsoring_future_reserves_already_sponsored" = "Source account is already sponsoring sponsoredID.";
+"begin_sponsoring_future_reserves_recursive" = "Either source account is currently being sponsored, or sponsoredID is sponsoring another account.";
+
+//End Sponsoring Future Reserves
+"end_sponsoring_future_reserves_not_sponsored" = "Source account is not sponsored.";
+
+//Revoke Sponsorship
+"revoke_sponsorship_does_not_exist" = "The ledgerEntry for LedgerKey doesn't exist, the account ID on signer doesn't exist, or the Signer Key doesn't exist on account ID's account.";
+"revoke_sponsorship_not_sponsor" = "If the ledgerEntry/signer is sponsored, then the source account must be the sponsor. If the ledgerEntry/signer is not sponsored, the source account must be the owner. This error will be thrown otherwise.";
+"revoke_sponsorship_low_reserve" = "The sponsored account does not have enough XLM to satisfy the minimum balance increase caused by revoking sponsorship on a ledgerEntry/signer it owns, or the sponsor of the source account doesn't have enough XLM to satisfy the minimum balance increase caused by sponsoring a transferred ledgerEntry/signer.";
+"revoke_sponsorship_only_transferable" = "Sponsorship cannot be removed from this ledgerEntry. This error will happen if the user tries to remove the sponsorship from a ClaimableBalanceEntry.";
+"revoke_sponsorship_malformed" = "One or more of the inputs to the operation was malformed.";
+
+//Clawback
+"clawback_malformed" = "The input to the clawback is invalid.";
+"clawback_not_clawback_enabled" = "The trustline between From and the issuer account for this Asset does not have clawback enabled.";
+"clawback_no_trust" = "The From account does not trust the issuer of the asset.";
+"clawback_underfunded" = "The From account does not have a sufficient available balance of the asset (after accounting for selling liabilities).";
+
+//Clawback Claimable Balance
+"clawback_claimable_balance_does_not_exist" = "There is no existing ClaimableBalanceEntry that matches the input BalanceID.";
+"clawback_claimable_balance_not_issuer" = "The source account is not the issuer of the asset in the claimable balance.";
+"clawback_claimable_balance_not_clawback_enabled" = "The CLAIMABLE_BALANCE_CLAWBACK_ENABLED_FLAG is not set for this trustline.";
+
+//Set Trust Line Flags
+"set_trust_line_flags_malformed" = "This can happen for a number of reasons: the asset specified by AssetCode and AssetIssuer is invalid; the asset issuer isn't the source account; the Trustor is the source account; the native asset is specified; or the flags being set/cleared conflict or are otherwise invalid.";
+"set_trust_line_flags_no_trust_line" = "The Trustor does not have a trustline with the issuer performing this operation.";
+"set_trust_line_flags_cant_revoke" = "The issuer is trying to revoke the trustline authorization of Trustor, but it cannot do so because AUTH_REVOCABLE_FLAG is not set on the account.";
+"set_trust_line_flags_invalid_state" = "If the final state of the trustline has both AUTHORIZED_FLAG (1) and AUTHORIZED_TO_MAINTAIN_LIABILITIES_FLAG (2) set, which are mutually exclusive.";
+"set_trust_line_flags_low_reserve" = "Claimable balances can't be created on revocation of asset (or pool share) trustlines associated with a liquidity pool due to low reserves.";
+
+//Liquidity Pool Deposit
+"liquidity_pool_deposit_malformed" = "One or more of the inputs to the operation was malformed.";
+"liquidity_pool_deposit_no_trust" = "No trustline exists for one of the assets being deposited.";
+"liquidity_pool_deposit_not_authorized" = "The account does not have authorization for one of the assets.";
+"liquidity_pool_deposit_underfunded" = "There is not enough balance of one of the assets to perform the deposit.";
+"liquidity_pool_deposit_line_full" = "The pool share trustline does not have a sufficient limit.";
+"liquidity_pool_deposit_bad_price" = "The deposit price is outside of the given bounds.";
+"liquidity_pool_deposit_pool_full" = "The liquidity pool reserves are full.";
+
+//Liquidity Pool Withdraw
+"liquidity_pool_withdraw_malformed" = "One or more of the inputs to the operation was malformed.";
+"liquidity_pool_withdraw_no_trust" = "There is no trustline for one of the assets.";
+"liquidity_pool_withdraw_underfunded" = "Insufficient balance for the pool shares.";
+"liquidity_pool_withdraw_line_full" = "The withdrawal would exceed the trustline limit for one of the assets.";
+"liquidity_pool_withdraw_under_minimum" = "Unable to withdraw enough to satisfy the minimum price.";
+
+//Screenshot warning
+"screenshot_warning_title" = "Screenshot warning";
+"screenshot_warning_description" = "Taking screenshot of your Recovery Phrase increases security risks of your Vault account and protected wallet.";

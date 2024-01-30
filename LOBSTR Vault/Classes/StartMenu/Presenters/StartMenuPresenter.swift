@@ -91,11 +91,8 @@ extension StartMenuPresenterImpl: StartMenuPresenter {
   
   func helpButtonWasPressed() {
     let startMenuViewController = view as! StartMenuViewController
-    
-    let helpCenter = ZendeskHelper.getHelpCenterController()
-    
-    let navController = UINavigationController(rootViewController: helpCenter)
-    startMenuViewController.present(navController, animated: true, completion: nil)
+    let helpViewController = FreshDeskHelper.getHelpCenterController()
+    startMenuViewController.navigationController?.present(helpViewController, animated: true)
   }
   
   func checkAppVersion() {

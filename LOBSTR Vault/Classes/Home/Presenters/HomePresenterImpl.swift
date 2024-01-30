@@ -1,6 +1,5 @@
 import Foundation
 import stellarsdk
-import CoreData
 
 class HomePresenterImpl: HomePresenter {
   
@@ -24,6 +23,8 @@ class HomePresenterImpl: HomePresenter {
   
   let storage: AccountsStorage = AccountsStorageDiskImpl()
   var storageAccounts: [SignedAccount] = []
+  
+  private var lastReceivedSignedAccounts: [SignedAccount] = []
       
   init(view: HomeView,
        transactionService: TransactionService = TransactionService(),
@@ -82,6 +83,17 @@ class HomePresenterImpl: HomePresenter {
   @objc func onDidNicknameUpdate(_ notification: Notification) {
     setSignerDetails()
   }
+ 
+  @objc func onDidCloudRecordsGet(_ notification: Notification) {
+    DispatchQueue.main.async {
+      if UserDefaultsHelper.isICloudSynchronizationEnabled {
+        AccountsStorageHelper.updateLocalAccountsFromICloud(isAfterSaveAllToICloud: UserDefaultsHelper.isICloudSynchronizationActive)
+      }
+      self.setTransactionNumber()
+      self.setPublicKey()
+      self.setSignerDetails()
+    }
+  }
   
   @objc func onDidAllJWTTokensGet(_ notification: Notification) {
     if UserDefaultsHelper.isNotificationsEnabled {
@@ -94,6 +106,10 @@ class HomePresenterImpl: HomePresenter {
   
   @objc func onDidActivePublicKeyChange(_ notification: Notification) {
     setPublicKey()
+  }
+  
+  @objc func showICloudStatusIsNotAvaliableAlert(_ notification: Notification) {
+    view?.showICloudStatusIsNotAvaliableAlert()
   }
     
   // MARK: - HomePresenter
@@ -111,7 +127,8 @@ class HomePresenterImpl: HomePresenter {
     default:
       break
     }
-
+    
+    UserDefaultsHelper.isICloudSynchronizationActive = false
     setPublicKey()
     guard let viewController = view as? UIViewController else { return }
     registerForRemoteNotifications()
@@ -121,7 +138,7 @@ class HomePresenterImpl: HomePresenter {
     if ConnectionHelper.checkConnection(viewController) {
       DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
         self.setTransactionNumber()
-        self.setSignerDetails()
+        self.setSignerDetails(isAfterViewDidLoad: true)
       }
     }
   }
@@ -143,7 +160,7 @@ class HomePresenterImpl: HomePresenter {
         } else {
           isNicknameSet = false
         }
-        self.view?.actionSheetForAccountsListWasPressed(isNicknameSet: isNicknameSet)
+        view?.actionSheetForAccountsListWasPressed(isNicknameSet: isNicknameSet)
       }
     case .protectedAccount:
       if let index = signedAccounts.firstIndex(where: { $0.address == publicKey }) {
@@ -153,7 +170,7 @@ class HomePresenterImpl: HomePresenter {
         } else {
           isNicknameSet = false
         }
-        self.view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
+        view?.actionSheetForSignersListWasPressed(with: publicKey, isNicknameSet: isNicknameSet)
       }
     default:
       break
@@ -182,21 +199,48 @@ class HomePresenterImpl: HomePresenter {
     if let index = allAccounts.firstIndex(where: { $0.address == publicKey }), let nickname = text {
       allAccounts[index].nickname = nickname
       storage.save(accounts: allAccounts)
+      CloudKitNicknameHelper.accountToSave = allAccounts[index]
+      if let accountToSave = CloudKitNicknameHelper.accountToSave {
+        CloudKitNicknameHelper.saveToICloud(accountToSave)
+      }
       
       switch type {
       case .protectedAccount:
         NotificationCenter.default.post(name: .didNicknameSet, object: nil)
-        self.view?.setSignedAccountsList(self.signedAccounts)
+        view?.setSignedAccountsList(signedAccounts)
       case .primaryAccount:
         setPublicKey()
       default:
         break
       }
+      
+      guard UIDevice.isConnectedToNetwork, !nickname.isEmpty else { return }
+      
+      CloudKitNicknameHelper.checkIsICloudStatusAvaliable { isAvaliable in
+        if isAvaliable {
+          CloudKitNicknameHelper.isICloudDatabaseEmpty { result in
+            if result, CloudKitNicknameHelper.isNeedToShowICloudSyncAdviceAlert {
+              DispatchQueue.main.async {
+                UserDefaultsHelper.isICloudSyncAdviceShown = true
+                self.view?.showICloudSyncAdviceAlert()
+              }
+            }
+          }
+        }
+      }
     }
   }
   
   func clearNicknameActionWasPressed(_ publicKey: String, nicknameDialogType: NicknameDialogType?) {
-    setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+    if UserDefaultsHelper.isICloudSynchronizationEnabled {
+      guard UIDevice.isConnectedToNetwork else {
+        view?.showNoInternetConnectionAlert()
+        return
+      }
+      setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+    } else {
+      setNicknameActionWasPressed(with: "", for: publicKey, nicknameDialogType: nicknameDialogType)
+    }
   }
   
   func updateSignerDetails() {
@@ -207,15 +251,22 @@ class HomePresenterImpl: HomePresenter {
     guard let viewController = view as? UIViewController else { return }
     guard UtilityHelper.isTokenUpdated(view: viewController) else { return }
     
-    self.view?.rotateRefreshButton(isRotating: false)
-    self.setTransactionNumber()
-    self.setPublicKey()
-    self.setSignerDetails()
+    view?.rotateRefreshButton(isRotating: false)
+    if !UserDefaultsHelper.isICloudSynchronizationActive {
+      CloudKitNicknameHelper.getAllRecords()
+    }
+    setTransactionNumber()
+    setPublicKey()
+    setSignerDetails()
   }
   
   func changeActiveAccount() {
     UtilityHelper.jwtTokenUpdate()
-    self.setPublicKey()
+    setPublicKey()
+  }
+  
+  func proceedICloudSyncActionWasPressed() {
+    view?.showICloudSyncScreen()
   }
 }
 
@@ -224,27 +275,47 @@ class HomePresenterImpl: HomePresenter {
 private extension HomePresenterImpl {
   
   func stopRotate() {
-    self.view?.rotateRefreshButton(isRotating: true)
+    view?.rotateRefreshButton(isRotating: true)
   }
   
-  func setSignerDetails() {
-    self.storageAccounts = storage.retrieveAccounts() ?? []
+  func setSignerDetails(isAfterViewDidLoad: Bool = false) {
+    storageAccounts = AccountsStorageHelper.getStoredAccounts()
     transactionService.getSignedAccounts() { result in
       switch result {
       case .success(let accounts):
         Logger.home.debug("Signed accounts were loaded with data: \(accounts)")
+        self.lastReceivedSignedAccounts = accounts
         self.signedAccounts = self.getSignedAccountsFromCache(accounts)
         UserDefaultsHelper.numberOfSignerAccounts = self.signedAccounts.count
         
-        self.view?.setNumberOfSignedAccount(self.signedAccounts.count)
-        self.view?.setAccountLabel()
-        self.view?.setSignedAccountsList(self.signedAccounts)
+        if isAfterViewDidLoad {
+          for (index, account) in accounts.enumerated() {
+            if let publicKey = account.address {
+              self.tryToLoadFederation(by: publicKey, for: index)
+            }
+          }
+        }
+          
+        DispatchQueue.main.async {
+          self.view?.setProgressAnimation(isEnabled: false)
+          self.view?.setNumberOfSignedAccount(self.signedAccounts.count)
+          self.view?.setAccountLabel()
+          self.view?.setSignedAccountsList(self.signedAccounts)
+        }
       case .failure(let serverRequestError):
         switch serverRequestError {
         case ServerRequestError.needRepeatRequest:
           self.setSignerDetails()
         default:
           Logger.home.error("Couldn't get signed accounts")
+          self.signedAccounts = self.getSignedAccountsFromCache(self.lastReceivedSignedAccounts)
+          UserDefaultsHelper.numberOfSignerAccounts = self.signedAccounts.count
+          DispatchQueue.main.async {
+            self.view?.setNumberOfSignedAccount(self.signedAccounts.count)
+            self.view?.setAccountLabel()
+            self.view?.setSignedAccountsList(self.signedAccounts)
+          }
+
         }
       }
     }
@@ -256,14 +327,10 @@ private extension HomePresenterImpl {
       guard let address = signedAccount.address else { break }
       
       if let account = storageAccounts.first(where: { $0.address == address }) {
-        newAccounts.append(SignedAccount(address: account.address, federation: account.federation, nickname: account.nickname))
+        newAccounts.append(SignedAccount(address: account.address, federation: account.federation, nickname: account.nickname, indicateAddress: AccountsStorageHelper.indicateAddress))
       } else {
-        if let account = CoreDataStack.shared.fetch(Account.fetchBy(publicKey: address)).first {
-          newAccounts.append(SignedAccount(address: account.publicKey, federation: account.federation, nickname: ""))
-        } else {
-          newAccounts.append(SignedAccount(address: address, federation: nil))
-          tryToLoadFederation(by: address, for: index)
-        }
+        newAccounts.append(SignedAccount(address: address, federation: nil, indicateAddress: AccountsStorageHelper.indicateAddress))
+        tryToLoadFederation(by: address, for: index)
       }
     }
     AccountsStorageHelper.updateAllSignedAccounts(signedAccounts: newAccounts)
@@ -392,6 +459,11 @@ private extension HomePresenterImpl {
                                            object: nil)
     
     NotificationCenter.default.addObserver(self,
+                                           selector: #selector(onDidCloudRecordsGet(_:)),
+                                           name: .didCloudRecordsGet,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
                                            selector: #selector(onDidAllJWTTokensGet(_:)),
                                            name: .didAllJWTTokensGet,
                                            object: nil)
@@ -399,6 +471,11 @@ private extension HomePresenterImpl {
     NotificationCenter.default.addObserver(self,
                                            selector: #selector(onDidActivePublicKeyChange(_:)),
                                            name: .didActivePublicKeyChange,
+                                           object: nil)
+    
+    NotificationCenter.default.addObserver(self,
+                                           selector: #selector(showICloudStatusIsNotAvaliableAlert(_:)),
+                                           name: .iCloudStatusIsNotAvaliable,
                                            object: nil)
    }
 }

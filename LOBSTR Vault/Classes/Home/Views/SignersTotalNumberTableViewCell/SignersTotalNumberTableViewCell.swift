@@ -1,6 +1,6 @@
 import UIKit
 
-protocol SignersTotalNumberTableViewCellDelegate: class {
+protocol SignersTotalNumberTableViewCellDelegate: AnyObject {
   func numberOfSignerButtonDidPress()
 }
 

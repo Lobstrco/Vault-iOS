@@ -65,7 +65,7 @@ class PinEnterViewController: UIViewController, StoryboardCreation {
     
     alert.addAction(UIAlertAction(title: L10n.buttonTitleCancel, style: .cancel))
     
-    self.present(alert, animated: true, completion: nil)
+    present(alert, animated: true, completion: nil)
   }  
 }
 
