@@ -58,6 +58,7 @@
 		8425547321E8BE8800350E06 /* BackUpAccountViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8425547221E8BE8800350E06 /* BackUpAccountViewController.swift */; };
 		8425547521E8BFF500350E06 /* BackUpAccount.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8425547421E8BFF500350E06 /* BackUpAccount.storyboard */; };
 		842694702343436A00B99F36 /* LobstrChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8426946F2343436A00B99F36 /* LobstrChecker.swift */; };
+		842942342BCFC47C0050E270 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 842942332BCFC4530050E270 /* PrivacyInfo.xcprivacy */; };
 		844215C62335206A00B461A1 /* SignerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844215C42335206A00B461A1 /* SignerTableViewCell.swift */; };
 		844215C72335206A00B461A1 /* SignerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 844215C52335206A00B461A1 /* SignerTableViewCell.xib */; };
 		844639CF21DCE73700719011 /* SwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844639CE21DCE73700719011 /* SwitchTableViewCell.swift */; };
@@ -320,6 +321,7 @@
 		8425547221E8BE8800350E06 /* BackUpAccountViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackUpAccountViewController.swift; sourceTree = "<group>"; };
 		8425547421E8BFF500350E06 /* BackUpAccount.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BackUpAccount.storyboard; sourceTree = "<group>"; };
 		8426946F2343436A00B99F36 /* LobstrChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LobstrChecker.swift; sourceTree = "<group>"; };
+		842942332BCFC4530050E270 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		844215C42335206A00B461A1 /* SignerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignerTableViewCell.swift; sourceTree = "<group>"; };
 		844215C52335206A00B461A1 /* SignerTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SignerTableViewCell.xib; sourceTree = "<group>"; };
 		844639CE21DCE73700719011 /* SwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchTableViewCell.swift; sourceTree = "<group>"; };
@@ -1597,6 +1599,7 @@
 				92C4156B21EDD44800960170 /* Constants */,
 				9221B7B021BE87370070A526 /* Classes */,
 				92E48FCB21E4EE09006281E4 /* Resources */,
+				842942332BCFC4530050E270 /* PrivacyInfo.xcprivacy */,
 			);
 			path = "LOBSTR Vault";
 			sourceTree = "<group>";
@@ -1829,9 +1832,11 @@
 				9277ABA321CA59BE00379971 /* TabBar.storyboard in Resources */,
 				9292F8562224858300954BE1 /* OperationDetailsTableViewCell.xib in Resources */,
 				9206BCE72211927E00EEF0D1 /* PublicKeyPopover.xib in Resources */,
+				842942342BCFC47C0050E270 /* PrivacyInfo.xcprivacy in Resources */,
 				84C5667D233E407A003110FE /* IdenticonView.xib in Resources */,
 				92C8C23421F9F20A003E4F5A /* success.json in Resources */,
 				9232EC7A21C11D1D00F8EBD4 /* MnemonicGeneration.storyboard in Resources */,
+				843FD3BE2333B333002A234B /* GoogleService-Info.plist in Resources */,
 				925CCAD721DCB0F600E75602 /* Transactions.storyboard in Resources */,
 				845CDCAE21C9309B00791C94 /* NumberPadView.xib in Resources */,
 				9221B7C421BE8A310070A526 /* MnemonicSuggestionsView.xib in Resources */,
@@ -2273,17 +2278,17 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70;
+				CURRENT_PROJECT_VERSION = 78;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 3.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2382,16 +2387,16 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault QA.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70;
+				CURRENT_PROJECT_VERSION = 78;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 3.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2490,16 +2495,16 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault QA.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70;
+				CURRENT_PROJECT_VERSION = 78;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 3.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault.qa;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2661,17 +2666,17 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70;
+				CURRENT_PROJECT_VERSION = 78;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 3.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -2688,16 +2693,16 @@
 				CODE_SIGN_ENTITLEMENTS = "LOBSTR Vault/LOBSTR Vault.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 70;
+				CURRENT_PROJECT_VERSION = 78;
 				DEVELOPMENT_TEAM = 6ZVXG76XRR;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/LOBSTR Vault/Resources/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 3.5.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ultrastellar.lobstr.vault;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

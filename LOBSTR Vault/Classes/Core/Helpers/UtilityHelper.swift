@@ -48,8 +48,8 @@ struct UtilityHelper {
   }
   
   static func openStellarLaboratory(for xdr: String) {
-    let replacedXdr = xdr.replacingOccurrences(of: "+", with: "%2B")
-    let sUrl = "https://laboratory.stellar.org/#xdr-viewer?input=\(replacedXdr)&type=TransactionEnvelope&network=public"
+    let replacedXdr = xdr.replacingOccurrences(of: "/", with: "//")
+    let sUrl =   "https://lab.stellar.org/xdr/view?$=network$id=mainnet&label=Mainnet&horizonUrl=https:////horizon.stellar.org&rpcUrl=&passphrase=Public%20Global%20Stellar%20Network%20/;%20September%202015;&transaction$build$operations@$operation_type=&params@;;;;;&xdr$blob=\(replacedXdr);;"
     guard let url = URL(string: sUrl) else { return }
     UIApplication.shared.open(url, options: .init(), completionHandler: nil)
   }
@@ -62,12 +62,6 @@ struct UtilityHelper {
   
   static func openTangemVaultLanding() {
     let sUrl = "https://vault.lobstr.co/card"
-    guard let url = URL(string: sUrl) else { return }
-    UIApplication.shared.open(url, options: .init(), completionHandler: nil)
-  }
-  
-  static func openTangemShop() {
-    let sUrl = "https://lobstr.tangem.com"
     guard let url = URL(string: sUrl) else { return }
     UIApplication.shared.open(url, options: .init(), completionHandler: nil)
   }

@@ -63,7 +63,7 @@ class ApplicationCoordinator {
     guard let eventType = userInfo["event_type"] as? String, let notificationType = NotificationType(rawValue: eventType) else { return }
     
     switch notificationType {
-    case .addedNewTransaction, .addedNewSignature:
+    case .addedNewTransaction, .addedNewSignature, .submitedTransaction:
       if let transactionString = userInfo["transaction"] as? String, let userAccountString = userInfo["user_account"] as? String {
         let transactionData = Data(transactionString.utf8)
         let userAccountData = Data(userAccountString.utf8)
@@ -77,13 +77,15 @@ class ApplicationCoordinator {
               UserDefaultsHelper.activePublicKey = userAccount.address
               ActivePublicKeyHelper.storeInKeychain(UserDefaultsHelper.activePublicKey)
               NotificationCenter.default.post(name: .didActivePublicKeyChange, object: nil)
-              showTransactionsDetails(by: transaction)
+              showTransactionsDetails(by: transaction, 
+                                      notificationType: notificationType)
             }
           } else {
             UserDefaultsHelper.activePublicKeyIndex = 0
             UserDefaultsHelper.activePublicKey = userAccount.address
             ActivePublicKeyHelper.storeInKeychain(UserDefaultsHelper.activePublicKey)
-            showTransactionsDetails(by: transaction)
+            showTransactionsDetails(by: transaction, 
+                                    notificationType: notificationType)
           }
         } catch {
           Logger.notifications.error("Failed to receive transaction")
@@ -150,15 +152,15 @@ private extension ApplicationCoordinator {
     }
   }
   
-  func showTransactionsDetails(by transaction: Transaction) {
+  func showTransactionsDetails(by transaction: Transaction, notificationType: NotificationType?) {
     let transactionDetailsViewController = TransactionDetailsViewController.createFromStoryboard()
     transactionDetailsViewController.isAfterPushNotification = true
     
     transactionDetailsViewController.presenter =
       TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                       transaction: transaction,
-                                      type: .standard,
-                                      isAfterPushNotification: true)
+                                      type: .standard, 
+                                      notificationType: notificationType)
     Logger.transactionDetails.debug("Transaction: \(transaction)")
     transactionDetailsViewController.presenter.transactionListIndex = 0
     guard let tabBarViewController = self.window!.rootViewController as? TabBarViewController else { return }

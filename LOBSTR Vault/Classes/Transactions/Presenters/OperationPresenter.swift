@@ -14,6 +14,7 @@ protocol OperationPresenter {
   func operationViewDidLoad()
   func setOperation(_ operation: stellarsdk.Operation,
                     transactionSourceAccountId: String,
+                    minFee: String?,
                     maxFee: String?,
                     operationName: String,
                     _ memo: BeautifulMemo,
@@ -58,6 +59,7 @@ class OperationPresenterImpl {
   var memo: BeautifulMemo?
   var date: String?
   var destinationFederation: String = ""
+  var minFee: String?
   var maxFee: String?
   
   var numberOfAcceptedSignatures: Int {
@@ -102,6 +104,7 @@ extension OperationPresenterImpl: OperationPresenter {
   
   func setOperation(_ operation: stellarsdk.Operation,
                     transactionSourceAccountId: String,
+                    minFee: String?,
                     maxFee: String?,
                     operationName: String,
                     _ memo: BeautifulMemo,
@@ -112,6 +115,7 @@ extension OperationPresenterImpl: OperationPresenter {
                     isNeedToShowSignaturesNumber: Bool) {
     self.operation = operation
     self.transactionSourceAccountId = transactionSourceAccountId
+    self.minFee = minFee
     self.maxFee = maxFee
     self.operationName = operationName
     self.memo = memo
@@ -295,7 +299,9 @@ private extension OperationPresenterImpl {
   
   func setOperationProperties() {
     guard let operation = operation else { return }
-    operationProperties = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionSourceAccountId, destinationFederation: destinationFederation)
+    operationProperties = TransactionHelper.parseOperation(from: operation, 
+                                                           transactionSourceAccountId: transactionSourceAccountId,
+                                                           destinationFederation: destinationFederation)
   }
   
   func tryToGetDestinationId() -> String {
@@ -326,6 +332,10 @@ private extension OperationPresenterImpl {
       additionalInformationSection.append((name: memo.title, value: memo.value, nickname: "", isPublicKey: false))
     }
     additionalInformationSection.append((name: "Transaction Source", value: transactionSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionSourceAccountId), isPublicKey: true))
+    
+    if let minFee = minFee {
+      additionalInformationSection.append((name: "Min Network Fee", value: minFee + " XLM", nickname: "", isPublicKey: false))
+    }
     
     if let maxFee = maxFee {
       additionalInformationSection.append((name: "Max Network Fee", value: maxFee + " XLM", nickname: "", isPublicKey: false))

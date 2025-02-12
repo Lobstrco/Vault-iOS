@@ -134,7 +134,7 @@ extension TransactionStatusViewController: TransactionStatusView {
   
   func setAnimation(with status: TransactionStatus) {
     let transactionStatus: TransactionStatus = status == .failure ? .failure : .success
-    let animationView = LOTAnimationView(name: transactionStatus.rawValue)
+    let animationView = LottieAnimationView(name: transactionStatus.rawValue)
     
     animationContainer.addSubview(animationView)
     

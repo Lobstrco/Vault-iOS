@@ -94,7 +94,7 @@ extension VaultError {
 extension HorizonRequestError: ErrorDisplayable {
   public var errorKey: String {
     switch self {
-    case HorizonRequestError.requestFailed(_): return L10n.horizonErrorRequestFailed
+    case HorizonRequestError.requestFailed(_, _): return L10n.horizonErrorRequestFailed
     case HorizonRequestError.badRequest(_, _): return L10n.horizonErrorBadRequest
     case HorizonRequestError.emptyResponse: return L10n.horizonErrorInvalidResponse
     case HorizonRequestError.parsingResponseFailed(_): return L10n.horizonErrorInvalidResponse
@@ -108,6 +108,9 @@ extension HorizonRequestError: ErrorDisplayable {
     case HorizonRequestError.notImplemented(_, _): return L10n.horizonErrorNotImplemented
     case HorizonRequestError.staleHistory(_, _): return L10n.horizonErrorStaleHistory
     case HorizonRequestError.errorOnStreamReceive(_): return L10n.horizonErrorStream
+    case HorizonRequestError.duplicate(_ , _): return L10n.horizonErrorDuplicate
+    case HorizonRequestError.timeout(_, _): return L10n.horizonErrorTimeout
+    case HorizonRequestError.payloadTooLarge(_, _): return L10n.horizonPayloadTooLargeMessage
     }
   }
 }

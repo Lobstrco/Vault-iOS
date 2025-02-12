@@ -156,7 +156,8 @@ struct TransactionHelper {
     return operation
   }
   
-  static func getPublicKeys(from operation: stellarsdk.Operation) -> [String] {
+  static func getPublicKeys(from operation: stellarsdk.Operation) -> [String]
+  {
     var publicKeys: [String] = []
     
     switch type(of: operation) {
@@ -177,7 +178,7 @@ struct TransactionHelper {
       }
     case is PathPaymentOperation.Type:
       let pathPaymentOperation = operation as! PathPaymentOperation
-
+      
       if let sendIssuer = pathPaymentOperation.sendAsset.issuer?.accountId, pathPaymentOperation.sendAsset.code != nil {
         publicKeys.append(sendIssuer)
       }
@@ -212,7 +213,7 @@ struct TransactionHelper {
       if let buyIssuer = createPassiveOfferOperation.buying.issuer?.accountId, createPassiveOfferOperation.buying.code != nil {
         publicKeys.append(buyIssuer)
       }
-
+      
       if let operationSourceAccountId = createPassiveOfferOperation.sourceAccountId {
         publicKeys.append(operationSourceAccountId)
       }
@@ -332,8 +333,15 @@ struct TransactionHelper {
         if let accountId = revokeSponsorshipOperation.signerAccountId {
           publicKeys.append(accountId)
         }
-        if let x = revokeSponsorshipOperation.signerKey.xdrEncoded, let s = try? PublicKey(xdr: x).accountId {
-          publicKeys.append(s)
+        if let signerKey = revokeSponsorshipOperation.signerKey {
+          switch signerKey {
+          case .ed25519(let wrappedData32):
+            if let publicKey = try? wrappedData32.wrapped.encodeEd25519PublicKey() {
+              publicKeys.append(publicKey)
+            }
+          default:
+            break
+          }
         }
         if let operationSourceAccountId = revokeSponsorshipOperation.sourceAccountId {
           publicKeys.append(operationSourceAccountId)
@@ -388,10 +396,9 @@ struct TransactionHelper {
         if let address = invokeContract.contractAddress.accountId {
           publicKeys.append(address)
         }
-        
-        for scVal in invokeContract.args {
-          getPublicKeyFromSCValXDR(args: scVal, publicKeys: &publicKeys)
-        }
+//        for scVal in invokeContract.args {
+//          getPublicKeyFromSCValXDR(args: scVal, publicKeys: &publicKeys)
+//        }
       default:
         break
       }
@@ -422,7 +429,18 @@ struct TransactionHelper {
           for arg in contract.args {
             getPublicKeyFromSCValXDR(args: arg, publicKeys: &publicKeys)
           }
-        case .contractHostFn(let args):
+        case .createContractHostFn(let args):
+          switch args.contractIDPreimage {
+          case .fromAddress(let preimage):
+            if let address = preimage.address.accountId {
+              publicKeys.append(address)
+            }
+          case .fromAsset(let preimage):
+            if let issuer = preimage.issuer?.accountId {
+              publicKeys.append(issuer)
+            }
+          }
+        case .createContractV2HostFn(let args):
           switch args.contractIDPreimage {
           case .fromAddress(let preimage):
             if let address = preimage.address.accountId {
@@ -442,7 +460,8 @@ struct TransactionHelper {
     return publicKeys
   }
   
-  static func getAssets(from operation: stellarsdk.Operation) -> [stellarsdk.Asset] {
+  static func getAssets(from operation: stellarsdk.Operation) -> [stellarsdk.Asset]
+  {
     var assets: [stellarsdk.Asset] = []
     
     switch type(of: operation) {
@@ -502,14 +521,41 @@ struct TransactionHelper {
     case is SetTrustlineFlagsOperation.Type:
       let setTrustlineFlagsOperation = operation as! SetTrustlineFlagsOperation
       assets.append(setTrustlineFlagsOperation.asset)
+    case is InvokeHostFunctionOperation.Type:
+      let invokeHostFunctionOperation = operation as! InvokeHostFunctionOperation
+      switch invokeHostFunctionOperation.hostFunction {
+      case .createContract(let createContract):
+        switch createContract.contractIDPreimage {
+        case .fromAsset(let preimage):
+          if let issuer = preimage.issuer,
+             let asset = stellarsdk.Asset(type: preimage.type(),
+                                          code: preimage.assetCode,
+                                          issuer: KeyPair(publicKey: issuer))
+          {
+            assets.append(asset)
+          }
+        default:
+          break
+        }
+      default:
+        break
+      }
     default:
       break
     }
-  
+    
     return assets
   }
   
-  static func parseOperation(from operation: stellarsdk.Operation, transactionSourceAccountId: String, isListOperations: Bool = false, destinationFederation: String = "") -> [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] {
+  static func parseOperation(from operation: stellarsdk.Operation,
+                             transactionSourceAccountId: String,
+                             isListOperations: Bool = false,
+                             destinationFederation: String = "",
+                             stateChanges: [LedgerEntryChange]? = nil) -> [(name: String, value: String,
+                                                                            nickname: String,
+                                                                            isPublicKey: Bool,
+                                                                            isAssetCode: Bool)]
+  {
     var data: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
     
     switch type(of: operation) {
@@ -675,7 +721,7 @@ struct TransactionHelper {
           data.append(("Asset B Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
         }
       }
-  
+      
       let changeTrustAssetXDR = try? changeTrustOperation.asset.toChangeTrustAssetXDR()
       switch changeTrustAssetXDR {
       case .poolShare(let liquidityPoolParametersXDR):
@@ -837,8 +883,15 @@ struct TransactionHelper {
           data.append(("Account ID", accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: accountId), true, false))
         }
         
-        if let x = revokeSponsorshipOperation.signerKey.xdrEncoded, let s = try? PublicKey(xdr: x).accountId {
-          data.append(("Signer Public Key", s.getTruncatedPublicKey(), tryToGetNickname(publicKey: s), true, false))
+        if let signerKey = revokeSponsorshipOperation.signerKey {
+          switch signerKey {
+          case .ed25519(let wrappedData32):
+            if let publicKey = try? wrappedData32.wrapped.encodeEd25519PublicKey() {
+              data.append(("Signer Public Key", publicKey.getTruncatedPublicKey(), tryToGetNickname(publicKey: publicKey), true, false))
+            }
+          default:
+            break
+          }
         }
         
         if let operationSourceAccountId = revokeSponsorshipOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
@@ -889,11 +942,12 @@ struct TransactionHelper {
       if let operationSourceAccountId = extendFootprintTTLOperation.sourceAccountId, transactionSourceAccountId != operationSourceAccountId {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
-      data.append(("Extend To", extendFootprintTTLOperation.extendTo.description, "", false, false))
+      data.append(("Extend time to live by", "\(extendFootprintTTLOperation.extendTo.formattedWithSeparator) ledgers", "", false, false))
     case is RestoreFootprintOperation.Type:
       let restoreFootprintOperation = operation as! RestoreFootprintOperation
       if let operationSourceAccountId = restoreFootprintOperation.sourceAccountId,
-          transactionSourceAccountId != operationSourceAccountId {
+         transactionSourceAccountId != operationSourceAccountId
+      {
         data.append(("Operation Source", operationSourceAccountId.getTruncatedPublicKey(numberOfCharacters: numberOfCharacters), tryToGetNickname(publicKey: operationSourceAccountId), true, false))
       }
     case is InvokeHostFunctionOperation.Type:
@@ -904,10 +958,8 @@ struct TransactionHelper {
         switch createContract.contractIDPreimage {
         case .fromAddress(let preimage):
           data.append(("Contract ID Preimage", "From Address", "", false, false))
-          if let address = preimage.address.accountId {
-            data.append(("Account ID", address.getTruncatedPublicKey(), tryToGetNickname(publicKey: address), true, false))
-          }
-          let salt = getWrappedData32(data: preimage.salt)
+          getSCAddressXDR(scAddress: preimage.address, data: &data)
+          let salt = getStringFromWrappedData32(data: preimage.salt)
           if !salt.isEmpty {
             data.append(("Salt", salt, "", false, false))
           }
@@ -925,98 +977,70 @@ struct TransactionHelper {
           data.append(("Contract Executable", "Stellar Asset", "", false, false))
         case .wasm(let wasm):
           data.append(("Contract Executable", "Wasm", "", false, false))
-          let wasmHash = getWrappedData32(data: wasm)
+          let wasmHash = getStringFromWrappedData32(data: wasm)
+          if !wasmHash.isEmpty {
+            data.append(("Wasm Hash", wasmHash, "", false, false))
+          }
+        }
+      case .createContractV2(let createContractV2):
+        data.append(("Function", "Create Contract", "", false, false))
+        switch createContractV2.contractIDPreimage {
+        case .fromAddress(let preimage):
+          data.append(("Contract ID Preimage", "From Address", "", false, false))
+          getSCAddressXDR(scAddress: preimage.address, data: &data)
+          let salt = getStringFromWrappedData32(data: preimage.salt)
+          if !salt.isEmpty {
+            data.append(("Salt", salt, "", false, false))
+          }
+        case .fromAsset(let preimage):
+          data.append(("Contract ID Preimage", "From Asset", "", false, false))
+          let assetCode = preimage.assetCode.isEmpty ? "XLM" : preimage.assetCode
+          data.append(("Receive asset", assetCode, "", false, true))
+          
+          if let issuer = preimage.issuer?.accountId {
+            data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
+          }
+        }
+        switch createContractV2.executable {
+        case .token:
+          data.append(("Contract Executable", "Stellar Asset", "", false, false))
+        case .wasm(let wasm):
+          data.append(("Contract Executable", "Wasm", "", false, false))
+          let wasmHash = getStringFromWrappedData32(data: wasm)
           if !wasmHash.isEmpty {
             data.append(("Wasm Hash", wasmHash, "", false, false))
           }
         }
       case .invokeContract(let invokeContract):
         data.append(("Function", "Invoke Contract", "", false, false))
-        if let address = invokeContract.contractAddress.accountId {
-          data.append(("Account ID", address.getTruncatedPublicKey(), tryToGetNickname(publicKey: address), true, false))
-        }
-        if let id = invokeContract.contractAddress.contractId {
-          data.append(("Contract ID", id.getTruncatedPublicKey(), "", false, false))
-        }
+        getSCAddressXDR(scAddress: invokeContract.contractAddress, data: &data)
         data.append(("Function Name", invokeContract.functionName, "", false, false))
         
-        for scVal in invokeContract.args {
-          tryToSetSCValXDR(args: scVal, data: &data)
-        }
-        
+//        for (index, scVal) in invokeContract.args.enumerated() {
+//          getSCValXDR(args: scVal, index: index + 1, data: &data)
+//        }
       case .uploadContractWasm(let wasm):
         data.append(("Function", "Upload Contract Wasm", "", false, false))
-        data.append(("Wasm", wasm.base64EncodedString(), "", false, false))
+        let wasmString = getStringFromData(data: wasm)
+        if !wasmString.isEmpty {
+          data.append(("Wasm", wasmString, "", false, false))
+        }
       }
       
       for auth in invokeHostFunctionOperation.auth {
-        switch auth.credentials {
-        case .sourceAccount:
-          data.append(("Credentials", "Source Account", "", false, false))
-        case .address(let address):
-          data.append(("Credentials", "Address", "", false, false))
-          switch address.address {
-          case .account(let account):
-            data.append(("Account ID", account.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: account.accountId), true, false))
-          case .contract(let contract):
-            let capacity = getWrappedData32(data: contract)
-            if !capacity.isEmpty {
-              data.append(("Capacity", capacity, "", false, false))
-            }
-          }
-          data.append(("Nonce", "\(address.nonce)", "", false, false))
-          data.append(("Signature Expiration Ledger", "\(address.signatureExpirationLedger)", "", false, false))
-          tryToSetSCValXDR(args: address.signature, data: &data)
-        }
+//        switch auth.credentials {
+//        case .sourceAccount:
+//          data.append(("Credentials", "Source Account", "", false, false))
+//        case .address(let address):
+//          data.append(("Credentials", "Address", "", false, false))
+//          getSCAddressXDR(scAddress: address.address, data: &data)
+//          data.append(("Nonce", "\(address.nonce)", "", false, false))
+//          data.append(("Signature Expiration Ledger", "\(address.signatureExpirationLedger)", "", false, false))
+//          //getSCValXDR(args: address.signature, index: nil, data: &data)
+//        }
         
-        switch auth.rootInvocation.function {
-        case .contractFn(let contract):
-          data.append(("Authorized Function", "Contract", "", false, false))
-          switch contract.contractAddress {
-          case .account(let account):
-            data.append(("Account ID", account.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: account.accountId), true, false))
-          case .contract(let contract):
-            let capacity = getWrappedData32(data: contract)
-            if !capacity.isEmpty {
-              data.append(("Capacity", capacity, "", false, false))
-            }
-          }
-          data.append(("Function Name", contract.functionName, "", false, false))
-          for arg in contract.args {
-            tryToSetSCValXDR(args: arg, data: &data)
-          }
-        case .contractHostFn(let args):
-          data.append(("Authorized Function", "Contract Host", "", false, false))
-          switch args.contractIDPreimage {
-          case .fromAddress(let preimage):
-            data.append(("Contract ID Preimage", "From Address", "", false, false))
-            if let address = preimage.address.accountId {
-              data.append(("Account ID", address.getTruncatedPublicKey(), tryToGetNickname(publicKey: address), true, false))
-            }
-            let salt = getWrappedData32(data: preimage.salt)
-            if !salt.isEmpty {
-              data.append(("Salt", salt, "", false, false))
-            }
-          case .fromAsset(let preimage):
-            data.append(("Contract ID Preimage", "From Asset", "", false, false))
-            let assetCode = preimage.assetCode.isEmpty ? "XLM" : preimage.assetCode
-            data.append(("Receive asset", assetCode, "", false, true))
-            
-            if let issuer = preimage.issuer?.accountId {
-              data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
-            }
-          }
-          switch args.executable {
-          case .token:
-            data.append(("Contract Executable", "Stellar Asset", "", false, false))
-          case .wasm(let wasm):
-            data.append(("Contract Executable", "Wasm", "", false, false))
-            let wasmHash = getWrappedData32(data: wasm)
-            if !wasmHash.isEmpty {
-              data.append(("Wasm Hash", wasmHash, "", false, false))
-            }
-          }
-        }
+        // root invocation: SorobanAuthorizedInvocationXDR
+        getAuthInvocXDR(invocXDR: auth.rootInvocation, data: &data)
       }
     default:
       break
@@ -1024,61 +1048,168 @@ struct TransactionHelper {
     
     return data
   }
-    
-  // parse SCValXDR
-  static func tryToSetSCValXDR(args: SCValXDR, data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)]) {
-    switch args {
-    case .bool(let bool):
-      let value = bool ? "True" : "False"
-      data.append(("Bool", value, "", false, false))
-    case .timepoint(let timepoint):
-      data.append(("Timepoint", "\(timepoint)", "", false, false))
-    case .duration(let duration):
-      data.append(("Duration", "\(duration)", "", false, false))
-    case .symbol(let symbol):
-      data.append(("Symbol", symbol, "", false, false))
-    case .string(let string):
-      data.append(("String", string, "", false, false))
-    case .bytes(let bytes):
-      data.append(("Bytes", bytes.base64EncodedString(), "", false, false))
-    case .address(let scAddress):
-      switch scAddress {
-      case .account(let account):
-        data.append(("Account ID", account.accountId.getTruncatedPublicKey(),
-                     tryToGetNickname(publicKey: account.accountId), true, false))
-      case .contract(let contract):
-        let capacity = getWrappedData32(data: contract)
-        if !capacity.isEmpty {
-          data.append(("Capacity", capacity, "", false, false))
+  
+  // parse SorobanAuthorizedInvocationXDR
+  static func getAuthInvocXDR(invocXDR: SorobanAuthorizedInvocationXDR,
+                              data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)])
+  {
+    switch invocXDR.function {
+    case .contractFn(let contract):
+      data.append(("Authorized Function", "Contract", "", false, false))
+      getSCAddressXDR(scAddress: contract.contractAddress, data: &data)
+      data.append(("Function Name", contract.functionName, "", false, false))
+      
+//      for (index, arg) in contract.args.enumerated() {
+//        getSCValXDR(args: arg, index: index + 1, data: &data)
+//      }
+    case .createContractHostFn(let args):
+      data.append(("Authorized Function", "Create Contract Host", "", false, false))
+      switch args.contractIDPreimage {
+      case .fromAddress(let preimage):
+        data.append(("Contract ID Preimage", "From Address", "", false, false))
+        getSCAddressXDR(scAddress: preimage.address, data: &data)
+        let salt = getStringFromWrappedData32(data: preimage.salt)
+        if !salt.isEmpty {
+          data.append(("Salt", salt, "", false, false))
+        }
+      case .fromAsset(let preimage):
+        data.append(("Contract ID Preimage", "From Asset", "", false, false))
+        let assetCode = preimage.assetCode.isEmpty ? "XLM" : preimage.assetCode
+        data.append(("Receive asset", assetCode, "", false, true))
+        
+        if let issuer = preimage.issuer?.accountId {
+          data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
         }
       }
-    case .u32(let value):
-      data.append(("U32", "\(value)", "", false, false))
-    case .i32(let value):
-      data.append(("I32", "\(value)", "", false, false))
-    case .u64(let value):
-      data.append(("U64", "\(value)", "", false, false))
-    case .i64(let value):
-      data.append(("I64", "\(value)", "", false, false))
-    case .i128(let parts):
-      let value = "hi: \(parts.hi), lo: \(parts.lo)"
-      data.append(("I128", "\(value)", "", false, false))
-    case .u128(let parts):
-      let value = "hi: \(parts.hi), lo: \(parts.lo)"
-      data.append(("U128", "\(value)", "", false, false))
-    case .u256(let parts):
-      let value = "hi_hi: \(parts.hiHi), hi_lo: \(parts.hiLo), lo_hi: \(parts.loHi), lo_lo: \(parts.loLo)"
-      data.append(("U256", "\(value)", "", false, false))
-    case .i256(let parts):
-      let value = "hi_hi: \(parts.hiHi), hi_lo: \(parts.hiLo), lo_hi: \(parts.loHi), lo_lo: \(parts.loLo)"
-      data.append(("I256", "\(value)", "", false, false))
-    case .contractInstance(let contract):
-      switch contract.executable {
+      switch args.executable {
       case .token:
         data.append(("Contract Executable", "Stellar Asset", "", false, false))
       case .wasm(let wasm):
         data.append(("Contract Executable", "Wasm", "", false, false))
-        let wasmHash = getWrappedData32(data: wasm)
+        let wasmHash = getStringFromWrappedData32(data: wasm)
+        if !wasmHash.isEmpty {
+          data.append(("Wasm Hash", wasmHash, "", false, false))
+        }
+      }
+    case .createContractV2HostFn(let args):
+      data.append(("Authorized Function", "Create Contract Host", "", false, false))
+      switch args.contractIDPreimage {
+      case .fromAddress(let preimage):
+        data.append(("Contract ID Preimage", "From Address", "", false, false))
+        getSCAddressXDR(scAddress: preimage.address, data: &data)
+        let salt = getStringFromWrappedData32(data: preimage.salt)
+        if !salt.isEmpty {
+          data.append(("Salt", salt, "", false, false))
+        }
+      case .fromAsset(let preimage):
+        data.append(("Contract ID Preimage", "From Asset", "", false, false))
+        let assetCode = preimage.assetCode.isEmpty ? "XLM" : preimage.assetCode
+        data.append(("Receive asset", assetCode, "", false, true))
+        
+        if let issuer = preimage.issuer?.accountId {
+          data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
+        }
+      }
+      switch args.executable {
+      case .token:
+        data.append(("Contract Executable", "Stellar Asset", "", false, false))
+      case .wasm(let wasm):
+        data.append(("Contract Executable", "Wasm", "", false, false))
+        let wasmHash = getStringFromWrappedData32(data: wasm)
+        if !wasmHash.isEmpty {
+          data.append(("Wasm Hash", wasmHash, "", false, false))
+        }
+      }
+    }
+    
+    // reccursion for [SorobanAuthorizedInvocationXDR]
+    // may be used later for nested lists
+//    if invocXDR.subInvocations.count > 0 {
+//      data.append(("Sub Invocations Size", "\(invocXDR.subInvocations.count)", "", false, false))
+//    }
+    for subInvoc in invocXDR.subInvocations {
+      getAuthInvocXDR(invocXDR: subInvoc, data: &data)
+    }
+  }
+  
+  // parse SCAddressXDR
+  static func getSCAddressXDR(scAddress: SCAddressXDR,
+                              index: String? = nil,
+                              data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)])
+  {
+    switch scAddress {
+    case .account(let publicKey):
+      let title = index != nil ? "Account ID\(index!)" : "Account ID"
+      data.append((title, publicKey.accountId.getTruncatedPublicKey(), tryToGetNickname(publicKey: publicKey.accountId), true, false))
+    case .contract(let wrappedData32):
+      if let id = try? wrappedData32.wrapped.encodeContractId() {
+        let title = index != nil ? "Contract ID\(index!)" : "Contract ID"
+        data.append((title, "\(id.prefix(8))...\(id.suffix(8))", "", false, false))
+      }
+    }
+  }
+  
+  // parse SCValXDR
+  static func getSCValXDR(args: SCValXDR,
+                          index: Int?,
+                          isArray: Bool = false,
+                          data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)])
+  {
+    let argIndex = index != nil ? " (\(isArray ? "array, " : "")arg \(index!))" : ""
+    
+    switch args {
+    case .bool(let bool):
+      let value = bool ? "True" : "False"
+      data.append(("Bool\(argIndex)", value, "", false, false))
+    case .timepoint(let timepoint):
+      data.append(("Timepoint\(argIndex)", "\(timepoint)", "", false, false))
+    case .duration(let duration):
+      data.append(("Duration\(argIndex)", "\(duration)", "", false, false))
+    case .symbol(let symbol):
+      data.append(("Symbol\(argIndex)", symbol, "", false, false))
+    case .string(let string):
+      data.append(("String\(argIndex)", string, "", false, false))
+    case .bytes(let bytes):
+      data.append(("Bytes\(argIndex)", bytes.base64EncodedString(), "", false, false))
+    case .address(let scAddress):
+      getSCAddressXDR(scAddress: scAddress, index: argIndex, data: &data)
+//      switch scAddress {
+//      case .account(let account):
+//        data.append(("Account ID", account.accountId.getTruncatedPublicKey(),
+//                     tryToGetNickname(publicKey: account.accountId), true, false))
+//      case .contract(let contract):
+//        let capacity = getWrappedData32(data: contract)
+//        if !capacity.isEmpty {
+//          data.append(("Capacity", capacity, "", false, false))
+//        }
+//      }
+    case .u32(let value):
+      data.append(("U32\(argIndex)", "\(value)", "", false, false))
+    case .i32(let value):
+      data.append(("I32\(argIndex)", "\(value)", "", false, false))
+    case .u64(let value):
+      data.append(("U64\(argIndex)", "\(value)", "", false, false))
+    case .i64(let value):
+      data.append(("I64\(argIndex)", "\(value)", "", false, false))
+    case .i128(let parts):
+      let value = "hi: \(parts.hi), lo: \(parts.lo)"
+      data.append(("I128\(argIndex)", "\(value)", "", false, false))
+    case .u128(let parts):
+      let value = "hi: \(parts.hi), lo: \(parts.lo)"
+      data.append(("U128\(argIndex)", "\(value)", "", false, false))
+    case .u256(let parts):
+      let value = "hi_hi: \(parts.hiHi), hi_lo: \(parts.hiLo), lo_hi: \(parts.loHi), lo_lo: \(parts.loLo)"
+      data.append(("U256\(argIndex)", "\(value)", "", false, false))
+    case .i256(let parts):
+      let value = "hi_hi: \(parts.hiHi), hi_lo: \(parts.hiLo), lo_hi: \(parts.loHi), lo_lo: \(parts.loLo)"
+      data.append(("I256\(argIndex)", "\(value)", "", false, false))
+    case .contractInstance(let contract):
+      switch contract.executable {
+      case .token:
+        data.append(("Contract Executable\(argIndex)", "Stellar Asset", "", false, false))
+      case .wasm(let wasm):
+        data.append(("Contract Executable\(argIndex)", "Wasm", "", false, false))
+        let wasmHash = getStringFromWrappedData32(data: wasm)
         if !wasmHash.isEmpty {
           data.append(("Wasm Hash", wasmHash, "", false, false))
         }
@@ -1086,18 +1217,40 @@ struct TransactionHelper {
     case .ledgerKeyContractInstance:
       break
     case .ledgerKeyNonce(let key):
-      data.append(("Nonce Key", "\(key.nonce)", "", false, false))
+      data.append(("Nonce Key\(argIndex)", "\(key.nonce)", "", false, false))
     case .void:
       break
-    case .error:
+    case .error(let error):
+      let errorString = String(describing: error)
+      data.append(("Error\(argIndex)", errorString, "", false, false))
+    case .vec(let scVal):
+      // reccursion of SCValXDR args
+      // may be used later for nested lists
+      if let args = scVal {
+        for (_, arg) in args.enumerated() {
+          getSCValXDR(args: arg, index: index != nil ? index! : nil, isArray: true, data: &data)
+        }
+      }
+    case .map(let scMap):
       break
+//      // reccursion of key-value SCValXDR args
+//      // may be used later for nested lists
+//      if let args = scMap {
+//        for arg in args {
+//          // key
+//          getSCValXDR(args: arg.key, index: index != nil ? index! : nil, isArray: true, data: &data)
+//
+//          // value
+//          getSCValXDR(args: arg.val, index: index != nil ? index! : nil, isArray: true, data: &data)
+//        }
+//      }
     default:
       break
     }
   }
 
-  static func getWrappedData32(data: WrappedData32) -> String {
-    let encodedString = data.wrapped.base64EncodedString()
+  static func getStringFromWrappedData32(data: WrappedData32) -> String {
+    let encodedString = data.wrapped.toHexString()
     if encodedString.isEmpty {
       return ""
     } else {
@@ -1105,7 +1258,19 @@ struct TransactionHelper {
         return "\(encodedString.prefix(8))...\(encodedString.suffix(8))"
       } else {
         return encodedString
-        
+      }
+    }
+  }
+  
+  static func getStringFromData(data: Data) -> String {
+    let encodedString = data.toHexString()
+    if encodedString.isEmpty {
+      return ""
+    } else {
+      if encodedString.count > 16 {
+        return "\(encodedString.prefix(8))...\(encodedString.suffix(8))"
+      } else {
+        return encodedString
       }
     }
   }
@@ -1146,7 +1311,7 @@ struct TransactionHelper {
   
   static func getPathPaymentPathValue(pathPaymentOperation: PathPaymentOperation) -> String {
     return pathPaymentOperation.path.map { asset in
-      return asset.code ?? "XLM"
+      asset.code ?? "XLM"
     }.joined(separator: " ")
   }
   
@@ -1293,7 +1458,7 @@ struct TransactionHelper {
   }
   
   static func getTransactionResult(from message: String) throws ->
-  (resultCode: TransactionResultCode, operationMessageError: String?)
+    (resultCode: TransactionResultCode, operationMessageError: String?)
   {
     guard let errorMessage = try? JSONDecoder().decode(HorizonErrorMessage.self,
                                                        from: message.data(using: String.Encoding.utf8)!)
@@ -1327,7 +1492,7 @@ struct TransactionHelper {
   
   static func tryToGetOperationErrorMessage(from resultBody: TransactionResultBodyXDR) -> String? {
     switch resultBody {
-    case let .failed(operations):
+    case .failed(let operations):
       operationsCount = operations.count
       for (index, operation) in operations.enumerated() {
         switch operation {
@@ -1463,7 +1628,7 @@ struct TransactionHelper {
   private static func getOperationsResultCodes(from resultBody: TransactionResultBodyXDR) -> [OperationResultCode] {
     var operationResultCodes: [OperationResultCode] = []
     switch resultBody {
-    case let .failed(operations):
+    case .failed(let operations):
       for operation in operations {
         switch operation {
         case .createAccount(let errorCode, _):
@@ -2497,6 +2662,12 @@ extension Decimal {
   }
 }
 
+extension NSDecimalNumber {
+  var formattedString: String {
+    return PriceFormatter.shared.string(from: self) ?? "unknown"
+  }
+}
+
 class PriceFormatter: NumberFormatter {
   required init?(coder: NSCoder) {
     super.init(coder: coder)
@@ -2509,5 +2680,208 @@ class PriceFormatter: NumberFormatter {
     self.maximumFractionDigits = 7
     self.groupingSeparator = ","
     self.decimalSeparator = "."
+  }
+}
+
+extension Formatter {
+  static let withSeparator: NumberFormatter = {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.groupingSeparator = ","
+    return formatter
+  }()
+}
+
+extension Numeric {
+  var formattedWithSeparator: String {
+    Formatter.withSeparator.string(for: self) ?? ""
+  }
+}
+
+// MARK: - Soroban Balance Changes
+
+extension TransactionHelper {
+  static func simulateTransaction(xdr: String,
+                                  completion: @escaping ([LedgerEntryChange]?) -> Void)
+  {
+    if let transaction = try? stellarsdk.Transaction(envelopeXdr: xdr) {
+      let sorobanServer = SorobanServer(endpoint: "https://soroban-rpc.ultrastellar.com")
+      let simulateRequest = SimulateTransactionRequest(transaction: transaction)
+      sorobanServer.simulateTransaction(simulateTxRequest: simulateRequest) { (response) -> Void in
+        switch response {
+        case .success(response: let simulateResponse):
+          completion(simulateResponse.stateChanges)
+        case .failure:
+          completion(nil)
+        }
+      }
+    } else {
+      completion(nil)
+    }
+  }
+  
+  struct SorobanBalanceChange {
+    let assetCode: String
+    let asssetIssuer: String?
+    let beforeBalance: NSDecimalNumber
+    let afterBalance: NSDecimalNumber
+    let balancesDifference: String
+  }
+    
+  static func setSorobanBalanceChanges(stateChanges: [LedgerEntryChange]?,
+                                       transactionSourceAccountId: String,
+                                       data: inout [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)])
+  {
+    let balanceChanges = getSorobanBalanceChanges(stateChanges: stateChanges,
+                                                  transactionSourceAccountId: transactionSourceAccountId)
+    for balanceChange in balanceChanges {
+      data.append(("Asset", balanceChange.assetCode, "", false, true))
+      if let issuer = balanceChange.asssetIssuer {
+        data.append(("Asset Issuer", issuer.getTruncatedPublicKey(), tryToGetNickname(publicKey: issuer), true, false))
+      }
+      let balancesDifference = "\(balanceChange.balancesDifference) \(balanceChange.assetCode)"
+      data.append(("Balance Change", balancesDifference, "", false, false))
+    }
+  }
+  
+  static func getSorobanBalanceChanges(stateChanges: [LedgerEntryChange]?,
+                                       transactionSourceAccountId: String) -> [SorobanBalanceChange]
+  {
+    let oneStroop: NSDecimalNumber = 0.0000001
+    var balanceChanges: [SorobanBalanceChange] = []
+    
+    if let stateChanges = stateChanges {
+      for (_, stateChange) in stateChanges.enumerated() {
+        switch stateChange.key {
+        case .account(let ledgerKeyAccountXDR):
+          if ledgerKeyAccountXDR.accountID.accountId == transactionSourceAccountId {
+            if let beforeAccount = stateChange.before?.data.account,
+               let afterAccount = stateChange.after?.data.account
+            {
+              let beforeBalance = NSDecimalNumber(value: beforeAccount.balance).multiplying(by: oneStroop)
+              let afterBalance = NSDecimalNumber(value: afterAccount.balance).multiplying(by: oneStroop)
+              let balancesDifference = calculateBalancesDifference(beforeBalance: beforeBalance,
+                                                                   afterBalance: afterBalance)
+              if beforeBalance != afterBalance {
+                let sorobanBalanceChange = SorobanBalanceChange(assetCode: "XLM",
+                                                                asssetIssuer: nil,
+                                                                beforeBalance: beforeBalance,
+                                                                afterBalance: afterBalance,
+                                                                balancesDifference: balancesDifference)
+                balanceChanges.append(sorobanBalanceChange)
+              }
+            }
+          }
+        case .trustline(let ledgerKeyTrustLineXDR):
+          if ledgerKeyTrustLineXDR.accountID.accountId == transactionSourceAccountId {
+            if let beforeTrustline = stateChange.before?.data.trustline,
+               let afterTrustline = stateChange.after?.data.trustline
+            {
+              let beforeBalance = NSDecimalNumber(value: beforeTrustline.balance).multiplying(by: oneStroop)
+              let afterBalance = NSDecimalNumber(value: afterTrustline.balance).multiplying(by: oneStroop)
+              let balancesDifference = calculateBalancesDifference(beforeBalance: beforeBalance,
+                                                                   afterBalance: afterBalance)
+              
+              if beforeBalance != afterBalance {
+                let assetCode = ledgerKeyTrustLineXDR.asset.assetCode ?? ""
+                let assetIssuer = ledgerKeyTrustLineXDR.asset.issuer?.accountId
+                
+                let sorobanBalanceChange = SorobanBalanceChange(assetCode: assetCode,
+                                                                asssetIssuer: assetIssuer,
+                                                                beforeBalance: beforeBalance,
+                                                                afterBalance: afterBalance,
+                                                                balancesDifference: balancesDifference)
+                balanceChanges.append(sorobanBalanceChange)
+              }
+            }
+          }
+        default:
+          break
+        }
+      }
+    }
+    return balanceChanges
+  }
+  
+  static func calculateBalancesDifference(beforeBalance: NSDecimalNumber,
+                                          afterBalance: NSDecimalNumber) -> String
+  {
+    var formattedBalancesDifference = ""
+    
+    if afterBalance.compare(beforeBalance) == .orderedDescending {
+      let balancesDifference = afterBalance.subtracting(beforeBalance).formattedString
+      formattedBalancesDifference = "+\(balancesDifference)"
+    } else if afterBalance.compare(beforeBalance) == .orderedAscending {
+      let balancesDifference = beforeBalance.subtracting(afterBalance).formattedString
+      formattedBalancesDifference = "-\(balancesDifference)"
+    }
+    return formattedBalancesDifference
+  }
+  
+  static func getPublicKeysFromSorobanBalanceChanges(stateChanges: [LedgerEntryChange]?,
+                                                     transactionSourceAccountId: String,
+                                                     publicKeys: inout [String])
+  {
+    let balanceChanges = getSorobanBalanceChanges(stateChanges: stateChanges,
+                                                  transactionSourceAccountId: transactionSourceAccountId)
+    for balanceChange in balanceChanges {
+      if let issuer = balanceChange.asssetIssuer {
+        publicKeys.append(issuer)
+      }
+    }
+  }
+  
+  static func getAssetsFromSorobanBalanceChanges(stateChanges: [LedgerEntryChange]?,
+                                                 transactionSourceAccountId: String,
+                                                 assets: inout [stellarsdk.Asset])
+  {
+    if let stateChanges = stateChanges {
+      for (_, stateChange) in stateChanges.enumerated() {
+        switch stateChange.key {
+        case .account(let ledgerKeyAccountXDR):
+          if ledgerKeyAccountXDR.accountID.accountId == transactionSourceAccountId {
+            if let nativeAsset = stellarsdk.Asset(canonicalForm: "XLM") {
+              assets.append(nativeAsset)
+            }
+          }
+        case .trustline(let ledgerKeyTrustLineXDR):
+          if ledgerKeyTrustLineXDR.accountID.accountId == transactionSourceAccountId {
+            let trustlineAssetXDR = ledgerKeyTrustLineXDR.asset
+            if let issuer = trustlineAssetXDR.issuer,
+               let asset = stellarsdk.Asset(type: trustlineAssetXDR.type(),
+                                            code: trustlineAssetXDR.assetCode,
+                                            issuer: KeyPair(publicKey: issuer))
+            {
+              assets.append(asset)
+            }
+          }
+        default:
+          break
+        }
+      }
+    }
+  }
+}
+
+// MARK: - toHexString
+
+extension Array where Element == UInt8 {
+  func toHexString() -> String {
+    return `lazy`.reduce("") {
+      var s = String($1, radix: 16)
+      if s.count == 1 {
+        s = "0" + s
+      }
+      return $0 + s
+    }
+  }
+}
+
+extension Data {
+  var bytes: Array<UInt8> {
+    return Array(self)
+  }
+  func toHexString() -> String {
+    return bytes.toHexString()
   }
 }

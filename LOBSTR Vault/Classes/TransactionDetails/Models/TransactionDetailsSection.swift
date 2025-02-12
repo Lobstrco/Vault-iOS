@@ -9,7 +9,7 @@ struct TransactionDetailsSection {
 enum TransactionDetailsRow {
   case operation(String)
   case operationDetail((name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool))
-  case additionalInformation((name: String , value: String, nickname: String, isPublicKey: Bool))
+  case additionalInformation((name: String , value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool))
   case signer(SignerViewData)
 }
 

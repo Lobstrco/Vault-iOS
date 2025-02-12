@@ -464,7 +464,8 @@ extension HomeViewController: HomeView {
     DispatchQueue.main.async {
       self.navigationItem.hidesBackButton = isEnabled
       if let topVC = UIApplication.getTopViewController() {
-        if !(topVC is PinEnterViewController) {
+        if !(topVC is PinEnterViewController),
+           !(topVC is TransactionDetailsViewController) {
           isEnabled ? HUD.show(.labeledProgress(title: nil,
                                                subtitle: L10n.animationWaiting)) : HUD.hide()
         }

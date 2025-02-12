@@ -236,6 +236,12 @@ extension TransactionDetailsViewController: TransactionDetailsView {
     buttonsStackView.isHidden = true
     buttonsStackViewHeightConstraint.constant = 0
   }
+  
+  func hideButtonsAndError() {
+    expiredErrorLabel.isHidden = true
+    buttonsStackView.isHidden = true
+    buttonsStackViewHeightConstraint.constant = 0
+  }
 
   func openTransactionListScreen() {
     navigationController?.popViewController(animated: true)
@@ -367,12 +373,7 @@ extension TransactionDetailsViewController: TransactionDetailsView {
 
     present(alert, animated: true, completion: nil)
   }
-  
-  func setButtons(isEnabled: Bool) {
-    confirmButton.isEnabled = isEnabled
-    denyButton.isEnabled = isEnabled
-  }
-  
+    
   func showICloudSyncScreen() {
     let transactionConfirmationViewController = SettingsSelectionViewController.createFromStoryboard()
     transactionConfirmationViewController.screenType = .iCloudSync
@@ -405,17 +406,20 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
       if name.contains("Memo") {
         cell.type = .memo
       }
-      if name.contains("Flags") {
+      else if name.contains("Flags") {
         cell.type = .flags
       }
-      if isPublicKey {
+      else if isPublicKey {
         cell.type = .publicKey
       }
-      if name.contains(L10n.textClaimBetween) {
+      else if name.contains(L10n.textClaimBetween) {
         cell.type = .claimBetween
       }
-      if isAssetCode {
+      else if isAssetCode {
         cell.type = .assetCode
+      }
+      else {
+        cell.type = .other
       }
       if isPublicKey, !nickname.isEmpty {
         let value = nickname + " (\(value.prefix(4))...\(value.suffix(4)))"
@@ -425,13 +429,16 @@ extension TransactionDetailsViewController: UITableViewDelegate, UITableViewData
       }
       cell.selectionStyle = .none
       return cell
-    case .additionalInformation((let name, let value, let nickname, let isPublicKey)):
+    case .additionalInformation((let name, let value, let nickname, let isPublicKey, let isAssetCode)):
       let cell: OperationDetailsTableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
       if name.contains("Memo") {
         cell.type = .memo
-      }
-      if isPublicKey {
+      } else if isPublicKey {
         cell.type = .publicKey
+      } else if isAssetCode {
+        cell.type = .assetCode
+      } else {
+        cell.type = .other
       }
       if isPublicKey, !nickname.isEmpty {
         let value = nickname + " (\(value.prefix(4))...\(value.suffix(4)))"

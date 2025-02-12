@@ -4,8 +4,6 @@ import UIKit
 class TangemStartViewController: UIViewController, StoryboardCreation {
   static var storyboardType: Storyboards = .tangem
   @IBOutlet var scanButton: UIButton!
-  @IBOutlet var buyNowButton: UIButton!
-    
   @IBOutlet var learnMoreButtonTopConstraint: NSLayoutConstraint!
   @IBOutlet var aboutLabelHeightConstraint: NSLayoutConstraint!
   
@@ -13,10 +11,6 @@ class TangemStartViewController: UIViewController, StoryboardCreation {
     super.viewDidLoad()
     setupUI()
     AppearanceHelper.set(scanButton, with: "Scan Signer Card")
-    AppearanceHelper.set(buyNowButton, with: "Buy Now")
-    
-    buyNowButton.layer.borderColor = Asset.Colors.main.color.cgColor
-    buyNowButton.layer.borderWidth = 1
   }
   
   override func viewWillAppear(_ animated: Bool) {
@@ -39,10 +33,6 @@ class TangemStartViewController: UIViewController, StoryboardCreation {
   
   @IBAction func learnMoreButtonAction(_ sender: Any) {
     UtilityHelper.openTangemVaultLanding()
-  }
-  
-  @IBAction func buyNowButtonAction(_ sender: Any) {
-    UtilityHelper.openTangemShop()
   }
   
   @IBAction func helpButtonAcion() {

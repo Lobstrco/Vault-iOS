@@ -49,7 +49,8 @@ protocol TransactionDetailsView: AnyObject {
   func registerTableViewCell(with cellName: String)
   func setConfirmButtonWithError(isInvalid: Bool, withTextError: String?)
   func hideButtonsWithError(withTextError: String?)
-  func setTitle(_ title: String)  
+  func hideButtonsAndError()
+  func setTitle(_ title: String)
   func openTransactionListScreen()
   func reloadData()
   func reloadSignerListRow(_ row: Int)
@@ -60,7 +61,6 @@ protocol TransactionDetailsView: AnyObject {
   func setSequenceNumberCountAlert()
   func setTransactionAlreadySignedOrDeniedAlert()
   func showNoInternetConnectionAlert()
-  func setButtons(isEnabled: Bool)
   func showICloudSyncScreen()
 }
 

@@ -347,6 +347,15 @@
 "horizon_error_stream_title" = "Steam Error";
 "horizon_error_stream_message" = "There was an error receiving Horizon stream data.";
 
+"horizon_error_duplicate" = "horizon_error_duplicate";
+"horizon_error_duplicate_title" = "";
+"horizon_error_duplicate_message" = "";
+
+"horizon_error_timeout" = "horizon_error_timeout";
+"horizon_error_timeout_title" = "Timeout";
+"horizon_error_timeout_message" = "Your request timed out before completing.  Please try your request again. If you are submitting a transaction make sure you are sending exactly the same transaction (with the same sequence number).";
+
+"horizon_payload_too_large_message" = "Payload too large";
 
 "INVALID_TRANSACTION_TITLE" = "Invalid Transaction";
 "INVALID_TRANSACTION_MESSAGE" = "Transaction was failed. Please, contact to support.";

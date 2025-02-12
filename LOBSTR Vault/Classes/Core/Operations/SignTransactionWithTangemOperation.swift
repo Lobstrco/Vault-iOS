@@ -23,7 +23,7 @@ class SignTransactionWithTangemOperation: AsyncOperation {
     TangemHelper.signTransactionHash(hash: hash, cardId: UserDefaultsHelper.tangemCardId!) { result in
       switch result {
       case .success(let signedTransaction):
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
           NotificationCenter.default.post(name: .didSignCardScan, object: nil)
         }
         guard let signature = signedTransaction.signatures.first else { return }

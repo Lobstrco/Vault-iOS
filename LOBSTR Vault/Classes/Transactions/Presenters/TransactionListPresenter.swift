@@ -423,7 +423,7 @@ extension TransactionListPresenterImpl {
       TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                       transaction: transactionList[index],
                                       type: .standard,
-                                      isAfterPushNotification: false)
+                                      notificationType: nil)
     Logger.transactionDetails.debug("Transaction: \(transactionList[index])")
     transactionDetailsViewController.presenter.transactionListIndex = index
     
@@ -436,7 +436,8 @@ extension TransactionListPresenterImpl {
     
     transactionDetailsViewController.presenter = TransactionDetailsPresenterImpl(view: transactionDetailsViewController,
                                                                                  transaction: transaction,
-                                                                                 type: .imported, isAfterPushNotification: false)
+                                                                                 type: .imported,
+                                                                                 notificationType: nil)
     let transactionListViewController = view as! TransactionListViewController
     transactionListViewController.navigationController?.pushViewController(transactionDetailsViewController, animated: true)
   }

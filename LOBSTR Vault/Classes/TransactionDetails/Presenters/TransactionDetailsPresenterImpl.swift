@@ -42,7 +42,7 @@ class TransactionDetailsPresenterImpl {
   var isNeedToShowSignaturesNumber: Bool = true
   
   var isVaultAccountPending: Bool {
-    if signers.first(where: { $0.publicKey == UserDefaultsHelper.activePublicKey})?.status == .pending {
+    if signers.first(where: { $0.publicKey == UserDefaultsHelper.activePublicKey })?.status == .pending {
       return true
     } else {
       return false
@@ -59,8 +59,9 @@ class TransactionDetailsPresenterImpl {
   private var publicKeys: [String] = []
   private var txSourceAccountId = ""
   private var txSequenceNumber = 0
-  private var isAfterPushNotification: Bool
+  private let notificationType: NotificationType?
   private var accountSequenceNumber = 0
+  private var stateChanges: [LedgerEntryChange]?
   
   var sections = [TransactionDetailsSection]()
   
@@ -72,7 +73,7 @@ class TransactionDetailsPresenterImpl {
   init(view: TransactionDetailsView,
        transaction: Transaction,
        type: TransactionType,
-       isAfterPushNotification: Bool,
+       notificationType: NotificationType?,
        crashlyticsService: CrashlyticsService = CrashlyticsService(),
        transactionService: TransactionService = TransactionService(),
        federationService: FederationService = FederationService(),
@@ -89,7 +90,7 @@ class TransactionDetailsPresenterImpl {
     self.transactionType = type
     self.sdk = sdk
     self.vaultStorage = vaultStorage
-    self.isAfterPushNotification = isAfterPushNotification
+    self.notificationType = notificationType
     addObservers()
   }
   
@@ -116,12 +117,9 @@ class TransactionDetailsPresenterImpl {
   }
   
   @objc func onDidSignCardScan(_ notification: Notification) {
-    view?.setButtons(isEnabled: false)
     if let topVC = UIApplication.getTopViewController() {
       if (topVC is TransactionDetailsViewController) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-          self.view?.setProgressAnimation(isEnabled: true)
-        }
+        view?.setProgressAnimation(isEnabled: true)
       }
     }
   }
@@ -152,17 +150,17 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
         case .success(let account):
           if let federation = account.federation {
             self.destinationFederation = federation
-            self.tryToGetSignedAccounts(transactionEnvelopeXDR: transactionEnvelopeXDR)
+            self.tryToSimulateTransaction(transactionEnvelopeXDR: transactionEnvelopeXDR)
           } else {
-            self.tryToGetSignedAccounts(transactionEnvelopeXDR: transactionEnvelopeXDR)
+            self.tryToSimulateTransaction(transactionEnvelopeXDR: transactionEnvelopeXDR)
           }
         case .failure(let error):
-          self.tryToGetSignedAccounts(transactionEnvelopeXDR: transactionEnvelopeXDR)
+          self.tryToSimulateTransaction(transactionEnvelopeXDR: transactionEnvelopeXDR)
           Logger.home.error("Couldn't get federation for \(destinationId) with error: \(error)")
         }
       }
     } else {
-      tryToGetSignedAccounts(transactionEnvelopeXDR: transactionEnvelopeXDR)
+      tryToSimulateTransaction(transactionEnvelopeXDR: transactionEnvelopeXDR)
     }
   }
   
@@ -187,7 +185,10 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
   func publicKeyWasSelected(key: String?) {
     do {
       let operation = try TransactionHelper.getOperation(from: xdr)
-      let publicKeys = TransactionHelper.getPublicKeys(from: operation)
+      var publicKeys = TransactionHelper.getPublicKeys(from: operation)
+      TransactionHelper.getPublicKeysFromSorobanBalanceChanges(stateChanges: stateChanges,
+                                                               transactionSourceAccountId: txSourceAccountId,
+                                                               publicKeys: &publicKeys)
       self.publicKeys.append(contentsOf: publicKeys)
       if let key = key, key.isShortStellarPublicAddress || key.isShortMuxedAddress {
         if let key = self.publicKeys.first(where: { $0.prefix(4) == key.prefix(4) && $0.suffix(4) == key.suffix(4) }) {
@@ -392,35 +393,77 @@ extension TransactionDetailsPresenterImpl: TransactionDetailsPresenter {
 // MARK: - Private
 
 private extension TransactionDetailsPresenterImpl {
-  func buildAdditionalInformationSection() -> [(name: String, value: String, nickname: String, isPublicKey: Bool)] {
-    var additionalInformationSection: [(name: String, value: String, nickname: String, isPublicKey: Bool)] = []
+  func buildAdditionalInformationSection() -> [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] {
+    var additionalInformationSection: [(name: String, value: String, nickname: String, isPublicKey: Bool, isAssetCode: Bool)] = []
         
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
       let memo = getMemo()
       
       if !memo.value.isEmpty {
-        additionalInformationSection.append((name: memo.title, value: memo.value, nickname: "", isPublicKey: false))
+        additionalInformationSection.append((name: memo.title, value: memo.value, nickname: "", isPublicKey: false, isAssetCode: false))
       }
       
-      additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionXDR.txSourceAccountId), true))
+      additionalInformationSection.append((name: "Transaction Source", value: transactionXDR.txSourceAccountId.getTruncatedPublicKey(numberOfCharacters: TransactionHelper.numberOfCharacters), nickname: TransactionHelper.tryToGetNickname(publicKey: transactionXDR.txSourceAccountId), isPublicKey: true, isAssetCode: false))
       publicKeys.append(transactionXDR.txSourceAccountId)
       
+      let minFee = getMinFee(transactionXDR: transactionXDR)
+      additionalInformationSection.append((name: "Min Network Fee", value: minFee + " XLM", nickname: "", isPublicKey: false, isAssetCode: false))
+      
       if let maxFee = getMaxFee(transactionXDR: transactionXDR) {
-        additionalInformationSection.append((name: "Max Network Fee", value: maxFee + " XLM", nickname: "", isPublicKey: false))
+        additionalInformationSection.append((name: "Max Network Fee", value: maxFee + " XLM", nickname: "", isPublicKey: false, isAssetCode: false))
       }
     }
     
     if let transactionDate = transaction.addedAt {
-      additionalInformationSection.append((name: "Created", value: TransactionHelper.getValidatedDate(from: transactionDate), nickname: "", isPublicKey: false))
+      additionalInformationSection.append((name: "Created", value: TransactionHelper.getValidatedDate(from: transactionDate), nickname: "", isPublicKey: false, isAssetCode: false))
     }
+    
+    TransactionHelper.setSorobanBalanceChanges(stateChanges: stateChanges,
+                                               transactionSourceAccountId: txSourceAccountId,
+                                               data: &additionalInformationSection)
     
     return additionalInformationSection
   }
   
   func getMaxFee(transactionXDR: TransactionEnvelopeXDR) -> String? {
     let oneStroop = Decimal(0.0000001)
-    let maxFeeString = transactionXDR.txFee != 0 ? NSDecimalNumber(decimal:(oneStroop * Decimal(transactionXDR.txFee))).stringValue : nil
+    let maxFeeString = transactionXDR.txFee != 0 ? NSDecimalNumber(decimal: oneStroop * Decimal(transactionXDR.txFee)).stringValue : nil
     return maxFeeString
+  }
+  
+  func getMinFee(transactionXDR: TransactionEnvelopeXDR) -> String {
+    let baseFee = Decimal(0.00001)
+    let resourceFee = getResourceFee(transactionXDR: transactionXDR)
+    let minFeeString = NSDecimalNumber(decimal: baseFee * Decimal(transactionXDR.txOperations.count)).adding(resourceFee).stringValue
+    
+    return minFeeString
+  }
+
+  func getResourceFee(transactionXDR: TransactionEnvelopeXDR) -> NSDecimalNumber {
+    switch transactionXDR {
+    case .v1(let transactionV1EnvelopeXDR):
+      switch transactionV1EnvelopeXDR.tx.ext {
+      case .sorobanTransactionData(let txData):
+        let oneStroop: NSDecimalNumber = 0.0000001
+        return NSDecimalNumber(value: txData.resourceFee).multiplying(by: oneStroop)
+      default:
+        break
+      }
+    case .feeBump(let feeBumpTransactionEnvelopeXDR):
+      switch feeBumpTransactionEnvelopeXDR.tx.innerTx {
+      case .v1(let transactionV1EnvelopeXDR):
+        switch transactionV1EnvelopeXDR.tx.ext {
+        case .sorobanTransactionData(let txData):
+          let oneStroop: NSDecimalNumber = 0.0000001
+          return NSDecimalNumber(value: txData.resourceFee).multiplying(by: oneStroop)
+        default:
+          break
+        }
+      }
+    default:
+      break
+    }
+    return NSDecimalNumber(value: 0)
   }
   
   func buildSections() -> [TransactionDetailsSection] {
@@ -461,11 +504,16 @@ private extension TransactionDetailsPresenterImpl {
   func setOperationDetails() {
     guard operations.count == 1 else { return }
     do {
-      if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
-        let operation = try TransactionHelper.getOperation(from: xdr)
-        operationDetails = TransactionHelper.parseOperation(from: operation, transactionSourceAccountId: transactionXDR.txSourceAccountId, isListOperations: true, destinationFederation: self.destinationFederation)
-        assets = TransactionHelper.getAssets(from: operation)
-      }
+      let operation = try TransactionHelper.getOperation(from: xdr)
+      operationDetails = TransactionHelper.parseOperation(from: operation,
+                                                          transactionSourceAccountId: txSourceAccountId,
+                                                          isListOperations: true,
+                                                          destinationFederation: self.destinationFederation,
+                                                          stateChanges: self.stateChanges)
+      assets = TransactionHelper.getAssets(from: operation)
+      TransactionHelper.getAssetsFromSorobanBalanceChanges(stateChanges: stateChanges,
+                                                           transactionSourceAccountId: txSourceAccountId,
+                                                           assets: &assets)
     } catch {
       crashlyticsService?.recordCustomException(error)
       view?.setErrorAlert(for: error)
@@ -618,7 +666,6 @@ private extension TransactionDetailsPresenterImpl {
         self.view?.setProgressAnimation(isEnabled: false)
         if let infoError = submitTransactionToHorizon.outputError as? ErrorDisplayable {
           self.view?.setErrorAlert(for: infoError)
-          self.view?.setButtons(isEnabled: true)
           return
         }
         guard let horizonResult = submitTransactionToHorizon.horizonResult else { return }
@@ -827,6 +874,16 @@ private extension TransactionDetailsPresenterImpl {
     return destinationId
   }
   
+  func tryToSimulateTransaction(transactionEnvelopeXDR: TransactionEnvelopeXDR) {
+    if checkIsSmartContractTrx(xdr: xdr) {
+      simulateTransaction {
+        self.tryToGetSignedAccounts(transactionEnvelopeXDR: transactionEnvelopeXDR)
+      }
+    } else {
+      tryToGetSignedAccounts(transactionEnvelopeXDR: transactionEnvelopeXDR)
+    }
+  }
+  
   func tryToGetSignedAccounts(transactionEnvelopeXDR: TransactionEnvelopeXDR) {
     self.storageAccounts = AccountsStorageHelper.getStoredAccounts()
     transactionService.getSignedAccounts { result in
@@ -842,7 +899,7 @@ private extension TransactionDetailsPresenterImpl {
               self.view?.setProgressAnimation(isEnabled: false)
               self.accountSequenceNumber = Int(truncatingIfNeeded: accountDetails.sequenceNumber)
               let listOfTargetSigners = accountDetails.signers.filter {
-                !($0.key.contains("VAULT")) && $0.weight != 0
+                !$0.key.contains("VAULT") && $0.weight != 0
               }
                 
               self.signers = self.getSignersViewData(signers: listOfTargetSigners,
@@ -850,31 +907,87 @@ private extension TransactionDetailsPresenterImpl {
               self.numberOfNeededSignatures = self.getNumberOfNeededSignatures(thresholdsResponse: accountDetails.thresholds,
                                                                                signers: self.signers)
               self.setData()
-              if self.isAfterPushNotification && !self.checkIsActualSequenceNumber() {
-                self.view?.hideButtonsWithError(withTextError: nil)
-              } else {
-                self.view?.setConfirmButtonWithError(isInvalid: self.transaction.sequenceOutdatedAt != nil, withTextError: nil)
-              }
+              self.setButtonsAndError()
             }
           case .failure(let error):
             DispatchQueue.main.async {
-              self.view?.setProgressAnimation(isEnabled: false)
-              self.numberOfNeededSignatures = 0
-              self.setData()
-              self.view?.setConfirmButtonWithError(isInvalid: false, withTextError: error.localizedDescription)
-              Logger.networking.error("Couldn't get account details with error: \(error)")
+              self.handleError(error)
             }
           }
         }
       case .failure(let error):
         DispatchQueue.main.async {
-          self.view?.setProgressAnimation(isEnabled: false)
-          self.numberOfNeededSignatures = 0
-          self.setData()
-          self.view?.setConfirmButtonWithError(isInvalid: false, withTextError: error.localizedDescription)
-          Logger.networking.error("Couldn't get account details with error: \(error)")
+          self.handleError(error)
         }
       }
+    }
+  }
+  
+  func setButtonsAndError() {
+    guard let notificationType = notificationType else {
+      view?.setConfirmButtonWithError(isInvalid: transaction.sequenceOutdatedAt != nil,
+                                      withTextError: nil)
+      return
+    }
+    
+    switch notificationType {
+    case .submitedTransaction:
+      view?.hideButtonsAndError()
+    default:
+      if !self.checkIsActualSequenceNumber() {
+        view?.hideButtonsWithError(withTextError: nil)
+      } else {
+        view?.setConfirmButtonWithError(isInvalid: self.transaction.sequenceOutdatedAt != nil, withTextError: nil)
+      }
+    }
+  }
+  
+  func handleError(_ error: Error) {
+    view?.setProgressAnimation(isEnabled: false)
+    numberOfNeededSignatures = 0
+    setData()
+    
+    guard let notificationType = notificationType else {
+      view?.setConfirmButtonWithError(isInvalid: true,
+                                      withTextError: error.localizedDescription)
+      return
+    }
+    
+    switch notificationType {
+    case .submitedTransaction:
+      view?.hideButtonsAndError()
+    default:
+      view?.setConfirmButtonWithError(isInvalid: true,
+                                      withTextError: error.localizedDescription)
+    }
+    Logger.networking.error("Couldn't get account details with error: \(error)")
+  }
+  
+  func checkIsSmartContractTrx(xdr: String) -> Bool {
+    if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
+      for operationXDR in transactionXDR.txOperations {
+        guard let operation = try? Operation.fromXDR(operationXDR: operationXDR)
+        else { return false }
+
+        switch type(of: operation) {
+        case is ExtendFootprintTTLOperation.Type:
+          return true
+        case is RestoreFootprintOperation.Type:
+          return true
+        case is InvokeHostFunctionOperation.Type:
+          return true
+        default:
+          break
+        }
+      }
+    }
+    return false
+  }
+  
+  func simulateTransaction(completion: @escaping () -> Void) {
+    TransactionHelper.simulateTransaction(xdr: xdr) { stateChanges in
+      self.stateChanges = stateChanges
+      completion()
     }
   }
   
@@ -948,8 +1061,8 @@ extension TransactionDetailsPresenterImpl {
   func transitionToTransactionStatus(with transactionResult: (TransactionResultCode, operationMessageError: String?), xdr: String?, transactionType: ServerTransactionType?, transactionHash: String?) {
     let transactionStatusViewController = TransactionStatusViewController.createFromStoryboard()
     
-    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController,transactionResult: transactionResult,
-      xdr: xdr, transactionType: transactionType, transactionHash: transactionHash)
+    transactionStatusViewController.presenter = TransactionStatusPresenterImpl(view: transactionStatusViewController, transactionResult: transactionResult,
+                                                                               xdr: xdr, transactionType: transactionType, transactionHash: transactionHash)
 
     if let transactionDetailsViewController = view as? TransactionDetailsViewController {
       transactionDetailsViewController.navigationController?.pushViewController(transactionStatusViewController, animated: true)
@@ -962,17 +1075,18 @@ extension TransactionDetailsPresenterImpl {
     operationViewController.presenter = OperationPresenterImpl(view: operationViewController, xdr: xdr)
     let memo = getMemo()
     var date = ""
-    var transactionSourceAccountId = ""
+    var minFee: String?
     var maxFee: String?
     if let transactionDate = transaction.addedAt {
       date = TransactionHelper.getValidatedDate(from: transactionDate)
     }
     if let transactionXDR = try? TransactionEnvelopeXDR(xdr: xdr) {
-      transactionSourceAccountId = transactionXDR.txSourceAccountId
+      minFee = getMinFee(transactionXDR: transactionXDR)
       maxFee = getMaxFee(transactionXDR: transactionXDR)
     }
     operationViewController.presenter.setOperation(operation,
-                                                   transactionSourceAccountId: transactionSourceAccountId,
+                                                   transactionSourceAccountId: txSourceAccountId,
+                                                   minFee: minFee,
                                                    maxFee: maxFee,
                                                    operationName: operations[index],
                                                    memo, date,

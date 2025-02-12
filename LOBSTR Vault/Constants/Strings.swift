@@ -263,6 +263,12 @@ internal enum L10n {
   internal static let horizonErrorBeforeHistoryMessage = L10n.tr("Localizable", "horizon_error_before_history_message")
   /// Account Error
   internal static let horizonErrorBeforeHistoryTitle = L10n.tr("Localizable", "horizon_error_before_history_title")
+  /// horizon_error_duplicate
+  internal static let horizonErrorDuplicate = L10n.tr("Localizable", "horizon_error_duplicate")
+  /// 
+  internal static let horizonErrorDuplicateMessage = L10n.tr("Localizable", "horizon_error_duplicate_message")
+  /// 
+  internal static let horizonErrorDuplicateTitle = L10n.tr("Localizable", "horizon_error_duplicate_title")
   /// horizon_error_forbidden
   internal static let horizonErrorForbidden = L10n.tr("Localizable", "horizon_error_forbidden")
   /// The requested resource is forbidden.
@@ -323,12 +329,20 @@ internal enum L10n {
   internal static let horizonErrorStreamMessage = L10n.tr("Localizable", "horizon_error_stream_message")
   /// Steam Error
   internal static let horizonErrorStreamTitle = L10n.tr("Localizable", "horizon_error_stream_title")
+  /// horizon_error_timeout
+  internal static let horizonErrorTimeout = L10n.tr("Localizable", "horizon_error_timeout")
+  /// Your request timed out before completing.  Please try your request again. If you are submitting a transaction make sure you are sending exactly the same transaction (with the same sequence number).
+  internal static let horizonErrorTimeoutMessage = L10n.tr("Localizable", "horizon_error_timeout_message")
+  /// Timeout
+  internal static let horizonErrorTimeoutTitle = L10n.tr("Localizable", "horizon_error_timeout_title")
   /// horizon_error_unauthorized
   internal static let horizonErrorUnauthorized = L10n.tr("Localizable", "horizon_error_unauthorized")
   /// The requested action is unauthorized for this account.
   internal static let horizonErrorUnauthorizedMessage = L10n.tr("Localizable", "horizon_error_unauthorized_message")
   /// Unauthorized
   internal static let horizonErrorUnauthorizedTitle = L10n.tr("Localizable", "horizon_error_unauthorized_title")
+  /// Payload too large
+  internal static let horizonPayloadTooLargeMessage = L10n.tr("Localizable", "horizon_payload_too_large_message")
   /// Codes considered as 'failure' for the operation.
   internal static let inflationNotTime = L10n.tr("Localizable", "inflation_not_time")
   /// You are not connected to the Internet
